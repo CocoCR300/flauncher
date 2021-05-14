@@ -20,6 +20,7 @@ import 'package:flauncher/ApplicationInfo.dart';
 import 'package:flauncher/DateTimeWidget.dart';
 import 'package:flauncher/PackageManager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 class FLauncher extends StatefulWidget {
@@ -52,9 +53,17 @@ class _FLauncherState extends State<FLauncher> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
           actions: [
+            TextButton(
+              child: Builder(
+                builder: (context) => Transform.scale(
+                  scale: Focus.of(context).hasFocus ? 1.2 : 1,
+                  child: Icon(Icons.settings_outlined),
+                ),
+              ),
+              onPressed: () => PackageManager.openSettings(),
+            ),
+            VerticalDivider(width: 24),
             Padding(
               padding: EdgeInsets.only(right: 16),
               child: DateTimeWidget(),
@@ -65,13 +74,7 @@ class _FLauncherState extends State<FLauncher> {
           padding: EdgeInsets.all(16),
           child: ListView(
             children: [
-              Focus(
-                child: Container(height: 80),
-                focusNode: _topFocusNode,
-                onFocusChange: (focused) {
-                  if (focused) _topFocusNode.nextFocus();
-                },
-              ),
+              Focus(child: Container(height: 80), focusNode: _topFocusNode),
               Padding(
                 padding: EdgeInsets.only(left: 8, bottom: 8),
                 child: Text(

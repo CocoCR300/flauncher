@@ -31,4 +31,7 @@ class PackageManager {
 
   static Future<void> startActivity(String packageName) async =>
       await _channel.invokeMethod('startActivity', packageName);
+
+  static Future<void> openSettings() async =>
+      await _channel.invokeMethod('openSettings');
 }

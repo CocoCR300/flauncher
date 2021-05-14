@@ -18,12 +18,11 @@
 
 package me.efesser.flauncher
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.N_MR1
+import android.provider.Settings
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -36,28 +35,31 @@ class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "getInstalledApplications") {
-                result.success(getInstalledApplications())
-            }
-            if (call.method == "startActivity") {
-                result.success(startActivity(call.arguments as String))
+            when (call.method) {
+                "getInstalledApplications" -> {
+                    result.success(getInstalledApplications())
+                }
+                "startActivity" -> {
+                    result.success(startActivity(call.arguments as String))
+                }
+                "openSettings" -> {
+                    result.success(openSettings())
+                }
+                else -> throw IllegalArgumentException()
             }
         }
     }
 
-    private fun getInstalledApplications(): List<Map<String, Any?>> {
-        val installedApplications = packageManager.getInstalledApplications(0)
-        return installedApplications
-                .filter { packageManager.getLaunchIntentForPackage(it.packageName) != null }
-                .map {
-                    mapOf(
-                            "name" to it.loadLabel(packageManager),
-                            "packageName" to it.packageName,
-                            "banner" to if (it.banner != 0) drawableToByteArray(it.loadBanner(packageManager)) else null,
-                            "icon" to if (it.icon != 0) drawableToByteArray(it.loadIcon(packageManager)) else null
-                    )
-                }
-    }
+    private fun getInstalledApplications() = packageManager.getInstalledApplications(0)
+            .filter { packageManager.getLaunchIntentForPackage(it.packageName) != null }
+            .map {
+                mapOf(
+                        "name" to it.loadLabel(packageManager),
+                        "packageName" to it.packageName,
+                        "banner" to if (it.banner != 0) drawableToByteArray(it.loadBanner(packageManager)) else null,
+                        "icon" to if (it.icon != 0) drawableToByteArray(it.loadIcon(packageManager)) else null
+                )
+            }
 
     private fun drawableToBitmap(drawable: Drawable): Bitmap {
         val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
@@ -76,6 +78,13 @@ class MainActivity : FlutterActivity() {
 
     private fun startActivity(packageName: String) = try {
         startActivity(packageManager.getLaunchIntentForPackage(packageName))
+        true
+    } catch (e: Exception) {
+        false
+    }
+
+    private fun openSettings() = try {
+        startActivity(Intent(Settings.ACTION_SETTINGS))
         true
     } catch (e: Exception) {
         false
