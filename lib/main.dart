@@ -41,6 +41,9 @@ class App extends StatelessWidget {
           ),
           scaffoldBackgroundColor: Colors.transparent,
         ),
-        home: FLauncher(),
+        home: WillPopScope(
+          onWillPop: () => Future.value(false),
+          child: FLauncher(),
+        ),
       );
 }
