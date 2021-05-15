@@ -43,31 +43,43 @@ class AppCard extends StatelessWidget {
         child: Builder(
           builder: (context) {
             final hasFocus = Focus.of(context).hasFocus;
-            return Opacity(
-              opacity: hasFocus ? 1 : 0.8,
-              child: SizedBox.expand(
-                child: Card(
-                  elevation: hasFocus ? 4 : 0,
-                  clipBehavior: Clip.antiAlias,
-                  child: application.banner != null
-                      ? Image.memory(application.banner!, fit: BoxFit.cover)
-                      : Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 16,
+            return Stack(
+              children: [
+                SizedBox.expand(
+                  child: Card(
+                    elevation: hasFocus ? 4 : 0,
+                    clipBehavior: Clip.antiAlias,
+                    child: application.banner != null
+                        ? Image.memory(application.banner!, fit: BoxFit.cover)
+                        : Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Image.memory(
+                                  application.icon!,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
-                              child: Image.memory(
-                                application.icon!,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Flexible(child: Text(application.name))
-                          ],
-                        ),
+                              Flexible(
+                                child: Text(
+                                  application.name,
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                              )
+                            ],
+                          ),
+                  ),
                 ),
-              ),
+                SizedBox.expand(
+                  child: Opacity(
+                    opacity: hasFocus ? 0 : 0.25,
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
             );
           },
         ),

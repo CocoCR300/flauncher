@@ -76,7 +76,7 @@ class _FLauncherState extends State<FLauncher> {
                       style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
-                  _applications == null
+                  _applications.isEmpty
                       ? Center(child: CircularProgressIndicator())
                       : GridView.builder(
                           shrinkWrap: true,
@@ -137,7 +137,7 @@ class _FLauncherState extends State<FLauncher> {
   SliverGridDelegate _gridDelegate() =>
       SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 5,
-        childAspectRatio: 16 / 9,
+        childAspectRatio: 16 / 9.6,
       );
 
   Future<void> _refreshWallpaper() async {
