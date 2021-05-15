@@ -16,12 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/ApplicationInfo.dart';
+import 'package:flauncher/application_info.dart';
 import 'package:flutter/services.dart';
 
-class PackageManager {
+class FLauncherChannel {
   static const MethodChannel _channel =
-      const MethodChannel('me.efesser.flauncher/package_manager');
+      const MethodChannel('me.efesser.flauncher');
 
   static Future<List<ApplicationInfo>> getInstalledApplications() async {
     List<dynamic> apps =

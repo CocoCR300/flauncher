@@ -29,8 +29,9 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
 
+private const val CHANNEL = "me.efesser.flauncher"
+
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "me.efesser.flauncher/package_manager"
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -56,8 +57,8 @@ class MainActivity : FlutterActivity() {
                 mapOf(
                         "name" to it.loadLabel(packageManager),
                         "packageName" to it.packageName,
-                        "banner" to if (it.banner != 0) drawableToByteArray(it.loadBanner(packageManager)) else null,
-                        "icon" to if (it.icon != 0) drawableToByteArray(it.loadIcon(packageManager)) else null
+                        "banner" to it.loadBanner(packageManager)?.let(::drawableToByteArray),
+                        "icon" to it.loadIcon(packageManager)?.let(::drawableToByteArray)
                 )
             }
 

@@ -52,7 +52,7 @@ android {
 
     defaultConfig {
         applicationId "me.efesser.flauncher"
-        minSdkVersion 20
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

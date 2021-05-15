@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/FLauncher.dart';
+import 'package:flauncher/flauncher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -34,18 +34,12 @@ class App extends StatelessWidget {
         theme: ThemeData.dark().copyWith(
           colorScheme: ColorScheme.dark(primary: Colors.white),
           typography: Typography.material2018(),
-          textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              minimumSize: MaterialStateProperty.all(Size.zero),
-              padding: MaterialStateProperty.all(EdgeInsets.zero),
-              overlayColor: MaterialStateProperty.all(Colors.transparent),
-            ),
-          ),
+          buttonTheme: ButtonThemeData(highlightColor: Colors.transparent),
           appBarTheme: AppBarTheme(
             elevation: 0,
             backgroundColor: Colors.transparent,
           ),
+          scaffoldBackgroundColor: Colors.transparent,
         ),
         home: FLauncher(),
       );
