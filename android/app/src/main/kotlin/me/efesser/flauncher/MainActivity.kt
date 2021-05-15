@@ -19,6 +19,8 @@
 package me.efesser.flauncher
 
 import android.content.Intent
+import android.content.Intent.CATEGORY_LEANBACK_LAUNCHER
+import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
@@ -40,8 +42,10 @@ class MainActivity : FlutterActivity() {
                 "getInstalledApplications" -> {
                     result.success(getInstalledApplications())
                 }
-                "startActivity" -> {
-                    result.success(startActivity(call.arguments as String))
+                "launchApp" -> {
+                    (call.arguments as List<String>).let {
+                        result.success(launchApp(it[0], it[1]))
+                    }
                 }
                 "openSettings" -> {
                     result.success(openSettings())
@@ -51,14 +55,16 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun getInstalledApplications() = packageManager.getInstalledApplications(0)
-            .filter { packageManager.getLaunchIntentForPackage(it.packageName) != null }
+    private fun getInstalledApplications() = packageManager
+            .queryIntentActivities(Intent(Intent.ACTION_MAIN, null).addCategory(CATEGORY_LEANBACK_LAUNCHER), 0)
+            .map(ResolveInfo::activityInfo)
             .map {
                 mapOf(
                         "name" to it.loadLabel(packageManager),
                         "packageName" to it.packageName,
                         "banner" to it.loadBanner(packageManager)?.let(::drawableToByteArray),
-                        "icon" to it.loadIcon(packageManager)?.let(::drawableToByteArray)
+                        "icon" to it.loadIcon(packageManager)?.let(::drawableToByteArray),
+                        "className" to it.name
                 )
             }
 
@@ -77,8 +83,11 @@ class MainActivity : FlutterActivity() {
         return stream.toByteArray()
     }
 
-    private fun startActivity(packageName: String) = try {
-        startActivity(packageManager.getLaunchIntentForPackage(packageName))
+    private fun launchApp(packageName: String, className: String) = try {
+        Intent(Intent.ACTION_MAIN)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .setClassName(packageName, className)
+                .let(::startActivity)
         true
     } catch (e: Exception) {
         false

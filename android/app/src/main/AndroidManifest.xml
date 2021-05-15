@@ -26,6 +26,12 @@
         android:name="android.software.leanback"
         android:required="true" />
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+        </intent>
+    </queries>
+
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="FLauncher"

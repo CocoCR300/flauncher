@@ -29,8 +29,11 @@ class FLauncherChannel {
     return apps.map((e) => ApplicationInfo.create(e)).toList();
   }
 
-  static Future<void> startActivity(String packageName) async =>
-      await _channel.invokeMethod('startActivity', packageName);
+  static Future<void> launchApp(ApplicationInfo app) async =>
+      await _channel.invokeMethod(
+        'launchApp',
+        [app.packageName, app.className],
+      );
 
   static Future<void> openSettings() async =>
       await _channel.invokeMethod('openSettings');
