@@ -35,15 +35,14 @@ class FLauncher extends StatefulWidget {
 }
 
 class _FLauncherState extends State<FLauncher> {
-  List<FocusNode> _focusNodes;
-  List<ApplicationInfo> _applications;
-  Uint8List _wallpaperImage;
+  List<ApplicationInfo> _applications = [];
+  List<FocusNode> _focusNodes = [];
+  Uint8List? _wallpaperImage;
 
   @override
   void initState() {
     super.initState();
-    _focusNodes = [];
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
       await _refreshWallpaper();
       final applications = await FLauncherChannel.getInstalledApplications();
       _focusNodes = List.generate(applications.length, (_) => FocusNode());
@@ -99,9 +98,10 @@ class _FLauncherState extends State<FLauncher> {
         ],
       );
 
-  Widget _appBar(BuildContext context) => AppBar(
+  AppBar _appBar(BuildContext context) => AppBar(
         actions: [
           ScalingButton(
+            scale: 1.2,
             child: Icon(Icons.wallpaper),
             onPressed: () async {
               await showDialog(
@@ -113,6 +113,7 @@ class _FLauncherState extends State<FLauncher> {
           ),
           Container(width: 8),
           ScalingButton(
+            scale: 1.2,
             child: Icon(Icons.settings_outlined),
             onPressed: () => FLauncherChannel.openSettings(),
           ),
@@ -126,7 +127,7 @@ class _FLauncherState extends State<FLauncher> {
 
   Widget _wallpaper(BuildContext context) => _wallpaperImage != null
       ? Image.memory(
-          _wallpaperImage,
+          _wallpaperImage!,
           fit: BoxFit.fill,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -142,7 +143,7 @@ class _FLauncherState extends State<FLauncher> {
   Future<void> _refreshWallpaper() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File("${directory.path}/wallpaper");
-    Uint8List wallpaper;
+    Uint8List? wallpaper;
     if (await file.exists()) {
       wallpaper = await file.readAsBytes();
     }
