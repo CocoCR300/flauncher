@@ -1,0 +1,42 @@
+variables:
+  FLUTTER_DOCKER_IMAGE: cirrusci/flutter:2.0.6
+
+stages:
+  - precheck
+  - analyze
+  - build
+
+commitlint:
+  image:
+    name: gtramontina/commitlint:8.3.5
+    entrypoint: [ "" ]
+  stage: precheck
+  needs: [ ]
+  script:
+    - commitlint --from origin/master --verbose
+  except:
+    - master
+
+stylelint:
+  image: $FLUTTER_DOCKER_IMAGE
+  stage: precheck
+  needs: [ ]
+  script:
+    - flutter format --dry-run --set-exit-if-changed .
+
+analyze:
+  image: $FLUTTER_DOCKER_IMAGE
+  stage: analyze
+  needs: [ ]
+  script:
+    - flutter analyze
+
+build:
+  image: $FLUTTER_DOCKER_IMAGE
+  stage: build
+  needs: [ ]
+  script:
+    - flutter build apk
+  artifacts:
+    paths:
+      - build/app/outputs/flutter-apk/app-release.apk
