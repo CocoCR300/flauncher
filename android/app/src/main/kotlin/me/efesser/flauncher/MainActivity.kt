@@ -67,6 +67,7 @@ class MainActivity : FlutterActivity() {
                         "className" to it.name
                 )
             }
+            .sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it["name"] as String })
 
     private fun drawableToBitmap(drawable: Drawable): Bitmap {
         val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
