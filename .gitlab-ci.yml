@@ -1,5 +1,5 @@
 variables:
-  FLUTTER_DOCKER_IMAGE: cirrusci/flutter:2.0.6
+  FLUTTER_DOCKER_IMAGE: cirrusci/flutter:2.2.0
 
 stages:
   - precheck
