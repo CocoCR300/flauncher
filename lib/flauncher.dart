@@ -70,7 +70,7 @@ class _FLauncherState extends State<FLauncher> {
                 children: [
                   Focus(child: Container(height: 80)),
                   Padding(
-                    padding: EdgeInsets.only(left: 8, bottom: 8),
+                    padding: EdgeInsets.only(left: 16, bottom: 8),
                     child: Text(
                       "Applications",
                       style: Theme.of(context).textTheme.headline6,
@@ -82,15 +82,17 @@ class _FLauncherState extends State<FLauncher> {
                           shrinkWrap: true,
                           gridDelegate: _gridDelegate(),
                           itemCount: _applications.length,
-                          itemBuilder: (_, int index) => Padding(
-                            padding: EdgeInsets.all(4),
-                            child: AppCard(
-                              application: _applications[index],
-                              focusNode: _focusNodes[index],
-                              autofocus: index == 0,
-                            ),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 16,
+                          ),
+                          itemBuilder: (_, int index) => AppCard(
+                            application: _applications[index],
+                            focusNode: _focusNodes[index],
+                            autofocus: index == 0,
                           ),
                         ),
+                  Focus(child: Container(height: 80))
                 ],
               ),
             ),
@@ -117,7 +119,12 @@ class _FLauncherState extends State<FLauncher> {
             child: Icon(Icons.settings_outlined),
             onPressed: () => FLauncherChannel.openSettings(),
           ),
-          VerticalDivider(width: 24),
+          VerticalDivider(
+            width: 24,
+            thickness: 1,
+            indent: 8,
+            endIndent: 8,
+          ),
           Padding(
             padding: EdgeInsets.only(right: 16),
             child: DateTimeWidget(),
@@ -136,9 +143,10 @@ class _FLauncherState extends State<FLauncher> {
 
   SliverGridDelegate _gridDelegate() =>
       SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 5,
-        childAspectRatio: 16 / 9.6,
-      );
+          crossAxisCount: 5,
+          childAspectRatio: 16 / 9,
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16);
 
   Future<void> _refreshWallpaper() async {
     final directory = await getApplicationDocumentsDirectory();

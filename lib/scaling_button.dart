@@ -36,8 +36,12 @@ class ScalingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => TextButton(
         child: Builder(
-          builder: (context) => Transform.scale(
-            scale: Focus.of(context).hasFocus ? scale : 1,
+          builder: (context) => AnimatedContainer(
+            duration: Duration(milliseconds: 100),
+            transformAlignment: Alignment.center,
+            transform: Transform.scale(
+              scale: Focus.of(context).hasFocus ? scale : 1.0,
+            ).transform,
             child: child,
           ),
         ),
