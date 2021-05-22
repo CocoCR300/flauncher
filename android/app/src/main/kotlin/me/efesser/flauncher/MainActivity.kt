@@ -18,8 +18,11 @@
 
 package me.efesser.flauncher
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.CATEGORY_LEANBACK_LAUNCHER
+import android.content.IntentFilter
 import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -28,16 +31,20 @@ import android.provider.Settings
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.EventChannel
+import io.flutter.plugin.common.EventChannel.EventSink
+import io.flutter.plugin.common.EventChannel.StreamHandler
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
 
-private const val CHANNEL = "me.efesser.flauncher"
+
+private const val METHOD_CHANNEL = "me.efesser.flauncher/method"
+private const val EVENT_CHANNEL = "me.efesser.flauncher/event"
 
 class MainActivity : FlutterActivity() {
-
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, METHOD_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "getInstalledApplications" -> {
                     result.success(getInstalledApplications())
@@ -53,6 +60,23 @@ class MainActivity : FlutterActivity() {
                 else -> throw IllegalArgumentException()
             }
         }
+
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, EVENT_CHANNEL).setStreamHandler(object : StreamHandler {
+            lateinit var broadcastReceiver: SinkBroadcastReceiver
+            override fun onListen(o: Any?, eventSink: EventSink) {
+                broadcastReceiver = SinkBroadcastReceiver(eventSink)
+                val intentFilter = IntentFilter()
+                intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
+                intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED)
+                intentFilter.addAction(Intent.ACTION_PACKAGE_REPLACED)
+                intentFilter.addDataScheme("package")
+                registerReceiver(broadcastReceiver, intentFilter)
+            }
+
+            override fun onCancel(o: Any?) {
+                unregisterReceiver(broadcastReceiver)
+            }
+        })
     }
 
     private fun getInstalledApplications() = packageManager
@@ -99,5 +123,14 @@ class MainActivity : FlutterActivity() {
         true
     } catch (e: Exception) {
         false
+    }
+}
+
+class SinkBroadcastReceiver(private val sink: EventSink) : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        sink.success(mapOf(
+                "action" to intent.action,
+                "packageName" to intent.data.toString()
+        ))
     }
 }

@@ -16,18 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 
 class FLauncherChannel {
-  static const MethodChannel _channel =
-      const MethodChannel('me.efesser.flauncher');
+  static const _methodChannel = MethodChannel('me.efesser.flauncher/method');
+  static const _eventChannel = EventChannel('me.efesser.flauncher/event');
 
   Future<List<dynamic>> getInstalledApplications() async =>
-      (await _channel.invokeMethod<List<dynamic>>('getInstalledApplications'))!;
+      (await _methodChannel
+          .invokeMethod<List<dynamic>>('getInstalledApplications'))!;
 
   Future<void> launchApp(String packageName, String className) async =>
-      await _channel.invokeMethod('launchApp', [packageName, className]);
+      await _methodChannel.invokeMethod('launchApp', [packageName, className]);
 
   Future<void> openSettings() async =>
-      await _channel.invokeMethod('openSettings');
+      await _methodChannel.invokeMethod('openSettings');
+
+  void addAppsChangedListener(void Function(Map<dynamic, dynamic>) listener) =>
+      _eventChannel.receiveBroadcastStream().listen((event) => listener(event));
 }
