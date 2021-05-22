@@ -40,22 +40,23 @@ class _FLauncherState extends State<FLauncher> {
           Consumer<Wallpaper>(
             builder: (_, wallpaper, __) => _wallpaper(wallpaper.wallpaperBytes),
           ),
-          Consumer<Apps>(
-            builder: (context, apps, _) => Scaffold(
-              appBar: _appBar(context, apps),
-              body: Padding(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: ListView(
-                  children: [
-                    Focus(child: Container(height: 80)),
-                    Padding(
-                      padding: EdgeInsets.only(left: 16, bottom: 8),
-                      child: Text(
-                        "Applications",
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
+          Scaffold(
+            appBar: _appBar(context),
+            body: Padding(
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: ListView(
+                children: [
+                  Focus(child: Container(height: 80)),
+                  Padding(
+                    padding: EdgeInsets.only(left: 16, bottom: 8),
+                    child: Text(
+                      "Applications",
+                      style: Theme.of(context).textTheme.headline6,
                     ),
-                    apps.installedApplications.isEmpty
+                  ),
+                  Consumer<Apps>(
+                    builder: (context, apps, _) => apps
+                            .installedApplications.isEmpty
                         ? Center(child: CircularProgressIndicator())
                         : GridView.builder(
                             shrinkWrap: true,
@@ -70,16 +71,16 @@ class _FLauncherState extends State<FLauncher> {
                               autofocus: index == 0,
                             ),
                           ),
-                    Focus(child: Container(height: 80))
-                  ],
-                ),
+                  ),
+                  Focus(child: Container(height: 80))
+                ],
               ),
             ),
           ),
         ],
       );
 
-  AppBar _appBar(BuildContext context, Apps apps) => AppBar(
+  AppBar _appBar(BuildContext context) => AppBar(
         actions: [
           ScalingButton(
             scale: 1.2,
@@ -93,7 +94,7 @@ class _FLauncherState extends State<FLauncher> {
           ScalingButton(
             scale: 1.2,
             child: Icon(Icons.settings_outlined),
-            onPressed: () => apps.openSettings(),
+            onPressed: () => context.read<Apps>().openSettings(),
           ),
           VerticalDivider(
             width: 24,
