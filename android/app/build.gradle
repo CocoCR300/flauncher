@@ -39,6 +39,11 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def secretProperties = new Properties()
+secretProperties.setProperty("signing_keystore_password", "${System.getenv('SIGNING_KEYSTORE_PASSWORD')}")
+secretProperties.setProperty("signing_key_password", "${System.getenv('SIGNING_KEY_PASSWORD')}")
+secretProperties.setProperty("signing_key_alias", "${System.getenv('SIGNING_KEY_ALIAS')}")
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -58,9 +63,25 @@ android {
         versionName flutterVersionName
     }
 
-    buildTypes {
+    signingConfigs {
+        debug {}
         release {
+            storeFile file("upload-keystore.jks")
+            storePassword "${secretProperties['signing_keystore_password']}"
+            keyAlias "${secretProperties['signing_key_alias']}"
+            keyPassword "${secretProperties['signing_key_password']}"
+        }
+    }
+
+    buildTypes {
+        debug {
             signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
