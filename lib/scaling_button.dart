@@ -22,14 +22,12 @@ class ScalingButton extends StatelessWidget {
   final Widget child;
   final VoidCallback? onPressed;
   final double scale;
-  final FocusNode? focusNode;
   final bool autofocus;
 
   ScalingButton({
     required this.child,
     required this.onPressed,
     required this.scale,
-    this.focusNode,
     this.autofocus = false,
   });
 
@@ -46,7 +44,6 @@ class ScalingButton extends StatelessWidget {
           ),
         ),
         onPressed: onPressed,
-        focusNode: focusNode,
         autofocus: autofocus,
         style: ButtonStyle(
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,

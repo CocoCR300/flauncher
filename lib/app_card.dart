@@ -17,27 +17,25 @@
  */
 
 import 'package:flauncher/application_info.dart';
-import 'package:flauncher/flauncher_channel.dart';
+import 'package:flauncher/apps.dart';
 import 'package:flauncher/scaling_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AppCard extends StatelessWidget {
   final ApplicationInfo application;
-  final FocusNode focusNode;
   final bool autofocus;
 
   AppCard({
     required this.application,
-    required this.focusNode,
     required this.autofocus,
   });
 
   @override
   Widget build(BuildContext context) => ScalingButton(
         scale: 1.15,
-        focusNode: focusNode,
         autofocus: autofocus,
-        onPressed: () => FLauncherChannel.launchApp(application),
+        onPressed: () => context.read<Apps>().launchApp(application),
         child: Builder(
           builder: (context) => Stack(
             children: [
@@ -62,13 +60,15 @@ class AppCard extends StatelessWidget {
                         ],
                       ),
               ),
-              AnimatedContainer(
+              AnimatedOpacity(
                 duration: Duration(milliseconds: 100),
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  borderRadius: _borderRadius(),
-                  color: Colors.black
-                      .withOpacity(Focus.of(context).hasFocus ? 0 : 0.25),
+                opacity: Focus.of(context).hasFocus ? 0 : 0.25,
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    borderRadius: _borderRadius(),
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ],
