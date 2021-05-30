@@ -26,6 +26,7 @@ import 'package:flauncher/wallpaper.dart';
 import 'package:flauncher/wallpaper_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 class FLauncher extends StatefulWidget {
@@ -42,39 +43,55 @@ class _FLauncherState extends State<FLauncher> {
           ),
           Scaffold(
             appBar: _appBar(context),
-            body: Padding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: ListView(
-                children: [
-                  Focus(child: Container(height: 80)),
-                  Padding(
-                    padding: EdgeInsets.only(left: 16, bottom: 8),
-                    child: Text(
-                      "Applications",
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
+            body: Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: ListView(
+                    children: [
+                      Focus(child: Container(height: 80)),
+                      Padding(
+                        padding: EdgeInsets.only(left: 16, bottom: 8),
+                        child: Text(
+                          "Applications",
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ),
+                      Consumer<Apps>(
+                        builder: (context, apps, _) => apps
+                                .installedApplications.isEmpty
+                            ? Center(child: CircularProgressIndicator())
+                            : GridView.builder(
+                                shrinkWrap: true,
+                                gridDelegate: _gridDelegate(),
+                                itemCount: apps.installedApplications.length,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 16,
+                                ),
+                                itemBuilder: (_, int index) => AppCard(
+                                  application:
+                                      apps.installedApplications[index],
+                                  autofocus: index == 0,
+                                ),
+                              ),
+                      ),
+                      Focus(child: Container(height: 80))
+                    ],
                   ),
-                  Consumer<Apps>(
-                    builder: (context, apps, _) => apps
-                            .installedApplications.isEmpty
-                        ? Center(child: CircularProgressIndicator())
-                        : GridView.builder(
-                            shrinkWrap: true,
-                            gridDelegate: _gridDelegate(),
-                            itemCount: apps.installedApplications.length,
-                            padding: EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 16,
-                            ),
-                            itemBuilder: (_, int index) => AppCard(
-                              application: apps.installedApplications[index],
-                              autofocus: index == 0,
-                            ),
-                          ),
-                  ),
-                  Focus(child: Container(height: 80))
-                ],
-              ),
+                ),
+                FutureBuilder<PackageInfo>(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) =>
+                      snapshot.connectionState == ConnectionState.done
+                          ? Text(
+                              "v${snapshot.data!.version}",
+                              style: Theme.of(context).textTheme.overline,
+                            )
+                          : Container(),
+                )
+              ],
             ),
           ),
         ],
