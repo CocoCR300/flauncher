@@ -46,6 +46,8 @@ secretProperties.setProperty("signing_key_alias", "${System.getenv('SIGNING_KEY_
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
