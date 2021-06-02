@@ -59,20 +59,27 @@ class _AppCardState extends State<AppCard> {
                   onLongPress: () => _onLongPressed(context),
                   child: widget.application.banner != null
                       ? Ink.image(
-                          image: MemoryImage(widget.application.banner!))
-                      : Row(
-                          children: [
-                            Ink.image(
-                                image: MemoryImage(widget.application.icon!)),
-                            Expanded(
-                              child: Text(
-                                widget.application.name,
-                                style: Theme.of(context).textTheme.bodyText2,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 3,
+                          image: MemoryImage(widget.application.banner!),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Ink.image(
+                                  image: MemoryImage(widget.application.icon!),
+                                ),
                               ),
-                            )
-                          ],
+                              Expanded(
+                                child: Text(
+                                  widget.application.name,
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 3,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                 ),
                 IgnorePointer(
