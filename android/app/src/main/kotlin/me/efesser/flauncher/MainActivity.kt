@@ -66,6 +66,9 @@ class MainActivity : FlutterActivity() {
                 "uninstallApp" -> {
                     result.success(uninstallApp(call.arguments as String))
                 }
+                "isDefaultLauncher" -> {
+                    result.success(isDefaultLauncher())
+                }
                 else -> throw IllegalArgumentException()
             }
         }
@@ -156,6 +159,13 @@ class MainActivity : FlutterActivity() {
                 .setData(Uri.fromParts("package", packageName, null))
                 .let(::startActivity)
         true
+    } catch (e: Exception) {
+        false
+    }
+
+    private fun isDefaultLauncher() = try {
+        val defaultLauncher = packageManager.resolveActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), 0)
+        defaultLauncher?.activityInfo?.packageName == packageName
     } catch (e: Exception) {
         false
     }

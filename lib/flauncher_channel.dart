@@ -40,6 +40,9 @@ class FLauncherChannel {
   Future<void> uninstallApp(String packageName) async =>
       await _methodChannel.invokeMethod('uninstallApp', packageName);
 
+  Future<bool> isDefaultLauncher() async =>
+      await _methodChannel.invokeMethod('isDefaultLauncher');
+
   void addAppsChangedListener(void Function(Map<dynamic, dynamic>) listener) =>
       _eventChannel.receiveBroadcastStream().listen((event) => listener(event));
 }

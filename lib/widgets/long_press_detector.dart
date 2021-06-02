@@ -78,9 +78,7 @@ class _LongPressDetectorState extends State<LongPressDetector> {
   void _keyDownEvent(BuildContext context) {
     if (!_debouncing() && !(_timer?.isActive ?? false)) {
       _debounce = DateTime.now();
-      _timer = Timer(_timerDuration, () {
-        widget.onLongPressed?.call();
-      });
+      _timer = Timer(_timerDuration, () => widget.onLongPressed?.call());
     }
   }
 

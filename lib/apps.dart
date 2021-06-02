@@ -55,4 +55,6 @@ class Apps extends ChangeNotifier {
 
   Future<void> uninstallApp(ApplicationInfo app) =>
       _fLauncherChannel.uninstallApp(app.packageName);
+
+  Future<bool> isDefaultLauncher() => _fLauncherChannel.isDefaultLauncher();
 }

@@ -76,7 +76,15 @@ class App extends StatelessWidget {
             ),
             scaffoldBackgroundColor: Colors.transparent,
           ),
-          home: FLauncher(),
+          home: Builder(
+            builder: (context) => WillPopScope(
+              onWillPop: () => _shouldPopScope(context),
+              child: FLauncher(),
+            ),
+          ),
         ),
       );
+
+  Future<bool> _shouldPopScope(BuildContext context) async =>
+      !(await context.read<Apps>().isDefaultLauncher());
 }
