@@ -18,10 +18,10 @@
 
 import 'dart:typed_data';
 
-import 'package:flauncher/app_card.dart';
+import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/apps.dart';
-import 'package:flauncher/date_time_widget.dart';
-import 'package:flauncher/scaling_button.dart';
+import 'package:flauncher/widgets/date_time_widget.dart';
+import 'package:flauncher/widgets/scaling_button.dart';
 import 'package:flauncher/wallpaper.dart';
 import 'package:flauncher/wallpaper_dialog.dart';
 import 'package:flutter/material.dart';
