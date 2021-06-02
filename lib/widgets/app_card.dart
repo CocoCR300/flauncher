@@ -114,81 +114,83 @@ class _ApplicationInfoPanel extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-        child: Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: EdgeInsets.zero,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              padding: EdgeInsets.all(16),
-              color: Colors.grey[900],
-              width: 250,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      Image.memory(
-                        application.icon!,
-                        width: 50,
-                      ),
-                      Padding(
+  Widget build(BuildContext context) => Dialog(
+        elevation: 24,
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.zero,
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            padding: EdgeInsets.all(16),
+            color: Colors.grey[900],
+            width: 250,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Image.memory(
+                      application.icon!,
+                      width: 50,
+                    ),
+                    Flexible(
+                      child: Padding(
                         padding: EdgeInsets.only(left: 8),
                         child: Text(
                           application.name,
                           style: Theme.of(context).textTheme.headline6,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 8),
-                    child: Text(
-                      application.packageName,
-                      style: Theme.of(context).textTheme.caption,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Text(
-                    "v${application.version}",
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: Text(
+                    application.packageName,
                     style: Theme.of(context).textTheme.caption,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Divider(),
-                  TextButton(
-                    child: Row(
-                      children: [
-                        Icon(Icons.info_outline),
-                        Container(width: 8),
-                        Text(
-                          "App info",
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ],
-                    ),
-                    onPressed: () =>
-                        context.read<Apps>().openAppInfo(application),
+                ),
+                Text(
+                  "v${application.version}",
+                  style: Theme.of(context).textTheme.caption,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Divider(),
+                TextButton(
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline),
+                      Container(width: 8),
+                      Text(
+                        "App info",
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                    ],
                   ),
-                  TextButton(
-                    child: Row(
-                      children: [
-                        Icon(Icons.delete_outline),
-                        Container(width: 8),
-                        Text(
-                          "Uninstall",
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ],
-                    ),
-                    onPressed: () async {
-                      await context.read<Apps>().uninstallApp(application);
-                      Navigator.of(context).pop();
-                    },
+                  onPressed: () =>
+                      context.read<Apps>().openAppInfo(application),
+                ),
+                TextButton(
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete_outline),
+                      Container(width: 8),
+                      Text(
+                        "Uninstall",
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                  onPressed: () async {
+                    await context.read<Apps>().uninstallApp(application);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             ),
           ),
         ),
