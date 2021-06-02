@@ -25,8 +25,8 @@ const Duration _timerDuration = Duration(milliseconds: 500);
 
 class LongPressDetector extends StatefulWidget {
   final Widget child;
-  final Function(BuildContext)? onPressed;
-  final Function(BuildContext)? onLongPressed;
+  final VoidCallback? onPressed;
+  final VoidCallback? onLongPressed;
 
   LongPressDetector({
     required this.child,
@@ -39,8 +39,8 @@ class LongPressDetector extends StatefulWidget {
 }
 
 class _LongPressDetectorState extends State<LongPressDetector> {
-  bool _keyDown = false;
   Timer? _timer;
+  DateTime _debounce = DateTime.now();
 
   @override
   void initState() {
@@ -76,17 +76,18 @@ class _LongPressDetectorState extends State<LongPressDetector> {
   }
 
   void _keyDownEvent(BuildContext context) {
-    if (!_keyDown) {
-      _keyDown = true;
-      _timer = Timer(_timerDuration, () => widget.onLongPressed?.call(context));
+    if (!_debouncing() && !(_timer?.isActive ?? false)) {
+      _debounce = DateTime.now();
+      _timer = Timer(_timerDuration, () {
+        widget.onLongPressed?.call();
+      });
     }
   }
 
   void _keyUpEvent(BuildContext context) {
-    _keyDown = false;
     if (_timer?.isActive ?? false) {
       _timer!.cancel();
-      widget.onPressed?.call(context);
+      widget.onPressed?.call();
     }
   }
 
@@ -94,4 +95,7 @@ class _LongPressDetectorState extends State<LongPressDetector> {
       rawKeyEvent.logicalKey == LogicalKeyboardKey.select ||
       rawKeyEvent.logicalKey == LogicalKeyboardKey.enter ||
       rawKeyEvent.logicalKey == LogicalKeyboardKey.space;
+
+  bool _debouncing() =>
+      DateTime.now().difference(_debounce).inMilliseconds < 1000;
 }

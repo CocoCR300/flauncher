@@ -22,6 +22,7 @@ class ApplicationInfo {
   String name;
   String packageName;
   String className;
+  String version;
   Uint8List? banner;
   Uint8List? icon;
 
@@ -29,6 +30,7 @@ class ApplicationInfo {
     this.name,
     this.packageName,
     this.className,
+    this.version,
     this.banner,
     this.icon,
   );
@@ -37,6 +39,7 @@ class ApplicationInfo {
         data["name"],
         data["packageName"],
         data["className"],
+        data["version"],
         data["banner"],
         data["icon"],
       );

@@ -49,4 +49,10 @@ class Apps extends ChangeNotifier {
       _fLauncherChannel.launchApp(app.packageName, app.className);
 
   Future<void> openSettings() => _fLauncherChannel.openSettings();
+
+  Future<void> openAppInfo(ApplicationInfo app) =>
+      _fLauncherChannel.openAppInfo(app.packageName);
+
+  Future<void> uninstallApp(ApplicationInfo app) =>
+      _fLauncherChannel.uninstallApp(app.packageName);
 }

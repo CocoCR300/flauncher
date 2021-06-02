@@ -18,12 +18,12 @@
 
 import 'dart:typed_data';
 
-import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/apps.dart';
-import 'package:flauncher/widgets/date_time_widget.dart';
-import 'package:flauncher/widgets/scaling_button.dart';
 import 'package:flauncher/wallpaper.dart';
 import 'package:flauncher/wallpaper_dialog.dart';
+import 'package:flauncher/widgets/app_card.dart';
+import 'package:flauncher/widgets/date_time_widget.dart';
+import 'package:flauncher/widgets/scaling_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:package_info_plus/package_info_plus.dart';

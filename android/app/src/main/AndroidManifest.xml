@@ -26,6 +26,8 @@
         android:name="android.software.leanback"
         android:required="true" />
 
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
@@ -33,26 +35,27 @@
     </queries>
 
     <application
-        android:icon="@mipmap/ic_launcher"
-        android:label="FLauncher"
-        android:banner="@drawable/banner"
         android:allowBackup="true"
-        android:fullBackupContent="true">
+        android:banner="@drawable/banner"
+        android:fullBackupContent="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="FLauncher">
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
-            android:theme="@style/LaunchTheme"
-            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="landscape"
-            android:exported="true">
+            android:theme="@style/LaunchTheme"
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
             <meta-data
                 android:name="io.flutter.embedding.android.SplashScreenDrawable"
                 android:resource="@drawable/launch_background" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
