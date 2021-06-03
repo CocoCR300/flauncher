@@ -20,10 +20,9 @@ import 'dart:typed_data';
 
 import 'package:flauncher/apps.dart';
 import 'package:flauncher/wallpaper.dart';
-import 'package:flauncher/wallpaper_dialog.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/date_time_widget.dart';
-import 'package:flauncher/widgets/scaling_button.dart';
+import 'package:flauncher/widgets/settings_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -99,19 +98,15 @@ class _FLauncherState extends State<FLauncher> {
 
   AppBar _appBar(BuildContext context) => AppBar(
         actions: [
-          ScalingButton(
-            scale: 1.2,
-            child: Icon(Icons.wallpaper),
+          IconButton(
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(),
+            splashRadius: 20,
+            icon: Icon(Icons.settings_outlined),
             onPressed: () => showDialog(
               context: context,
-              builder: (context) => WallpaperDialog(),
+              builder: (context) => SettingsPanel(),
             ),
-          ),
-          Container(width: 8),
-          ScalingButton(
-            scale: 1.2,
-            child: Icon(Icons.settings_outlined),
-            onPressed: () => context.read<Apps>().openSettings(),
           ),
           VerticalDivider(
             width: 24,
