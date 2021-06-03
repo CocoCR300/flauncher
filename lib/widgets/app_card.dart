@@ -46,7 +46,8 @@ class _AppCardState extends State<AppCard> {
         onLongPressed: () => _onLongPressed(context),
         child: Builder(
           builder: (context) => AnimatedContainer(
-            duration: Duration(milliseconds: 100),
+            duration: Duration(milliseconds: 150),
+            curve: Curves.easeInOut,
             transformAlignment: Alignment.center,
             transform: Transform.scale(
               scale: Focus.of(context).hasFocus ? 1.15 : 1.0,
@@ -73,9 +74,9 @@ class _AppCardState extends State<AppCard> {
                               Expanded(
                                 child: Text(
                                   widget.application.name,
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  style: Theme.of(context).textTheme.caption,
                                   overflow: TextOverflow.ellipsis,
-                                  maxLines: 3,
+                                  maxLines: 2,
                                 ),
                               )
                             ],
@@ -84,7 +85,8 @@ class _AppCardState extends State<AppCard> {
                 ),
                 IgnorePointer(
                   child: AnimatedOpacity(
-                    duration: Duration(milliseconds: 100),
+                    duration: Duration(milliseconds: 150),
+                    curve: Curves.easeInOut,
                     opacity: Focus.of(context).hasFocus ? 0 : 0.25,
                     child: Container(
                       clipBehavior: Clip.antiAlias,

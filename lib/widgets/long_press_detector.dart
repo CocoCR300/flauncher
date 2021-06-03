@@ -42,11 +42,6 @@ class _LongPressDetectorState extends State<LongPressDetector> {
   Timer? _timer;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     _timer?.cancel();
     super.dispose();
