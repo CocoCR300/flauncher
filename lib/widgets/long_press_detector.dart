@@ -40,7 +40,6 @@ class LongPressDetector extends StatefulWidget {
 
 class _LongPressDetectorState extends State<LongPressDetector> {
   Timer? _timer;
-  DateTime _debounce = DateTime.now();
 
   @override
   void initState() {
@@ -66,7 +65,7 @@ class _LongPressDetectorState extends State<LongPressDetector> {
     }
     switch (rawKeyEvent.runtimeType) {
       case RawKeyDownEvent:
-        _keyDownEvent(context);
+        _keyDownEvent(context, (rawKeyEvent.data as RawKeyEventDataAndroid));
         break;
       case RawKeyUpEvent:
         _keyUpEvent(context);
@@ -75,9 +74,8 @@ class _LongPressDetectorState extends State<LongPressDetector> {
     return KeyEventResult.handled;
   }
 
-  void _keyDownEvent(BuildContext context) {
-    if (!_debouncing() && !(_timer?.isActive ?? false)) {
-      _debounce = DateTime.now();
+  void _keyDownEvent(BuildContext context, RawKeyEventDataAndroid data) {
+    if (data.repeatCount == 0 && !(_timer?.isActive ?? false)) {
       _timer = Timer(_timerDuration, () => widget.onLongPressed?.call());
     }
   }
@@ -93,7 +91,4 @@ class _LongPressDetectorState extends State<LongPressDetector> {
       rawKeyEvent.logicalKey == LogicalKeyboardKey.select ||
       rawKeyEvent.logicalKey == LogicalKeyboardKey.enter ||
       rawKeyEvent.logicalKey == LogicalKeyboardKey.space;
-
-  bool _debouncing() =>
-      DateTime.now().difference(_debounce).inMilliseconds < 1000;
 }
