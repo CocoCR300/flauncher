@@ -28,17 +28,13 @@ import 'package:flutter/rendering.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
-class FLauncher extends StatefulWidget {
-  @override
-  _FLauncherState createState() => _FLauncherState();
-}
-
-class _FLauncherState extends State<FLauncher> {
+class FLauncher extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Stack(
         children: [
           Consumer<Wallpaper>(
-            builder: (_, wallpaper, __) => _wallpaper(wallpaper.wallpaperBytes),
+            builder: (_, wallpaper, __) =>
+                _wallpaper(context, wallpaper.wallpaperBytes),
           ),
           Scaffold(
             appBar: _appBar(context),
@@ -121,14 +117,15 @@ class _FLauncherState extends State<FLauncher> {
         ],
       );
 
-  Widget _wallpaper(Uint8List? wallpaperImage) => wallpaperImage != null
-      ? Image.memory(
-          wallpaperImage,
-          fit: BoxFit.cover,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-        )
-      : Container(color: Colors.white12);
+  Widget _wallpaper(BuildContext context, Uint8List? wallpaperImage) =>
+      wallpaperImage != null
+          ? Image.memory(
+              wallpaperImage,
+              fit: BoxFit.cover,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+            )
+          : Container(color: Colors.white12);
 
   SliverGridDelegate _gridDelegate() =>
       SliverGridDelegateWithFixedCrossAxisCount(

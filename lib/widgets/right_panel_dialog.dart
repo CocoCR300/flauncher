@@ -20,9 +20,11 @@ import 'package:flutter/material.dart';
 
 class RightPanelDialog extends StatelessWidget {
   final Widget child;
+  final double width;
 
   RightPanelDialog({
     required this.child,
+    this.width = 250,
   });
 
   @override
@@ -34,7 +36,7 @@ class RightPanelDialog extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.all(16),
             color: Colors.grey[900],
-            width: 250,
+            width: width,
             child: child,
           ),
         ),

@@ -24,42 +24,54 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flauncher/apps.dart';
 import 'package:flauncher/flauncher.dart';
 import 'package:flauncher/flauncher_channel.dart';
+import 'package:flauncher/settings.dart';
 import 'package:flauncher/wallpaper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
-  await FirebaseCrashlytics.instance
-      .setCrashlyticsCollectionEnabled(kReleaseMode);
 
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  final sharedPreferences = await SharedPreferences.getInstance();
+  final firebaseCrashlytics = FirebaseCrashlytics.instance;
+
+  FlutterError.onError = firebaseCrashlytics.recordFlutterError;
 
   Isolate.current.addErrorListener(RawReceivePort((List<dynamic> pair) async {
     final List<dynamic> errorAndStacktrace = pair;
-    await FirebaseCrashlytics.instance.recordError(
+    await firebaseCrashlytics.recordError(
       errorAndStacktrace.first,
       errorAndStacktrace.last as StackTrace,
     );
   }).sendPort);
 
   runZonedGuarded<void>(() {
-    runApp(App());
-  }, FirebaseCrashlytics.instance.recordError);
+    runApp(App(sharedPreferences, firebaseCrashlytics));
+  }, firebaseCrashlytics.recordError);
 }
 
 class App extends StatelessWidget {
+  final SharedPreferences _sharedPreferences;
+  final FirebaseCrashlytics _firebaseCrashlytics;
+
+  App(this._sharedPreferences, this._firebaseCrashlytics);
+
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           Provider(create: (_) => ImagePicker()),
           ChangeNotifierProvider(create: (_) => Wallpaper()),
-          ChangeNotifierProvider(create: (_) => Apps(FLauncherChannel()))
+          ChangeNotifierProvider(create: (_) => Apps(FLauncherChannel())),
+          ChangeNotifierProvider(
+            create: (_) => Settings(_sharedPreferences, _firebaseCrashlytics),
+            lazy: false,
+          ),
         ],
         child: MaterialApp(
           shortcuts: WidgetsApp.defaultShortcuts
