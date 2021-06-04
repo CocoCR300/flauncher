@@ -40,6 +40,7 @@ Future<void> main() async {
 
   final sharedPreferences = await SharedPreferences.getInstance();
   final firebaseCrashlytics = FirebaseCrashlytics.instance;
+  final imagePicker = ImagePicker();
 
   FlutterError.onError = firebaseCrashlytics.recordFlutterError;
 
@@ -52,21 +53,21 @@ Future<void> main() async {
   }).sendPort);
 
   runZonedGuarded<void>(() {
-    runApp(App(sharedPreferences, firebaseCrashlytics));
+    runApp(App(sharedPreferences, firebaseCrashlytics, imagePicker));
   }, firebaseCrashlytics.recordError);
 }
 
 class App extends StatelessWidget {
   final SharedPreferences _sharedPreferences;
   final FirebaseCrashlytics _firebaseCrashlytics;
+  final ImagePicker _imagePicker;
 
-  App(this._sharedPreferences, this._firebaseCrashlytics);
+  App(this._sharedPreferences, this._firebaseCrashlytics, this._imagePicker);
 
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
-          Provider(create: (_) => ImagePicker()),
-          ChangeNotifierProvider(create: (_) => Wallpaper()),
+          ChangeNotifierProvider(create: (_) => Wallpaper(_imagePicker)),
           ChangeNotifierProvider(create: (_) => Apps(FLauncherChannel())),
           ChangeNotifierProvider(
             create: (_) => Settings(_sharedPreferences, _firebaseCrashlytics),

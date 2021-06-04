@@ -20,16 +20,18 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Wallpaper extends ChangeNotifier {
+  final ImagePicker _imagePicker;
   late final File _wallpaperFile;
 
   Uint8List? _wallpaper;
 
   Uint8List? get wallpaperBytes => _wallpaper;
 
-  Wallpaper() {
+  Wallpaper(this._imagePicker) {
     _init();
   }
 
@@ -42,10 +44,14 @@ class Wallpaper extends ChangeNotifier {
     }
   }
 
-  Future<void> setWallpaper(Uint8List bytes) async {
-    _wallpaperFile.writeAsBytes(bytes);
-    _wallpaper = bytes;
-    notifyListeners();
+  Future<void> pickWallpaper() async {
+    final pickedFile = await _imagePicker.getImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final bytes = await pickedFile.readAsBytes();
+      _wallpaperFile.writeAsBytes(bytes);
+      _wallpaper = bytes;
+      notifyListeners();
+    }
   }
 
   Future<void> clearWallpaper() async {

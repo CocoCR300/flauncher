@@ -21,7 +21,6 @@ import 'package:flauncher/settings.dart';
 import 'package:flauncher/wallpaper.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPanel extends StatelessWidget {
@@ -92,30 +91,21 @@ class _WallpaperDialog extends StatelessWidget {
             children: [
               TextButton(
                 autofocus: true,
-                onPressed: () => _pickFile(context),
+                onPressed: () async {
+                  await context.read<Wallpaper>().pickWallpaper();
+                  Navigator.of(context).pop();
+                },
                 child: Text("SELECT"),
               ),
               TextButton(
-                onPressed: () => _clearWallpaper(context),
+                onPressed: () async {
+                  await context.read<Wallpaper>().clearWallpaper();
+                  Navigator.of(context).pop();
+                },
                 child: Text("CLEAR"),
               ),
             ],
           ),
         ],
       );
-
-  Future<void> _pickFile(BuildContext context) async {
-    final imagePicker = context.read<ImagePicker>();
-    final pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      final bytes = await pickedFile.readAsBytes();
-      context.read<Wallpaper>().setWallpaper(bytes);
-    }
-    Navigator.of(context).pop();
-  }
-
-  Future<void> _clearWallpaper(BuildContext context) async {
-    await context.read<Wallpaper>().clearWallpaper();
-    Navigator.of(context).pop();
-  }
 }
