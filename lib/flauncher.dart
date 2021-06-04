@@ -146,7 +146,7 @@ class _FLauncherState extends State<FLauncher> {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
             )
-          : Container(color: Colors.white12);
+          : Container(color: Theme.of(context).backgroundColor);
 
   SliverGridDelegate _gridDelegate() =>
       SliverGridDelegateWithFixedCrossAxisCount(

@@ -35,7 +35,7 @@ class RightPanelDialog extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Container(
             padding: EdgeInsets.all(16),
-            color: Colors.grey[900],
+            color: Theme.of(context).backgroundColor,
             width: width,
             child: child,
           ),

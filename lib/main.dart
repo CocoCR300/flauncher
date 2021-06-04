@@ -81,9 +81,11 @@ class App extends StatelessWidget {
                 {LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent()}),
           title: 'FLauncher',
           theme: ThemeData.dark().copyWith(
-            colorScheme: ColorScheme.dark(primary: Colors.white),
+            colorScheme: ColorScheme.dark(primary: Color(0xFFD8E6F2)),
+            backgroundColor: Color(0xFF011526),
+            dialogBackgroundColor: Color(0xFF011526),
+            toggleableActiveColor: Color(0xFFAAB5BF),
             typography: Typography.material2018(),
-            buttonTheme: ButtonThemeData(highlightColor: Colors.transparent),
             appBarTheme: AppBarTheme(
               elevation: 0,
               backgroundColor: Colors.transparent,
