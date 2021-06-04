@@ -18,6 +18,7 @@
 
 import 'dart:typed_data';
 
+import 'package:flauncher/application_info.dart';
 import 'package:flauncher/apps.dart';
 import 'package:flauncher/wallpaper.dart';
 import 'package:flauncher/widgets/app_card.dart';
@@ -43,37 +44,32 @@ class FLauncher extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: ListView(
-                    children: [
-                      Focus(child: Container(height: 80)),
-                      Padding(
-                        padding: EdgeInsets.only(left: 16, bottom: 8),
-                        child: Text(
-                          "Applications",
-                          style: Theme.of(context).textTheme.headline6,
+                  child: Consumer<Apps>(
+                    builder: (context, apps, _) => ListView(
+                      children: [
+                        ..._favorites(context, apps.favorites),
+                        Padding(
+                          padding: EdgeInsets.only(left: 16, bottom: 8, top: 8),
+                          child: Text(
+                            "Applications",
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
                         ),
-                      ),
-                      Consumer<Apps>(
-                        builder: (context, apps, _) => apps
-                                .installedApplications.isEmpty
-                            ? Center(child: CircularProgressIndicator())
-                            : GridView.builder(
-                                shrinkWrap: true,
-                                gridDelegate: _gridDelegate(),
-                                itemCount: apps.installedApplications.length,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 16,
-                                ),
-                                itemBuilder: (_, int index) => AppCard(
-                                  application:
-                                      apps.installedApplications[index],
-                                  autofocus: index == 0,
-                                ),
-                              ),
-                      ),
-                      Focus(child: Container(height: 80))
-                    ],
+                        GridView.builder(
+                          shrinkWrap: true,
+                          gridDelegate: _gridDelegate(),
+                          itemCount: apps.applications.length,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 16,
+                          ),
+                          itemBuilder: (_, index) => AppCard(
+                            application: apps.applications[index],
+                            autofocus: index == 0 && apps.favorites.isEmpty,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 FutureBuilder<PackageInfo>(
@@ -129,8 +125,42 @@ class FLauncher extends StatelessWidget {
 
   SliverGridDelegate _gridDelegate() =>
       SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 5,
+          crossAxisCount: 6,
           childAspectRatio: 16 / 9,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16);
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12);
+
+  List<Widget> _favorites(
+          BuildContext context, List<ApplicationInfo> favorites) =>
+      favorites.isNotEmpty
+          ? [
+              Padding(
+                padding: EdgeInsets.only(left: 16, bottom: 8),
+                child: Text(
+                  "Favorites",
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+              SizedBox(
+                height: 120,
+                child: ListView.builder(
+                  itemCount: favorites.length,
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.all(8),
+                  itemBuilder: (_, index) => Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: AppCard(
+                        application: favorites[index],
+                        autofocus: index == 0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ]
+          : [
+              Container(height: 80),
+            ];
 }

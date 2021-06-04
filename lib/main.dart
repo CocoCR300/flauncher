@@ -68,7 +68,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => Wallpaper(_imagePicker)),
-          ChangeNotifierProvider(create: (_) => Apps(FLauncherChannel())),
+          ChangeNotifierProvider(
+              create: (_) => Apps(FLauncherChannel(), _sharedPreferences)),
           ChangeNotifierProvider(
             create: (_) => Settings(_sharedPreferences, _firebaseCrashlytics),
             lazy: false,

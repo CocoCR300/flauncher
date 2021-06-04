@@ -25,6 +25,11 @@ class ApplicationInfo {
   String version;
   Uint8List? banner;
   Uint8List? icon;
+  bool? _favorite;
+
+  bool get favorited => _favorite!;
+
+  set favorited(bool value) => _favorite = value;
 
   ApplicationInfo(
     this.name,

@@ -21,29 +21,55 @@ import 'dart:async';
 import 'package:flauncher/application_info.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+const _favoritesPackagesKey = "favorites_packages";
 
 class Apps extends ChangeNotifier {
   final FLauncherChannel _fLauncherChannel;
-  List<ApplicationInfo> _apps = [];
+  final SharedPreferences _sharedPreferences;
 
-  List<ApplicationInfo> get installedApplications => _apps;
+  List<ApplicationInfo> _applications = [];
 
-  Apps(this._fLauncherChannel) {
+  List<ApplicationInfo> get applications => _applications;
+
+  List<ApplicationInfo> get favorites =>
+      _applications.where((app) => app.favorited).toList();
+
+  Apps(this._fLauncherChannel, this._sharedPreferences) {
     _init();
   }
 
   Future<void> _init() async {
-    final apps = await _fLauncherChannel.getInstalledApplications();
-    _apps = apps.map((e) => ApplicationInfo.create(e)).toList();
+    await _refreshState();
     _fLauncherChannel.addAppsChangedListener(_onAppsChanged);
     notifyListeners();
   }
 
   Future<void> _onAppsChanged(Map<dynamic, dynamic> event) async {
-    final apps = await _fLauncherChannel.getInstalledApplications();
-    _apps = apps.map((e) => ApplicationInfo.create(e)).toList();
+    await _refreshState();
     notifyListeners();
   }
+
+  Future<void> _refreshState() async {
+    final apps = await _fLauncherChannel.getInstalledApplications();
+    final favorites = _getFavorites();
+    _applications = apps.map((app) {
+      final applicationInfo = ApplicationInfo.create(app);
+      applicationInfo.favorited =
+          favorites.contains(applicationInfo.packageName);
+      return applicationInfo;
+    }).toList();
+    final packages = _applications.map((app) => app.packageName);
+    favorites.removeWhere((favorite) => !packages.contains(favorite));
+    await _persistFavorites(favorites);
+  }
+
+  Set<String> _getFavorites() =>
+      _sharedPreferences.getStringList(_favoritesPackagesKey)?.toSet() ?? {};
+
+  Future<bool> _persistFavorites(Set<String> favorites) => _sharedPreferences
+      .setStringList(_favoritesPackagesKey, favorites.toList());
 
   Future<void> launchApp(ApplicationInfo app) =>
       _fLauncherChannel.launchApp(app.packageName, app.className);
@@ -57,4 +83,24 @@ class Apps extends ChangeNotifier {
       _fLauncherChannel.uninstallApp(app.packageName);
 
   Future<bool> isDefaultLauncher() => _fLauncherChannel.isDefaultLauncher();
+
+  Future<void> addToFavorites(ApplicationInfo applicationInfo) async {
+    final favorites = _getFavorites();
+    favorites.add(applicationInfo.packageName);
+    _applications
+        .firstWhere((app) => app.packageName == applicationInfo.packageName)
+        .favorited = true;
+    await _persistFavorites(favorites);
+    notifyListeners();
+  }
+
+  Future<void> removeFromFavorites(ApplicationInfo applicationInfo) async {
+    final favorites = _getFavorites();
+    favorites.remove(applicationInfo.packageName);
+    _applications
+        .firstWhere((app) => app.packageName == applicationInfo.packageName)
+        .favorited = false;
+    await _persistFavorites(favorites);
+    notifyListeners();
+  }
 }

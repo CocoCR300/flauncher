@@ -67,11 +67,36 @@ class ApplicationInfoPanel extends StatelessWidget {
             TextButton(
               child: Row(
                 children: [
+                  Icon(application.favorited
+                      ? Icons.favorite
+                      : Icons.favorite_outline),
+                  Container(width: 8),
+                  Text(
+                    application.favorited
+                        ? "Remove from favorites"
+                        : "Add to favorites",
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ],
+              ),
+              onPressed: () async {
+                if (application.favorited) {
+                  await context.read<Apps>().removeFromFavorites(application);
+                } else {
+                  await context.read<Apps>().addToFavorites(application);
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+            Divider(),
+            TextButton(
+              child: Row(
+                children: [
                   Icon(Icons.info_outlined),
                   Container(width: 8),
                   Text(
                     "App info",
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
               ),
@@ -84,7 +109,7 @@ class ApplicationInfoPanel extends StatelessWidget {
                   Container(width: 8),
                   Text(
                     "Uninstall",
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
               ),
