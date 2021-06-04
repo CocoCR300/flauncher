@@ -29,7 +29,26 @@ import 'package:flutter/rendering.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
-class FLauncher extends StatelessWidget {
+class FLauncher extends StatefulWidget {
+  @override
+  _FLauncherState createState() => _FLauncherState();
+}
+
+class _FLauncherState extends State<FLauncher> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) => Stack(
         children: [
@@ -46,6 +65,7 @@ class FLauncher extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
                   child: Consumer<Apps>(
                     builder: (context, apps, _) => ListView(
+                      controller: _scrollController,
                       children: [
                         ..._favorites(context, apps.favorites),
                         Padding(
@@ -59,13 +79,18 @@ class FLauncher extends StatelessWidget {
                           shrinkWrap: true,
                           gridDelegate: _gridDelegate(),
                           itemCount: apps.applications.length,
-                          padding: EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 16,
-                          ),
-                          itemBuilder: (_, index) => AppCard(
-                            application: apps.applications[index],
-                            autofocus: index == 0 && apps.favorites.isEmpty,
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
+                          itemBuilder: (_, index) => Focus(
+                            canRequestFocus: false,
+                            onFocusChange: (focused) {
+                              if (focused) {
+                                _adjustScroll(index, apps.applications.length);
+                              }
+                            },
+                            child: AppCard(
+                              application: apps.applications[index],
+                              autofocus: index == 0 && apps.favorites.isEmpty,
+                            ),
                           ),
                         ),
                       ],
@@ -163,4 +188,18 @@ class FLauncher extends StatelessWidget {
           : [
               Container(height: 80),
             ];
+
+  void _adjustScroll(int index, int appsCount) {
+    void scroll(double position) => _scrollController.animateTo(position,
+        duration: Duration(milliseconds: 100), curve: Curves.easeInOut);
+
+    final currentRow = (index / 6).floor();
+    final totalRows = (appsCount / 6).floor();
+
+    if (currentRow == 0) {
+      scroll(0.0);
+    } else if (currentRow == totalRows) {
+      scroll(_scrollController.position.maxScrollExtent);
+    }
+  }
 }
