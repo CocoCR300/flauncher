@@ -18,10 +18,10 @@
 
 import 'dart:typed_data';
 
-import 'package:flauncher/application_info.dart';
 import 'package:flauncher/apps.dart';
 import 'package:flauncher/wallpaper.dart';
-import 'package:flauncher/widgets/app_card.dart';
+import 'package:flauncher/widgets/apps_grid.dart';
+import 'package:flauncher/widgets/favorites_row.dart';
 import 'package:flauncher/widgets/settings_panel.dart';
 import 'package:flauncher/widgets/time_widget.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +67,18 @@ class _FLauncherState extends State<FLauncher> {
                     builder: (context, apps, _) => ListView(
                       controller: _scrollController,
                       children: [
-                        ..._favorites(context, apps.favorites),
+                        if (apps.favorites.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(left: 16, bottom: 8),
+                            child: Text(
+                              "Favorites",
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                          ),
+                        if (apps.favorites.isNotEmpty)
+                          FavoritesRow(favorites: apps.favorites)
+                        else
+                          Container(height: 80),
                         Padding(
                           padding: EdgeInsets.only(left: 16, bottom: 8, top: 8),
                           child: Text(
@@ -75,23 +86,11 @@ class _FLauncherState extends State<FLauncher> {
                             style: Theme.of(context).textTheme.headline6,
                           ),
                         ),
-                        GridView.builder(
-                          shrinkWrap: true,
-                          gridDelegate: _gridDelegate(),
-                          itemCount: apps.applications.length,
-                          padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
-                          itemBuilder: (_, index) => Focus(
-                            canRequestFocus: false,
-                            onFocusChange: (focused) {
-                              if (focused) {
-                                _adjustScroll(index, apps.applications.length);
-                              }
-                            },
-                            child: AppCard(
-                              application: apps.applications[index],
-                              autofocus: index == 0 && apps.favorites.isEmpty,
-                            ),
-                          ),
+                        AppsGrid(
+                          apps: apps.applications,
+                          onFirstRowFocused: () => _scroll(0.0),
+                          onLastRowFocused: () => _scroll(
+                              _scrollController.position.maxScrollExtent),
                         ),
                       ],
                     ),
@@ -149,58 +148,6 @@ class _FLauncherState extends State<FLauncher> {
             )
           : Container(color: Theme.of(context).backgroundColor);
 
-  SliverGridDelegate _gridDelegate() =>
-      SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 6,
-          childAspectRatio: 16 / 9,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12);
-
-  List<Widget> _favorites(
-          BuildContext context, List<ApplicationInfo> favorites) =>
-      favorites.isNotEmpty
-          ? [
-              Padding(
-                padding: EdgeInsets.only(left: 16, bottom: 8),
-                child: Text(
-                  "Favorites",
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-              ),
-              SizedBox(
-                height: 120,
-                child: ListView.builder(
-                  itemCount: favorites.length,
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.all(8),
-                  itemBuilder: (_, index) => Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: AppCard(
-                        application: favorites[index],
-                        autofocus: index == 0,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ]
-          : [
-              Container(height: 80),
-            ];
-
-  void _adjustScroll(int index, int appsCount) {
-    void scroll(double position) => _scrollController.animateTo(position,
-        duration: Duration(milliseconds: 100), curve: Curves.easeInOut);
-
-    final currentRow = (index / 6).floor();
-    final totalRows = (appsCount / 6).floor();
-
-    if (currentRow == 0) {
-      scroll(0.0);
-    } else if (currentRow == totalRows) {
-      scroll(_scrollController.position.maxScrollExtent);
-    }
-  }
+  void _scroll(double position) => _scrollController.animateTo(position,
+      duration: Duration(milliseconds: 100), curve: Curves.easeInOut);
 }
