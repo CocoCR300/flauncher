@@ -22,8 +22,8 @@ import 'package:flauncher/application_info.dart';
 import 'package:flauncher/apps.dart';
 import 'package:flauncher/wallpaper.dart';
 import 'package:flauncher/widgets/app_card.dart';
-import 'package:flauncher/widgets/date_time_widget.dart';
 import 'package:flauncher/widgets/settings_panel.dart';
+import 'package:flauncher/widgets/time_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -125,15 +125,16 @@ class _FLauncherState extends State<FLauncher> {
               builder: (context) => SettingsPanel(),
             ),
           ),
-          VerticalDivider(
-            width: 24,
-            thickness: 1,
-            indent: 8,
-            endIndent: 8,
-          ),
           Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: DateTimeWidget(),
+            padding: EdgeInsets.only(left: 16, right: 32),
+            child: Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 64,
+                height: 24,
+                child: TimeWidget(),
+              ),
+            ),
           ),
         ],
       );

@@ -21,12 +21,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DateTimeWidget extends StatefulWidget {
+class TimeWidget extends StatefulWidget {
   @override
-  _DateTimeWidgetState createState() => _DateTimeWidgetState();
+  _TimeWidgetState createState() => _TimeWidgetState();
 }
 
-class _DateTimeWidgetState extends State<DateTimeWidget> {
+class _TimeWidgetState extends State<TimeWidget> {
   late DateTime _now;
   late Timer _timer;
 
@@ -44,26 +44,10 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
   }
 
   @override
-  Widget build(BuildContext context) => Row(
-        children: [
-          Text(
-            DateFormat.Hm().format(_now),
-            style: Theme.of(context).textTheme.headline5,
-          ),
-          Container(width: 8),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(DateFormat.EEEE().format(_now),
-                  style: Theme.of(context).textTheme.subtitle2),
-              Text(
-                  "${DateFormat.MMMMd().format(_now)}, "
-                  "${DateFormat.y().format(_now)}",
-                  style: Theme.of(context).textTheme.subtitle2),
-            ],
-          )
-        ],
+  Widget build(BuildContext context) => Text(
+        DateFormat.Hm().format(_now),
+        style: Theme.of(context).textTheme.headline6,
+        textAlign: TextAlign.end,
       );
 
   void _refreshTime() {
