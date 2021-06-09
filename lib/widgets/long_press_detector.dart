@@ -16,22 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const Duration _timerDuration = Duration(milliseconds: 500);
+const longPressableKeys = [LogicalKeyboardKey.select, LogicalKeyboardKey.enter];
 
 class LongPressDetector extends StatefulWidget {
   final Widget child;
-  final VoidCallback? onPressed;
-  final VoidCallback? onLongPressed;
+  final KeyEventResult Function(LogicalKeyboardKey)? onPressed;
+  final KeyEventResult Function(LogicalKeyboardKey)? onLongPress;
 
   LongPressDetector({
     required this.child,
     this.onPressed,
-    this.onLongPressed,
+    this.onLongPress,
   });
 
   @override
@@ -39,13 +37,7 @@ class LongPressDetector extends StatefulWidget {
 }
 
 class _LongPressDetectorState extends State<LongPressDetector> {
-  Timer? _timer;
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
+  int? _keyDownAt;
 
   @override
   Widget build(BuildContext context) => Focus(
@@ -55,35 +47,40 @@ class _LongPressDetectorState extends State<LongPressDetector> {
       );
 
   KeyEventResult _handleKey(BuildContext context, RawKeyEvent rawKeyEvent) {
-    if (!_isSelect(rawKeyEvent)) {
-      return KeyEventResult.ignored;
-    }
     switch (rawKeyEvent.runtimeType) {
       case RawKeyDownEvent:
-        _keyDownEvent(context, (rawKeyEvent.data as RawKeyEventDataAndroid));
-        break;
+        return _keyDownEvent(context, rawKeyEvent.logicalKey,
+            (rawKeyEvent.data as RawKeyEventDataAndroid));
       case RawKeyUpEvent:
-        _keyUpEvent(context);
-        break;
+        return _keyUpEvent(context, rawKeyEvent.logicalKey);
     }
     return KeyEventResult.handled;
   }
 
-  void _keyDownEvent(BuildContext context, RawKeyEventDataAndroid data) {
-    if (data.repeatCount == 0 && !(_timer?.isActive ?? false)) {
-      _timer = Timer(_timerDuration, () => widget.onLongPressed?.call());
+  KeyEventResult _keyDownEvent(BuildContext context, LogicalKeyboardKey key,
+      RawKeyEventDataAndroid data) {
+    if (!longPressableKeys.contains(key)) {
+      return widget.onPressed?.call(key) ?? KeyEventResult.ignored;
     }
+    if (data.repeatCount == 0) {
+      _keyDownAt = DateTime.now().millisecondsSinceEpoch;
+      return KeyEventResult.ignored;
+    } else if (_longPress()) {
+      _keyDownAt = null;
+      return widget.onLongPress?.call(key) ?? KeyEventResult.ignored;
+    }
+    return KeyEventResult.handled;
   }
 
-  void _keyUpEvent(BuildContext context) {
-    if (_timer?.isActive ?? false) {
-      _timer!.cancel();
-      widget.onPressed?.call();
+  KeyEventResult _keyUpEvent(BuildContext context, LogicalKeyboardKey key) {
+    if (_keyDownAt != null) {
+      _keyDownAt = null;
+      return widget.onPressed?.call(key) ?? KeyEventResult.ignored;
     }
+    return KeyEventResult.ignored;
   }
 
-  bool _isSelect(RawKeyEvent rawKeyEvent) =>
-      rawKeyEvent.logicalKey == LogicalKeyboardKey.select ||
-      rawKeyEvent.logicalKey == LogicalKeyboardKey.enter ||
-      rawKeyEvent.logicalKey == LogicalKeyboardKey.space;
+  bool _longPress() =>
+      _keyDownAt != null &&
+      DateTime.now().millisecondsSinceEpoch - _keyDownAt! >= 500;
 }

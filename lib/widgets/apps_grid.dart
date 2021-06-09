@@ -16,9 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:math';
+
 import 'package:flauncher/application_info.dart';
+import 'package:flauncher/apps.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 const _crossAxisCount = 6;
 
@@ -35,7 +39,7 @@ class AppsGrid extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => GridView.builder(
+  Widget build(BuildContext context) => GridView.custom(
         shrinkWrap: true,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: _crossAxisCount,
@@ -43,19 +47,25 @@ class AppsGrid extends StatelessWidget {
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
         ),
-        itemCount: apps.length,
         padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
-        itemBuilder: (_, index) => Focus(
-          canRequestFocus: false,
-          onFocusChange: (focused) {
-            if (focused) {
-              _adjustScroll(index, apps.length);
-            }
-          },
-          child: AppCard(
-            application: apps[index],
-            autofocus: index == 0,
+        childrenDelegate: SliverChildBuilderDelegate(
+          (_, index) => Focus(
+            key: Key(apps[index].packageName),
+            canRequestFocus: false,
+            onFocusChange: (focused) {
+              if (focused) {
+                _adjustScroll(index, apps.length);
+              }
+            },
+            child: AppCard(
+              application: apps[index],
+              autofocus: index == 0,
+              onMove: (direction) => _onMove(context, direction, index),
+            ),
           ),
+          findChildIndexCallback: (key) => apps
+              .indexWhere((app) => app.packageName == (key as ValueKey).value),
+          childCount: apps.length,
         ),
       );
 
@@ -68,5 +78,45 @@ class AppsGrid extends StatelessWidget {
     } else if (currentRow == totalRows) {
       onLastRowFocused();
     }
+  }
+
+  Future<void> _onMove(
+      BuildContext context, AxisDirection direction, int index) async {
+    final currentRow = (index / _crossAxisCount).floor();
+    final totalRows = ((apps.length - 1) / _crossAxisCount).floor();
+
+    int? newIndex;
+    switch (direction) {
+      case AxisDirection.up:
+        if (currentRow > 0) {
+          newIndex = index - _crossAxisCount;
+        }
+        break;
+      case AxisDirection.right:
+        if (index < apps.length - 1) {
+          newIndex = index + 1;
+        }
+        break;
+      case AxisDirection.down:
+        if (currentRow < totalRows) {
+          newIndex = min(index + _crossAxisCount, apps.length - 1);
+        }
+        break;
+      case AxisDirection.left:
+        if (index > 0) {
+          newIndex = index - 1;
+        }
+        break;
+    }
+    if (newIndex != null) {
+      await _moveTo(context, newIndex, apps[index]);
+      _adjustScroll(newIndex, apps.length);
+    }
+  }
+
+  Future<void> _moveTo(BuildContext context, int targetIndex,
+      ApplicationInfo applicationInfo) async {
+    final apps = context.read<Apps>();
+    await apps.moveApplicationTo(targetIndex, applicationInfo);
   }
 }

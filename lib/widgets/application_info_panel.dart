@@ -85,8 +85,22 @@ class ApplicationInfoPanel extends StatelessWidget {
                 } else {
                   await context.read<Apps>().addToFavorites(application);
                 }
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(ApplicationInfoPanelResult.none);
               },
+            ),
+            TextButton(
+              child: Row(
+                children: [
+                  Icon(Icons.open_with),
+                  Container(width: 8),
+                  Text(
+                    "Move",
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ],
+              ),
+              onPressed: () =>
+                  Navigator.of(context).pop(ApplicationInfoPanelResult.moveApp),
             ),
             Divider(),
             TextButton(
@@ -115,10 +129,12 @@ class ApplicationInfoPanel extends StatelessWidget {
               ),
               onPressed: () async {
                 await context.read<Apps>().uninstallApp(application);
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(ApplicationInfoPanelResult.none);
               },
             ),
           ],
         ),
       );
 }
+
+enum ApplicationInfoPanelResult { none, moveApp }

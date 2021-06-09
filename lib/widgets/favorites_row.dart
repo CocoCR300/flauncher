@@ -17,8 +17,10 @@
  */
 
 import 'package:flauncher/application_info.dart';
+import 'package:flauncher/apps.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FavoritesRow extends StatelessWidget {
   final List<ApplicationInfo> favorites;
@@ -30,20 +32,50 @@ class FavoritesRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SizedBox(
         height: 120,
-        child: ListView.builder(
-          itemCount: favorites.length,
-          scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.all(8),
-          itemBuilder: (_, index) => Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: AppCard(
-                application: favorites[index],
-                autofocus: index == 0,
+        child: ListView.custom(
+          childrenDelegate: SliverChildBuilderDelegate(
+            (_, index) => Padding(
+              key: Key(favorites[index].packageName),
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: AppCard(
+                  application: favorites[index],
+                  autofocus: index == 0,
+                  onMove: (direction) => _onMove(context, direction, index),
+                ),
               ),
             ),
+            findChildIndexCallback: (key) => favorites.indexWhere(
+                (app) => app.packageName == (key as ValueKey).value),
+            childCount: favorites.length,
           ),
+          scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.all(8),
         ),
       );
+
+  Future<void> _onMove(
+      BuildContext context, AxisDirection direction, int index) async {
+    switch (direction) {
+      case AxisDirection.right:
+        if (index < favorites.length - 1) {
+          await _moveTo(context, index + 1, favorites[index]);
+        }
+        break;
+      case AxisDirection.left:
+        if (index > 0) {
+          await _moveTo(context, index - 1, favorites[index]);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  Future<void> _moveTo(BuildContext context, int targetIndex,
+      ApplicationInfo applicationInfo) async {
+    final apps = context.read<Apps>();
+    await apps.moveFavoriteTo(targetIndex, applicationInfo);
+  }
 }

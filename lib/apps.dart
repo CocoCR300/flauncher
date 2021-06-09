@@ -24,6 +24,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _favoritesPackagesKey = "favorites_packages";
+const _applicationsPackagesKey = "applications_packages";
 
 class Apps extends ChangeNotifier {
   final FLauncherChannel _fLauncherChannel;
@@ -31,10 +32,21 @@ class Apps extends ChangeNotifier {
 
   List<ApplicationInfo> _applications = [];
 
-  List<ApplicationInfo> get applications => _applications;
+  List<ApplicationInfo> get applications {
+    final applications = [..._applications];
+    final orders = _getApplications();
+    applications.sort((a, b) =>
+        orders.indexOf(a.packageName).compareTo(orders.indexOf(b.packageName)));
+    return applications;
+  }
 
-  List<ApplicationInfo> get favorites =>
-      _applications.where((app) => app.favorited).toList();
+  List<ApplicationInfo> get favorites {
+    final favorites = _applications.where((app) => app.favorited).toList();
+    final orders = _getFavorites();
+    favorites.sort((a, b) =>
+        orders.indexOf(a.packageName).compareTo(orders.indexOf(b.packageName)));
+    return favorites;
+  }
 
   Apps(this._fLauncherChannel, this._sharedPreferences) {
     _init();
@@ -53,23 +65,35 @@ class Apps extends ChangeNotifier {
 
   Future<void> _refreshState() async {
     final apps = await _fLauncherChannel.getInstalledApplications();
-    final favorites = _getFavorites();
+    final applicationsPackages = _getApplications();
+    final favoritesPackages = _getFavorites();
     _applications = apps.map((app) {
       final applicationInfo = ApplicationInfo.create(app);
       applicationInfo.favorited =
-          favorites.contains(applicationInfo.packageName);
+          favoritesPackages.contains(applicationInfo.packageName);
       return applicationInfo;
     }).toList();
     final packages = _applications.map((app) => app.packageName);
-    favorites.removeWhere((favorite) => !packages.contains(favorite));
-    await _persistFavorites(favorites);
+    favoritesPackages.removeWhere((favorite) => !packages.contains(favorite));
+    applicationsPackages.removeWhere((app) => !packages.contains(app));
+    final missingApplicationsPackages =
+        packages.where((app) => !applicationsPackages.contains(app));
+    applicationsPackages.addAll(missingApplicationsPackages);
+    await _persistApplications(applicationsPackages);
+    await _persistFavorites(favoritesPackages);
   }
 
-  Set<String> _getFavorites() =>
-      _sharedPreferences.getStringList(_favoritesPackagesKey)?.toSet() ?? {};
+  List<String> _getApplications() =>
+      _sharedPreferences.getStringList(_applicationsPackagesKey) ?? [];
 
-  Future<bool> _persistFavorites(Set<String> favorites) => _sharedPreferences
-      .setStringList(_favoritesPackagesKey, favorites.toList());
+  List<String> _getFavorites() =>
+      _sharedPreferences.getStringList(_favoritesPackagesKey) ?? [];
+
+  Future<bool> _persistApplications(List<String> applications) =>
+      _sharedPreferences.setStringList(_applicationsPackagesKey, applications);
+
+  Future<bool> _persistFavorites(List<String> favorites) =>
+      _sharedPreferences.setStringList(_favoritesPackagesKey, favorites);
 
   Future<void> launchApp(ApplicationInfo app) =>
       _fLauncherChannel.launchApp(app.packageName, app.className);
@@ -101,6 +125,22 @@ class Apps extends ChangeNotifier {
         .firstWhere((app) => app.packageName == applicationInfo.packageName)
         .favorited = false;
     await _persistFavorites(favorites);
+    notifyListeners();
+  }
+
+  Future<void> moveFavoriteTo(int targetIndex, ApplicationInfo app) async {
+    final favorites = _getFavorites();
+    favorites.remove(app.packageName);
+    favorites.insert(targetIndex, app.packageName);
+    await _persistFavorites(favorites);
+    notifyListeners();
+  }
+
+  Future<void> moveApplicationTo(int targetIndex, ApplicationInfo app) async {
+    final applications = _getApplications();
+    applications.remove(app.packageName);
+    applications.insert(targetIndex, app.packageName);
+    await _persistApplications(applications);
     notifyListeners();
   }
 }
