@@ -49,78 +49,68 @@ class _AppCardState extends State<AppCard> {
   bool _moving = false;
 
   @override
-  Widget build(BuildContext context) => WillPopScope(
-        onWillPop: () async {
-          if (_moving) {
-            setState(() => _moving = false);
-            return false;
-          }
-          return true;
-        },
-        child: LongPressDetector(
-          onPressed: (key) => _onPressed(context, key),
-          onLongPress: (key) => _onLongPress(context, key),
-          child: Builder(
-            builder: (context) => AnimatedContainer(
-              duration: Duration(milliseconds: 150),
-              curve: Curves.easeInOut,
-              transformAlignment: Alignment.center,
-              transform: Transform.scale(
-                scale: _moving
-                    ? 1.0
-                    : Focus.of(context).hasFocus
-                        ? 1.15
-                        : 1.0,
-              ).transform,
-              child: Stack(
-                children: [
-                  TVInkWellCard(
-                    autofocus: widget.autofocus,
-                    onPressed: () => _onPressed(context, null),
-                    onLongPress: () => _onLongPress(context, null),
-                    child: widget.application.banner != null
-                        ? Ink.image(
-                            image: MemoryImage(widget.application.banner!),
-                          )
-                        : Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Ink.image(
-                                    image:
-                                        MemoryImage(widget.application.icon!),
-                                  ),
+  Widget build(BuildContext context) => LongPressDetector(
+        onPressed: (key) => _onPressed(context, key),
+        onLongPress: (key) => _onLongPress(context, key),
+        child: Builder(
+          builder: (context) => AnimatedContainer(
+            duration: Duration(milliseconds: 150),
+            curve: Curves.easeInOut,
+            transformAlignment: Alignment.center,
+            transform: Transform.scale(
+              scale: _moving
+                  ? 1.0
+                  : Focus.of(context).hasFocus
+                      ? 1.15
+                      : 1.0,
+            ).transform,
+            child: Stack(
+              children: [
+                TVInkWellCard(
+                  autofocus: widget.autofocus,
+                  onPressed: () => _onPressed(context, null),
+                  onLongPress: () => _onLongPress(context, null),
+                  child: widget.application.banner != null
+                      ? Ink.image(
+                          image: MemoryImage(widget.application.banner!),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Ink.image(
+                                  image: MemoryImage(widget.application.icon!),
                                 ),
-                                Expanded(
-                                  child: Text(
-                                    widget.application.name,
-                                    style: Theme.of(context).textTheme.caption,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                  ),
-                                )
-                              ],
-                            ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  widget.application.name,
+                                  style: Theme.of(context).textTheme.caption,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                ),
+                              )
+                            ],
                           ),
-                  ),
-                  if (_moving) ..._arrows(),
-                  IgnorePointer(
-                    child: AnimatedOpacity(
-                      duration: Duration(milliseconds: 150),
-                      curve: Curves.easeInOut,
-                      opacity: Focus.of(context).hasFocus ? 0 : 0.25,
-                      child: Container(
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: Colors.black,
                         ),
+                ),
+                if (_moving) ..._arrows(),
+                IgnorePointer(
+                  child: AnimatedOpacity(
+                    duration: Duration(milliseconds: 150),
+                    curve: Curves.easeInOut,
+                    opacity: Focus.of(context).hasFocus ? 0 : 0.25,
+                    child: Container(
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: Colors.black,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -161,7 +151,7 @@ class _AppCardState extends State<AppCard> {
         widget.onMove(AxisDirection.right);
       } else if (key == LogicalKeyboardKey.arrowDown) {
         widget.onMove(AxisDirection.down);
-      } else if (key == LogicalKeyboardKey.enter) {
+      } else if (_validationKeys.contains(key)) {
         setState(() => _moving = false);
       }
       return KeyEventResult.handled;

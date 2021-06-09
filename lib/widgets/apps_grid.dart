@@ -80,8 +80,7 @@ class AppsGrid extends StatelessWidget {
     }
   }
 
-  Future<void> _onMove(
-      BuildContext context, AxisDirection direction, int index) async {
+  void _onMove(BuildContext context, AxisDirection direction, int index) {
     final currentRow = (index / _crossAxisCount).floor();
     final totalRows = ((apps.length - 1) / _crossAxisCount).floor();
 
@@ -109,14 +108,14 @@ class AppsGrid extends StatelessWidget {
         break;
     }
     if (newIndex != null) {
-      await _moveTo(context, newIndex, apps[index]);
-      _adjustScroll(newIndex, apps.length);
+      _moveTo(context, newIndex, apps[index]);
     }
   }
 
   Future<void> _moveTo(BuildContext context, int targetIndex,
       ApplicationInfo applicationInfo) async {
-    final apps = context.read<Apps>();
-    await apps.moveApplicationTo(targetIndex, applicationInfo);
+    final applications = context.read<Apps>();
+    await applications.moveApplicationTo(targetIndex, applicationInfo);
+    _adjustScroll(targetIndex, apps.length);
   }
 }

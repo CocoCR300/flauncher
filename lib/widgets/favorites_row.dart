@@ -55,17 +55,16 @@ class FavoritesRow extends StatelessWidget {
         ),
       );
 
-  Future<void> _onMove(
-      BuildContext context, AxisDirection direction, int index) async {
+  void _onMove(BuildContext context, AxisDirection direction, int index) {
     switch (direction) {
       case AxisDirection.right:
         if (index < favorites.length - 1) {
-          await _moveTo(context, index + 1, favorites[index]);
+          _moveTo(context, index + 1, favorites[index]);
         }
         break;
       case AxisDirection.left:
         if (index > 0) {
-          await _moveTo(context, index - 1, favorites[index]);
+          _moveTo(context, index - 1, favorites[index]);
         }
         break;
       default:
