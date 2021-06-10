@@ -1,0 +1,21 @@
+{
+  "project_info": {
+    "project_number": "_",
+    "project_id": "_"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "_",
+        "android_client_info": {
+          "package_name": "me.efesser.flauncher"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "_"
+        }
+      ]
+    }
+  ]
+}
