@@ -52,7 +52,7 @@ build:release:
     - master
     - tags
   before_script:
-    - echo "$GOOGLE_SERVICES_JSON" > android/app/src/main/google-services.json
+    - echo "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
     - echo -n "$SIGNING_JKS_FILE_BASE64" | base64 -d > android/app/upload-keystore.jks
     - if [ -n "$CI_COMMIT_TAG" ]; then BUILD_NAME=$CI_COMMIT_TAG; else BUILD_NAME=$CI_COMMIT_SHORT_SHA; fi
   script:
