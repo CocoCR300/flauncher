@@ -21,6 +21,7 @@ import 'package:flauncher/settings.dart';
 import 'package:flauncher/wallpaper.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPanel extends StatelessWidget {
@@ -75,10 +76,70 @@ class SettingsPanel extends StatelessWidget {
                 subtitle: Text(
                     "Automatically send crash reports through Firebase Crashlytics."),
               ),
+              Spacer(),
+              TextButton(
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline),
+                    Container(width: 8),
+                    Text(
+                      "About FLauncher",
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                  ],
+                ),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (_) => FutureBuilder<PackageInfo>(
+                    future: PackageInfo.fromPlatform(),
+                    builder: (context, snapshot) =>
+                        snapshot.connectionState == ConnectionState.done
+                            ? _aboutDialog(snapshot.data!, context)
+                            : Container(),
+                  ),
+                ),
+              )
             ],
           ),
         ),
       );
+
+  Widget _aboutDialog(PackageInfo packageInfo, BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.bodyText2!;
+    final underlined = textStyle.copyWith(decoration: TextDecoration.underline);
+    return AboutDialog(
+      applicationName: "FLauncher",
+      applicationVersion: packageInfo.version,
+      applicationIcon: Image.asset("assets/logo.png", height: 72),
+      applicationLegalese: "© 2021 Étienne Fesser",
+      children: [
+        SizedBox(height: 24),
+        RichText(
+          text: TextSpan(
+            style: textStyle,
+            children: [
+              TextSpan(
+                text:
+                    "FLauncher is an open-source alternative launcher for Android TV.\n"
+                    "Source code available at ",
+              ),
+              TextSpan(
+                text: "https://gitlab.com/etiennf01/flauncher",
+                style: underlined,
+              ),
+              TextSpan(text: ".\n"),
+              TextSpan(text: "Design by "),
+              TextSpan(
+                text: "@FXCostanzo",
+                style: underlined,
+              ),
+              TextSpan(text: "."),
+            ],
+          ),
+        )
+      ],
+    );
+  }
 }
 
 class _WallpaperDialog extends StatelessWidget {
