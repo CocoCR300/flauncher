@@ -130,12 +130,11 @@ class _AppCardState extends State<AppCard> {
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFF011526).withOpacity(0.8),
+              color: Theme.of(context).primaryColor.withOpacity(0.8),
             ),
             child: Icon(
               icon,
               size: 16,
-              color: Color(0xFFAAB5BF),
             ),
           ),
         ),

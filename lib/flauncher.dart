@@ -26,7 +26,6 @@ import 'package:flauncher/widgets/settings_panel.dart';
 import 'package:flauncher/widgets/time_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 class FLauncher extends StatefulWidget {
@@ -57,6 +56,7 @@ class _FLauncherState extends State<FLauncher> {
                 _wallpaper(context, wallpaper.wallpaperBytes),
           ),
           Scaffold(
+            backgroundColor: Colors.transparent,
             appBar: _appBar(context),
             body: Stack(
               alignment: Alignment.bottomRight,
@@ -96,16 +96,6 @@ class _FLauncherState extends State<FLauncher> {
                     ),
                   ),
                 ),
-                FutureBuilder<PackageInfo>(
-                  future: PackageInfo.fromPlatform(),
-                  builder: (context, snapshot) =>
-                      snapshot.connectionState == ConnectionState.done
-                          ? Text(
-                              "v${snapshot.data!.version}",
-                              style: Theme.of(context).textTheme.overline,
-                            )
-                          : Container(),
-                )
               ],
             ),
           ),
@@ -121,7 +111,7 @@ class _FLauncherState extends State<FLauncher> {
             icon: Icon(Icons.settings_outlined),
             onPressed: () => showDialog(
               context: context,
-              builder: (context) => SettingsPanel(),
+              builder: (_) => SettingsPanel(),
             ),
           ),
           Padding(
@@ -146,7 +136,7 @@ class _FLauncherState extends State<FLauncher> {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
             )
-          : Container(color: Theme.of(context).backgroundColor);
+          : Container(color: Theme.of(context).scaffoldBackgroundColor);
 
   void _scroll(double position) => _scrollController.animateTo(position,
       duration: Duration(milliseconds: 100), curve: Curves.easeInOut);
