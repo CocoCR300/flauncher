@@ -127,8 +127,14 @@ class SettingsPanel extends StatelessWidget {
                 text: "https://gitlab.com/etiennf01/flauncher",
                 style: underlined,
               ),
-              TextSpan(text: ".\n"),
-              TextSpan(text: "Design by "),
+              TextSpan(text: ".\n\n"),
+              TextSpan(text: "Logo by Katie "),
+              TextSpan(
+                text: "@fureturoe",
+                style: underlined,
+              ),
+              TextSpan(text: ", "),
+              TextSpan(text: "design by "),
               TextSpan(
                 text: "@FXCostanzo",
                 style: underlined,
