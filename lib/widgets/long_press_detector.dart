@@ -27,10 +27,11 @@ class LongPressDetector extends StatefulWidget {
   final KeyEventResult Function(LogicalKeyboardKey)? onLongPress;
 
   LongPressDetector({
+    Key? key,
     required this.child,
     this.onPressed,
     this.onLongPress,
-  });
+  }) : super(key: key);
 
   @override
   _LongPressDetectorState createState() => _LongPressDetectorState();
@@ -49,16 +50,14 @@ class _LongPressDetectorState extends State<LongPressDetector> {
   KeyEventResult _handleKey(BuildContext context, RawKeyEvent rawKeyEvent) {
     switch (rawKeyEvent.runtimeType) {
       case RawKeyDownEvent:
-        return _keyDownEvent(context, rawKeyEvent.logicalKey,
-            (rawKeyEvent.data as RawKeyEventDataAndroid));
+        return _keyDownEvent(context, rawKeyEvent.logicalKey, (rawKeyEvent.data as RawKeyEventDataAndroid));
       case RawKeyUpEvent:
         return _keyUpEvent(context, rawKeyEvent.logicalKey);
     }
     return KeyEventResult.handled;
   }
 
-  KeyEventResult _keyDownEvent(BuildContext context, LogicalKeyboardKey key,
-      RawKeyEventDataAndroid data) {
+  KeyEventResult _keyDownEvent(BuildContext context, LogicalKeyboardKey key, RawKeyEventDataAndroid data) {
     if (!longPressableKeys.contains(key)) {
       return widget.onPressed?.call(key) ?? KeyEventResult.ignored;
     }
@@ -80,7 +79,5 @@ class _LongPressDetectorState extends State<LongPressDetector> {
     return KeyEventResult.ignored;
   }
 
-  bool _longPress() =>
-      _keyDownAt != null &&
-      DateTime.now().millisecondsSinceEpoch - _keyDownAt! >= 500;
+  bool _longPress() => _keyDownAt != null && DateTime.now().millisecondsSinceEpoch - _keyDownAt! >= 500;
 }

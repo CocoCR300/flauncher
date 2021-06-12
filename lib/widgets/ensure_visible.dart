@@ -16,36 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:typed_data';
+import 'package:flutter/material.dart';
 
-class ApplicationInfo {
-  String name;
-  String packageName;
-  String className;
-  String version;
-  Uint8List? banner;
-  Uint8List? icon;
-  bool? _favorite;
+class EnsureVisible extends StatelessWidget {
+  final Widget child;
+  final double alignment;
 
-  bool get favorited => _favorite!;
+  EnsureVisible({Key? key, required this.child, this.alignment = 0.0}) : super(key: key);
 
-  set favorited(bool value) => _favorite = value;
-
-  ApplicationInfo(
-    this.name,
-    this.packageName,
-    this.className,
-    this.version,
-    this.banner,
-    this.icon,
-  );
-
-  factory ApplicationInfo.create(dynamic data) => ApplicationInfo(
-        data["name"],
-        data["packageName"],
-        data["className"],
-        data["version"],
-        data["banner"],
-        data["icon"],
+  @override
+  Widget build(BuildContext context) => Focus(
+        canRequestFocus: false,
+        onFocusChange: (focused) {
+          if (focused) {
+            Scrollable.ensureVisible(context,
+                alignment: alignment, duration: Duration(milliseconds: 100), curve: Curves.easeInOut);
+          }
+        },
+        child: child,
       );
 }

@@ -1,0 +1,147 @@
+/*
+ * FLauncher
+ * Copyright (C) 2021  Étienne Fesser
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import 'dart:io';
+
+import 'package:moor/ffi.dart';
+import 'package:moor/moor.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
+
+part 'database.g.dart';
+
+class Apps extends Table {
+  TextColumn get packageName => text()();
+
+  TextColumn get name => text()();
+
+  TextColumn get className => text()();
+
+  TextColumn get version => text()();
+
+  BlobColumn get banner => blob().nullable()();
+
+  BlobColumn get icon => blob().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {packageName};
+}
+
+@DataClassName("Category")
+class Categories extends Table {
+  TextColumn get name => text()();
+
+  IntColumn get order => integer()();
+
+  @override
+  Set<Column> get primaryKey => {name};
+}
+
+@DataClassName("AppCategory")
+class AppsCategories extends Table {
+  TextColumn get categoryName => text().customConstraint("REFERENCES categories(name) ON DELETE CASCADE")();
+
+  TextColumn get appPackageName => text().customConstraint("REFERENCES apps(package_name) ON DELETE CASCADE")();
+
+  IntColumn get order => integer()();
+
+  @override
+  Set<Column> get primaryKey => {categoryName, appPackageName};
+}
+
+class CategoryWithApps {
+  final Category category;
+  final List<App> applications;
+
+  CategoryWithApps(this.category, this.applications);
+}
+
+@UseMoor(tables: [Apps, Categories, AppsCategories])
+class FLauncherDatabase extends _$FLauncherDatabase {
+  FLauncherDatabase() : super(_openConnection());
+
+  @override
+  int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(beforeOpen: (_) async {
+        await customStatement('PRAGMA foreign_keys = ON;');
+      }, onCreate: (migrator) async {
+        await migrator.createAll();
+        await insertCategory(CategoriesCompanion.insert(name: "Favorites", order: 0));
+        await insertCategory(CategoriesCompanion.insert(name: "Applications", order: 1));
+      });
+
+  Future<List<App>> listApplications() => select(apps).get();
+
+  Future<void> persistApps(List<AppsCompanion> applications) =>
+      batch((batch) => batch.insertAllOnConflictUpdate(apps, applications));
+
+  Future<void> deleteApps(List<AppsCompanion> applications) =>
+      (delete(apps)..where((tbl) => tbl.packageName.isIn(applications.map((e) => e.packageName.value)))).go();
+
+  Future<void> insertCategory(CategoriesCompanion category) => into(categories).insert(category);
+
+  Future<void> deleteCategory(CategoriesCompanion category) => (delete(categories)..whereSamePrimaryKey(category)).go();
+
+  Future<void> persistCategories(List<CategoriesCompanion> value) =>
+      batch((batch) => batch.insertAllOnConflictUpdate(categories, value));
+
+  Future<void> insertAppCategory(AppsCategoriesCompanion appCategory) => into(appsCategories).insert(appCategory);
+
+  Future<void> deleteAppCategory(AppsCategoriesCompanion appCategory) =>
+      (delete(appsCategories)..whereSamePrimaryKey(appCategory)).go();
+
+  Future<void> persistAppsCategories(List<AppsCategoriesCompanion> value) =>
+      batch((batch) => batch.insertAllOnConflictUpdate(appsCategories, value));
+
+  Future<List<CategoryWithApps>> listCategoriesWithApps() async {
+    final query = select(categories).join([
+      leftOuterJoin(appsCategories, appsCategories.categoryName.equalsExp(categories.name)),
+      leftOuterJoin(apps, apps.packageName.equalsExp(appsCategories.appPackageName)),
+    ]);
+    query.orderBy([OrderingTerm.asc(categories.order), OrderingTerm.asc(appsCategories.order)]);
+
+    final result = await query.get();
+    final categoriesToApps = <Category, List<App>>{};
+    for (final row in result) {
+      final category = row.readTable(categories);
+      final app = row.readTableOrNull(apps);
+      final categoryToApps = categoriesToApps.putIfAbsent(category, () => []);
+      if (app != null) {
+        categoryToApps.add(app);
+      }
+    }
+    return categoriesToApps.entries.map((entry) => CategoryWithApps(entry.key, entry.value)).toList();
+  }
+
+  Future<int> nextAppCategoryOrder(CategoriesCompanion category) async {
+    final query = selectOnly(appsCategories);
+    var maxExpression = coalesce([appsCategories.order.max(), Constant(-1)]) + Constant(1);
+    query.addColumns([maxExpression]);
+    query.where(appsCategories.categoryName.equals(category.name.value));
+    final result = await query.getSingle();
+    return result.read(maxExpression);
+  }
+}
+
+LazyDatabase _openConnection() => LazyDatabase(() async {
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final file = File(path.join(dbFolder.path, 'db.sqlite'));
+      return VmDatabase(file, logStatements: true);
+    });

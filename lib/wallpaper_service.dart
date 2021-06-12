@@ -23,7 +23,7 @@ import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
-class Wallpaper extends ChangeNotifier {
+class WallpaperService extends ChangeNotifier {
   final ImagePicker _imagePicker;
   late final File _wallpaperFile;
 
@@ -31,7 +31,7 @@ class Wallpaper extends ChangeNotifier {
 
   Uint8List? get wallpaperBytes => _wallpaper;
 
-  Wallpaper(this._imagePicker) {
+  WallpaperService(this._imagePicker) {
     _init();
   }
 
@@ -48,7 +48,7 @@ class Wallpaper extends ChangeNotifier {
     final pickedFile = await _imagePicker.getImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
-      _wallpaperFile.writeAsBytes(bytes);
+      await _wallpaperFile.writeAsBytes(bytes);
       _wallpaper = bytes;
       notifyListeners();
     }

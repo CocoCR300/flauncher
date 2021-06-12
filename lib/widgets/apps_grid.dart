@@ -18,71 +18,64 @@
 
 import 'dart:math';
 
-import 'package:flauncher/application_info.dart';
-import 'package:flauncher/apps.dart';
+import 'package:flauncher/apps_service.dart';
+import 'package:flauncher/database.dart';
 import 'package:flauncher/widgets/app_card.dart';
+import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 const _crossAxisCount = 6;
 
 class AppsGrid extends StatelessWidget {
-  final List<ApplicationInfo> apps;
-  final VoidCallback onFirstRowFocused;
-
-  final VoidCallback onLastRowFocused;
+  final Category category;
+  final List<App> applications;
 
   AppsGrid({
-    required this.apps,
-    required this.onFirstRowFocused,
-    required this.onLastRowFocused,
+    required this.category,
+    required this.applications,
   });
 
   @override
-  Widget build(BuildContext context) => GridView.custom(
-        shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: _crossAxisCount,
-          childAspectRatio: 16 / 9,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-        ),
-        padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
-        childrenDelegate: SliverChildBuilderDelegate(
-          (_, index) => Focus(
-            key: Key(apps[index].packageName),
-            canRequestFocus: false,
-            onFocusChange: (focused) {
-              if (focused) {
-                _adjustScroll(index, apps.length);
-              }
-            },
-            child: AppCard(
-              application: apps[index],
-              autofocus: index == 0,
-              onMove: (direction) => _onMove(context, direction, index),
+  Widget build(BuildContext context) => EnsureVisible(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 16),
+              child: Text(
+                "Applications",
+                style: Theme.of(context).textTheme.headline6,
+              ),
             ),
-          ),
-          findChildIndexCallback: (key) => apps
-              .indexWhere((app) => app.packageName == (key as ValueKey).value),
-          childCount: apps.length,
+            GridView.custom(
+              shrinkWrap: true,
+              primary: false,
+              gridDelegate: _buildSliverGridDelegate(),
+              padding: EdgeInsets.all(16),
+              childrenDelegate: SliverChildBuilderDelegate(
+                (context, index) => AppCard(
+                  key: Key(applications[index].packageName),
+                  category: category,
+                  application: applications[index],
+                  autofocus: index == 0,
+                  onMove: (direction) => _onMove(context, direction, index),
+                  onMoveEnd: () => _saveOrder(context),
+                ),
+                childCount: applications.length,
+                findChildIndexCallback: _findChildIndex,
+              ),
+            ),
+          ],
         ),
       );
 
-  void _adjustScroll(int index, int appsCount) {
-    final currentRow = (index / _crossAxisCount).floor();
-    final totalRows = (appsCount / _crossAxisCount).floor();
-
-    if (currentRow == 0) {
-      onFirstRowFocused();
-    } else if (currentRow == totalRows) {
-      onLastRowFocused();
-    }
-  }
+  int _findChildIndex(Key key) => applications.indexWhere((app) => app.packageName == (key as ValueKey<String>).value);
 
   void _onMove(BuildContext context, AxisDirection direction, int index) {
     final currentRow = (index / _crossAxisCount).floor();
-    final totalRows = ((apps.length - 1) / _crossAxisCount).floor();
+    final totalRows = ((applications.length - 1) / _crossAxisCount).floor();
 
     int? newIndex;
     switch (direction) {
@@ -92,13 +85,13 @@ class AppsGrid extends StatelessWidget {
         }
         break;
       case AxisDirection.right:
-        if (index < apps.length - 1) {
+        if (index < applications.length - 1) {
           newIndex = index + 1;
         }
         break;
       case AxisDirection.down:
         if (currentRow < totalRows) {
-          newIndex = min(index + _crossAxisCount, apps.length - 1);
+          newIndex = min(index + _crossAxisCount, applications.length - 1);
         }
         break;
       case AxisDirection.left:
@@ -108,14 +101,20 @@ class AppsGrid extends StatelessWidget {
         break;
     }
     if (newIndex != null) {
-      _moveTo(context, newIndex, apps[index]);
+      final appsService = context.read<AppsService>();
+      appsService.moveApplication(category, index, newIndex);
     }
   }
 
-  Future<void> _moveTo(BuildContext context, int targetIndex,
-      ApplicationInfo applicationInfo) async {
-    final applications = context.read<Apps>();
-    await applications.moveApplicationTo(targetIndex, applicationInfo);
-    _adjustScroll(targetIndex, apps.length);
+  void _saveOrder(BuildContext context) {
+    final appsService = context.read<AppsService>();
+    appsService.saveOrderInCategory(category);
   }
+
+  SliverGridDelegate _buildSliverGridDelegate() => SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: _crossAxisCount,
+        childAspectRatio: 16 / 9,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+      );
 }

@@ -22,11 +22,12 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flauncher/apps.dart';
+import 'package:flauncher/apps_service.dart';
+import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/settings.dart';
-import 'package:flauncher/wallpaper.dart';
+import 'package:flauncher/wallpaper_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,23 +39,20 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
-
-  final sharedPreferences = await SharedPreferences.getInstance();
   final firebaseCrashlytics = FirebaseCrashlytics.instance;
-  final imagePicker = ImagePicker();
 
   FlutterError.onError = firebaseCrashlytics.recordFlutterError;
+  Isolate.current.addErrorListener(RawReceivePort((List<dynamic> pair) async => await firebaseCrashlytics.recordError(
+        pair.first,
+        pair.last as StackTrace,
+      )).sendPort);
 
-  Isolate.current.addErrorListener(RawReceivePort((List<dynamic> pair) async {
-    final List<dynamic> errorAndStacktrace = pair;
-    await firebaseCrashlytics.recordError(
-      errorAndStacktrace.first,
-      errorAndStacktrace.last as StackTrace,
-    );
-  }).sendPort);
-
-  runZonedGuarded<void>(() {
-    runApp(App(sharedPreferences, firebaseCrashlytics, imagePicker));
+  runZonedGuarded<void>(() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final imagePicker = ImagePicker();
+    final fLauncherChannel = FLauncherChannel();
+    final fLauncherDatabase = FLauncherDatabase();
+    runApp(App(sharedPreferences, firebaseCrashlytics, imagePicker, fLauncherChannel, fLauncherDatabase));
   }, firebaseCrashlytics.recordError);
 }
 
@@ -62,6 +60,8 @@ class App extends StatelessWidget {
   final SharedPreferences _sharedPreferences;
   final FirebaseCrashlytics _firebaseCrashlytics;
   final ImagePicker _imagePicker;
+  final FLauncherChannel _fLauncherChannel;
+  final FLauncherDatabase _fLauncherDatabase;
 
   static const MaterialColor _swatch = MaterialColor(0xFF011526, <int, Color>{
     50: Color(0xFF36A0FA),
@@ -76,14 +76,19 @@ class App extends StatelessWidget {
     900: Color(0xFF000000),
   });
 
-  App(this._sharedPreferences, this._firebaseCrashlytics, this._imagePicker);
+  App(
+    this._sharedPreferences,
+    this._firebaseCrashlytics,
+    this._imagePicker,
+    this._fLauncherChannel,
+    this._fLauncherDatabase,
+  );
 
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => Wallpaper(_imagePicker)),
-          ChangeNotifierProvider(
-              create: (_) => Apps(FLauncherChannel(), _sharedPreferences)),
+          ChangeNotifierProvider(create: (_) => WallpaperService(_imagePicker)),
+          ChangeNotifierProvider(create: (_) => AppsService(_fLauncherChannel, _fLauncherDatabase)),
           ChangeNotifierProvider(
             create: (_) => Settings(_sharedPreferences, _firebaseCrashlytics),
             lazy: false,
@@ -101,7 +106,7 @@ class App extends StatelessWidget {
             toggleableActiveColor: _swatch[200],
             accentColor: _swatch[200],
             cardColor: _swatch[300],
-            dialogBackgroundColor: _swatch[300],
+            dialogBackgroundColor: _swatch[400],
             canvasColor: _swatch[400],
             backgroundColor: _swatch[400],
             scaffoldBackgroundColor: _swatch[400],
@@ -123,6 +128,5 @@ class App extends StatelessWidget {
         ),
       );
 
-  Future<bool> _shouldPopScope(BuildContext context) async =>
-      !(await context.read<Apps>().isDefaultLauncher());
+  Future<bool> _shouldPopScope(BuildContext context) async => !(await context.read<AppsService>().isDefaultLauncher());
 }

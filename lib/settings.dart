@@ -26,12 +26,10 @@ class Settings extends ChangeNotifier {
   final SharedPreferences _sharedPreferences;
   final FirebaseCrashlytics _firebaseCrashlytics;
 
-  bool get crashReportsEnabled =>
-      _sharedPreferences.getBool(_crashReportsEnabledKey) ?? true;
+  bool get crashReportsEnabled => _sharedPreferences.getBool(_crashReportsEnabledKey) ?? true;
 
   Settings(this._sharedPreferences, this._firebaseCrashlytics) {
-    _firebaseCrashlytics
-        .setCrashlyticsCollectionEnabled(kReleaseMode && crashReportsEnabled);
+    _firebaseCrashlytics.setCrashlyticsCollectionEnabled(kReleaseMode && crashReportsEnabled);
   }
 
   Future<void> setCrashReportsEnabled(bool value) async {

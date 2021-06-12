@@ -16,9 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/apps.dart';
+import 'package:flauncher/apps_service.dart';
 import 'package:flauncher/settings.dart';
-import 'package:flauncher/wallpaper.dart';
+import 'package:flauncher/wallpaper_service.dart';
+import 'package:flauncher/widgets/categories_dialog.dart';
+import 'package:flauncher/widgets/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -36,6 +38,22 @@ class SettingsPanel extends StatelessWidget {
                 style: Theme.of(context).textTheme.headline6,
               ),
               Divider(),
+              TextButton(
+                child: Row(
+                  children: [
+                    Icon(Icons.category),
+                    Container(width: 8),
+                    Text(
+                      "Categories",
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                  ],
+                ),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => CategoriesDialog(),
+                ),
+              ),
               TextButton(
                 child: Row(
                   children: [
@@ -64,7 +82,7 @@ class SettingsPanel extends StatelessWidget {
                     ),
                   ],
                 ),
-                onPressed: () => context.read<Apps>().openSettings(),
+                onPressed: () => context.read<AppsService>().openSettings(),
               ),
               Divider(),
               SwitchListTile(
@@ -73,8 +91,7 @@ class SettingsPanel extends StatelessWidget {
                 onChanged: (value) => settings.setCrashReportsEnabled(value),
                 title: Text("Crash Reporting"),
                 dense: true,
-                subtitle: Text(
-                    "Automatically send crash reports through Firebase Crashlytics."),
+                subtitle: Text("Automatically send crash reports through Firebase Crashlytics."),
               ),
               Spacer(),
               TextButton(
@@ -92,10 +109,9 @@ class SettingsPanel extends StatelessWidget {
                   context: context,
                   builder: (_) => FutureBuilder<PackageInfo>(
                     future: PackageInfo.fromPlatform(),
-                    builder: (context, snapshot) =>
-                        snapshot.connectionState == ConnectionState.done
-                            ? _aboutDialog(snapshot.data!, context)
-                            : Container(),
+                    builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done
+                        ? FLauncherAboutDialog(packageInfo: snapshot.data!, context: context)
+                        : Container(),
                   ),
                 ),
               )
@@ -103,49 +119,6 @@ class SettingsPanel extends StatelessWidget {
           ),
         ),
       );
-
-  Widget _aboutDialog(PackageInfo packageInfo, BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.bodyText2!;
-    final underlined = textStyle.copyWith(decoration: TextDecoration.underline);
-    return AboutDialog(
-      applicationName: "FLauncher",
-      applicationVersion: packageInfo.version,
-      applicationIcon: Image.asset("assets/logo.png", height: 72),
-      applicationLegalese: "© 2021 Étienne Fesser",
-      children: [
-        SizedBox(height: 24),
-        RichText(
-          text: TextSpan(
-            style: textStyle,
-            children: [
-              TextSpan(
-                text:
-                    "FLauncher is an open-source alternative launcher for Android TV.\n"
-                    "Source code available at ",
-              ),
-              TextSpan(
-                text: "https://gitlab.com/etiennf01/flauncher",
-                style: underlined,
-              ),
-              TextSpan(text: ".\n\n"),
-              TextSpan(text: "Logo by Katie "),
-              TextSpan(
-                text: "@fureturoe",
-                style: underlined,
-              ),
-              TextSpan(text: ", "),
-              TextSpan(text: "design by "),
-              TextSpan(
-                text: "@FXCostanzo",
-                style: underlined,
-              ),
-              TextSpan(text: "."),
-            ],
-          ),
-        )
-      ],
-    );
-  }
 }
 
 class _WallpaperDialog extends StatelessWidget {
@@ -159,14 +132,14 @@ class _WallpaperDialog extends StatelessWidget {
               TextButton(
                 autofocus: true,
                 onPressed: () async {
-                  await context.read<Wallpaper>().pickWallpaper();
+                  await context.read<WallpaperService>().pickWallpaper();
                   Navigator.of(context).pop();
                 },
                 child: Text("SELECT"),
               ),
               TextButton(
                 onPressed: () async {
-                  await context.read<Wallpaper>().clearWallpaper();
+                  await context.read<WallpaperService>().clearWallpaper();
                   Navigator.of(context).pop();
                 },
                 child: Text("CLEAR"),

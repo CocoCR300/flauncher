@@ -16,16 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/application_info.dart';
-import 'package:flauncher/apps.dart';
+import 'package:flauncher/apps_service.dart';
+import 'package:flauncher/database.dart';
+import 'package:flauncher/widgets/move_to_category_dialog.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ApplicationInfoPanel extends StatelessWidget {
-  final ApplicationInfo application;
+  final Category category;
+  final App application;
 
   ApplicationInfoPanel({
+    required this.category,
     required this.application,
   });
 
@@ -37,26 +40,22 @@ class ApplicationInfoPanel extends StatelessWidget {
             Row(
               children: [
                 Image.memory(application.icon!, width: 50),
+                SizedBox(width: 8),
                 Flexible(
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 8),
-                    child: Text(
-                      application.name,
-                      style: Theme.of(context).textTheme.headline6,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  child: Text(
+                    application.name,
+                    style: Theme.of(context).textTheme.headline6,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: Text(
-                application.packageName,
-                style: Theme.of(context).textTheme.caption,
-                overflow: TextOverflow.ellipsis,
-              ),
+            SizedBox(height: 8),
+            Text(
+              application.packageName,
+              style: Theme.of(context).textTheme.caption,
+              overflow: TextOverflow.ellipsis,
             ),
             Text(
               "v${application.version}",
@@ -67,25 +66,23 @@ class ApplicationInfoPanel extends StatelessWidget {
             TextButton(
               child: Row(
                 children: [
-                  Icon(application.favorited
-                      ? Icons.favorite
-                      : Icons.favorite_outline),
+                  Icon(Icons.category),
                   Container(width: 8),
                   Text(
-                    application.favorited
-                        ? "Remove from favorites"
-                        : "Add to favorites",
+                    "Move to...",
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
               ),
               onPressed: () async {
-                if (application.favorited) {
-                  await context.read<Apps>().removeFromFavorites(application);
-                } else {
-                  await context.read<Apps>().addToFavorites(application);
+                final newCategory = await showDialog<Category>(
+                  context: context,
+                  builder: (_) => MoveToCategoryDialog(excludedCategory: category),
+                );
+                if (newCategory != null) {
+                  await context.read<AppsService>().moveToCategory(application, category, newCategory);
+                  Navigator.of(context).pop(ApplicationInfoPanelResult.none);
                 }
-                Navigator.of(context).pop(ApplicationInfoPanelResult.none);
               },
             ),
             TextButton(
@@ -99,8 +96,7 @@ class ApplicationInfoPanel extends StatelessWidget {
                   ),
                 ],
               ),
-              onPressed: () =>
-                  Navigator.of(context).pop(ApplicationInfoPanelResult.moveApp),
+              onPressed: () => Navigator.of(context).pop(ApplicationInfoPanelResult.moveApp),
             ),
             Divider(),
             TextButton(
@@ -114,7 +110,7 @@ class ApplicationInfoPanel extends StatelessWidget {
                   ),
                 ],
               ),
-              onPressed: () => context.read<Apps>().openAppInfo(application),
+              onPressed: () => context.read<AppsService>().openAppInfo(application),
             ),
             TextButton(
               child: Row(
@@ -128,7 +124,7 @@ class ApplicationInfoPanel extends StatelessWidget {
                 ],
               ),
               onPressed: () async {
-                await context.read<Apps>().uninstallApp(application);
+                await context.read<AppsService>().uninstallApp(application);
                 Navigator.of(context).pop(ApplicationInfoPanelResult.none);
               },
             ),

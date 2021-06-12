@@ -25,23 +25,18 @@ class FLauncherChannel {
   static const _eventChannel = EventChannel('me.efesser.flauncher/event');
 
   Future<List<dynamic>> getInstalledApplications() async =>
-      (await _methodChannel
-          .invokeMethod<List<dynamic>>('getInstalledApplications'))!;
+      (await _methodChannel.invokeMethod<List<dynamic>>('getInstalledApplications'))!;
 
   Future<void> launchApp(String packageName, String className) async =>
       await _methodChannel.invokeMethod('launchApp', [packageName, className]);
 
-  Future<void> openSettings() async =>
-      await _methodChannel.invokeMethod('openSettings');
+  Future<void> openSettings() async => await _methodChannel.invokeMethod('openSettings');
 
-  Future<void> openAppInfo(String packageName) async =>
-      await _methodChannel.invokeMethod('openAppInfo', packageName);
+  Future<void> openAppInfo(String packageName) async => await _methodChannel.invokeMethod('openAppInfo', packageName);
 
-  Future<void> uninstallApp(String packageName) async =>
-      await _methodChannel.invokeMethod('uninstallApp', packageName);
+  Future<void> uninstallApp(String packageName) async => await _methodChannel.invokeMethod('uninstallApp', packageName);
 
-  Future<bool> isDefaultLauncher() async =>
-      await _methodChannel.invokeMethod('isDefaultLauncher');
+  Future<bool> isDefaultLauncher() async => await _methodChannel.invokeMethod('isDefaultLauncher');
 
   void addAppsChangedListener(void Function(Map<dynamic, dynamic>) listener) =>
       _eventChannel.receiveBroadcastStream().listen((event) => listener(event));
