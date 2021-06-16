@@ -1,5 +1,5 @@
 variables:
-  FLUTTER_DOCKER_IMAGE: cirrusci/flutter:2.2.1
+  FLUTTER_DOCKER_IMAGE: cirrusci/flutter:2.2.2
 
 stages:
   - precheck
@@ -33,7 +33,7 @@ generate:
   needs: [ ]
   script:
     - flutter pub get
-    - flutter packages pub run build_runner build
+    - flutter pub run build_runner build
   artifacts:
     paths:
       - .dart_tool
