@@ -3,7 +3,6 @@ variables:
 
 stages:
   - precheck
-  - generate
   - analyze
   - build
   - deploy
@@ -27,29 +26,17 @@ stylelint:
   script:
     - flutter format --line-length 120 --dry-run --set-exit-if-changed .
 
-generate:
-  image: $FLUTTER_DOCKER_IMAGE
-  stage: generate
-  needs: [ ]
-  script:
-    - flutter pub get
-    - flutter pub run build_runner build
-  artifacts:
-    paths:
-      - .dart_tool
-      - lib/database.g.dart
-
 analyze:
   image: $FLUTTER_DOCKER_IMAGE
   stage: analyze
-  needs: [ "generate" ]
+  needs: [ ]
   script:
     - flutter analyze
 
 build:debug:
   image: $FLUTTER_DOCKER_IMAGE
   stage: build
-  needs: [ "generate" ]
+  needs: [ ]
   except:
     - master
     - tags
@@ -59,7 +46,7 @@ build:debug:
 build:release:
   image: $FLUTTER_DOCKER_IMAGE
   stage: build
-  needs: [ "generate" ]
+  needs: [ ]
   only:
     - master
     - tags
