@@ -26,107 +26,109 @@ import 'mocks.dart';
 import 'mocks.mocks.dart';
 
 void main() {
-  test("AppsService initialised correctly with empty database", () async {
-    final channel = MockFLauncherChannel();
-    final database = MockFLauncherDatabase();
-    when(channel.getInstalledApplications()).thenAnswer((_) => Future.value([
-          {
-            'packageName': 'me.efesser.flauncher',
-            'name': 'FLauncher',
-            'className': '.MainActivity',
-            'version': '1.0.0',
-            'banner': null,
-            'icon': null,
-          }
-        ]));
-    when(database.listApplications()).thenAnswer((_) => Future.value([]));
-    when(database.listCategoriesWithApps()).thenAnswer((_) => Future.value([]));
-    when(database.nextAppCategoryOrder(CategoriesCompanion(name: Value("Applications"))))
-        .thenAnswer((_) => Future.value(0));
-    AppsService(channel, database);
-    await untilCalled(database.listCategoriesWithApps());
+  group("AppsService initialised correctly", () {
+    test("with empty database", () async {
+      final channel = MockFLauncherChannel();
+      final database = MockFLauncherDatabase();
+      when(channel.getInstalledApplications()).thenAnswer((_) => Future.value([
+            {
+              'packageName': 'me.efesser.flauncher',
+              'name': 'FLauncher',
+              'className': '.MainActivity',
+              'version': '1.0.0',
+              'banner': null,
+              'icon': null,
+            }
+          ]));
+      when(database.listApplications()).thenAnswer((_) => Future.value([]));
+      when(database.listCategoriesWithApps()).thenAnswer((_) => Future.value([]));
+      when(database.nextAppCategoryOrder(CategoriesCompanion(name: Value("Applications"))))
+          .thenAnswer((_) => Future.value(0));
+      AppsService(channel, database);
+      await untilCalled(database.listCategoriesWithApps());
 
-    verify(database.persistApps([
-      AppsCompanion.insert(
-        packageName: "me.efesser.flauncher",
-        name: "FLauncher",
-        className: ".MainActivity",
-        version: "1.0.0",
-        banner: Value(null),
-        icon: Value(null),
-      )
-    ]));
-    verify(database.listApplications()).called(2);
-    verify(database.persistAppsCategories([
-      AppsCategoriesCompanion.insert(categoryName: "Applications", appPackageName: "me.efesser.flauncher", order: 0)
-    ]));
-    verify(database.listCategoriesWithApps());
-  });
+      verify(database.persistApps([
+        AppsCompanion.insert(
+          packageName: "me.efesser.flauncher",
+          name: "FLauncher",
+          className: ".MainActivity",
+          version: "1.0.0",
+          banner: Value(null),
+          icon: Value(null),
+        )
+      ]));
+      verify(database.listApplications()).called(2);
+      verify(database.persistAppsCategories([
+        AppsCategoriesCompanion.insert(categoryName: "Applications", appPackageName: "me.efesser.flauncher", order: 0)
+      ]));
+      verify(database.listCategoriesWithApps());
+    });
 
-  test("AppsService initialised correctly with newly installed, uninstalled and existing apps", () async {
-    final channel = MockFLauncherChannel();
-    final database = MockFLauncherDatabase();
-    when(channel.getInstalledApplications()).thenAnswer((_) => Future.value([
-          {
-            'packageName': 'me.efesser.flauncher',
-            'name': 'FLauncher',
-            'className': '.MainActivity',
-            'version': '2.0.0',
-            'banner': null,
-            'icon': null,
-          },
-          {
-            'packageName': 'me.efesser.flauncher.2',
-            'name': 'FLauncher 2',
-            'className': '.MainActivity',
-            'version': '1.0.0',
-            'banner': null,
-            'icon': null,
-          }
-        ]));
-    when(database.listApplications()).thenAnswer((_) => Future.value([
-          fakeApp("me.efesser.flauncher", "FLauncher", ".MainActivity", "1.0.0", null, null),
-          fakeApp("uninstalled.app", "Uninstalled Application", ".MainActivity", "1.0.0", null, null)
-        ]));
-    when(database.listCategoriesWithApps()).thenAnswer((_) => Future.value([]));
-    when(database.nextAppCategoryOrder(CategoriesCompanion(name: Value("Applications"))))
-        .thenAnswer((_) => Future.value(1));
-    AppsService(channel, database);
-    await untilCalled(database.listCategoriesWithApps());
+    test("with newly installed, uninstalled and existing apps", () async {
+      final channel = MockFLauncherChannel();
+      final database = MockFLauncherDatabase();
+      when(channel.getInstalledApplications()).thenAnswer((_) => Future.value([
+            {
+              'packageName': 'me.efesser.flauncher',
+              'name': 'FLauncher',
+              'className': '.MainActivity',
+              'version': '2.0.0',
+              'banner': null,
+              'icon': null,
+            },
+            {
+              'packageName': 'me.efesser.flauncher.2',
+              'name': 'FLauncher 2',
+              'className': '.MainActivity',
+              'version': '1.0.0',
+              'banner': null,
+              'icon': null,
+            }
+          ]));
+      when(database.listApplications()).thenAnswer((_) => Future.value([
+            fakeApp("me.efesser.flauncher", "FLauncher", ".MainActivity", "1.0.0", null, null),
+            fakeApp("uninstalled.app", "Uninstalled Application", ".MainActivity", "1.0.0", null, null)
+          ]));
+      when(database.listCategoriesWithApps()).thenAnswer((_) => Future.value([]));
+      when(database.nextAppCategoryOrder(CategoriesCompanion(name: Value("Applications"))))
+          .thenAnswer((_) => Future.value(1));
+      AppsService(channel, database);
+      await untilCalled(database.listCategoriesWithApps());
 
-    verify(database.persistApps([
-      AppsCompanion.insert(
-        packageName: "me.efesser.flauncher",
-        name: "FLauncher",
-        className: ".MainActivity",
-        version: "2.0.0",
-        banner: Value(null),
-        icon: Value(null),
-      ),
-      AppsCompanion.insert(
-        packageName: "me.efesser.flauncher.2",
-        name: "FLauncher 2",
-        className: ".MainActivity",
-        version: "1.0.0",
-        banner: Value(null),
-        icon: Value(null),
-      )
-    ]));
-    verify(database.deleteApps([
-      AppsCompanion.insert(
-        packageName: "uninstalled.app",
-        name: "Uninstalled Application",
-        className: ".MainActivity",
-        version: "1.0.0",
-        banner: Value(null),
-        icon: Value(null),
-      )
-    ]));
-    verify(database.listApplications()).called(2);
-    verify(database.persistAppsCategories([
-      AppsCategoriesCompanion.insert(categoryName: "Applications", appPackageName: "me.efesser.flauncher.2", order: 1)
-    ]));
-    verify(database.listCategoriesWithApps());
+      verify(database.persistApps([
+        AppsCompanion.insert(
+          packageName: "me.efesser.flauncher",
+          name: "FLauncher",
+          className: ".MainActivity",
+          version: "2.0.0",
+          banner: Value(null),
+          icon: Value(null),
+        ),
+        AppsCompanion.insert(
+          packageName: "me.efesser.flauncher.2",
+          name: "FLauncher 2",
+          className: ".MainActivity",
+          version: "1.0.0",
+          banner: Value(null),
+          icon: Value(null),
+        )
+      ]));
+      verify(database.deleteApps([
+        AppsCompanion.insert(
+          packageName: "uninstalled.app",
+          name: "Uninstalled Application",
+          className: ".MainActivity",
+          version: "1.0.0",
+          banner: Value(null),
+          icon: Value(null),
+        )
+      ]));
+      verify(database.listApplications()).called(2);
+      verify(database.persistAppsCategories([
+        AppsCategoriesCompanion.insert(categoryName: "Applications", appPackageName: "me.efesser.flauncher.2", order: 1)
+      ]));
+      verify(database.listCategoriesWithApps());
+    });
   });
 
   test("launchApp calls channel", () async {
@@ -232,34 +234,36 @@ void main() {
     expect(appsService.categoriesWithApps[0].applications[1].packageName, "app.1");
   });
 
-  test("addCategory adds category at index 0 and moves others", () async {
-    final channel = MockFLauncherChannel();
-    final database = MockFLauncherDatabase();
-    final appsService = await _buildInitialisedAppsService(
-      channel,
-      database,
-      [CategoryWithApps(fakeCategory("Existing Category", 0), [])],
-    );
+  group("addCategory", () {
+    test("adds category at index 0 and moves others", () async {
+      final channel = MockFLauncherChannel();
+      final database = MockFLauncherDatabase();
+      final appsService = await _buildInitialisedAppsService(
+        channel,
+        database,
+        [CategoryWithApps(fakeCategory("Existing Category", 0), [])],
+      );
 
-    await appsService.addCategory("New Category");
+      await appsService.addCategory("New Category");
 
-    verify(database.insertCategory(CategoriesCompanion.insert(name: "New Category", order: 0)));
-    verify(database.persistCategories([CategoriesCompanion.insert(name: "Existing Category", order: 1)]));
-    verify(database.listCategoriesWithApps());
-  });
+      verify(database.insertCategory(CategoriesCompanion.insert(name: "New Category", order: 0)));
+      verify(database.persistCategories([CategoriesCompanion.insert(name: "Existing Category", order: 1)]));
+      verify(database.listCategoriesWithApps());
+    });
 
-  test("addCategory with existing category name does nothing", () async {
-    final channel = MockFLauncherChannel();
-    final database = MockFLauncherDatabase();
-    final appsService = await _buildInitialisedAppsService(
-      channel,
-      database,
-      [CategoryWithApps(fakeCategory("Existing Category", 0), [])],
-    );
+    test("with existing category name does nothing", () async {
+      final channel = MockFLauncherChannel();
+      final database = MockFLauncherDatabase();
+      final appsService = await _buildInitialisedAppsService(
+        channel,
+        database,
+        [CategoryWithApps(fakeCategory("Existing Category", 0), [])],
+      );
 
-    await appsService.addCategory("Existing Category");
+      await appsService.addCategory("Existing Category");
 
-    verifyZeroInteractions(database);
+      verifyZeroInteractions(database);
+    });
   });
 
   test("deleteCategory deletes category and moves apps to default one", () async {

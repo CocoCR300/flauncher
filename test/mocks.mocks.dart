@@ -2,14 +2,18 @@
 // in flauncher/test/mocks.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i10;
+import 'dart:async' as _i11;
 
+import 'package:firebase_core/firebase_core.dart' as _i9;
+import 'package:firebase_crashlytics/firebase_crashlytics.dart' as _i13;
 import 'package:flauncher/database.dart' as _i3;
-import 'package:flauncher/flauncher_channel.dart' as _i9;
+import 'package:flauncher/flauncher_channel.dart' as _i10;
+import 'package:flutter/src/foundation/assertions.dart' as _i15;
+import 'package:flutter/src/foundation/diagnostics.dart' as _i14;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:moor/src/dsl/dsl.dart' as _i8;
 import 'package:moor/src/runtime/api/runtime_api.dart' as _i4;
-import 'package:moor/src/runtime/data_class.dart' as _i11;
+import 'package:moor/src/runtime/data_class.dart' as _i12;
 import 'package:moor/src/runtime/executor/executor.dart' as _i6;
 import 'package:moor/src/runtime/executor/stream_queries.dart' as _i7;
 import 'package:moor/src/runtime/query_builder/query_builder.dart' as _i2;
@@ -58,42 +62,47 @@ class _FakeSelectable<T> extends _i1.Fake implements _i2.Selectable<T> {}
 
 class _FakeGenerationContext extends _i1.Fake implements _i2.GenerationContext {}
 
+class _FakeFirebaseApp extends _i1.Fake implements _i9.FirebaseApp {
+  @override
+  String toString() => super.toString();
+}
+
 /// A class which mocks [FLauncherChannel].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockFLauncherChannel extends _i1.Mock implements _i9.FLauncherChannel {
+class MockFLauncherChannel extends _i1.Mock implements _i10.FLauncherChannel {
   MockFLauncherChannel() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i10.Future<List<dynamic>> getInstalledApplications() =>
+  _i11.Future<List<dynamic>> getInstalledApplications() =>
       (super.noSuchMethod(Invocation.method(#getInstalledApplications, []),
-          returnValue: Future<List<dynamic>>.value(<dynamic>[])) as _i10.Future<List<dynamic>>);
+          returnValue: Future<List<dynamic>>.value(<dynamic>[])) as _i11.Future<List<dynamic>>);
 
   @override
-  _i10.Future<void> launchApp(String? packageName, String? className) =>
+  _i11.Future<void> launchApp(String? packageName, String? className) =>
       (super.noSuchMethod(Invocation.method(#launchApp, [packageName, className]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> openSettings() => (super.noSuchMethod(Invocation.method(#openSettings, []),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+  _i11.Future<void> openSettings() => (super.noSuchMethod(Invocation.method(#openSettings, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> openAppInfo(String? packageName) =>
+  _i11.Future<void> openAppInfo(String? packageName) =>
       (super.noSuchMethod(Invocation.method(#openAppInfo, [packageName]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> uninstallApp(String? packageName) =>
+  _i11.Future<void> uninstallApp(String? packageName) =>
       (super.noSuchMethod(Invocation.method(#uninstallApp, [packageName]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<bool> isDefaultLauncher() =>
+  _i11.Future<bool> isDefaultLauncher() =>
       (super.noSuchMethod(Invocation.method(#isDefaultLauncher, []), returnValue: Future<bool>.value(false))
-          as _i10.Future<bool>);
+          as _i11.Future<bool>);
 
   @override
   void addAppsChangedListener(void Function(Map<dynamic, dynamic>)? listener) =>
@@ -169,77 +178,77 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
           as _i7.StreamQueryStore);
 
   @override
-  _i10.Future<List<_i3.App>> listApplications() => (super.noSuchMethod(Invocation.method(#listApplications, []),
-      returnValue: Future<List<_i3.App>>.value(<_i3.App>[])) as _i10.Future<List<_i3.App>>);
+  _i11.Future<List<_i3.App>> listApplications() => (super.noSuchMethod(Invocation.method(#listApplications, []),
+      returnValue: Future<List<_i3.App>>.value(<_i3.App>[])) as _i11.Future<List<_i3.App>>);
 
   @override
-  _i10.Future<void> persistApps(List<_i3.AppsCompanion>? applications) =>
+  _i11.Future<void> persistApps(List<_i3.AppsCompanion>? applications) =>
       (super.noSuchMethod(Invocation.method(#persistApps, [applications]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> deleteApps(List<_i3.AppsCompanion>? applications) =>
+  _i11.Future<void> deleteApps(List<_i3.AppsCompanion>? applications) =>
       (super.noSuchMethod(Invocation.method(#deleteApps, [applications]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> insertCategory(_i3.CategoriesCompanion? category) =>
+  _i11.Future<void> insertCategory(_i3.CategoriesCompanion? category) =>
       (super.noSuchMethod(Invocation.method(#insertCategory, [category]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> deleteCategory(_i3.CategoriesCompanion? category) =>
+  _i11.Future<void> deleteCategory(_i3.CategoriesCompanion? category) =>
       (super.noSuchMethod(Invocation.method(#deleteCategory, [category]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> persistCategories(List<_i3.CategoriesCompanion>? value) =>
+  _i11.Future<void> persistCategories(List<_i3.CategoriesCompanion>? value) =>
       (super.noSuchMethod(Invocation.method(#persistCategories, [value]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> insertAppCategory(_i3.AppsCategoriesCompanion? appCategory) =>
+  _i11.Future<void> insertAppCategory(_i3.AppsCategoriesCompanion? appCategory) =>
       (super.noSuchMethod(Invocation.method(#insertAppCategory, [appCategory]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> deleteAppCategory(_i3.AppsCategoriesCompanion? appCategory) =>
+  _i11.Future<void> deleteAppCategory(_i3.AppsCategoriesCompanion? appCategory) =>
       (super.noSuchMethod(Invocation.method(#deleteAppCategory, [appCategory]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> persistAppsCategories(List<_i3.AppsCategoriesCompanion>? value) =>
+  _i11.Future<void> persistAppsCategories(List<_i3.AppsCategoriesCompanion>? value) =>
       (super.noSuchMethod(Invocation.method(#persistAppsCategories, [value]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<List<_i3.CategoryWithApps>> listCategoriesWithApps() =>
+  _i11.Future<List<_i3.CategoryWithApps>> listCategoriesWithApps() =>
       (super.noSuchMethod(Invocation.method(#listCategoriesWithApps, []),
               returnValue: Future<List<_i3.CategoryWithApps>>.value(<_i3.CategoryWithApps>[]))
-          as _i10.Future<List<_i3.CategoryWithApps>>);
+          as _i11.Future<List<_i3.CategoryWithApps>>);
 
   @override
-  _i10.Future<int> nextAppCategoryOrder(_i3.CategoriesCompanion? category) =>
+  _i11.Future<int> nextAppCategoryOrder(_i3.CategoriesCompanion? category) =>
       (super.noSuchMethod(Invocation.method(#nextAppCategoryOrder, [category]), returnValue: Future<int>.value(0))
-          as _i10.Future<int>);
+          as _i11.Future<int>);
 
   @override
   _i2.Migrator createMigrator() =>
       (super.noSuchMethod(Invocation.method(#createMigrator, []), returnValue: _FakeMigrator()) as _i2.Migrator);
 
   @override
-  _i10.Future<void> beforeOpen(_i6.QueryExecutor? executor, _i2.OpeningDetails? details) =>
+  _i11.Future<void> beforeOpen(_i6.QueryExecutor? executor, _i2.OpeningDetails? details) =>
       (super.noSuchMethod(Invocation.method(#beforeOpen, [executor, details]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> close() => (super.noSuchMethod(Invocation.method(#close, []),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+  _i11.Future<void> close() => (super.noSuchMethod(Invocation.method(#close, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Stream<List<Map<String, Object?>>> createStream(_i7.QueryStreamFetcher? stmt) =>
+  _i11.Stream<List<Map<String, Object?>>> createStream(_i7.QueryStreamFetcher? stmt) =>
       (super.noSuchMethod(Invocation.method(#createStream, [stmt]),
-          returnValue: Stream<List<Map<String, Object?>>>.empty()) as _i10.Stream<List<Map<String, Object?>>>);
+          returnValue: Stream<List<Map<String, Object?>>>.empty()) as _i11.Stream<List<Map<String, Object?>>>);
 
   @override
   T alias<T extends _i8.Table, D>(_i2.TableInfo<T, D>? table, String? alias) =>
@@ -254,14 +263,14 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
       super.noSuchMethod(Invocation.method(#notifyUpdates, [updates]), returnValueForMissingStub: null);
 
   @override
-  _i10.Stream<Null?> tableUpdates([_i4.TableUpdateQuery? query = const _i4.TableUpdateQuery.any()]) =>
+  _i11.Stream<Null?> tableUpdates([_i4.TableUpdateQuery? query = const _i4.TableUpdateQuery.any()]) =>
       (super.noSuchMethod(Invocation.method(#tableUpdates, [query]), returnValue: Stream<Null?>.empty())
-          as _i10.Stream<Null?>);
+          as _i11.Stream<Null?>);
 
   @override
-  _i10.Future<T> doWhenOpened<T>(_i10.FutureOr<T>? Function(_i6.QueryExecutor)? fn) =>
+  _i11.Future<T> doWhenOpened<T>(_i11.FutureOr<T>? Function(_i6.QueryExecutor)? fn) =>
       (super.noSuchMethod(Invocation.method(#doWhenOpened, [fn]), returnValue: Future<T>.value(null))
-          as _i10.Future<T>);
+          as _i11.Future<T>);
 
   @override
   _i2.InsertStatement<T, D> into<T extends _i8.Table, D>(_i2.TableInfo<T, D>? table) =>
@@ -291,30 +300,30 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
           as _i2.DeleteStatement<T, D>);
 
   @override
-  _i10.Future<int> customUpdate(String? query,
+  _i11.Future<int> customUpdate(String? query,
           {List<_i2.Variable<dynamic>>? variables = const [],
           Set<_i2.TableInfo<_i8.Table, dynamic>>? updates,
           _i4.UpdateKind? updateKind}) =>
       (super.noSuchMethod(
           Invocation.method(
               #customUpdate, [query], {#variables: variables, #updates: updates, #updateKind: updateKind}),
-          returnValue: Future<int>.value(0)) as _i10.Future<int>);
+          returnValue: Future<int>.value(0)) as _i11.Future<int>);
 
   @override
-  _i10.Future<int> customInsert(String? query,
+  _i11.Future<int> customInsert(String? query,
           {List<_i2.Variable<dynamic>>? variables = const [], Set<_i2.TableInfo<_i8.Table, dynamic>>? updates}) =>
       (super.noSuchMethod(Invocation.method(#customInsert, [query], {#variables: variables, #updates: updates}),
-          returnValue: Future<int>.value(0)) as _i10.Future<int>);
+          returnValue: Future<int>.value(0)) as _i11.Future<int>);
 
   @override
-  _i10.Future<List<_i2.QueryRow>> customWriteReturning(String? query,
+  _i11.Future<List<_i2.QueryRow>> customWriteReturning(String? query,
           {List<_i2.Variable<dynamic>>? variables = const [],
           Set<_i2.TableInfo<_i8.Table, dynamic>>? updates,
           _i4.UpdateKind? updateKind}) =>
       (super.noSuchMethod(
           Invocation.method(
               #customWriteReturning, [query], {#variables: variables, #updates: updates, #updateKind: updateKind}),
-          returnValue: Future<List<_i2.QueryRow>>.value(<_i2.QueryRow>[])) as _i10.Future<List<_i2.QueryRow>>);
+          returnValue: Future<List<_i2.QueryRow>>.value(<_i2.QueryRow>[])) as _i11.Future<List<_i2.QueryRow>>);
 
   @override
   _i2.Selectable<_i2.QueryRow> customSelect(String? query,
@@ -332,19 +341,19 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
           returnValue: _FakeSelectable<_i2.QueryRow>()) as _i2.Selectable<_i2.QueryRow>);
 
   @override
-  _i10.Future<void> customStatement(String? statement, [List<dynamic>? args]) =>
+  _i11.Future<void> customStatement(String? statement, [List<dynamic>? args]) =>
       (super.noSuchMethod(Invocation.method(#customStatement, [statement, args]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i10.Future<T> transaction<T>(_i10.Future<T> Function()? action) =>
+  _i11.Future<T> transaction<T>(_i11.Future<T> Function()? action) =>
       (super.noSuchMethod(Invocation.method(#transaction, [action]), returnValue: Future<T>.value(null))
-          as _i10.Future<T>);
+          as _i11.Future<T>);
 
   @override
-  _i10.Future<void> batch(dynamic Function(_i4.Batch)? runInBatch) =>
+  _i11.Future<void> batch(dynamic Function(_i4.Batch)? runInBatch) =>
       (super.noSuchMethod(Invocation.method(#batch, [runInBatch]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i10.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
   _i2.GenerationContext $write(_i2.Component? component, {bool? hasMultipleTables}) =>
@@ -353,7 +362,89 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
 
   @override
   _i2.GenerationContext $writeInsertable(
-          _i2.TableInfo<_i8.Table, dynamic>? table, _i11.Insertable<dynamic>? insertable) =>
+          _i2.TableInfo<_i8.Table, dynamic>? table, _i12.Insertable<dynamic>? insertable) =>
       (super.noSuchMethod(Invocation.method(#$writeInsertable, [table, insertable]),
           returnValue: _FakeGenerationContext()) as _i2.GenerationContext);
+}
+
+/// A class which mocks [FirebaseCrashlytics].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockFirebaseCrashlytics extends _i1.Mock implements _i13.FirebaseCrashlytics {
+  MockFirebaseCrashlytics() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i9.FirebaseApp get app =>
+      (super.noSuchMethod(Invocation.getter(#app), returnValue: _FakeFirebaseApp()) as _i9.FirebaseApp);
+
+  @override
+  set app(_i9.FirebaseApp? _app) => super.noSuchMethod(Invocation.setter(#app, _app), returnValueForMissingStub: null);
+
+  @override
+  bool get isCrashlyticsCollectionEnabled =>
+      (super.noSuchMethod(Invocation.getter(#isCrashlyticsCollectionEnabled), returnValue: false) as bool);
+
+  @override
+  Map<dynamic, dynamic> get pluginConstants =>
+      (super.noSuchMethod(Invocation.getter(#pluginConstants), returnValue: <dynamic, dynamic>{})
+          as Map<dynamic, dynamic>);
+
+  @override
+  _i11.Future<bool> checkForUnsentReports() =>
+      (super.noSuchMethod(Invocation.method(#checkForUnsentReports, []), returnValue: Future<bool>.value(false))
+          as _i11.Future<bool>);
+
+  @override
+  void crash() => super.noSuchMethod(Invocation.method(#crash, []), returnValueForMissingStub: null);
+
+  @override
+  _i11.Future<void> deleteUnsentReports() => (super.noSuchMethod(Invocation.method(#deleteUnsentReports, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<bool> didCrashOnPreviousExecution() =>
+      (super.noSuchMethod(Invocation.method(#didCrashOnPreviousExecution, []), returnValue: Future<bool>.value(false))
+          as _i11.Future<bool>);
+
+  @override
+  _i11.Future<void> recordError(dynamic exception, StackTrace? stack,
+          {dynamic reason,
+          Iterable<_i14.DiagnosticsNode>? information = const [],
+          bool? printDetails,
+          bool? fatal = false}) =>
+      (super.noSuchMethod(
+          Invocation.method(#recordError, [exception, stack],
+              {#reason: reason, #information: information, #printDetails: printDetails, #fatal: fatal}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> recordFlutterError(_i15.FlutterErrorDetails? flutterErrorDetails) =>
+      (super.noSuchMethod(Invocation.method(#recordFlutterError, [flutterErrorDetails]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> log(String? message) => (super.noSuchMethod(Invocation.method(#log, [message]),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> sendUnsentReports() => (super.noSuchMethod(Invocation.method(#sendUnsentReports, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> setCrashlyticsCollectionEnabled(bool? enabled) =>
+      (super.noSuchMethod(Invocation.method(#setCrashlyticsCollectionEnabled, [enabled]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> setUserIdentifier(String? identifier) =>
+      (super.noSuchMethod(Invocation.method(#setUserIdentifier, [identifier]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> setCustomKey(String? key, Object? value) =>
+      (super.noSuchMethod(Invocation.method(#setCustomKey, [key, value]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 }

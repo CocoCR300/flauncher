@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,6 +29,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 @GenerateMocks([
   FLauncherChannel,
   FLauncherDatabase,
+  FirebaseCrashlytics,
 ])
 void main() {}
 

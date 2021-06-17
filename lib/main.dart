@@ -26,7 +26,7 @@ import 'package:flauncher/apps_service.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher.dart';
 import 'package:flauncher/flauncher_channel.dart';
-import 'package:flauncher/settings.dart';
+import 'package:flauncher/settings_service.dart';
 import 'package:flauncher/wallpaper_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +90,7 @@ class App extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => WallpaperService(_imagePicker)),
           ChangeNotifierProvider(create: (_) => AppsService(_fLauncherChannel, _fLauncherDatabase)),
           ChangeNotifierProvider(
-            create: (_) => Settings(_sharedPreferences, _firebaseCrashlytics),
+            create: (_) => SettingsService(_sharedPreferences, _firebaseCrashlytics),
             lazy: false,
           ),
         ],

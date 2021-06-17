@@ -17,7 +17,7 @@
  */
 
 import 'package:flauncher/apps_service.dart';
-import 'package:flauncher/settings.dart';
+import 'package:flauncher/settings_service.dart';
 import 'package:flauncher/wallpaper_service.dart';
 import 'package:flauncher/widgets/categories_dialog.dart';
 import 'package:flauncher/widgets/flauncher_about_dialog.dart';
@@ -30,7 +30,7 @@ class SettingsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => RightPanelDialog(
         width: 300,
-        child: Consumer<Settings>(
+        child: Consumer<SettingsService>(
           builder: (context, settings, _) => Column(
             children: [
               Text(

@@ -22,13 +22,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const _crashReportsEnabledKey = "crash_reports_enabled";
 
-class Settings extends ChangeNotifier {
+class SettingsService extends ChangeNotifier {
   final SharedPreferences _sharedPreferences;
   final FirebaseCrashlytics _firebaseCrashlytics;
 
   bool get crashReportsEnabled => _sharedPreferences.getBool(_crashReportsEnabledKey) ?? true;
 
-  Settings(this._sharedPreferences, this._firebaseCrashlytics) {
+  SettingsService(this._sharedPreferences, this._firebaseCrashlytics) {
     _firebaseCrashlytics.setCrashlyticsCollectionEnabled(kReleaseMode && crashReportsEnabled);
   }
 
