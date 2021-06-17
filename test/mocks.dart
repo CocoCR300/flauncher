@@ -18,8 +18,12 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:moor/moor.dart';
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 @GenerateMocks([
   FLauncherChannel,
@@ -38,3 +42,48 @@ App fakeApp([
     App(packageName: packageName, name: name, className: className, version: version, banner: banner, icon: icon);
 
 Category fakeCategory([String name = "Favorites", int order = 0]) => Category(name: name, order: order);
+
+class MockImagePicker extends Mock implements ImagePicker {
+  @override
+  Future<PickedFile?> getImage(
+          {required ImageSource source,
+          double? maxWidth,
+          double? maxHeight,
+          int? imageQuality,
+          CameraDevice preferredCameraDevice = CameraDevice.rear}) =>
+      super.noSuchMethod(
+          Invocation.method(#getImage, [], {
+            #source: source,
+            #maxWidth: maxWidth,
+            #maxHeight: maxHeight,
+            #imageQuality: imageQuality,
+            #preferredCameraDevice: preferredCameraDevice
+          }),
+          returnValue: Future<PickedFile?>.value());
+
+  @override
+  Future<LostData> getLostData() => super.noSuchMethod(Invocation.method(#getLostData, []));
+
+  @override
+  Future<PickedFile?> getVideo(
+          {required ImageSource source,
+          CameraDevice preferredCameraDevice = CameraDevice.rear,
+          Duration? maxDuration}) =>
+      super.noSuchMethod(
+          Invocation.method(#getVideo, [],
+              {#source: source, #preferredCameraDevice: preferredCameraDevice, #maxDuration: maxDuration}),
+          returnValue: Future<PickedFile?>.value());
+}
+
+// ignore: must_be_immutable
+class MockPickedFile extends Mock implements PickedFile {
+  @override
+  Future<Uint8List> readAsBytes() => super
+      .noSuchMethod(Invocation.method(#readAsBytes, []), returnValue: Future<Uint8List>.value(Uint8List.fromList([])));
+}
+
+class MockPathProviderPlatform extends Mock with MockPlatformInterfaceMixin implements PathProviderPlatform {
+  @override
+  Future<String?> getApplicationDocumentsPath() =>
+      super.noSuchMethod(Invocation.method(#getApplicationDocumentsPath, []), returnValue: Future<String?>.value());
+}
