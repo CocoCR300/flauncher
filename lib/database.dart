@@ -23,7 +23,7 @@ import 'package:moor/moor.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
-part 'database.g.dart';
+part 'database.moor.dart';
 
 class Apps extends Table {
   TextColumn get packageName => text()();

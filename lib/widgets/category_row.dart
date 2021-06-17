@@ -36,7 +36,7 @@ class CategoryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        key: Key("${category.name}"),
+        key: Key(category.name),
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(

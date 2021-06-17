@@ -1,0 +1,6 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  exclude:
+    - lib/database.moor.dart
+    - test/mocks.mocks.dart

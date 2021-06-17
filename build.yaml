@@ -1,0 +1,17 @@
+targets:
+  $default:
+    builders:
+      moor_generator:
+        enabled: false
+      moor_generator|moor_generator_not_shared:
+        enabled: true
+      mockito|mockBuilder:
+        enabled: false
+
+  run_built_value:
+    dependencies: [ 'flauncher' ]
+    builders:
+      moor_generator:
+        enabled: false
+      moor_generator|preparing_builder:
+        enabled: false
