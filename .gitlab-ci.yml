@@ -4,6 +4,7 @@ variables:
 stages:
   - precheck
   - analyze
+  - test
   - build
   - deploy
   - promote
@@ -32,6 +33,16 @@ analyze:
   needs: [ ]
   script:
     - flutter analyze
+
+test:
+  image: $FLUTTER_DOCKER_IMAGE
+  stage: test
+  needs: [ ]
+  script:
+    - flutter test --coverage
+    - lcov --remove coverage/lcov.info lib/database.moor.dart --output-file coverage/lcov.info
+    - genhtml --output ./coverage coverage/lcov.info
+  coverage: '/^\s+lines\.+:\s+([\d.]+\%)\s+/'
 
 build:debug:
   image: $FLUTTER_DOCKER_IMAGE
@@ -62,7 +73,7 @@ build:release:
 
 deploy:
   stage: deploy
-  needs: [ "commitlint", "stylelint", "analyze", "build:release" ]
+  needs: [ "commitlint", "stylelint", "analyze", "build:release", "test" ]
   image: ruby:2.6.3
   only:
     - tags
