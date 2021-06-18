@@ -38,8 +38,12 @@ test:
   image: $FLUTTER_DOCKER_IMAGE
   stage: test
   needs: [ ]
+  before_script:
+    - apt-get update
+    - apt-get install -y libsqlite3-dev
   script:
     - flutter test --coverage
+  after_script:
     - lcov --remove coverage/lcov.info lib/database.moor.dart --output-file coverage/lcov.info
     - genhtml --output ./coverage coverage/lcov.info
   coverage: '/^\s+lines\.+:\s+([\d.]+\%)\s+/'
