@@ -3,13 +3,17 @@
 // Do not manually edit this file.
 
 import 'dart:async' as _i11;
+import 'dart:ui' as _i14;
 
 import 'package:firebase_core/firebase_core.dart' as _i9;
-import 'package:firebase_crashlytics/firebase_crashlytics.dart' as _i13;
+import 'package:firebase_crashlytics/firebase_crashlytics.dart' as _i17;
+import 'package:flauncher/apps_service.dart' as _i15;
 import 'package:flauncher/database.dart' as _i3;
 import 'package:flauncher/flauncher_channel.dart' as _i10;
-import 'package:flutter/src/foundation/assertions.dart' as _i15;
-import 'package:flutter/src/foundation/diagnostics.dart' as _i14;
+import 'package:flauncher/settings_service.dart' as _i16;
+import 'package:flauncher/wallpaper_service.dart' as _i13;
+import 'package:flutter/src/foundation/assertions.dart' as _i19;
+import 'package:flutter/src/foundation/diagnostics.dart' as _i18;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:moor/src/dsl/dsl.dart' as _i8;
 import 'package:moor/src/runtime/api/runtime_api.dart' as _i4;
@@ -367,10 +371,164 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
           returnValue: _FakeGenerationContext()) as _i2.GenerationContext);
 }
 
+/// A class which mocks [WallpaperService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockWallpaperService extends _i1.Mock implements _i13.WallpaperService {
+  MockWallpaperService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  bool get hasListeners => (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
+
+  @override
+  _i11.Future<void> pickWallpaper() => (super.noSuchMethod(Invocation.method(#pickWallpaper, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> clearWallpaper() => (super.noSuchMethod(Invocation.method(#clearWallpaper, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  void addListener(_i14.VoidCallback? listener) =>
+      super.noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
+
+  @override
+  void removeListener(_i14.VoidCallback? listener) =>
+      super.noSuchMethod(Invocation.method(#removeListener, [listener]), returnValueForMissingStub: null);
+
+  @override
+  void dispose() => super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
+
+  @override
+  void notifyListeners() =>
+      super.noSuchMethod(Invocation.method(#notifyListeners, []), returnValueForMissingStub: null);
+}
+
+/// A class which mocks [AppsService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAppsService extends _i1.Mock implements _i15.AppsService {
+  MockAppsService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  List<_i3.CategoryWithApps> get categoriesWithApps =>
+      (super.noSuchMethod(Invocation.getter(#categoriesWithApps), returnValue: <_i3.CategoryWithApps>[])
+          as List<_i3.CategoryWithApps>);
+
+  @override
+  bool get hasListeners => (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
+
+  @override
+  _i11.Future<void> launchApp(_i3.App? app) => (super.noSuchMethod(Invocation.method(#launchApp, [app]),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> openAppInfo(_i3.App? app) => (super.noSuchMethod(Invocation.method(#openAppInfo, [app]),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> uninstallApp(_i3.App? app) => (super.noSuchMethod(Invocation.method(#uninstallApp, [app]),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> openSettings() => (super.noSuchMethod(Invocation.method(#openSettings, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<bool> isDefaultLauncher() =>
+      (super.noSuchMethod(Invocation.method(#isDefaultLauncher, []), returnValue: Future<bool>.value(false))
+          as _i11.Future<bool>);
+
+  @override
+  _i11.Future<void> moveToCategory(_i3.App? app, _i3.Category? oldCategory, _i3.Category? newCategory) =>
+      (super.noSuchMethod(Invocation.method(#moveToCategory, [app, oldCategory, newCategory]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> saveOrderInCategory(_i3.Category? category) =>
+      (super.noSuchMethod(Invocation.method(#saveOrderInCategory, [category]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  void moveApplication(_i3.Category? category, int? oldIndex, int? newIndex) =>
+      super.noSuchMethod(Invocation.method(#moveApplication, [category, oldIndex, newIndex]),
+          returnValueForMissingStub: null);
+
+  @override
+  _i11.Future<void> addCategory(String? categoryName) =>
+      (super.noSuchMethod(Invocation.method(#addCategory, [categoryName]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> deleteCategory(_i3.Category? category) =>
+      (super.noSuchMethod(Invocation.method(#deleteCategory, [category]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> moveCategory(int? oldIndex, int? newIndex) =>
+      (super.noSuchMethod(Invocation.method(#moveCategory, [oldIndex, newIndex]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  void addListener(_i14.VoidCallback? listener) =>
+      super.noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
+
+  @override
+  void removeListener(_i14.VoidCallback? listener) =>
+      super.noSuchMethod(Invocation.method(#removeListener, [listener]), returnValueForMissingStub: null);
+
+  @override
+  void dispose() => super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
+
+  @override
+  void notifyListeners() =>
+      super.noSuchMethod(Invocation.method(#notifyListeners, []), returnValueForMissingStub: null);
+}
+
+/// A class which mocks [SettingsService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockSettingsService extends _i1.Mock implements _i16.SettingsService {
+  MockSettingsService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  bool get crashReportsEnabled =>
+      (super.noSuchMethod(Invocation.getter(#crashReportsEnabled), returnValue: false) as bool);
+
+  @override
+  bool get hasListeners => (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
+
+  @override
+  _i11.Future<void> setCrashReportsEnabled(bool? value) =>
+      (super.noSuchMethod(Invocation.method(#setCrashReportsEnabled, [value]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+
+  @override
+  void addListener(_i14.VoidCallback? listener) =>
+      super.noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
+
+  @override
+  void removeListener(_i14.VoidCallback? listener) =>
+      super.noSuchMethod(Invocation.method(#removeListener, [listener]), returnValueForMissingStub: null);
+
+  @override
+  void dispose() => super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
+
+  @override
+  void notifyListeners() =>
+      super.noSuchMethod(Invocation.method(#notifyListeners, []), returnValueForMissingStub: null);
+}
+
 /// A class which mocks [FirebaseCrashlytics].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockFirebaseCrashlytics extends _i1.Mock implements _i13.FirebaseCrashlytics {
+class MockFirebaseCrashlytics extends _i1.Mock implements _i17.FirebaseCrashlytics {
   MockFirebaseCrashlytics() {
     _i1.throwOnMissingStub(this);
   }
@@ -411,7 +569,7 @@ class MockFirebaseCrashlytics extends _i1.Mock implements _i13.FirebaseCrashlyti
   @override
   _i11.Future<void> recordError(dynamic exception, StackTrace? stack,
           {dynamic reason,
-          Iterable<_i14.DiagnosticsNode>? information = const [],
+          Iterable<_i18.DiagnosticsNode>? information = const [],
           bool? printDetails,
           bool? fatal = false}) =>
       (super.noSuchMethod(
@@ -421,7 +579,7 @@ class MockFirebaseCrashlytics extends _i1.Mock implements _i13.FirebaseCrashlyti
           returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 
   @override
-  _i11.Future<void> recordFlutterError(_i15.FlutterErrorDetails? flutterErrorDetails) =>
+  _i11.Future<void> recordFlutterError(_i19.FlutterErrorDetails? flutterErrorDetails) =>
       (super.noSuchMethod(Invocation.method(#recordFlutterError, [flutterErrorDetails]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
 

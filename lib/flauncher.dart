@@ -96,9 +96,10 @@ class FLauncher extends StatelessWidget {
   Widget _wallpaper(BuildContext context, Uint8List? wallpaperImage) => wallpaperImage != null
       ? Image.memory(
           wallpaperImage,
+          key: Key("background"),
           fit: BoxFit.cover,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
         )
-      : Container(color: Theme.of(context).scaffoldBackgroundColor);
+      : Container(key: Key("background"), color: Theme.of(context).scaffoldBackgroundColor);
 }

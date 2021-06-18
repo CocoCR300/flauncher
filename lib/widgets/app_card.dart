@@ -171,7 +171,7 @@ class _AppCardState extends State<AppCard> {
         widget.onMoveEnd();
       }
       return KeyEventResult.handled;
-    } else if (_validationKeys.contains(key)) {
+    } else if (key == null || _validationKeys.contains(key)) {
       context.read<AppsService>().launchApp(widget.application);
       return KeyEventResult.handled;
     }

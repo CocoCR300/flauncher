@@ -17,8 +17,11 @@
  */
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flauncher/apps_service.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
+import 'package:flauncher/settings_service.dart';
+import 'package:flauncher/wallpaper_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -29,6 +32,9 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 @GenerateMocks([
   FLauncherChannel,
   FLauncherDatabase,
+  WallpaperService,
+  AppsService,
+  SettingsService,
   FirebaseCrashlytics,
 ])
 void main() {}

@@ -14,6 +14,7 @@ class App extends DataClass implements Insertable<App> {
   final String version;
   final Uint8List? banner;
   final Uint8List? icon;
+
   App(
       {required this.packageName,
       required this.name,
@@ -21,6 +22,7 @@ class App extends DataClass implements Insertable<App> {
       required this.version,
       this.banner,
       this.icon});
+
   factory App.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return App(
@@ -32,6 +34,7 @@ class App extends DataClass implements Insertable<App> {
       icon: const BlobType().mapFromDatabaseResponse(data['${effectivePrefix}icon']),
     );
   }
+
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -70,6 +73,7 @@ class App extends DataClass implements Insertable<App> {
       icon: serializer.fromJson<Uint8List?>(json['icon']),
     );
   }
+
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
@@ -98,6 +102,7 @@ class App extends DataClass implements Insertable<App> {
         banner: banner ?? this.banner,
         icon: icon ?? this.icon,
       );
+
   @override
   String toString() {
     return (StringBuffer('App(')
@@ -114,6 +119,7 @@ class App extends DataClass implements Insertable<App> {
   @override
   int get hashCode => $mrjf($mrjc(packageName.hashCode,
       $mrjc(name.hashCode, $mrjc(className.hashCode, $mrjc(version.hashCode, $mrjc(banner.hashCode, icon.hashCode))))));
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -133,6 +139,7 @@ class AppsCompanion extends UpdateCompanion<App> {
   final Value<String> version;
   final Value<Uint8List?> banner;
   final Value<Uint8List?> icon;
+
   const AppsCompanion({
     this.packageName = const Value.absent(),
     this.name = const Value.absent(),
@@ -141,6 +148,7 @@ class AppsCompanion extends UpdateCompanion<App> {
     this.banner = const Value.absent(),
     this.icon = const Value.absent(),
   });
+
   AppsCompanion.insert({
     required String packageName,
     required String name,
@@ -152,6 +160,7 @@ class AppsCompanion extends UpdateCompanion<App> {
         name = Value(name),
         className = Value(className),
         version = Value(version);
+
   static Insertable<App> custom({
     Expression<String>? packageName,
     Expression<String>? name,
@@ -228,10 +237,13 @@ class AppsCompanion extends UpdateCompanion<App> {
 class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   final GeneratedDatabase _db;
   final String? _alias;
+
   $AppsTable(this._db, [this._alias]);
+
   final VerificationMeta _packageNameMeta = const VerificationMeta('packageName');
   @override
   late final GeneratedTextColumn packageName = _constructPackageName();
+
   GeneratedTextColumn _constructPackageName() {
     return GeneratedTextColumn(
       'package_name',
@@ -243,6 +255,7 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedTextColumn name = _constructName();
+
   GeneratedTextColumn _constructName() {
     return GeneratedTextColumn(
       'name',
@@ -254,6 +267,7 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   final VerificationMeta _classNameMeta = const VerificationMeta('className');
   @override
   late final GeneratedTextColumn className = _constructClassName();
+
   GeneratedTextColumn _constructClassName() {
     return GeneratedTextColumn(
       'class_name',
@@ -265,6 +279,7 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   final VerificationMeta _versionMeta = const VerificationMeta('version');
   @override
   late final GeneratedTextColumn version = _constructVersion();
+
   GeneratedTextColumn _constructVersion() {
     return GeneratedTextColumn(
       'version',
@@ -276,6 +291,7 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   final VerificationMeta _bannerMeta = const VerificationMeta('banner');
   @override
   late final GeneratedBlobColumn banner = _constructBanner();
+
   GeneratedBlobColumn _constructBanner() {
     return GeneratedBlobColumn(
       'banner',
@@ -287,6 +303,7 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   final VerificationMeta _iconMeta = const VerificationMeta('icon');
   @override
   late final GeneratedBlobColumn icon = _constructIcon();
+
   GeneratedBlobColumn _constructIcon() {
     return GeneratedBlobColumn(
       'icon',
@@ -297,12 +314,15 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
 
   @override
   List<GeneratedColumn> get $columns => [packageName, name, className, version, banner, icon];
+
   @override
   $AppsTable get asDslTable => this;
+
   @override
   String get $tableName => _alias ?? 'apps';
   @override
   final String actualTableName = 'apps';
+
   @override
   VerificationContext validateIntegrity(Insertable<App> instance, {bool isInserting = false}) {
     final context = VerificationContext();
@@ -338,6 +358,7 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
 
   @override
   Set<GeneratedColumn> get $primaryKey => {packageName};
+
   @override
   App map(Map<String, dynamic> data, {String? tablePrefix}) {
     return App.fromData(data, _db, prefix: tablePrefix != null ? '$tablePrefix.' : null);
@@ -352,7 +373,9 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
 class Category extends DataClass implements Insertable<Category> {
   final String name;
   final int order;
+
   Category({required this.name, required this.order});
+
   factory Category.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return Category(
@@ -360,6 +383,7 @@ class Category extends DataClass implements Insertable<Category> {
       order: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}order'])!,
     );
   }
+
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -382,6 +406,7 @@ class Category extends DataClass implements Insertable<Category> {
       order: serializer.fromJson<int>(json['order']),
     );
   }
+
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
@@ -395,6 +420,7 @@ class Category extends DataClass implements Insertable<Category> {
         name: name ?? this.name,
         order: order ?? this.order,
       );
+
   @override
   String toString() {
     return (StringBuffer('Category(')..write('name: $name, ')..write('order: $order')..write(')')).toString();
@@ -402,6 +428,7 @@ class Category extends DataClass implements Insertable<Category> {
 
   @override
   int get hashCode => $mrjf($mrjc(name.hashCode, order.hashCode));
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) || (other is Category && other.name == this.name && other.order == this.order);
@@ -410,15 +437,18 @@ class Category extends DataClass implements Insertable<Category> {
 class CategoriesCompanion extends UpdateCompanion<Category> {
   final Value<String> name;
   final Value<int> order;
+
   const CategoriesCompanion({
     this.name = const Value.absent(),
     this.order = const Value.absent(),
   });
+
   CategoriesCompanion.insert({
     required String name,
     required int order,
   })  : name = Value(name),
         order = Value(order);
+
   static Insertable<Category> custom({
     Expression<String>? name,
     Expression<int>? order,
@@ -458,10 +488,13 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
 class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Category> {
   final GeneratedDatabase _db;
   final String? _alias;
+
   $CategoriesTable(this._db, [this._alias]);
+
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedTextColumn name = _constructName();
+
   GeneratedTextColumn _constructName() {
     return GeneratedTextColumn(
       'name',
@@ -473,6 +506,7 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
   final VerificationMeta _orderMeta = const VerificationMeta('order');
   @override
   late final GeneratedIntColumn order = _constructOrder();
+
   GeneratedIntColumn _constructOrder() {
     return GeneratedIntColumn(
       'order',
@@ -483,12 +517,15 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
 
   @override
   List<GeneratedColumn> get $columns => [name, order];
+
   @override
   $CategoriesTable get asDslTable => this;
+
   @override
   String get $tableName => _alias ?? 'categories';
   @override
   final String actualTableName = 'categories';
+
   @override
   VerificationContext validateIntegrity(Insertable<Category> instance, {bool isInserting = false}) {
     final context = VerificationContext();
@@ -508,6 +545,7 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
 
   @override
   Set<GeneratedColumn> get $primaryKey => {name};
+
   @override
   Category map(Map<String, dynamic> data, {String? tablePrefix}) {
     return Category.fromData(data, _db, prefix: tablePrefix != null ? '$tablePrefix.' : null);
@@ -523,7 +561,9 @@ class AppCategory extends DataClass implements Insertable<AppCategory> {
   final String categoryName;
   final String appPackageName;
   final int order;
+
   AppCategory({required this.categoryName, required this.appPackageName, required this.order});
+
   factory AppCategory.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return AppCategory(
@@ -532,6 +572,7 @@ class AppCategory extends DataClass implements Insertable<AppCategory> {
       order: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}order'])!,
     );
   }
+
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -557,6 +598,7 @@ class AppCategory extends DataClass implements Insertable<AppCategory> {
       order: serializer.fromJson<int>(json['order']),
     );
   }
+
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
@@ -572,6 +614,7 @@ class AppCategory extends DataClass implements Insertable<AppCategory> {
         appPackageName: appPackageName ?? this.appPackageName,
         order: order ?? this.order,
       );
+
   @override
   String toString() {
     return (StringBuffer('AppCategory(')
@@ -584,6 +627,7 @@ class AppCategory extends DataClass implements Insertable<AppCategory> {
 
   @override
   int get hashCode => $mrjf($mrjc(categoryName.hashCode, $mrjc(appPackageName.hashCode, order.hashCode)));
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -597,11 +641,13 @@ class AppsCategoriesCompanion extends UpdateCompanion<AppCategory> {
   final Value<String> categoryName;
   final Value<String> appPackageName;
   final Value<int> order;
+
   const AppsCategoriesCompanion({
     this.categoryName = const Value.absent(),
     this.appPackageName = const Value.absent(),
     this.order = const Value.absent(),
   });
+
   AppsCategoriesCompanion.insert({
     required String categoryName,
     required String appPackageName,
@@ -609,6 +655,7 @@ class AppsCategoriesCompanion extends UpdateCompanion<AppCategory> {
   })  : categoryName = Value(categoryName),
         appPackageName = Value(appPackageName),
         order = Value(order);
+
   static Insertable<AppCategory> custom({
     Expression<String>? categoryName,
     Expression<String>? appPackageName,
@@ -658,10 +705,13 @@ class AppsCategoriesCompanion extends UpdateCompanion<AppCategory> {
 class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategoriesTable, AppCategory> {
   final GeneratedDatabase _db;
   final String? _alias;
+
   $AppsCategoriesTable(this._db, [this._alias]);
+
   final VerificationMeta _categoryNameMeta = const VerificationMeta('categoryName');
   @override
   late final GeneratedTextColumn categoryName = _constructCategoryName();
+
   GeneratedTextColumn _constructCategoryName() {
     return GeneratedTextColumn('category_name', $tableName, false,
         $customConstraints: 'REFERENCES categories(name) ON DELETE CASCADE');
@@ -670,6 +720,7 @@ class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategories
   final VerificationMeta _appPackageNameMeta = const VerificationMeta('appPackageName');
   @override
   late final GeneratedTextColumn appPackageName = _constructAppPackageName();
+
   GeneratedTextColumn _constructAppPackageName() {
     return GeneratedTextColumn('app_package_name', $tableName, false,
         $customConstraints: 'REFERENCES apps(package_name) ON DELETE CASCADE');
@@ -678,6 +729,7 @@ class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategories
   final VerificationMeta _orderMeta = const VerificationMeta('order');
   @override
   late final GeneratedIntColumn order = _constructOrder();
+
   GeneratedIntColumn _constructOrder() {
     return GeneratedIntColumn(
       'order',
@@ -688,12 +740,15 @@ class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategories
 
   @override
   List<GeneratedColumn> get $columns => [categoryName, appPackageName, order];
+
   @override
   $AppsCategoriesTable get asDslTable => this;
+
   @override
   String get $tableName => _alias ?? 'apps_categories';
   @override
   final String actualTableName = 'apps_categories';
+
   @override
   VerificationContext validateIntegrity(Insertable<AppCategory> instance, {bool isInserting = false}) {
     final context = VerificationContext();
@@ -719,6 +774,7 @@ class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategories
 
   @override
   Set<GeneratedColumn> get $primaryKey => {categoryName, appPackageName};
+
   @override
   AppCategory map(Map<String, dynamic> data, {String? tablePrefix}) {
     return AppCategory.fromData(data, _db, prefix: tablePrefix != null ? '$tablePrefix.' : null);
@@ -735,8 +791,10 @@ abstract class _$FLauncherDatabase extends GeneratedDatabase {
   late final $AppsTable apps = $AppsTable(this);
   late final $CategoriesTable categories = $CategoriesTable(this);
   late final $AppsCategoriesTable appsCategories = $AppsCategoriesTable(this);
+
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
+
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [apps, categories, appsCategories];
 }
