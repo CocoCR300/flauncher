@@ -18,10 +18,10 @@
 
 import 'package:flauncher/apps_service.dart';
 import 'package:flauncher/settings_service.dart';
-import 'package:flauncher/wallpaper_service.dart';
 import 'package:flauncher/widgets/categories_dialog.dart';
 import 'package:flauncher/widgets/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
+import 'package:flauncher/widgets/wallpaper_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -67,7 +67,7 @@ class SettingsPanel extends StatelessWidget {
                 ),
                 onPressed: () => showDialog(
                   context: context,
-                  builder: (context) => _WallpaperDialog(),
+                  builder: (context) => WallpaperDialog(),
                 ),
               ),
               Divider(),
@@ -118,34 +118,5 @@ class SettingsPanel extends StatelessWidget {
             ],
           ),
         ),
-      );
-}
-
-class _WallpaperDialog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => SimpleDialog(
-        title: Text("Wallpaper"),
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                autofocus: true,
-                onPressed: () async {
-                  await context.read<WallpaperService>().pickWallpaper();
-                  Navigator.of(context).pop();
-                },
-                child: Text("SELECT"),
-              ),
-              TextButton(
-                onPressed: () async {
-                  await context.read<WallpaperService>().clearWallpaper();
-                  Navigator.of(context).pop();
-                },
-                child: Text("CLEAR"),
-              ),
-            ],
-          ),
-        ],
       );
 }

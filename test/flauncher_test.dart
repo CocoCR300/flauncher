@@ -202,9 +202,9 @@ void main() {
 
 Future<void> _pumpWidgetWithProviders(
   WidgetTester tester,
-  MockWallpaperService wallpaperService,
-  MockAppsService appsService,
-  MockSettingsService settingsService,
+  WallpaperService wallpaperService,
+  AppsService appsService,
+  SettingsService settingsService,
 ) async {
   await tester.pumpWidget(
     MultiProvider(

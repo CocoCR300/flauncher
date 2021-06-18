@@ -23,21 +23,20 @@ import 'package:image_picker_platform_interface/image_picker_platform_interface.
 import 'package:mockito/mockito.dart';
 import 'package:moor/moor.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
-
-import 'mocks.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 void main() {
-  late MockPathProviderPlatform pathProviderPlatform;
+  late _MockPathProviderPlatform pathProviderPlatform;
   setUpAll(() {
-    pathProviderPlatform = MockPathProviderPlatform();
+    pathProviderPlatform = _MockPathProviderPlatform();
     when(pathProviderPlatform.getApplicationDocumentsPath()).thenAnswer((_) => Future.value("."));
     PathProviderPlatform.instance = pathProviderPlatform;
   });
 
   test("pickWallpaper", () async {
-    final pickedFile = MockPickedFile();
+    final pickedFile = _MockPickedFile();
     when(pickedFile.readAsBytes()).thenAnswer((_) => Future.value(Uint8List.fromList([0x01])));
-    final imagePicker = MockImagePicker();
+    final imagePicker = _MockImagePicker();
     when(imagePicker.getImage(source: ImageSource.gallery)).thenAnswer((_) => Future.value(pickedFile));
     final wallpaperService = WallpaperService(imagePicker);
     await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
@@ -49,11 +48,56 @@ void main() {
   });
 
   test("clearWallpaper", () async {
-    final wallpaperService = WallpaperService(MockImagePicker());
+    final wallpaperService = WallpaperService(_MockImagePicker());
     await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
 
     await wallpaperService.clearWallpaper();
 
     expect(wallpaperService.wallpaperBytes, null);
   });
+}
+
+class _MockImagePicker extends Mock implements ImagePicker {
+  @override
+  Future<PickedFile?> getImage(
+          {required ImageSource source,
+          double? maxWidth,
+          double? maxHeight,
+          int? imageQuality,
+          CameraDevice preferredCameraDevice = CameraDevice.rear}) =>
+      super.noSuchMethod(
+          Invocation.method(#getImage, [], {
+            #source: source,
+            #maxWidth: maxWidth,
+            #maxHeight: maxHeight,
+            #imageQuality: imageQuality,
+            #preferredCameraDevice: preferredCameraDevice
+          }),
+          returnValue: Future<PickedFile?>.value());
+
+  @override
+  Future<LostData> getLostData() => super.noSuchMethod(Invocation.method(#getLostData, []));
+
+  @override
+  Future<PickedFile?> getVideo(
+          {required ImageSource source,
+          CameraDevice preferredCameraDevice = CameraDevice.rear,
+          Duration? maxDuration}) =>
+      super.noSuchMethod(
+          Invocation.method(#getVideo, [],
+              {#source: source, #preferredCameraDevice: preferredCameraDevice, #maxDuration: maxDuration}),
+          returnValue: Future<PickedFile?>.value());
+}
+
+// ignore: must_be_immutable
+class _MockPickedFile extends Mock implements PickedFile {
+  @override
+  Future<Uint8List> readAsBytes() => super
+      .noSuchMethod(Invocation.method(#readAsBytes, []), returnValue: Future<Uint8List>.value(Uint8List.fromList([])));
+}
+
+class _MockPathProviderPlatform extends Mock with MockPlatformInterfaceMixin implements PathProviderPlatform {
+  @override
+  Future<String?> getApplicationDocumentsPath() =>
+      super.noSuchMethod(Invocation.method(#getApplicationDocumentsPath, []), returnValue: Future<String?>.value());
 }

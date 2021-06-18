@@ -20,8 +20,6 @@ import 'dart:ui';
 
 import 'package:flauncher/apps_service.dart';
 import 'package:flauncher/database.dart';
-import 'package:flauncher/settings_service.dart';
-import 'package:flauncher/wallpaper_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/move_to_category_dialog.dart';
 import 'package:flutter/material.dart';
@@ -44,9 +42,7 @@ void main() {
   });
 
   testWidgets("'Move to...' opens MoveToCategoryDialog and sends its result to AppsService", (tester) async {
-    final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
-    final settingsService = MockSettingsService();
     final category1 = fakeCategory("Category 1", 0);
     final category2 = fakeCategory("Category 2", 1);
     final app = fakeApp(
@@ -61,7 +57,7 @@ void main() {
       CategoryWithApps(category1, [app]),
       CategoryWithApps(category2, []),
     ]);
-    await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService, category1, app);
+    await _pumpWidgetWithProviders(tester, appsService, category1, app);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
@@ -75,9 +71,7 @@ void main() {
   });
 
   testWidgets("'App info' calls AppsService", (tester) async {
-    final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
-    final settingsService = MockSettingsService();
     final category = fakeCategory("Category 1", 0);
     final app = fakeApp(
       "me.efesser.flauncher",
@@ -90,7 +84,7 @@ void main() {
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(category, [app]),
     ]);
-    await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService, category, app);
+    await _pumpWidgetWithProviders(tester, appsService, category, app);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -100,9 +94,7 @@ void main() {
   });
 
   testWidgets("'Uninstall' calls AppsService", (tester) async {
-    final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
-    final settingsService = MockSettingsService();
     final category = fakeCategory("Category 1", 0);
     final app = fakeApp(
       "me.efesser.flauncher",
@@ -115,7 +107,7 @@ void main() {
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(category, [app]),
     ]);
-    await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService, category, app);
+    await _pumpWidgetWithProviders(tester, appsService, category, app);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -128,18 +120,14 @@ void main() {
 
 Future<void> _pumpWidgetWithProviders(
   WidgetTester tester,
-  MockWallpaperService wallpaperService,
-  MockAppsService appsService,
-  MockSettingsService settingsService,
+  AppsService appsService,
   Category category,
   App application,
 ) async {
   await tester.pumpWidget(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<WallpaperService>.value(value: wallpaperService),
         ChangeNotifierProvider<AppsService>.value(value: appsService),
-        ChangeNotifierProvider<SettingsService>.value(value: settingsService),
       ],
       builder: (_, __) => MaterialApp(
         home: ApplicationInfoPanel(
