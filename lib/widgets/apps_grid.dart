@@ -102,7 +102,7 @@ class AppsGrid extends StatelessWidget {
     }
     if (newIndex != null) {
       final appsService = context.read<AppsService>();
-      appsService.moveApplication(category, index, newIndex);
+      appsService.reorderApplication(category, index, newIndex);
     }
   }
 

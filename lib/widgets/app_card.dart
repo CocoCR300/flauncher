@@ -194,7 +194,7 @@ class _AppCardState extends State<AppCard> {
         application: widget.application,
       ),
     );
-    if (result == ApplicationInfoPanelResult.moveApp) {
+    if (result == ApplicationInfoPanelResult.reorderApp) {
       setState(() => _moving = true);
     }
   }

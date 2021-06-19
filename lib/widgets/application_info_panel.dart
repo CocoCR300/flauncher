@@ -91,12 +91,12 @@ class ApplicationInfoPanel extends StatelessWidget {
                   Icon(Icons.open_with),
                   Container(width: 8),
                   Text(
-                    "Move",
+                    "Reorder",
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
               ),
-              onPressed: () => Navigator.of(context).pop(ApplicationInfoPanelResult.moveApp),
+              onPressed: () => Navigator.of(context).pop(ApplicationInfoPanelResult.reorderApp),
             ),
             Divider(),
             TextButton(
@@ -133,4 +133,4 @@ class ApplicationInfoPanel extends StatelessWidget {
       );
 }
 
-enum ApplicationInfoPanelResult { none, moveApp }
+enum ApplicationInfoPanelResult { none, reorderApp }

@@ -84,12 +84,21 @@ class CategoryRow extends StatelessWidget {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                             child: InkWell(
                               onTap: () => showDialog(context: context, builder: (_) => CategoriesDialog()),
-                              child: Center(child: Text("This category is empty.")),
+                              child: Padding(
+                                padding: EdgeInsets.all(16),
+                                child: Center(
+                                  child: Text(
+                                    "This category is empty.\nLong-press an app to move it here.",
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    )),
+                    ),
+                  ),
           ),
         ],
       );
@@ -115,7 +124,7 @@ class CategoryRow extends StatelessWidget {
     }
     if (newIndex != null) {
       final appsService = context.read<AppsService>();
-      appsService.moveApplication(category, index, newIndex);
+      appsService.reorderApplication(category, index, newIndex);
     }
   }
 

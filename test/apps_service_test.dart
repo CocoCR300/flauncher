@@ -220,7 +220,7 @@ void main() {
     verify(database.listCategoriesWithApps());
   });
 
-  test("moveApplication changes application order in-memory", () async {
+  test("reorderApplication changes application order in-memory", () async {
     final channel = MockFLauncherChannel();
     final database = MockFLauncherDatabase();
     final category = fakeCategory("Category");
@@ -228,7 +228,7 @@ void main() {
       CategoryWithApps(category, [fakeApp("app.1"), fakeApp("app.2")])
     ]);
 
-    appsService.moveApplication(category, 1, 0);
+    appsService.reorderApplication(category, 1, 0);
 
     expect(appsService.categoriesWithApps[0].applications[0].packageName, "app.2");
     expect(appsService.categoriesWithApps[0].applications[1].packageName, "app.1");

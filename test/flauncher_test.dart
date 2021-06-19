@@ -73,7 +73,7 @@ void main() {
     expect(find.byType(AppsGrid), findsOneWidget);
     expect(find.byKey(Key("me.efesser.flauncher")), findsOneWidget);
     expect(find.byType(CategoryRow), findsOneWidget);
-    expect(find.text("This category is empty."), findsOneWidget);
+    expect(find.text("This category is empty.\nLong-press an app to move it here."), findsOneWidget);
     expect(tester.widget(find.byKey(Key("background"))), isA<Container>());
   });
 
@@ -197,7 +197,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pumpAndSettle();
-    verify(appsService.moveApplication(category, 0, 1));
+    verify(appsService.reorderApplication(category, 0, 1));
     await tester.sendKeyEvent(LogicalKeyboardKey.select);
     await tester.pumpAndSettle();
     verify(appsService.saveOrderInCategory(category));

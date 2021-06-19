@@ -130,7 +130,7 @@ class AppsService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void moveApplication(Category category, int oldIndex, int newIndex) {
+  void reorderApplication(Category category, int oldIndex, int newIndex) {
     final applications = _categoriesWithApps.firstWhere((element) => element.category.id == category.id).applications;
     final application = applications.removeAt(oldIndex);
     applications.insert(newIndex, application);
