@@ -89,7 +89,7 @@ void main() {
     expect(tester.widget(find.byKey(Key("background"))), isA<Image>());
   });
 
-  testWidgets("Tapping settings icon opens SettingsPanel", (tester) async {
+  testWidgets("Pressing select on settings icon opens SettingsPanel", (tester) async {
     final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
@@ -101,13 +101,15 @@ void main() {
     when(settingsService.crashReportsEnabled).thenReturn(false);
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
-    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
 
     expect(find.byType(SettingsPanel), findsOneWidget);
   });
 
-  testWidgets("Tapping on app opens ApplicationInfoPanel", (tester) async {
+  testWidgets("Pressing select on app opens ApplicationInfoPanel", (tester) async {
     final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
@@ -126,7 +128,7 @@ void main() {
     ]);
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
-    await tester.tap(find.byKey(Key("me.efesser.flauncher")));
+    await tester.sendKeyEvent(LogicalKeyboardKey.select);
     await tester.pumpAndSettle();
 
     verify(appsService.launchApp(app));
@@ -189,7 +191,9 @@ void main() {
 
     await tester.longPress(find.byKey(Key("me.efesser.flauncher")));
     await tester.pumpAndSettle();
-    await tester.tap(find.text("Move"));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pumpAndSettle();

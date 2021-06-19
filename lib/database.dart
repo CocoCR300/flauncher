@@ -44,24 +44,23 @@ class Apps extends Table {
 
 @DataClassName("Category")
 class Categories extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
   TextColumn get name => text()();
 
   IntColumn get order => integer()();
-
-  @override
-  Set<Column> get primaryKey => {name};
 }
 
 @DataClassName("AppCategory")
 class AppsCategories extends Table {
-  TextColumn get categoryName => text().customConstraint("REFERENCES categories(name) ON DELETE CASCADE")();
+  IntColumn get categoryId => integer().customConstraint("REFERENCES categories(id) ON DELETE CASCADE")();
 
   TextColumn get appPackageName => text().customConstraint("REFERENCES apps(package_name) ON DELETE CASCADE")();
 
   IntColumn get order => integer()();
 
   @override
-  Set<Column> get primaryKey => {categoryName, appPackageName};
+  Set<Column> get primaryKey => {categoryId, appPackageName};
 }
 
 class CategoryWithApps {
@@ -92,27 +91,30 @@ class FLauncherDatabase extends _$FLauncherDatabase {
   Future<void> persistApps(List<AppsCompanion> applications) =>
       batch((batch) => batch.insertAllOnConflictUpdate(apps, applications));
 
-  Future<void> deleteApps(List<AppsCompanion> applications) =>
-      (delete(apps)..where((tbl) => tbl.packageName.isIn(applications.map((e) => e.packageName.value)))).go();
+  Future<void> deleteApps(List<String> packageNames) =>
+      (delete(apps)..where((tbl) => tbl.packageName.isIn(packageNames))).go();
+
+  Future<Category> getCategory(String name) => (select(categories)..where((tbl) => tbl.name.equals(name))).getSingle();
 
   Future<void> insertCategory(CategoriesCompanion category) => into(categories).insert(category);
 
-  Future<void> deleteCategory(CategoriesCompanion category) => (delete(categories)..whereSamePrimaryKey(category)).go();
+  Future<void> deleteCategory(int id) => (delete(categories)..where((tbl) => tbl.id.equals(id))).go();
 
   Future<void> persistCategories(List<CategoriesCompanion> value) =>
       batch((batch) => batch.insertAllOnConflictUpdate(categories, value));
 
   Future<void> insertAppCategory(AppsCategoriesCompanion appCategory) => into(appsCategories).insert(appCategory);
 
-  Future<void> deleteAppCategory(AppsCategoriesCompanion appCategory) =>
-      (delete(appsCategories)..whereSamePrimaryKey(appCategory)).go();
+  Future<void> deleteAppCategory(int categoryId, String packageName) => (delete(appsCategories)
+        ..where((tbl) => tbl.categoryId.equals(categoryId) & tbl.appPackageName.equals(packageName)))
+      .go();
 
   Future<void> persistAppsCategories(List<AppsCategoriesCompanion> value) =>
       batch((batch) => batch.insertAllOnConflictUpdate(appsCategories, value));
 
   Future<List<CategoryWithApps>> listCategoriesWithApps() async {
     final query = select(categories).join([
-      leftOuterJoin(appsCategories, appsCategories.categoryName.equalsExp(categories.name)),
+      leftOuterJoin(appsCategories, appsCategories.categoryId.equalsExp(categories.id)),
       leftOuterJoin(apps, apps.packageName.equalsExp(appsCategories.appPackageName)),
     ]);
     query.orderBy([OrderingTerm.asc(categories.order), OrderingTerm.asc(appsCategories.order)]);
@@ -130,11 +132,11 @@ class FLauncherDatabase extends _$FLauncherDatabase {
     return categoriesToApps.entries.map((entry) => CategoryWithApps(entry.key, entry.value)).toList();
   }
 
-  Future<int> nextAppCategoryOrder(CategoriesCompanion category) async {
+  Future<int> nextAppCategoryOrder(int categoryId) async {
     final query = selectOnly(appsCategories);
     var maxExpression = coalesce([appsCategories.order.max(), Constant(-1)]) + Constant(1);
     query.addColumns([maxExpression]);
-    query.where(appsCategories.categoryName.equals(category.name.value));
+    query.where(appsCategories.categoryId.equals(categoryId));
     final result = await query.getSingle();
     return result.read(maxExpression);
   }

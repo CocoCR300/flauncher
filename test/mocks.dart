@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:math';
+
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flauncher/apps_service.dart';
 import 'package:flauncher/database.dart';
@@ -45,4 +47,5 @@ App fakeApp([
 ]) =>
     App(packageName: packageName, name: name, className: className, version: version, banner: banner, icon: icon);
 
-Category fakeCategory([String name = "Favorites", int order = 0]) => Category(name: name, order: order);
+Category fakeCategory([String name = "Favorites", int order = 0]) =>
+    Category(id: Random().nextInt(1 << 32), name: name, order: order);

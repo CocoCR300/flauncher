@@ -70,7 +70,7 @@ class AppsService extends ChangeNotifier {
 
     final uninstalledApplications = applications
         .where((app) => !appsFromSystem.any((systemApp) => systemApp.packageName.value == app.packageName))
-        .map((app) => app.toCompanion(false))
+        .map((app) => app.packageName)
         .toList();
 
     await _database.persistApps(appsFromSystem);
@@ -78,10 +78,11 @@ class AppsService extends ChangeNotifier {
     applications = await _database.listApplications();
 
     if (newAppsPackages.isNotEmpty) {
-      int index = await _database.nextAppCategoryOrder(CategoriesCompanion(name: Value("Applications")));
+      final applicationsCategory = await _database.getCategory("Applications");
+      int index = await _database.nextAppCategoryOrder(applicationsCategory.id);
       final newAppCategories = newAppsPackages
           .map((systemAppPackage) => AppsCategoriesCompanion.insert(
-              categoryName: "Applications", appPackageName: systemAppPackage, order: index++))
+              categoryId: applicationsCategory.id, appPackageName: systemAppPackage, order: index++))
           .toList();
       await _database.persistAppsCategories(newAppCategories);
     }
@@ -100,17 +101,12 @@ class AppsService extends ChangeNotifier {
   Future<bool> isDefaultLauncher() => _fLauncherChannel.isDefaultLauncher();
 
   Future<void> moveToCategory(App app, Category oldCategory, Category newCategory) async {
-    await _database.deleteAppCategory(
-      AppsCategoriesCompanion(
-        categoryName: Value(oldCategory.name),
-        appPackageName: Value(app.packageName),
-      ),
-    );
+    await _database.deleteAppCategory(oldCategory.id, app.packageName);
 
-    int index = await _database.nextAppCategoryOrder(newCategory.toCompanion(false));
+    int index = await _database.nextAppCategoryOrder(newCategory.id);
     await _database.insertAppCategory(
       AppsCategoriesCompanion.insert(
-        categoryName: newCategory.name,
+        categoryId: newCategory.id,
         appPackageName: app.packageName,
         order: index,
       ),
@@ -120,11 +116,11 @@ class AppsService extends ChangeNotifier {
   }
 
   Future<void> saveOrderInCategory(Category category) async {
-    final applications = _categoriesWithApps.firstWhere((element) => element.category == category).applications;
+    final applications = _categoriesWithApps.firstWhere((element) => element.category.id == category.id).applications;
     final orderedAppCategories = <AppsCategoriesCompanion>[];
     for (int i = 0; i < applications.length; ++i) {
       orderedAppCategories.add(AppsCategoriesCompanion(
-        categoryName: Value(category.name),
+        categoryId: Value(category.id),
         appPackageName: Value(applications[i].packageName),
         order: Value(i),
       ));
@@ -135,7 +131,7 @@ class AppsService extends ChangeNotifier {
   }
 
   void moveApplication(Category category, int oldIndex, int newIndex) {
-    final applications = _categoriesWithApps.firstWhere((element) => element.category == category).applications;
+    final applications = _categoriesWithApps.firstWhere((element) => element.category.id == category.id).applications;
     final application = applications.removeAt(oldIndex);
     applications.insert(newIndex, application);
     notifyListeners();
@@ -158,16 +154,16 @@ class AppsService extends ChangeNotifier {
   Future<void> deleteCategory(Category category) async {
     final applicationsCategory = _categoriesWithApps.firstWhere((e) => e.category.name == "Applications").category;
     final applications = _categoriesWithApps.firstWhere((element) => element.category == category).applications;
-    int index = await _database.nextAppCategoryOrder(applicationsCategory.toCompanion(false));
+    int index = await _database.nextAppCategoryOrder(applicationsCategory.id);
     var appsCategories = applications
         .map((app) => AppsCategoriesCompanion.insert(
-              categoryName: applicationsCategory.name,
+              categoryId: applicationsCategory.id,
               appPackageName: app.packageName,
               order: index++,
             ))
         .toList();
     await _database.persistAppsCategories(appsCategories);
-    await _database.deleteCategory(category.toCompanion(false));
+    await _database.deleteCategory(category.id);
     _categoriesWithApps = await _database.listCategoriesWithApps();
     notifyListeners();
   }
