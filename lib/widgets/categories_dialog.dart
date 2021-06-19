@@ -87,7 +87,7 @@ class CategoriesDialogState extends State<CategoriesDialog> {
       );
 
   Widget _categoryTile(List<CategoryWithApps> categories, int index, BuildContext context) => Padding(
-        key: Key(categories[index].category.name),
+        key: Key(categories[index].category.id.toString()),
         padding: EdgeInsets.only(bottom: 8),
         child: Card(
           margin: EdgeInsets.zero,
@@ -117,6 +117,14 @@ class CategoriesDialogState extends State<CategoriesDialog> {
                   IconButton(
                     constraints: BoxConstraints(),
                     splashRadius: 20,
+                    icon: Icon(Icons.edit),
+                    onPressed: categories[index].category.name != "Applications"
+                        ? () => _renameCategory(context, categories[index].category)
+                        : null,
+                  ),
+                  IconButton(
+                    constraints: BoxConstraints(),
+                    splashRadius: 20,
                     icon: Icon(Icons.delete),
                     onPressed: categories[index].category.name != "Applications"
                         ? () => _deleteCategory(context, categories[index].category)
@@ -131,6 +139,14 @@ class CategoriesDialogState extends State<CategoriesDialog> {
 
   Future<void> _move(int oldIndex, int newIndex) async {
     await context.read<AppsService>().moveCategory(oldIndex, newIndex);
+  }
+
+  Future<void> _renameCategory(BuildContext context, Category category) async {
+    final categoryName =
+        await showDialog<String>(context: context, builder: (_) => AddCategoryDialog(initialValue: category.name));
+    if (categoryName != null) {
+      await context.read<AppsService>().renameCategory(category, categoryName);
+    }
   }
 
   Future<void> _deleteCategory(BuildContext context, Category category) async {

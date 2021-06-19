@@ -138,7 +138,7 @@ class AppsService extends ChangeNotifier {
   }
 
   Future<void> addCategory(String categoryName) async {
-    if (_categoriesWithApps.any((element) => element.category.name == categoryName)) {
+    if (categoryName == "Applications") {
       return;
     }
     final orderedCategories = <CategoriesCompanion>[];
@@ -147,6 +147,15 @@ class AppsService extends ChangeNotifier {
     }
     await _database.insertCategory(CategoriesCompanion.insert(name: categoryName, order: 0));
     await _database.persistCategories(orderedCategories);
+    _categoriesWithApps = await _database.listCategoriesWithApps();
+    notifyListeners();
+  }
+
+  Future<void> renameCategory(Category category, String categoryName) async {
+    if (categoryName == "Applications") {
+      return;
+    }
+    await _database.persistCategories([category.copyWith(name: categoryName).toCompanion(false)]);
     _categoriesWithApps = await _database.listCategoriesWithApps();
     notifyListeners();
   }

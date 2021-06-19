@@ -30,13 +30,13 @@ class CategoryRow extends StatelessWidget {
   final List<App> applications;
 
   CategoryRow({
+    Key? key,
     required this.category,
     required this.applications,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Column(
-        key: Key(category.name),
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
@@ -54,7 +54,7 @@ class CategoryRow extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     childrenDelegate: SliverChildBuilderDelegate(
                       (context, index) => EnsureVisible(
-                        key: Key("${category.name}-${applications[index].packageName}"),
+                        key: Key("${category.id}-${applications[index].packageName}"),
                         alignment: 0.1,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8),

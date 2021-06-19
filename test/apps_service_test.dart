@@ -253,16 +253,51 @@ void main() {
       verify(database.listCategoriesWithApps());
     });
 
-    test("with existing category name does nothing", () async {
+    test("with 'Applications' category name does nothing", () async {
       final channel = MockFLauncherChannel();
       final database = MockFLauncherDatabase();
       final appsService = await _buildInitialisedAppsService(
         channel,
         database,
-        [CategoryWithApps(fakeCategory("Existing Category", 0), [])],
+        [CategoryWithApps(fakeCategory("Applications", 0), [])],
       );
 
-      await appsService.addCategory("Existing Category");
+      await appsService.addCategory("Applications");
+
+      verifyZeroInteractions(database);
+    });
+  });
+
+  group("renameCategory", () {
+    test("renames category", () async {
+      final channel = MockFLauncherChannel();
+      final database = MockFLauncherDatabase();
+      final category = fakeCategory("Old name", 0);
+      final appsService = await _buildInitialisedAppsService(
+        channel,
+        database,
+        [CategoryWithApps(category, [])],
+      );
+
+      await appsService.renameCategory(category, "New name");
+
+      verify(database.persistCategories(
+        [CategoriesCompanion(id: Value(category.id), name: Value("New name"), order: Value(0))],
+      ));
+      verify(database.listCategoriesWithApps());
+    });
+
+    test("with 'Applications' category name does nothing", () async {
+      final channel = MockFLauncherChannel();
+      final database = MockFLauncherDatabase();
+      final category = fakeCategory("Old name", 0);
+      final appsService = await _buildInitialisedAppsService(
+        channel,
+        database,
+        [CategoryWithApps(category, [])],
+      );
+
+      await appsService.renameCategory(category, "Applications");
 
       verifyZeroInteractions(database);
     });

@@ -33,9 +33,10 @@ class AppsGrid extends StatelessWidget {
   final List<App> applications;
 
   AppsGrid({
+    Key? key,
     required this.category,
     required this.applications,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => EnsureVisible(

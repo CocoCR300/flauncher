@@ -78,13 +78,16 @@ class FLauncherDatabase extends _$FLauncherDatabase {
   int get schemaVersion => 1;
 
   @override
-  MigrationStrategy get migration => MigrationStrategy(beforeOpen: (_) async {
-        await customStatement('PRAGMA foreign_keys = ON;');
-      }, onCreate: (migrator) async {
-        await migrator.createAll();
-        await insertCategory(CategoriesCompanion.insert(name: "Favorites", order: 0));
-        await insertCategory(CategoriesCompanion.insert(name: "Applications", order: 1));
-      });
+  MigrationStrategy get migration => MigrationStrategy(
+        beforeOpen: (_) async {
+          await customStatement('PRAGMA foreign_keys = ON;');
+        },
+        onCreate: (migrator) async {
+          await migrator.createAll();
+          await insertCategory(CategoriesCompanion.insert(name: "Favorites", order: 0));
+          await insertCategory(CategoriesCompanion.insert(name: "Applications", order: 1));
+        },
+      );
 
   Future<List<App>> listApplications() => select(apps).get();
 
