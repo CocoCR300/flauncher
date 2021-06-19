@@ -103,7 +103,7 @@ class MainActivity : FlutterActivity() {
             .map(ResolveInfo::activityInfo)
             .map {
                 mapOf(
-                        "name" to it.loadLabel(packageManager),
+                        "name" to it.loadLabel(packageManager).toString(),
                         "packageName" to it.packageName,
                         "banner" to it.loadBanner(packageManager)?.let(::drawableToByteArray),
                         "icon" to it.loadIcon(packageManager)?.let(::drawableToByteArray),
