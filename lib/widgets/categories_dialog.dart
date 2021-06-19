@@ -73,6 +73,7 @@ class CategoriesDialogState extends State<CategoriesDialog> {
               TextButton.icon(
                 icon: Icon(Icons.add),
                 label: Text("Add Category"),
+                autofocus: true,
                 onPressed: () async {
                   final categoryName = await showDialog<String>(context: context, builder: (_) => AddCategoryDialog());
                   if (categoryName != null) {

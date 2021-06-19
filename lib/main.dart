@@ -95,15 +95,13 @@ class App extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
-          shortcuts: WidgetsApp.defaultShortcuts
-            ..addAll(
-              {LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent()},
-            ),
+          shortcuts: {...WidgetsApp.defaultShortcuts, LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent()},
           title: 'FLauncher',
           theme: ThemeData(
             brightness: Brightness.dark,
             primarySwatch: _swatch,
             toggleableActiveColor: _swatch[200],
+            // ignore: deprecated_member_use
             accentColor: _swatch[200],
             cardColor: _swatch[300],
             dialogBackgroundColor: _swatch[400],
