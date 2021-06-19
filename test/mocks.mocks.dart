@@ -108,6 +108,10 @@ class MockFLauncherChannel extends _i1.Mock implements _i10.FLauncherChannel {
       (super.noSuchMethod(Invocation.method(#isDefaultLauncher, []), returnValue: Future<bool>.value(false))
           as _i11.Future<bool>);
   @override
+  _i11.Future<bool> checkForGetContentAvailability() => (super
+          .noSuchMethod(Invocation.method(#checkForGetContentAvailability, []), returnValue: Future<bool>.value(false))
+      as _i11.Future<bool>);
+  @override
   void addAppsChangedListener(void Function(Map<dynamic, dynamic>)? listener) =>
       super.noSuchMethod(Invocation.method(#addAppsChangedListener, [listener]), returnValueForMissingStub: null);
 }
@@ -399,6 +403,10 @@ class MockAppsService extends _i1.Mock implements _i15.AppsService {
   @override
   _i11.Future<void> addCategory(String? categoryName) =>
       (super.noSuchMethod(Invocation.method(#addCategory, [categoryName]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+  @override
+  _i11.Future<void> renameCategory(_i3.Category? category, String? categoryName) =>
+      (super.noSuchMethod(Invocation.method(#renameCategory, [category, categoryName]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
   @override
   _i11.Future<void> deleteCategory(_i3.Category? category) =>

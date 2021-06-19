@@ -18,11 +18,8 @@
 
 package me.efesser.flauncher
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.content.Intent.CATEGORY_LEANBACK_LAUNCHER
-import android.content.IntentFilter
 import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -30,6 +27,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.Settings
 import androidx.annotation.NonNull
+import androidx.core.content.MimeTypeFilter
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
@@ -68,6 +66,9 @@ class MainActivity : FlutterActivity() {
                 }
                 "isDefaultLauncher" -> {
                     result.success(isDefaultLauncher())
+                }
+                "checkForGetContentAvailability" -> {
+                    result.success(checkForGetContentAvailability())
                 }
                 else -> throw IllegalArgumentException()
             }
@@ -159,6 +160,13 @@ class MainActivity : FlutterActivity() {
                 .setData(Uri.fromParts("package", packageName, null))
                 .let(::startActivity)
         true
+    } catch (e: Exception) {
+        false
+    }
+
+    private fun checkForGetContentAvailability() = try {
+        val intentActivities = packageManager.queryIntentActivities(Intent(Intent.ACTION_GET_CONTENT, null).setTypeAndNormalize("image/*"), 0)
+        intentActivities.isNotEmpty()
     } catch (e: Exception) {
         false
     }

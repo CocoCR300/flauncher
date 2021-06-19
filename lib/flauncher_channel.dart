@@ -38,6 +38,9 @@ class FLauncherChannel {
 
   Future<bool> isDefaultLauncher() async => await _methodChannel.invokeMethod('isDefaultLauncher');
 
+  Future<bool> checkForGetContentAvailability() async =>
+      await _methodChannel.invokeMethod("checkForGetContentAvailability");
+
   void addAppsChangedListener(void Function(Map<dynamic, dynamic>) listener) =>
       _eventChannel.receiveBroadcastStream().listen((event) => listener(event));
 }

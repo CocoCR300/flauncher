@@ -25,6 +25,8 @@ import 'package:moor/moor.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import 'mocks.mocks.dart';
+
 void main() {
   late _MockPathProviderPlatform pathProviderPlatform;
   setUpAll(() {
@@ -33,22 +35,39 @@ void main() {
     PathProviderPlatform.instance = pathProviderPlatform;
   });
 
-  test("pickWallpaper", () async {
-    final pickedFile = _MockPickedFile();
-    when(pickedFile.readAsBytes()).thenAnswer((_) => Future.value(Uint8List.fromList([0x01])));
-    final imagePicker = _MockImagePicker();
-    when(imagePicker.getImage(source: ImageSource.gallery)).thenAnswer((_) => Future.value(pickedFile));
-    final wallpaperService = WallpaperService(imagePicker);
-    await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
+  group("pickWallpaper", () {
+    test("picks image", () async {
+      final pickedFile = _MockPickedFile();
+      when(pickedFile.readAsBytes()).thenAnswer((_) => Future.value(Uint8List.fromList([0x01])));
+      final imagePicker = _MockImagePicker();
+      final fLauncherChannel = MockFLauncherChannel();
+      when(imagePicker.getImage(source: ImageSource.gallery)).thenAnswer((_) => Future.value(pickedFile));
+      when(fLauncherChannel.checkForGetContentAvailability()).thenAnswer((_) => Future.value(true));
+      final wallpaperService = WallpaperService(imagePicker, fLauncherChannel);
+      await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
 
-    await wallpaperService.pickWallpaper();
+      await wallpaperService.pickWallpaper();
 
-    verify(imagePicker.getImage(source: ImageSource.gallery));
-    expect(wallpaperService.wallpaperBytes, [0x01]);
+      verify(imagePicker.getImage(source: ImageSource.gallery));
+      expect(wallpaperService.wallpaperBytes, [0x01]);
+    });
+
+    test("throws error when no file explorer installed", () async {
+      final pickedFile = _MockPickedFile();
+      when(pickedFile.readAsBytes()).thenAnswer((_) => Future.value(Uint8List.fromList([0x01])));
+      final imagePicker = _MockImagePicker();
+      final fLauncherChannel = MockFLauncherChannel();
+      when(imagePicker.getImage(source: ImageSource.gallery)).thenAnswer((_) => Future.value(pickedFile));
+      when(fLauncherChannel.checkForGetContentAvailability()).thenAnswer((_) => Future.value(false));
+      final wallpaperService = WallpaperService(imagePicker, fLauncherChannel);
+      await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
+
+      expect(() async => await wallpaperService.pickWallpaper(), throwsA(isInstanceOf<NoFileExplorerException>()));
+    });
   });
 
   test("clearWallpaper", () async {
-    final wallpaperService = WallpaperService(_MockImagePicker());
+    final wallpaperService = WallpaperService(_MockImagePicker(), MockFLauncherChannel());
     await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
 
     await wallpaperService.clearWallpaper();

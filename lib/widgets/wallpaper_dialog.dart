@@ -22,29 +22,47 @@ import 'package:provider/provider.dart';
 
 class WallpaperDialog extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => SimpleDialog(
-        title: Text("Wallpaper"),
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                autofocus: true,
-                onPressed: () async {
-                  await context.read<WallpaperService>().pickWallpaper();
-                  Navigator.of(context).pop();
-                },
-                child: Text("SELECT"),
-              ),
-              TextButton(
-                onPressed: () async {
-                  await context.read<WallpaperService>().clearWallpaper();
-                  Navigator.of(context).pop();
-                },
-                child: Text("CLEAR"),
-              ),
-            ],
-          ),
-        ],
+  Widget build(BuildContext context) => Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SimpleDialog(
+          title: Text("Wallpaper"),
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  autofocus: true,
+                  onPressed: () async {
+                    try {
+                      await context.read<WallpaperService>().pickWallpaper();
+                      Navigator.of(context).pop();
+                    } on NoFileExplorerException {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: Duration(seconds: 8),
+                          content: Row(
+                            children: [
+                              Icon(Icons.error_outline, color: Colors.red),
+                              SizedBox(width: 8),
+                              Text("Please install a file explorer in order pick an image.")
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text("SELECT"),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await context.read<WallpaperService>().clearWallpaper();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("CLEAR"),
+                ),
+              ],
+            ),
+          ],
+        ),
       );
 }

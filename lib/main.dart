@@ -87,7 +87,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => WallpaperService(_imagePicker)),
+          ChangeNotifierProvider(create: (_) => WallpaperService(_imagePicker, _fLauncherChannel)),
           ChangeNotifierProvider(create: (_) => AppsService(_fLauncherChannel, _fLauncherDatabase)),
           ChangeNotifierProvider(
             create: (_) => SettingsService(_sharedPreferences, _firebaseCrashlytics),

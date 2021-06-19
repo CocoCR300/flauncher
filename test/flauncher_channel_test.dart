@@ -130,4 +130,19 @@ void main() {
 
     expect(isDefaultLauncher, isTrue);
   });
+
+  test("checkForGetContentAvailability", () async {
+    final channel = MethodChannel('me.efesser.flauncher/method');
+    channel.setMockMethodCallHandler((call) async {
+      if (call.method == "checkForGetContentAvailability") {
+        return true;
+      }
+      fail("Unhandled method name");
+    });
+    final fLauncherChannel = FLauncherChannel();
+
+    final getContentAvailable = await fLauncherChannel.checkForGetContentAvailability();
+
+    expect(getContentAvailable, isTrue);
+  });
 }
