@@ -49,7 +49,7 @@ class MainActivity : FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, METHOD_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "getInstalledApplications" -> result.success(getInstalledApplications())
-                "launchApp" -> (call.arguments as List<*>).let { result.success(launchApp(it[0] as String, it[1] as String)) }
+                "launchApp" -> result.success(launchApp(call.arguments as String))
                 "openSettings" -> result.success(openSettings())
                 "openAppInfo" -> result.success(openAppInfo(call.arguments as String))
                 "uninstallApp" -> result.success(uninstallApp(call.arguments as String))
@@ -93,17 +93,13 @@ class MainActivity : FlutterActivity() {
                         "packageName" to it.packageName,
                         "banner" to it.loadBanner(packageManager)?.let(::drawableToByteArray),
                         "icon" to it.loadIcon(packageManager)?.let(::drawableToByteArray),
-                        "className" to it.name,
                         "version" to packageManager.getPackageInfo(it.packageName, 0).versionName,
                 )
             }
             .sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it["name"] as String })
 
-    private fun launchApp(packageName: String, className: String) = try {
-        Intent(Intent.ACTION_MAIN)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .setClassName(packageName, className)
-                .let(::startActivity)
+    private fun launchApp(packageName: String) = try {
+        startActivity(packageManager.getLeanbackLaunchIntentForPackage(packageName))
         true
     } catch (e: Exception) {
         false

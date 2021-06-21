@@ -54,7 +54,6 @@ class AppsService extends ChangeNotifier {
         .map((data) => AppsCompanion.insert(
               packageName: data["packageName"],
               name: data["name"],
-              className: data["className"],
               version: data["version"],
               banner: Value(data["banner"]),
               icon: Value(data["icon"]),
@@ -90,7 +89,7 @@ class AppsService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> launchApp(App app) => _fLauncherChannel.launchApp(app.packageName, app.className);
+  Future<void> launchApp(App app) => _fLauncherChannel.launchApp(app.packageName);
 
   Future<void> openAppInfo(App app) => _fLauncherChannel.openAppInfo(app.packageName);
 

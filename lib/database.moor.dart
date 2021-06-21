@@ -10,23 +10,15 @@ part of 'database.dart';
 class App extends DataClass implements Insertable<App> {
   final String packageName;
   final String name;
-  final String className;
   final String version;
   final Uint8List? banner;
   final Uint8List? icon;
-  App(
-      {required this.packageName,
-      required this.name,
-      required this.className,
-      required this.version,
-      this.banner,
-      this.icon});
+  App({required this.packageName, required this.name, required this.version, this.banner, this.icon});
   factory App.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return App(
       packageName: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}package_name'])!,
       name: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
-      className: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}class_name'])!,
       version: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}version'])!,
       banner: const BlobType().mapFromDatabaseResponse(data['${effectivePrefix}banner']),
       icon: const BlobType().mapFromDatabaseResponse(data['${effectivePrefix}icon']),
@@ -37,7 +29,6 @@ class App extends DataClass implements Insertable<App> {
     final map = <String, Expression>{};
     map['package_name'] = Variable<String>(packageName);
     map['name'] = Variable<String>(name);
-    map['class_name'] = Variable<String>(className);
     map['version'] = Variable<String>(version);
     if (!nullToAbsent || banner != null) {
       map['banner'] = Variable<Uint8List?>(banner);
@@ -52,7 +43,6 @@ class App extends DataClass implements Insertable<App> {
     return AppsCompanion(
       packageName: Value(packageName),
       name: Value(name),
-      className: Value(className),
       version: Value(version),
       banner: banner == null && nullToAbsent ? const Value.absent() : Value(banner),
       icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
@@ -64,7 +54,6 @@ class App extends DataClass implements Insertable<App> {
     return App(
       packageName: serializer.fromJson<String>(json['packageName']),
       name: serializer.fromJson<String>(json['name']),
-      className: serializer.fromJson<String>(json['className']),
       version: serializer.fromJson<String>(json['version']),
       banner: serializer.fromJson<Uint8List?>(json['banner']),
       icon: serializer.fromJson<Uint8List?>(json['icon']),
@@ -76,24 +65,15 @@ class App extends DataClass implements Insertable<App> {
     return <String, dynamic>{
       'packageName': serializer.toJson<String>(packageName),
       'name': serializer.toJson<String>(name),
-      'className': serializer.toJson<String>(className),
       'version': serializer.toJson<String>(version),
       'banner': serializer.toJson<Uint8List?>(banner),
       'icon': serializer.toJson<Uint8List?>(icon),
     };
   }
 
-  App copyWith(
-          {String? packageName,
-          String? name,
-          String? className,
-          String? version,
-          Uint8List? banner,
-          Uint8List? icon}) =>
-      App(
+  App copyWith({String? packageName, String? name, String? version, Uint8List? banner, Uint8List? icon}) => App(
         packageName: packageName ?? this.packageName,
         name: name ?? this.name,
-        className: className ?? this.className,
         version: version ?? this.version,
         banner: banner ?? this.banner,
         icon: icon ?? this.icon,
@@ -103,7 +83,6 @@ class App extends DataClass implements Insertable<App> {
     return (StringBuffer('App(')
           ..write('packageName: $packageName, ')
           ..write('name: $name, ')
-          ..write('className: $className, ')
           ..write('version: $version, ')
           ..write('banner: $banner, ')
           ..write('icon: $icon')
@@ -112,15 +91,14 @@ class App extends DataClass implements Insertable<App> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(packageName.hashCode,
-      $mrjc(name.hashCode, $mrjc(className.hashCode, $mrjc(version.hashCode, $mrjc(banner.hashCode, icon.hashCode))))));
+  int get hashCode => $mrjf($mrjc(
+      packageName.hashCode, $mrjc(name.hashCode, $mrjc(version.hashCode, $mrjc(banner.hashCode, icon.hashCode)))));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is App &&
           other.packageName == this.packageName &&
           other.name == this.name &&
-          other.className == this.className &&
           other.version == this.version &&
           other.banner == this.banner &&
           other.icon == this.icon);
@@ -129,14 +107,12 @@ class App extends DataClass implements Insertable<App> {
 class AppsCompanion extends UpdateCompanion<App> {
   final Value<String> packageName;
   final Value<String> name;
-  final Value<String> className;
   final Value<String> version;
   final Value<Uint8List?> banner;
   final Value<Uint8List?> icon;
   const AppsCompanion({
     this.packageName = const Value.absent(),
     this.name = const Value.absent(),
-    this.className = const Value.absent(),
     this.version = const Value.absent(),
     this.banner = const Value.absent(),
     this.icon = const Value.absent(),
@@ -144,18 +120,15 @@ class AppsCompanion extends UpdateCompanion<App> {
   AppsCompanion.insert({
     required String packageName,
     required String name,
-    required String className,
     required String version,
     this.banner = const Value.absent(),
     this.icon = const Value.absent(),
   })  : packageName = Value(packageName),
         name = Value(name),
-        className = Value(className),
         version = Value(version);
   static Insertable<App> custom({
     Expression<String>? packageName,
     Expression<String>? name,
-    Expression<String>? className,
     Expression<String>? version,
     Expression<Uint8List?>? banner,
     Expression<Uint8List?>? icon,
@@ -163,7 +136,6 @@ class AppsCompanion extends UpdateCompanion<App> {
     return RawValuesInsertable({
       if (packageName != null) 'package_name': packageName,
       if (name != null) 'name': name,
-      if (className != null) 'class_name': className,
       if (version != null) 'version': version,
       if (banner != null) 'banner': banner,
       if (icon != null) 'icon': icon,
@@ -173,14 +145,12 @@ class AppsCompanion extends UpdateCompanion<App> {
   AppsCompanion copyWith(
       {Value<String>? packageName,
       Value<String>? name,
-      Value<String>? className,
       Value<String>? version,
       Value<Uint8List?>? banner,
       Value<Uint8List?>? icon}) {
     return AppsCompanion(
       packageName: packageName ?? this.packageName,
       name: name ?? this.name,
-      className: className ?? this.className,
       version: version ?? this.version,
       banner: banner ?? this.banner,
       icon: icon ?? this.icon,
@@ -195,9 +165,6 @@ class AppsCompanion extends UpdateCompanion<App> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
-    }
-    if (className.present) {
-      map['class_name'] = Variable<String>(className.value);
     }
     if (version.present) {
       map['version'] = Variable<String>(version.value);
@@ -216,7 +183,6 @@ class AppsCompanion extends UpdateCompanion<App> {
     return (StringBuffer('AppsCompanion(')
           ..write('packageName: $packageName, ')
           ..write('name: $name, ')
-          ..write('className: $className, ')
           ..write('version: $version, ')
           ..write('banner: $banner, ')
           ..write('icon: $icon')
@@ -246,17 +212,6 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   GeneratedTextColumn _constructName() {
     return GeneratedTextColumn(
       'name',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _classNameMeta = const VerificationMeta('className');
-  @override
-  late final GeneratedTextColumn className = _constructClassName();
-  GeneratedTextColumn _constructClassName() {
-    return GeneratedTextColumn(
-      'class_name',
       $tableName,
       false,
     );
@@ -296,7 +251,7 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   }
 
   @override
-  List<GeneratedColumn> get $columns => [packageName, name, className, version, banner, icon];
+  List<GeneratedColumn> get $columns => [packageName, name, version, banner, icon];
   @override
   $AppsTable get asDslTable => this;
   @override
@@ -316,11 +271,6 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
       context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
-    }
-    if (data.containsKey('class_name')) {
-      context.handle(_classNameMeta, className.isAcceptableOrUnknown(data['class_name']!, _classNameMeta));
-    } else if (isInserting) {
-      context.missing(_classNameMeta);
     }
     if (data.containsKey('version')) {
       context.handle(_versionMeta, version.isAcceptableOrUnknown(data['version']!, _versionMeta));

@@ -34,7 +34,6 @@ void main() {
             {
               'packageName': 'me.efesser.flauncher',
               'name': 'FLauncher',
-              'className': '.MainActivity',
               'version': '1.0.0',
               'banner': null,
               'icon': null,
@@ -52,7 +51,6 @@ void main() {
         AppsCompanion.insert(
           packageName: "me.efesser.flauncher",
           name: "FLauncher",
-          className: ".MainActivity",
           version: "1.0.0",
           banner: Value(null),
           icon: Value(null),
@@ -76,7 +74,6 @@ void main() {
             {
               'packageName': 'me.efesser.flauncher',
               'name': 'FLauncher',
-              'className': '.MainActivity',
               'version': '2.0.0',
               'banner': null,
               'icon': null,
@@ -84,7 +81,6 @@ void main() {
             {
               'packageName': 'me.efesser.flauncher.2',
               'name': 'FLauncher 2',
-              'className': '.MainActivity',
               'version': '1.0.0',
               'banner': null,
               'icon': null,
@@ -105,7 +101,6 @@ void main() {
         AppsCompanion.insert(
           packageName: "me.efesser.flauncher",
           name: "FLauncher",
-          className: ".MainActivity",
           version: "2.0.0",
           banner: Value(null),
           icon: Value(null),
@@ -113,7 +108,6 @@ void main() {
         AppsCompanion.insert(
           packageName: "me.efesser.flauncher.2",
           name: "FLauncher 2",
-          className: ".MainActivity",
           version: "1.0.0",
           banner: Value(null),
           icon: Value(null),
@@ -139,8 +133,6 @@ void main() {
     final app = fakeApp();
 
     await appsService.launchApp(app);
-
-    verify(channel.launchApp(app.packageName, app.className));
   });
 
   test("openAppInfo calls channel", () async {

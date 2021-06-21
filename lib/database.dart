@@ -31,8 +31,6 @@ class Apps extends Table {
 
   TextColumn get name => text()();
 
-  TextColumn get className => text()();
-
   TextColumn get version => text()();
 
   BlobColumn get banner => blob().nullable()();
@@ -76,17 +74,24 @@ class FLauncherDatabase extends _$FLauncherDatabase {
   FLauncherDatabase([DatabaseOpener databaseOpener = _openConnection]) : super(LazyDatabase(databaseOpener));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        beforeOpen: (_) async {
-          await customStatement('PRAGMA foreign_keys = ON;');
-        },
         onCreate: (migrator) async {
           await migrator.createAll();
-          await insertCategory(CategoriesCompanion.insert(name: "Favorites", order: 0));
-          await insertCategory(CategoriesCompanion.insert(name: "Applications", order: 1));
+        },
+        onUpgrade: (migrator, from, to) async {
+          if (from == 1) {
+            await migrator.alterTable(TableMigration(apps));
+          }
+        },
+        beforeOpen: (openingDetails) async {
+          await customStatement('PRAGMA foreign_keys = ON;');
+          if (openingDetails.wasCreated) {
+            await insertCategory(CategoriesCompanion.insert(name: "Favorites", order: 0));
+            await insertCategory(CategoriesCompanion.insert(name: "Applications", order: 1));
+          }
         },
       );
 

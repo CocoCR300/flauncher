@@ -81,6 +81,7 @@ class _AppCardState extends State<AppCard> {
                 children: [
                   InkWell(
                     autofocus: widget.autofocus,
+                    focusColor: Colors.transparent,
                     onTap: () => _onPressed(context, null),
                     onLongPress: () => _onLongPress(context, null),
                     child: widget.application.banner != null

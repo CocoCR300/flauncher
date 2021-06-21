@@ -27,8 +27,7 @@ class FLauncherChannel {
   Future<List<dynamic>> getInstalledApplications() async =>
       (await _methodChannel.invokeListMethod('getInstalledApplications'))!;
 
-  Future<void> launchApp(String packageName, String className) async =>
-      await _methodChannel.invokeMethod('launchApp', [packageName, className]);
+  Future<void> launchApp(String packageName) async => await _methodChannel.invokeMethod('launchApp', packageName);
 
   Future<void> openSettings() async => await _methodChannel.invokeMethod('openSettings');
 

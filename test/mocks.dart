@@ -19,9 +19,9 @@
 import 'dart:math';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
+import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:mockito/annotations.dart';
@@ -45,7 +45,7 @@ App fakeApp([
   Uint8List? banner,
   Uint8List? icon,
 ]) =>
-    App(packageName: packageName, name: name, className: className, version: version, banner: banner, icon: icon);
+    App(packageName: packageName, name: name, version: version, banner: banner, icon: icon);
 
 Category fakeCategory([String name = "Favorites", int order = 0]) =>
     Category(id: Random().nextInt(1 << 32), name: name, order: order);

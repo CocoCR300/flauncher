@@ -47,22 +47,18 @@ void main() {
   test("launchApp", () async {
     final channel = MethodChannel('me.efesser.flauncher/method');
     String? packageName;
-    String? className;
     channel.setMockMethodCallHandler((call) async {
       if (call.method == "launchApp") {
-        final arguments = call.arguments as List<Object?>;
-        packageName = arguments[0] as String;
-        className = arguments[1] as String;
+        packageName = call.arguments as String;
         return;
       }
       fail("Unhandled method name");
     });
     final fLauncherChannel = FLauncherChannel();
 
-    await fLauncherChannel.launchApp("me.efesser.flauncher", ".MainActivity");
+    await fLauncherChannel.launchApp("me.efesser.flauncher");
 
     expect(packageName, "me.efesser.flauncher");
-    expect(className, ".MainActivity");
   });
 
   test("openSettings", () async {
