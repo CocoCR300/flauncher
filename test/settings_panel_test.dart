@@ -18,8 +18,8 @@
 
 import 'dart:ui';
 
-import 'package:flauncher/apps_service.dart';
-import 'package:flauncher/settings_service.dart';
+import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/categories_dialog.dart';
 import 'package:flauncher/widgets/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/settings_panel.dart';

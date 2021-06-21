@@ -19,11 +19,10 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:flauncher/apps_service.dart';
 import 'package:flauncher/database.dart';
+import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
-import 'package:flauncher/widgets/long_press_detector.dart';
-import 'package:flauncher/widgets/tv_ink_well_card.dart';
+import 'package:flauncher/widgets/focus_keyboard_listener.dart';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -64,28 +63,25 @@ class _AppCardState extends State<AppCard> {
   }
 
   @override
-  Widget build(BuildContext context) => AspectRatio(
-        aspectRatio: 16 / 9,
-        child: LongPressDetector(
-          onPressed: (key) => _onPressed(context, key),
-          onLongPress: (key) => _onLongPress(context, key),
-          child: Builder(
-            builder: (context) => AnimatedContainer(
-              duration: Duration(milliseconds: 150),
-              curve: Curves.easeInOut,
-              transformAlignment: Alignment.center,
-              transform: Transform.scale(
-                scale: _moving
-                    ? 1.0
-                    : Focus.of(context).hasFocus
-                        ? 1.15
-                        : 1.0,
-              ).transform,
+  Widget build(BuildContext context) => FocusKeyboardListener(
+        onPressed: (key) => _onPressed(context, key),
+        onLongPress: (key) => _onLongPress(context, key),
+        builder: (context) => AspectRatio(
+          aspectRatio: 16 / 9,
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 150),
+            curve: Curves.easeInOut,
+            transformAlignment: Alignment.center,
+            transform: _scaleTransform(context),
+            child: Material(
+              elevation: Focus.of(context).hasFocus ? 6 : 2,
+              borderRadius: BorderRadius.circular(16),
+              clipBehavior: Clip.antiAlias,
               child: Stack(
                 children: [
-                  TVInkWellCard(
+                  InkWell(
                     autofocus: widget.autofocus,
-                    onPressed: () => _onPressed(context, null),
+                    onTap: () => _onPressed(context, null),
                     onLongPress: () => _onLongPress(context, null),
                     child: widget.application.banner != null
                         ? Ink.image(image: _cachedMemoryImage(widget.application.banner!))
@@ -93,10 +89,8 @@ class _AppCardState extends State<AppCard> {
                             padding: EdgeInsets.all(8),
                             child: Row(
                               children: [
-                                Expanded(
-                                  child: Ink.image(image: _cachedMemoryImage(widget.application.icon!)),
-                                ),
-                                Expanded(
+                                Expanded(child: Ink.image(image: _cachedMemoryImage(widget.application.icon!))),
+                                Flexible(
                                   child: Text(
                                     widget.application.name,
                                     style: Theme.of(context).textTheme.caption,
@@ -114,13 +108,7 @@ class _AppCardState extends State<AppCard> {
                       duration: Duration(milliseconds: 150),
                       curve: Curves.easeInOut,
                       opacity: Focus.of(context).hasFocus ? 0 : 0.25,
-                      child: Container(
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: Colors.black,
-                        ),
-                      ),
+                      child: Container(color: Colors.black),
                     ),
                   ),
                 ],
@@ -129,6 +117,15 @@ class _AppCardState extends State<AppCard> {
           ),
         ),
       );
+
+  Matrix4 _scaleTransform(BuildContext context) {
+    final scale = _moving
+        ? 1.0
+        : Focus.of(context).hasFocus
+            ? 1.15
+            : 1.0;
+    return Matrix4.diagonal3Values(scale, scale, 1.0);
+  }
 
   List<Widget> _arrows() => [
         _arrow(Alignment.centerLeft, Icons.keyboard_arrow_left),

@@ -7,11 +7,11 @@ import 'dart:ui' as _i14;
 
 import 'package:firebase_core/firebase_core.dart' as _i9;
 import 'package:firebase_crashlytics/firebase_crashlytics.dart' as _i17;
-import 'package:flauncher/apps_service.dart' as _i15;
 import 'package:flauncher/database.dart' as _i3;
 import 'package:flauncher/flauncher_channel.dart' as _i10;
-import 'package:flauncher/settings_service.dart' as _i16;
-import 'package:flauncher/wallpaper_service.dart' as _i13;
+import 'package:flauncher/providers/apps_service.dart' as _i15;
+import 'package:flauncher/providers/settings_service.dart' as _i16;
+import 'package:flauncher/providers/wallpaper_service.dart' as _i13;
 import 'package:flutter/src/foundation/assertions.dart' as _i19;
 import 'package:flutter/src/foundation/diagnostics.dart' as _i18;
 import 'package:mockito/mockito.dart' as _i1;

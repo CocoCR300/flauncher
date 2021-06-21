@@ -18,11 +18,11 @@
 
 import 'dart:ui';
 
-import 'package:flauncher/apps_service.dart';
+import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher.dart';
-import 'package:flauncher/settings_service.dart';
-import 'package:flauncher/wallpaper_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';

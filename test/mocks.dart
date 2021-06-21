@@ -19,11 +19,11 @@
 import 'dart:math';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flauncher/apps_service.dart';
+import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
-import 'package:flauncher/settings_service.dart';
-import 'package:flauncher/wallpaper_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:moor/moor.dart';
 

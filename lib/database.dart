@@ -18,6 +18,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:path/path.dart' as path;
@@ -148,5 +149,5 @@ class FLauncherDatabase extends _$FLauncherDatabase {
 Future<VmDatabase> _openConnection() async {
   final dbFolder = await getApplicationDocumentsDirectory();
   final file = File(path.join(dbFolder.path, 'db.sqlite'));
-  return VmDatabase(file, logStatements: true);
+  return VmDatabase(file, logStatements: !kReleaseMode);
 }

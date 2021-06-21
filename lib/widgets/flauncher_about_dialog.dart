@@ -20,22 +20,20 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class FLauncherAboutDialog extends StatelessWidget {
-  const FLauncherAboutDialog({
+  final PackageInfo packageInfo;
+
+  FLauncherAboutDialog({
     Key? key,
     required this.packageInfo,
-    required this.context,
   }) : super(key: key);
-
-  final PackageInfo packageInfo;
-  final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.bodyText2!;
     final underlined = textStyle.copyWith(decoration: TextDecoration.underline);
     return AboutDialog(
-      applicationName: "FLauncher",
-      applicationVersion: packageInfo.version,
+      applicationName: packageInfo.appName,
+      applicationVersion: "${packageInfo.version} (${packageInfo.buildNumber})",
       applicationIcon: Image.asset("assets/logo.png", height: 72),
       applicationLegalese: "© 2021 Étienne Fesser",
       children: [
@@ -48,22 +46,13 @@ class FLauncherAboutDialog extends StatelessWidget {
                 text: "FLauncher is an open-source alternative launcher for Android TV.\n"
                     "Source code available at ",
               ),
-              TextSpan(
-                text: "https://gitlab.com/etiennf01/flauncher",
-                style: underlined,
-              ),
+              TextSpan(text: "https://gitlab.com/etiennf01/flauncher", style: underlined),
               TextSpan(text: ".\n\n"),
               TextSpan(text: "Logo by Katie "),
-              TextSpan(
-                text: "@fureturoe",
-                style: underlined,
-              ),
+              TextSpan(text: "@fureturoe", style: underlined),
               TextSpan(text: ", "),
               TextSpan(text: "design by "),
-              TextSpan(
-                text: "@FXCostanzo",
-                style: underlined,
-              ),
+              TextSpan(text: "@FXCostanzo", style: underlined),
               TextSpan(text: "."),
             ],
           ),

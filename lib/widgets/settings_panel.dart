@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/apps_service.dart';
-import 'package:flauncher/settings_service.dart';
+import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/categories_dialog.dart';
 import 'package:flauncher/widgets/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
@@ -31,44 +31,29 @@ class SettingsPanel extends StatelessWidget {
   Widget build(BuildContext context) => RightPanelDialog(
         width: 300,
         child: Consumer<SettingsService>(
-          builder: (context, settings, _) => Column(
+          builder: (_, settings, __) => Column(
             children: [
-              Text(
-                "Settings",
-                style: Theme.of(context).textTheme.headline6,
-              ),
+              Text("Settings", style: Theme.of(context).textTheme.headline6),
               Divider(),
               TextButton(
                 child: Row(
                   children: [
                     Icon(Icons.category),
                     Container(width: 8),
-                    Text(
-                      "Categories",
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
+                    Text("Categories", style: Theme.of(context).textTheme.bodyText2),
                   ],
                 ),
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => CategoriesDialog(),
-                ),
+                onPressed: () => showDialog(context: context, builder: (context) => CategoriesDialog()),
               ),
               TextButton(
                 child: Row(
                   children: [
                     Icon(Icons.wallpaper_outlined),
                     Container(width: 8),
-                    Text(
-                      "Wallpaper",
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
+                    Text("Wallpaper", style: Theme.of(context).textTheme.bodyText2),
                   ],
                 ),
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => WallpaperDialog(),
-                ),
+                onPressed: () => showDialog(context: context, builder: (context) => WallpaperDialog()),
               ),
               Divider(),
               TextButton(
@@ -76,10 +61,7 @@ class SettingsPanel extends StatelessWidget {
                   children: [
                     Icon(Icons.settings_outlined),
                     Container(width: 8),
-                    Text(
-                      "Android settings",
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
+                    Text("Android settings", style: Theme.of(context).textTheme.bodyText2),
                   ],
                 ),
                 onPressed: () => context.read<AppsService>().openSettings(),
@@ -99,10 +81,7 @@ class SettingsPanel extends StatelessWidget {
                   children: [
                     Icon(Icons.info_outline),
                     Container(width: 8),
-                    Text(
-                      "About FLauncher",
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
+                    Text("About FLauncher", style: Theme.of(context).textTheme.bodyText2),
                   ],
                 ),
                 onPressed: () => showDialog(
@@ -110,7 +89,7 @@ class SettingsPanel extends StatelessWidget {
                   builder: (_) => FutureBuilder<PackageInfo>(
                     future: PackageInfo.fromPlatform(),
                     builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done
-                        ? FLauncherAboutDialog(packageInfo: snapshot.data!, context: context)
+                        ? FLauncherAboutDialog(packageInfo: snapshot.data!)
                         : Container(),
                   ),
                 ),

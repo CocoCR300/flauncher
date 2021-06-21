@@ -16,33 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/apps_service.dart';
 import 'package:flauncher/database.dart';
+import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/add_category_dialog.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CategoriesDialog extends StatefulWidget {
-  @override
-  CategoriesDialogState createState() => CategoriesDialogState();
-}
-
-class CategoriesDialogState extends State<CategoriesDialog> {
-  late ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
+class CategoriesDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Dialog(
         child: Container(
@@ -53,19 +34,14 @@ class CategoriesDialogState extends State<CategoriesDialog> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                "Categories",
-                style: Theme.of(context).textTheme.headline6,
-              ),
+              Text("Categories", style: Theme.of(context).textTheme.headline6),
               SizedBox(height: 16),
               Selector<AppsService, List<CategoryWithApps>>(
                 selector: (_, appsService) => appsService.categoriesWithApps,
-                builder: (context, categories, _) => Expanded(
+                builder: (_, categories, __) => Expanded(
                   child: SingleChildScrollView(
-                    controller: _scrollController,
                     child: Column(
-                      children:
-                          categories.asMap().keys.map((index) => _categoryTile(categories, index, context)).toList(),
+                      children: categories.asMap().keys.map((index) => _category(context, categories, index)).toList(),
                     ),
                   ),
                 ),
@@ -86,7 +62,7 @@ class CategoriesDialogState extends State<CategoriesDialog> {
         ),
       );
 
-  Widget _categoryTile(List<CategoryWithApps> categories, int index, BuildContext context) => Padding(
+  Widget _category(BuildContext context, List<CategoryWithApps> categories, int index) => Padding(
         key: Key(categories[index].category.id.toString()),
         padding: EdgeInsets.only(bottom: 8),
         child: Card(
@@ -94,11 +70,8 @@ class CategoriesDialogState extends State<CategoriesDialog> {
           child: EnsureVisible(
             alignment: 0.5,
             child: ListTile(
-              title: Text(
-                categories[index].category.name,
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
               dense: true,
+              title: Text(categories[index].category.name, style: Theme.of(context).textTheme.bodyText2),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -106,13 +79,13 @@ class CategoriesDialogState extends State<CategoriesDialog> {
                     constraints: BoxConstraints(),
                     splashRadius: 20,
                     icon: Icon(Icons.arrow_upward),
-                    onPressed: index > 0 ? () => _move(index, index - 1) : null,
+                    onPressed: index > 0 ? () => _move(context, index, index - 1) : null,
                   ),
                   IconButton(
                     constraints: BoxConstraints(),
                     splashRadius: 20,
                     icon: Icon(Icons.arrow_downward),
-                    onPressed: index < categories.length - 1 ? () => _move(index, index + 1) : null,
+                    onPressed: index < categories.length - 1 ? () => _move(context, index, index + 1) : null,
                   ),
                   IconButton(
                     constraints: BoxConstraints(),
@@ -137,7 +110,7 @@ class CategoriesDialogState extends State<CategoriesDialog> {
         ),
       );
 
-  Future<void> _move(int oldIndex, int newIndex) async {
+  Future<void> _move(BuildContext context, int oldIndex, int newIndex) async {
     await context.read<AppsService>().moveCategory(oldIndex, newIndex);
   }
 

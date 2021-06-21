@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/apps_service.dart';
 import 'package:flauncher/database.dart';
+import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/move_to_category_dialog.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
 import 'package:flutter/material.dart';
@@ -68,10 +68,7 @@ class ApplicationInfoPanel extends StatelessWidget {
                 children: [
                   Icon(Icons.category),
                   Container(width: 8),
-                  Text(
-                    "Move to...",
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
+                  Text("Move to...", style: Theme.of(context).textTheme.bodyText2),
                 ],
               ),
               onPressed: () async {
@@ -90,10 +87,7 @@ class ApplicationInfoPanel extends StatelessWidget {
                 children: [
                   Icon(Icons.open_with),
                   Container(width: 8),
-                  Text(
-                    "Reorder",
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
+                  Text("Reorder", style: Theme.of(context).textTheme.bodyText2),
                 ],
               ),
               onPressed: () => Navigator.of(context).pop(ApplicationInfoPanelResult.reorderApp),
@@ -104,10 +98,7 @@ class ApplicationInfoPanel extends StatelessWidget {
                 children: [
                   Icon(Icons.info_outlined),
                   Container(width: 8),
-                  Text(
-                    "App info",
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
+                  Text("App info", style: Theme.of(context).textTheme.bodyText2),
                 ],
               ),
               onPressed: () => context.read<AppsService>().openAppInfo(application),
@@ -117,10 +108,7 @@ class ApplicationInfoPanel extends StatelessWidget {
                 children: [
                   Icon(Icons.delete_outlined),
                   Container(width: 8),
-                  Text(
-                    "Uninstall",
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
+                  Text("Uninstall", style: Theme.of(context).textTheme.bodyText2),
                 ],
               ),
               onPressed: () async {

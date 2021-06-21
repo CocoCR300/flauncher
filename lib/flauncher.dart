@@ -18,9 +18,9 @@
 
 import 'dart:typed_data';
 
-import 'package:flauncher/apps_service.dart';
 import 'package:flauncher/database.dart';
-import 'package:flauncher/wallpaper_service.dart';
+import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
 import 'package:flauncher/widgets/settings_panel.dart';
@@ -43,11 +43,7 @@ class FLauncher extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: Consumer<AppsService>(
                 builder: (context, apps, _) => SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _categories(apps.categoriesWithApps),
-                    ],
-                  ),
+                  child: _categories(apps.categoriesWithApps),
                 ),
               ),
             ),
@@ -58,10 +54,13 @@ class FLauncher extends StatelessWidget {
   Widget _categories(List<CategoryWithApps> categoriesWithApps) => Column(
         children: categoriesWithApps.map((categoryWithApps) {
           if (categoryWithApps.category.name == "Applications") {
-            return AppsGrid(
-                key: Key(categoryWithApps.category.id.toString()),
-                category: categoryWithApps.category,
-                applications: categoryWithApps.applications);
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: AppsGrid(
+                  key: Key(categoryWithApps.category.id.toString()),
+                  category: categoryWithApps.category,
+                  applications: categoryWithApps.applications),
+            );
           }
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 8),

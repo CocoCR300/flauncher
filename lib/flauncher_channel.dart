@@ -25,7 +25,7 @@ class FLauncherChannel {
   static const _eventChannel = EventChannel('me.efesser.flauncher/event');
 
   Future<List<dynamic>> getInstalledApplications() async =>
-      (await _methodChannel.invokeMethod<List<dynamic>>('getInstalledApplications'))!;
+      (await _methodChannel.invokeListMethod('getInstalledApplications'))!;
 
   Future<void> launchApp(String packageName, String className) async =>
       await _methodChannel.invokeMethod('launchApp', [packageName, className]);

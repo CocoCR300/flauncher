@@ -18,19 +18,19 @@
 
 import 'dart:math';
 
-import 'package:flauncher/apps_service.dart';
 import 'package:flauncher/database.dart';
+import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
-const _crossAxisCount = 6;
-
 class AppsGrid extends StatelessWidget {
   final Category category;
   final List<App> applications;
+
+  static const _crossAxisCount = 6;
 
   AppsGrid({
     Key? key,

@@ -21,30 +21,30 @@ import 'package:flutter/services.dart';
 
 const longPressableKeys = [LogicalKeyboardKey.select, LogicalKeyboardKey.enter];
 
-class LongPressDetector extends StatefulWidget {
-  final Widget child;
+class FocusKeyboardListener extends StatefulWidget {
+  final WidgetBuilder builder;
   final KeyEventResult Function(LogicalKeyboardKey)? onPressed;
   final KeyEventResult Function(LogicalKeyboardKey)? onLongPress;
 
-  LongPressDetector({
+  FocusKeyboardListener({
     Key? key,
-    required this.child,
+    required this.builder,
     this.onPressed,
     this.onLongPress,
   }) : super(key: key);
 
   @override
-  _LongPressDetectorState createState() => _LongPressDetectorState();
+  _FocusKeyboardListenerState createState() => _FocusKeyboardListenerState();
 }
 
-class _LongPressDetectorState extends State<LongPressDetector> {
+class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
   int? _keyDownAt;
 
   @override
   Widget build(BuildContext context) => Focus(
         canRequestFocus: false,
         onKey: (_, rawKeyEvent) => _handleKey(context, rawKeyEvent),
-        child: widget.child,
+        child: Builder(builder: widget.builder),
       );
 
   KeyEventResult _handleKey(BuildContext context, RawKeyEvent rawKeyEvent) {

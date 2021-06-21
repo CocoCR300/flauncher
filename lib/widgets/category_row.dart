@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/apps_service.dart';
 import 'package:flauncher/database.dart';
+import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/categories_dialog.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
@@ -41,10 +41,7 @@ class CategoryRow extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(
-              category.name,
-              style: Theme.of(context).textTheme.headline6,
-            ),
+            child: Text(category.name, style: Theme.of(context).textTheme.headline6),
           ),
           SizedBox(
             height: 110,
@@ -71,40 +68,42 @@ class CategoryRow extends StatelessWidget {
                       findChildIndexCallback: _findChildIndex,
                     ),
                   )
-                : EnsureVisible(
-                    alignment: 0.1,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: Card(
-                            clipBehavior: Clip.antiAlias,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                            child: InkWell(
-                              onTap: () => showDialog(context: context, builder: (_) => CategoriesDialog()),
-                              child: Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Center(
-                                  child: Text(
-                                    "This category is empty.\nLong-press an app to move it here.",
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                : _emptyState(context),
           ),
         ],
       );
 
   int _findChildIndex(Key key) =>
       applications.indexWhere((app) => "${category.id}-${app.packageName}" == (key as ValueKey<String>).value);
+
+  Widget _emptyState(BuildContext context) => EnsureVisible(
+        alignment: 0.1,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                child: InkWell(
+                  onTap: () => showDialog(context: context, builder: (_) => CategoriesDialog()),
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Center(
+                      child: Text(
+                        "This category is empty.\nLong-press an app to move it here.",
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
 
   void _onMove(BuildContext context, AxisDirection direction, int index) {
     int? newIndex;
