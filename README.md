@@ -22,6 +22,13 @@ The project is still at an early development stage and may be unstable. It curre
 - [ ] Support for non-TV (sideloaded) apps
 - [ ] Force stop app
 
+## Screenshots
+
+|  |  |  |
+|--|--|--|
+| ![](screenshots/Screenshot_1624378896.png) | ![](screenshots/Screenshot_1624378921.png) | ![](screenshots/Screenshot_1624378938.png) |
+
+
 ## Set FLauncher as default launcher (CCwGTV)
 
 The following commands have been tested on Chromecast with Google TV only. This may be different on other devices.
