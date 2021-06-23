@@ -57,7 +57,7 @@ class AppsGrid extends StatelessWidget {
               padding: EdgeInsets.all(16),
               childrenDelegate: SliverChildBuilderDelegate(
                 (context, index) => AppCard(
-                  key: Key(applications[index].packageName),
+                  key: Key("${category.id}-${applications[index].packageName}"),
                   category: category,
                   application: applications[index],
                   autofocus: index == 0,
@@ -72,7 +72,8 @@ class AppsGrid extends StatelessWidget {
         ),
       );
 
-  int _findChildIndex(Key key) => applications.indexWhere((app) => app.packageName == (key as ValueKey<String>).value);
+  int _findChildIndex(Key key) =>
+      applications.indexWhere((app) => "${category.id}-${app.packageName}" == (key as ValueKey<String>).value);
 
   void _onMove(BuildContext context, AxisDirection direction, int index) {
     final currentRow = (index / _crossAxisCount).floor();

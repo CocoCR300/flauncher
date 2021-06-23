@@ -163,7 +163,7 @@ class AppsService extends ChangeNotifier {
     final applicationsCategory = _categoriesWithApps.firstWhere((e) => e.category.name == "Applications").category;
     final applications = _categoriesWithApps.firstWhere((element) => element.category == category).applications;
     int index = await _database.nextAppCategoryOrder(applicationsCategory.id);
-    var appsCategories = applications
+    final appsCategories = applications
         .map((app) => AppsCategoriesCompanion.insert(
               categoryId: applicationsCategory.id,
               appPackageName: app.packageName,

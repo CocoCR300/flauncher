@@ -119,7 +119,7 @@ class CategoryRow extends StatelessWidget {
         }
         break;
       default:
-        throw ArgumentError.value(direction.toString(), "direction", "Not supported by CategoryRow");
+        break;
     }
     if (newIndex != null) {
       final appsService = context.read<AppsService>();

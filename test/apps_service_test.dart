@@ -183,8 +183,8 @@ void main() {
     final channel = MockFLauncherChannel();
     final database = MockFLauncherDatabase();
     final appsService = await _buildInitialisedAppsService(channel, database, []);
-    var oldCategory = fakeCategory("Old Category");
-    var newCategory = fakeCategory("New Category");
+    final oldCategory = fakeCategory("Old Category");
+    final newCategory = fakeCategory("New Category");
     when(database.nextAppCategoryOrder(newCategory.id)).thenAnswer((_) => Future.value(1));
 
     await appsService.moveToCategory(fakeApp("app.to.be.moved"), oldCategory, newCategory);

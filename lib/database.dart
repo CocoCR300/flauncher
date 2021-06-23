@@ -143,7 +143,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
 
   Future<int> nextAppCategoryOrder(int categoryId) async {
     final query = selectOnly(appsCategories);
-    var maxExpression = coalesce([appsCategories.order.max(), Constant(-1)]) + Constant(1);
+    final maxExpression = coalesce([appsCategories.order.max(), Constant(-1)]) + Constant(1);
     query.addColumns([maxExpression]);
     query.where(appsCategories.categoryId.equals(categoryId));
     final result = await query.getSingle();
