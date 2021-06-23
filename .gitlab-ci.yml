@@ -6,6 +6,8 @@ stages:
   - analyze
   - test
   - build
+  - transform
+  - upload
   - deploy
   - promote
 
@@ -48,7 +50,7 @@ test:
     - genhtml --output ./coverage coverage/lcov.info
   coverage: '/^\s+lines\.+:\s+([\d.]+\%)\s+/'
 
-build:debug:
+build:appbundle:debug:
   image: $FLUTTER_DOCKER_IMAGE
   stage: build
   needs: [ ]
@@ -58,7 +60,7 @@ build:debug:
   script:
     - flutter build appbundle --debug
 
-build:release:
+build:appbundle:release:
   image: $FLUTTER_DOCKER_IMAGE
   stage: build
   needs: [ ]
@@ -75,9 +77,35 @@ build:release:
     paths:
       - build/app/outputs/bundle/release/app-release.aab
 
-deploy:
+build:apk:
+  image: openjdk:16-buster
+  stage: transform
+  needs: [ "build:appbundle:release" ]
+  only:
+    - tags
+  before_script:
+    - echo -n "$SIGNING_JKS_FILE_BASE64" | base64 -d > android/app/upload-keystore.jks
+    - wget https://github.com/google/bundletool/releases/download/1.6.1/bundletool-all-1.6.1.jar -O bundletool.jar
+  script:
+    - java -jar bundletool.jar build-apks --mode=universal --bundle=build/app/outputs/bundle/release/app-release.aab --output=app-release.apks --ks=android/app/upload-keystore.jks --ks-pass=pass:$SIGNING_KEYSTORE_PASSWORD --ks-key-alias=$SIGNING_KEY_ALIAS --key-pass=pass:$SIGNING_KEY_PASSWORD
+    - unzip app-release.apks
+    - mv universal.apk app-release.apk
+  artifacts:
+    paths:
+      - app-release.apk
+
+upload:apk:
+  image: curlimages/curl:latest
+  stage: upload
+  needs: [ "build:apk" ]
+  only:
+    - tags
+  script:
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file app-release.apk "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/flauncher/$CI_COMMIT_TAG/flauncher-$CI_COMMIT_TAG.apk"'
+
+deploy:play-store:
   stage: deploy
-  needs: [ "commitlint", "stylelint", "analyze", "build:release", "test" ]
+  needs: [ "commitlint", "stylelint", "analyze", "test", "build:appbundle:release" ]
   image: ruby:2.6.3
   only:
     - tags
@@ -89,3 +117,21 @@ deploy:
     - cd android
   script:
     - fastlane deploy
+
+deploy:gitlab-release:
+  stage: deploy
+  needs: [ "commitlint", "stylelint", "analyze", "test", "upload:apk" ]
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  only:
+    - tags
+  script:
+    - echo 'running deploy:gitlab-release'
+  release:
+    name: $CI_COMMIT_TAG
+    description: FLauncher v$CI_COMMIT_TAG
+    tag_name: $CI_COMMIT_TAG
+    assets:
+      links:
+        - name: flauncher-$CI_COMMIT_TAG.apk
+          url: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/flauncher/$CI_COMMIT_TAG/flauncher-$CI_COMMIT_TAG.apk
+          filepath: /flauncher-$CI_COMMIT_TAG.apk
