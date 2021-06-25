@@ -67,35 +67,6 @@ class SettingsPanel extends StatelessWidget {
                 onPressed: () => context.read<AppsService>().openSettings(),
               ),
               Divider(),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Focus effect"),
-                          Text(
-                            "'Zoom' may cause navigation issues on non-TV Android versions.",
-                            style: Theme.of(context).textTheme.caption,
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    DropdownButton<FocusEffect>(
-                      value: settings.focusEffect,
-                      onChanged: (value) => settings.setFocusEffect(value!),
-                      items: [
-                        DropdownMenuItem(value: FocusEffect.zoom, child: Text("Zoom")),
-                        DropdownMenuItem(value: FocusEffect.glow, child: Text("Glow")),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Divider(),
               SwitchListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 8),
                 value: settings.crashReportsEnabled,

@@ -21,15 +21,12 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _crashReportsEnabledKey = "crash_reports_enabled";
-const _appCardFocusEffectKey = "app_card_focus_effect";
 
 class SettingsService extends ChangeNotifier {
   final SharedPreferences _sharedPreferences;
   final FirebaseCrashlytics _firebaseCrashlytics;
 
   bool get crashReportsEnabled => _sharedPreferences.getBool(_crashReportsEnabledKey) ?? true;
-
-  FocusEffect get focusEffect => FocusEffectConversion.fromString(_sharedPreferences.getString(_appCardFocusEffectKey));
 
   SettingsService(this._sharedPreferences, this._firebaseCrashlytics) {
     _firebaseCrashlytics.setCrashlyticsCollectionEnabled(kReleaseMode && crashReportsEnabled);
@@ -39,36 +36,5 @@ class SettingsService extends ChangeNotifier {
     _firebaseCrashlytics.setCrashlyticsCollectionEnabled(kReleaseMode && value);
     await _sharedPreferences.setBool(_crashReportsEnabledKey, value);
     notifyListeners();
-  }
-
-  Future<void> setFocusEffect(FocusEffect value) async {
-    await _sharedPreferences.setString(_appCardFocusEffectKey, value.toShortString());
-    notifyListeners();
-  }
-}
-
-enum FocusEffect { zoom, glow }
-
-extension FocusEffectConversion on FocusEffect {
-  static FocusEffect fromString(String? value) {
-    switch (value) {
-      case "zoom":
-        return FocusEffect.zoom;
-      case "glow":
-        return FocusEffect.glow;
-      default:
-        return FocusEffect.zoom;
-    }
-  }
-
-  String toShortString() {
-    switch (this) {
-      case FocusEffect.zoom:
-        return "zoom";
-      case FocusEffect.glow:
-        return "glow";
-      default:
-        return "zoom";
-    }
   }
 }

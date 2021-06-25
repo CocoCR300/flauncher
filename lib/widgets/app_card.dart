@@ -21,7 +21,6 @@ import 'dart:ui';
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/focus_keyboard_listener.dart';
 import 'package:flutter/foundation.dart' hide Category;
@@ -69,73 +68,55 @@ class _AppCardState extends State<AppCard> {
         onLongPress: (key) => _onLongPress(context, key),
         builder: (context) => AspectRatio(
           aspectRatio: 16 / 9,
-          child: Consumer<SettingsService>(builder: (context, settings, _) => _appCard(context, settings.focusEffect)),
-        ),
-      );
-
-  Widget _appCard(BuildContext context, FocusEffect focusEffect) {
-    final card = Material(
-      borderRadius: BorderRadius.circular(16),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        children: [
-          InkWell(
-            autofocus: widget.autofocus,
-            focusColor: Colors.transparent,
-            onTap: () => _onPressed(context, null),
-            onLongPress: () => _onLongPress(context, null),
-            child: widget.application.banner != null
-                ? Ink.image(image: _cachedMemoryImage(widget.application.banner!))
-                : Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Row(
-                      children: [
-                        Expanded(child: Ink.image(image: _cachedMemoryImage(widget.application.icon!))),
-                        Flexible(
-                          child: Text(
-                            widget.application.name,
-                            style: Theme.of(context).textTheme.caption,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 150),
+            curve: Curves.easeInOut,
+            transformAlignment: Alignment.center,
+            transform: _scaleTransform(context),
+            child: Material(
+              borderRadius: BorderRadius.circular(16),
+              clipBehavior: Clip.antiAlias,
+              child: Stack(
+                children: [
+                  InkWell(
+                    autofocus: widget.autofocus,
+                    focusColor: Colors.transparent,
+                    onTap: () => _onPressed(context, null),
+                    onLongPress: () => _onLongPress(context, null),
+                    child: widget.application.banner != null
+                        ? Ink.image(image: _cachedMemoryImage(widget.application.banner!))
+                        : Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Row(
+                              children: [
+                                Expanded(child: Ink.image(image: _cachedMemoryImage(widget.application.icon!))),
+                                Flexible(
+                                  child: Text(
+                                    widget.application.name,
+                                    style: Theme.of(context).textTheme.caption,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        )
-                      ],
+                  ),
+                  if (_moving) ..._arrows(),
+                  IgnorePointer(
+                    child: AnimatedOpacity(
+                      duration: Duration(milliseconds: 150),
+                      curve: Curves.easeInOut,
+                      opacity: Focus.of(context).hasFocus ? 0 : 0.25,
+                      child: Container(color: Colors.black),
                     ),
                   ),
-          ),
-          if (_moving) ..._arrows(),
-          IgnorePointer(
-            child: AnimatedOpacity(
-              duration: Duration(milliseconds: 150),
-              curve: Curves.easeInOut,
-              opacity: Focus.of(context).hasFocus ? 0 : 0.25,
-              child: Container(color: Colors.black),
+                ],
+              ),
             ),
           ),
-        ],
-      ),
-    );
-    if (focusEffect == FocusEffect.zoom) {
-      return AnimatedContainer(
-        key: Key("scale"),
-        duration: Duration(milliseconds: 150),
-        curve: Curves.easeInOut,
-        transformAlignment: Alignment.center,
-        transform: _scaleTransform(context),
-        child: card,
+        ),
       );
-    }
-    return AnimatedContainer(
-      key: Key("shadow"),
-      duration: Duration(milliseconds: 150),
-      curve: Curves.easeInOut,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: Focus.of(context).hasFocus ? List.of([BoxShadow(color: Color(0xFF36A0FA), blurRadius: 12)]) : [],
-      ),
-      child: card,
-    );
-  }
 
   Matrix4 _scaleTransform(BuildContext context) {
     final scale = _moving

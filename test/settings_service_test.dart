@@ -40,13 +40,4 @@ void main() {
     verify(firebaseCrashlytics.setCrashlyticsCollectionEnabled(false)).called(2);
     expect(sharedPreferences.getBool("crash_reports_enabled"), isTrue);
   });
-
-  test("setFocusEffect", () async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    final settingsService = SettingsService(sharedPreferences, MockFirebaseCrashlytics());
-
-    await settingsService.setFocusEffect(FocusEffect.glow);
-
-    expect(sharedPreferences.getString("app_card_focus_effect"), "glow");
-  });
 }

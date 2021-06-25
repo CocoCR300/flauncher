@@ -18,9 +18,9 @@
 
 import 'dart:ui';
 
+import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher.dart';
-import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
@@ -51,7 +51,6 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(wallpaperService.wallpaperBytes).thenReturn(null);
-    when(settingsService.focusEffect).thenReturn(FocusEffect.zoom);
     final applicationsCategory = fakeCategory("Applications", 1);
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(fakeCategory("Favorites", 0), []),
@@ -85,7 +84,6 @@ void main() {
     final settingsService = MockSettingsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(wallpaperService.wallpaperBytes).thenReturn(kTransparentImage);
-    when(settingsService.focusEffect).thenReturn(FocusEffect.zoom);
 
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
@@ -97,7 +95,6 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(wallpaperService.wallpaperBytes).thenReturn(null);
-    when(settingsService.focusEffect).thenReturn(FocusEffect.zoom);
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(fakeCategory("Favorites", 0), []),
       CategoryWithApps(fakeCategory("Applications", 1), []),
@@ -118,7 +115,6 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(wallpaperService.wallpaperBytes).thenReturn(null);
-    when(settingsService.focusEffect).thenReturn(FocusEffect.zoom);
     final app = fakeApp(
       "me.efesser.flauncher",
       "FLauncher",
@@ -144,7 +140,6 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(wallpaperService.wallpaperBytes).thenReturn(null);
-    when(settingsService.focusEffect).thenReturn(FocusEffect.zoom);
     final applicationsCategory = fakeCategory("Applications", 1);
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(fakeCategory("Favorites", 0), []),
@@ -172,7 +167,6 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(wallpaperService.wallpaperBytes).thenReturn(null);
-    when(settingsService.focusEffect).thenReturn(FocusEffect.zoom);
     final applicationsCategory = fakeCategory("Applications", 1);
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(fakeCategory("Favorites", 0), []),
