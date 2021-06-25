@@ -50,6 +50,7 @@ void main() {
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.focusEffect).thenReturn(FocusEffect.zoom);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
@@ -64,6 +65,7 @@ void main() {
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.focusEffect).thenReturn(FocusEffect.zoom);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
@@ -79,6 +81,7 @@ void main() {
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.focusEffect).thenReturn(FocusEffect.zoom);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
@@ -90,14 +93,37 @@ void main() {
     verify(appsService.openSettings());
   });
 
+  testWidgets("'Focus effect' selection calls SettingsService", (tester) async {
+    final settingsService = MockSettingsService();
+    final appsService = MockAppsService();
+    when(appsService.categoriesWithApps).thenReturn([]);
+    when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.focusEffect).thenReturn(FocusEffect.zoom);
+
+    await _pumpWidgetWithProviders(tester, settingsService, appsService);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    verify(settingsService.setFocusEffect(FocusEffect.glow));
+  });
+
   testWidgets("'Crash Reporting' toggle calls SettingsService", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.focusEffect).thenReturn(FocusEffect.zoom);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -112,11 +138,13 @@ void main() {
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.focusEffect).thenReturn(FocusEffect.zoom);
     PackageInfo.disablePackageInfoPlatformOverride = true;
     PackageInfoPlatform.instance = _MockPackageInfoPlatform();
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);

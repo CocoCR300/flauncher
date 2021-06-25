@@ -440,10 +440,17 @@ class MockSettingsService extends _i1.Mock implements _i16.SettingsService {
   bool get crashReportsEnabled =>
       (super.noSuchMethod(Invocation.getter(#crashReportsEnabled), returnValue: false) as bool);
   @override
+  _i16.FocusEffect get focusEffect =>
+      (super.noSuchMethod(Invocation.getter(#focusEffect), returnValue: _i16.FocusEffect.zoom) as _i16.FocusEffect);
+  @override
   bool get hasListeners => (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
   @override
   _i11.Future<void> setCrashReportsEnabled(bool? value) =>
       (super.noSuchMethod(Invocation.method(#setCrashReportsEnabled, [value]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+  @override
+  _i11.Future<void> setFocusEffect(_i16.FocusEffect? value) =>
+      (super.noSuchMethod(Invocation.method(#setFocusEffect, [value]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
   @override
   void addListener(_i14.VoidCallback? listener) =>
