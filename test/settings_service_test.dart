@@ -40,4 +40,14 @@ void main() {
     verify(firebaseCrashlytics.setCrashlyticsCollectionEnabled(false)).called(2);
     expect(sharedPreferences.getBool("crash_reports_enabled"), isTrue);
   });
+
+  test("setUse24HourTimeFormat", () async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final firebaseCrashlytics = MockFirebaseCrashlytics();
+    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics);
+
+    await settingsService.setUse24HourTimeFormat(true);
+
+    expect(sharedPreferences.getBool("use_24_hour_time_format"), isTrue);
+  });
 }

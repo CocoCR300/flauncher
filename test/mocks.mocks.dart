@@ -440,10 +440,17 @@ class MockSettingsService extends _i1.Mock implements _i16.SettingsService {
   bool get crashReportsEnabled =>
       (super.noSuchMethod(Invocation.getter(#crashReportsEnabled), returnValue: false) as bool);
   @override
+  bool get use24HourTimeFormat =>
+      (super.noSuchMethod(Invocation.getter(#use24HourTimeFormat), returnValue: false) as bool);
+  @override
   bool get hasListeners => (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
   @override
   _i11.Future<void> setCrashReportsEnabled(bool? value) =>
       (super.noSuchMethod(Invocation.method(#setCrashReportsEnabled, [value]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
+  @override
+  _i11.Future<void> setUse24HourTimeFormat(bool? value) =>
+      (super.noSuchMethod(Invocation.method(#setUse24HourTimeFormat, [value]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i11.Future<void>);
   @override
   void addListener(_i14.VoidCallback? listener) =>

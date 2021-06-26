@@ -65,7 +65,7 @@ void main() {
         )
       ]),
     ]);
-    when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
@@ -84,6 +84,7 @@ void main() {
     final settingsService = MockSettingsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(wallpaperService.wallpaperBytes).thenReturn(kTransparentImage);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
@@ -100,6 +101,7 @@ void main() {
       CategoryWithApps(fakeCategory("Applications", 1), []),
     ]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
@@ -115,6 +117,7 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(wallpaperService.wallpaperBytes).thenReturn(null);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
     final app = fakeApp(
       "me.efesser.flauncher",
       "FLauncher",
@@ -140,6 +143,7 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(wallpaperService.wallpaperBytes).thenReturn(null);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
     final applicationsCategory = fakeCategory("Applications", 1);
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(fakeCategory("Favorites", 0), []),
@@ -167,6 +171,7 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(wallpaperService.wallpaperBytes).thenReturn(null);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
     final applicationsCategory = fakeCategory("Applications", 1);
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(fakeCategory("Favorites", 0), []),

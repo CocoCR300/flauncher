@@ -31,7 +31,7 @@ class SettingsPanel extends StatelessWidget {
   Widget build(BuildContext context) => RightPanelDialog(
         width: 300,
         child: Consumer<SettingsService>(
-          builder: (_, settings, __) => Column(
+          builder: (_, settingsService, __) => Column(
             children: [
               Text("Settings", style: Theme.of(context).textTheme.headline6),
               Divider(),
@@ -69,8 +69,16 @@ class SettingsPanel extends StatelessWidget {
               Divider(),
               SwitchListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                value: settings.crashReportsEnabled,
-                onChanged: (value) => settings.setCrashReportsEnabled(value),
+                value: settingsService.use24HourTimeFormat,
+                onChanged: (value) => settingsService.setUse24HourTimeFormat(value),
+                title: Text("Use 24-hour time format"),
+                dense: true,
+              ),
+              Divider(),
+              SwitchListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                value: settingsService.crashReportsEnabled,
+                onChanged: (value) => settingsService.setCrashReportsEnabled(value),
                 title: Text("Crash Reporting"),
                 dense: true,
                 subtitle: Text("Automatically send crash reports through Firebase Crashlytics."),

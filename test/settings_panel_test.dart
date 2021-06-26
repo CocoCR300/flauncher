@@ -50,6 +50,7 @@ void main() {
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
@@ -64,6 +65,7 @@ void main() {
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
@@ -79,6 +81,7 @@ void main() {
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
@@ -90,14 +93,34 @@ void main() {
     verify(appsService.openSettings());
   });
 
+  testWidgets("'Use 24-hour time format' toggle calls SettingsService", (tester) async {
+    final settingsService = MockSettingsService();
+    final appsService = MockAppsService();
+    when(appsService.categoriesWithApps).thenReturn([]);
+    when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
+
+    await _pumpWidgetWithProviders(tester, settingsService, appsService);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    verify(settingsService.setUse24HourTimeFormat(true));
+  });
+
   testWidgets("'Crash Reporting' toggle calls SettingsService", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -112,11 +135,13 @@ void main() {
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
     PackageInfo.disablePackageInfoPlatformOverride = true;
     PackageInfoPlatform.instance = _MockPackageInfoPlatform();
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);

@@ -88,11 +88,7 @@ class FLauncher extends StatelessWidget {
             padding: EdgeInsets.only(left: 16, right: 32),
             child: Align(
               alignment: Alignment.center,
-              child: SizedBox(
-                width: 64,
-                height: 24,
-                child: TimeWidget(),
-              ),
+              child: TimeWidget(),
             ),
           ),
         ],

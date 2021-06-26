@@ -21,12 +21,15 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _crashReportsEnabledKey = "crash_reports_enabled";
+const _use24HourTimeFormatKey = "use_24_hour_time_format";
 
 class SettingsService extends ChangeNotifier {
   final SharedPreferences _sharedPreferences;
   final FirebaseCrashlytics _firebaseCrashlytics;
 
   bool get crashReportsEnabled => _sharedPreferences.getBool(_crashReportsEnabledKey) ?? true;
+
+  bool get use24HourTimeFormat => _sharedPreferences.getBool(_use24HourTimeFormatKey) ?? true;
 
   SettingsService(this._sharedPreferences, this._firebaseCrashlytics) {
     _firebaseCrashlytics.setCrashlyticsCollectionEnabled(kReleaseMode && crashReportsEnabled);
@@ -35,6 +38,11 @@ class SettingsService extends ChangeNotifier {
   Future<void> setCrashReportsEnabled(bool value) async {
     _firebaseCrashlytics.setCrashlyticsCollectionEnabled(kReleaseMode && value);
     await _sharedPreferences.setBool(_crashReportsEnabledKey, value);
+    notifyListeners();
+  }
+
+  Future<void> setUse24HourTimeFormat(bool value) async {
+    await _sharedPreferences.setBool(_use24HourTimeFormatKey, value);
     notifyListeners();
   }
 }
