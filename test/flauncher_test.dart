@@ -26,7 +26,7 @@ import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
-import 'package:flauncher/widgets/settings_panel.dart';
+import 'package:flauncher/widgets/settings_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -109,7 +109,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
 
-    expect(find.byType(SettingsPanel), findsOneWidget);
+    expect(find.byType(SettingsPanelPage), findsOneWidget);
   });
 
   testWidgets("Pressing select on app opens ApplicationInfoPanel", (tester) async {

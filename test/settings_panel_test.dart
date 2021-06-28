@@ -22,8 +22,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/categories_dialog.dart';
 import 'package:flauncher/widgets/flauncher_about_dialog.dart';
-import 'package:flauncher/widgets/settings_panel.dart';
-import 'package:flauncher/widgets/wallpaper_dialog.dart';
+import 'package:flauncher/widgets/settings_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -58,22 +57,6 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(find.byType(CategoriesDialog), findsOneWidget);
-  });
-
-  testWidgets("'Wallpaper' opens WallpaperDialog", (tester) async {
-    final settingsService = MockSettingsService();
-    final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([]);
-    when(settingsService.crashReportsEnabled).thenReturn(false);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
-
-    await _pumpWidgetWithProviders(tester, settingsService, appsService);
-
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
-    expect(find.byType(WallpaperDialog), findsOneWidget);
   });
 
   testWidgets("'Android settings' calls AppsService", (tester) async {
@@ -165,7 +148,7 @@ Future<void> _pumpWidgetWithProviders(
         ChangeNotifierProvider<AppsService>.value(value: appsService),
       ],
       builder: (_, __) => MaterialApp(
-        home: SettingsPanel(),
+        home: SettingsPanelPage(),
       ),
     ),
   );

@@ -17,6 +17,7 @@
  */
 
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
@@ -99,8 +100,11 @@ class FLauncher extends StatelessWidget {
           wallpaperImage,
           key: Key("background"),
           fit: BoxFit.cover,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+          height: window.physicalSize.height,
+          width: window.physicalSize.width,
         )
-      : Container(key: Key("background"), color: Theme.of(context).scaffoldBackgroundColor);
+      : Container(
+          key: Key("background"),
+          color: Theme.of(context).scaffoldBackgroundColor,
+        );
 }

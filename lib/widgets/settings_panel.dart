@@ -16,93 +16,38 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/providers/settings_service.dart';
-import 'package:flauncher/widgets/categories_dialog.dart';
-import 'package:flauncher/widgets/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
-import 'package:flauncher/widgets/wallpaper_dialog.dart';
+import 'package:flauncher/widgets/settings_panel_page.dart';
+import 'package:flauncher/widgets/unsplash_panel_page.dart';
+import 'package:flauncher/widgets/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:provider/provider.dart';
 
-class SettingsPanel extends StatelessWidget {
+class SettingsPanel extends StatefulWidget {
   @override
-  Widget build(BuildContext context) => RightPanelDialog(
-        width: 300,
-        child: Consumer<SettingsService>(
-          builder: (_, settingsService, __) => Column(
-            children: [
-              Text("Settings", style: Theme.of(context).textTheme.headline6),
-              Divider(),
-              TextButton(
-                child: Row(
-                  children: [
-                    Icon(Icons.category),
-                    Container(width: 8),
-                    Text("Categories", style: Theme.of(context).textTheme.bodyText2),
-                  ],
-                ),
-                onPressed: () => showDialog(context: context, builder: (context) => CategoriesDialog()),
-              ),
-              TextButton(
-                child: Row(
-                  children: [
-                    Icon(Icons.wallpaper_outlined),
-                    Container(width: 8),
-                    Text("Wallpaper", style: Theme.of(context).textTheme.bodyText2),
-                  ],
-                ),
-                onPressed: () => showDialog(context: context, builder: (context) => WallpaperDialog()),
-              ),
-              Divider(),
-              TextButton(
-                child: Row(
-                  children: [
-                    Icon(Icons.settings_outlined),
-                    Container(width: 8),
-                    Text("Android settings", style: Theme.of(context).textTheme.bodyText2),
-                  ],
-                ),
-                onPressed: () => context.read<AppsService>().openSettings(),
-              ),
-              Divider(),
-              SwitchListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                value: settingsService.use24HourTimeFormat,
-                onChanged: (value) => settingsService.setUse24HourTimeFormat(value),
-                title: Text("Use 24-hour time format"),
-                dense: true,
-              ),
-              Divider(),
-              SwitchListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                value: settingsService.crashReportsEnabled,
-                onChanged: (value) => settingsService.setCrashReportsEnabled(value),
-                title: Text("Crash Reporting"),
-                dense: true,
-                subtitle: Text("Automatically send crash reports through Firebase Crashlytics."),
-              ),
-              Spacer(),
-              TextButton(
-                child: Row(
-                  children: [
-                    Icon(Icons.info_outline),
-                    Container(width: 8),
-                    Text("About FLauncher", style: Theme.of(context).textTheme.bodyText2),
-                  ],
-                ),
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (_) => FutureBuilder<PackageInfo>(
-                    future: PackageInfo.fromPlatform(),
-                    builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done
-                        ? FLauncherAboutDialog(packageInfo: snapshot.data!)
-                        : Container(),
-                  ),
-                ),
-              )
-            ],
+  State<SettingsPanel> createState() => _SettingsPanelState();
+}
+
+class _SettingsPanelState extends State<SettingsPanel> {
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
+  @override
+  Widget build(BuildContext context) => WillPopScope(
+        onWillPop: () async => !await _navigatorKey.currentState!.maybePop(),
+        child: RightPanelDialog(
+          width: 300,
+          child: Navigator(
+            key: _navigatorKey,
+            initialRoute: SettingsPanelPage.routeName,
+            onGenerateRoute: (settings) {
+              switch (settings.name) {
+                case SettingsPanelPage.routeName:
+                  return MaterialPageRoute(builder: (_) => SettingsPanelPage());
+                case WallpaperPanelPage.routeName:
+                  return MaterialPageRoute(builder: (_) => WallpaperPanelPage());
+                case UnsplashPanelPage.routeName:
+                  return MaterialPageRoute(builder: (_) => UnsplashPanelPage());
+              }
+            },
           ),
         ),
       );

@@ -27,6 +27,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unsplash_client/unsplash_client.dart';
 
 import 'flauncher_app.dart';
 
@@ -47,6 +48,20 @@ Future<void> main() async {
     final imagePicker = ImagePicker();
     final fLauncherChannel = FLauncherChannel();
     final fLauncherDatabase = FLauncherDatabase();
-    runApp(FLauncherApp(sharedPreferences, firebaseCrashlytics, imagePicker, fLauncherChannel, fLauncherDatabase));
+    final unsplashClient = UnsplashClient(
+      settings: ClientSettings(debug: true,
+        credentials: AppCredentials(
+            accessKey: '...',
+            secretKey: '...'),
+      ),
+    );
+    runApp(FLauncherApp(
+      sharedPreferences,
+      firebaseCrashlytics,
+      imagePicker,
+      fLauncherChannel,
+      fLauncherDatabase,
+      unsplashClient,
+    ));
   }, firebaseCrashlytics.recordError);
 }
