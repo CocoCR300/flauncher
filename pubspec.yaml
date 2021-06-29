@@ -13,6 +13,7 @@ dependencies:
 
   firebase_core: ^1.2.0
   firebase_crashlytics: ^2.0.4
+  firebase_remote_config: ^0.10.0+2
   image_picker: ^0.7.5
   intl: ^0.17.0
   moor: ^4.3.2

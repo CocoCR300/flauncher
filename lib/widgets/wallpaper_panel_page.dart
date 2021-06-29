@@ -16,10 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/unsplash_panel_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/src/provider.dart';
+import 'package:provider/provider.dart';
 
 class WallpaperPanelPage extends StatelessWidget {
   static const String routeName = "wallpaper_panel";
@@ -29,17 +30,18 @@ class WallpaperPanelPage extends StatelessWidget {
         children: [
           Text("Wallpaper", style: Theme.of(context).textTheme.headline6),
           Divider(),
-          TextButton(
-            autofocus: true,
-            child: Row(
-              children: [
-                ImageIcon(AssetImage("assets/unsplash.png")),
-                Container(width: 8),
-                Text("Unsplash", style: Theme.of(context).textTheme.bodyText2),
-              ],
+          if (context.read<SettingsService>().unsplashEnabled)
+            TextButton(
+              autofocus: true,
+              child: Row(
+                children: [
+                  ImageIcon(AssetImage("assets/unsplash.png")),
+                  Container(width: 8),
+                  Text("Unsplash", style: Theme.of(context).textTheme.bodyText2),
+                ],
+              ),
+              onPressed: () => Navigator.of(context).pushNamed(UnsplashPanelPage.routeName),
             ),
-            onPressed: () => Navigator.of(context).pushNamed(UnsplashPanelPage.routeName),
-          ),
           TextButton(
             child: Row(
               children: [
