@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flauncher/widgets/gradient_panel_page.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
 import 'package:flauncher/widgets/settings_panel_page.dart';
 import 'package:flauncher/widgets/unsplash_panel_page.dart';
@@ -46,6 +47,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
                   return MaterialPageRoute(builder: (_) => WallpaperPanelPage());
                 case UnsplashPanelPage.routeName:
                   return MaterialPageRoute(builder: (_) => UnsplashPanelPage());
+                case GradientPanelPage.routeName:
+                  return MaterialPageRoute(builder: (_) => GradientPanelPage());
               }
             },
           ),

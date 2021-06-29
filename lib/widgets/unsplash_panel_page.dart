@@ -17,6 +17,7 @@
  */
 
 import 'package:flauncher/providers/wallpaper_service.dart';
+import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flauncher/widgets/focus_keyboard_listener.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,7 +50,14 @@ class UnsplashPanelPage extends StatelessWidget {
       );
 }
 
-class _RandomTab extends StatelessWidget {
+class _RandomTab extends StatefulWidget {
+  @override
+  State<_RandomTab> createState() => _RandomTabState();
+}
+
+class _RandomTabState extends State<_RandomTab> {
+  bool enabled = true;
+
   @override
   Widget build(BuildContext context) => GridView.count(
           shrinkWrap: true,
@@ -58,31 +66,41 @@ class _RandomTab extends StatelessWidget {
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
           children: [
-            _randomCard("Abstract"),
-            _randomCard("Minimal"),
-            _randomCard("Texture"),
-            _randomCard("Nature"),
-            _randomCard("Architecture"),
-            _randomCard("Plant"),
-            _randomCard("Technology"),
-            _randomCard("Wallpaper"),
-            _randomCard("Colorful"),
-            _randomCard("Space"),
+            _randomCard("Abstract", AssetImage("assets/abstract.png"), autofocus: true),
+            _randomCard("Minimal", AssetImage("assets/minimal.png")),
+            _randomCard("Texture", AssetImage("assets/texture.png")),
+            _randomCard("Nature", AssetImage("assets/nature.png")),
+            _randomCard("Architecture", AssetImage("assets/architecture.png")),
+            _randomCard("Plant", AssetImage("assets/plant.png")),
+            _randomCard("Technology", AssetImage("assets/technology.png")),
+            _randomCard("Animal", AssetImage("assets/animal.png")),
+            _randomCard("Colorful", AssetImage("assets/colorful.png")),
+            _randomCard("Space", AssetImage("assets/space.png")),
           ]);
 
-  Widget _randomCard(String text) => Focus(
+  Widget _randomCard(String text, AssetImage assetImage, {bool autofocus = false}) => Focus(
         canRequestFocus: false,
         child: Builder(
           builder: (context) => Card(
             clipBehavior: Clip.antiAlias,
             shape: _cardBorder(Focus.of(context).hasFocus),
             child: InkWell(
-              onTap: () => context.read<WallpaperService>().random(text),
+              autofocus: autofocus,
+              onTap: () async {
+                if (enabled) {
+                  enabled = false;
+                  try {
+                    await context.read<WallpaperService>().randomFromUnsplash("${text.toLowerCase()} wallpaper");
+                  } finally {
+                    enabled = true;
+                  }
+                }
+              },
               child: Padding(
                 padding: EdgeInsets.all(8),
                 child: Row(
                   children: [
-                    Ink.image(image: AssetImage("assets/abstract.png"), width: 32),
+                    Ink.image(image: assetImage, width: 32),
                     SizedBox(width: 8),
                     Flexible(child: Text(text, overflow: TextOverflow.ellipsis))
                   ],
@@ -104,6 +122,7 @@ class _SearchTab extends StatefulWidget {
 }
 
 class _SearchTabState extends State<_SearchTab> {
+  bool enabled = true;
   List<Photo> _searchResults = [];
 
   @override
@@ -128,10 +147,16 @@ class _SearchTabState extends State<_SearchTab> {
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.sentences,
                 onFieldSubmitted: (value) async {
-                  _searchResults = [];
-                  setState(() {});
-                  _searchResults = await context.read<WallpaperService>().search(value);
-                  setState(() {});
+                  if (enabled) {
+                    enabled = false;
+                    setState(() => _searchResults = []);
+                    try {
+                      final searchResults = await context.read<WallpaperService>().searchFromUnsplash(value);
+                      setState(() => _searchResults = searchResults);
+                    } finally {
+                      enabled = true;
+                    }
+                  }
                 },
               ),
             ),
@@ -143,7 +168,11 @@ class _SearchTabState extends State<_SearchTab> {
               childAspectRatio: 16 / 11,
               mainAxisSpacing: 8,
               crossAxisSpacing: 8,
-              children: _searchResults.asMap().entries.map((item) => _searchResultCard(item.key, item.value)).toList(),
+              children: _searchResults
+                  .asMap()
+                  .entries
+                  .map((item) => EnsureVisible(alignment: 0.5, child: _searchResultCard(item.key, item.value)))
+                  .toList(),
             ),
           ),
         ],
@@ -162,7 +191,16 @@ class _SearchTabState extends State<_SearchTab> {
                   child: InkWell(
                     autofocus: index == 0,
                     focusColor: Colors.transparent,
-                    onTap: () => context.read<WallpaperService>().setFromUnsplash(photo),
+                    onTap: () async {
+                      if (enabled) {
+                        enabled = false;
+                        try {
+                          await context.read<WallpaperService>().setFromUnsplash(photo);
+                        } finally {
+                          enabled = true;
+                        }
+                      }
+                    },
                     child: Ink.image(image: NetworkImage(photo.urls.small.toString()), fit: BoxFit.cover),
                   ),
                 ),

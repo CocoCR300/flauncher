@@ -35,7 +35,7 @@ class FLauncher extends StatelessWidget {
   Widget build(BuildContext context) => Stack(
         children: [
           Consumer<WallpaperService>(
-            builder: (_, wallpaper, __) => _wallpaper(context, wallpaper.wallpaperBytes),
+            builder: (_, wallpaper, __) => _wallpaper(context, wallpaper.wallpaperBytes, wallpaper.gradient.gradient),
           ),
           Scaffold(
             backgroundColor: Colors.transparent,
@@ -75,15 +75,26 @@ class FLauncher extends StatelessWidget {
 
   AppBar _appBar(BuildContext context) => AppBar(
         actions: [
-          IconButton(
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(),
-            splashRadius: 20,
-            icon: Icon(Icons.settings_outlined),
-            onPressed: () => showDialog(
-              context: context,
-              builder: (_) => SettingsPanel(),
-            ),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned(
+                left: 2.0,
+                top: 18.0,
+                child: ImageFiltered(
+                  imageFilter: ImageFilter.blur(sigmaX: 2, sigmaY: 2, tileMode: TileMode.decal),
+                  child: Icon(Icons.settings_outlined, color: Colors.black54),
+                ),
+              ),
+              IconButton(
+                padding: EdgeInsets.all(2),
+                constraints: BoxConstraints(),
+                splashRadius: 20,
+                focusColor: Colors.black12,
+                icon: Icon(Icons.settings_outlined),
+                onPressed: () => showDialog(context: context, builder: (_) => SettingsPanel()),
+              ),
+            ],
           ),
           Padding(
             padding: EdgeInsets.only(left: 16, right: 32),
@@ -95,7 +106,7 @@ class FLauncher extends StatelessWidget {
         ],
       );
 
-  Widget _wallpaper(BuildContext context, Uint8List? wallpaperImage) => wallpaperImage != null
+  Widget _wallpaper(BuildContext context, Uint8List? wallpaperImage, Gradient gradient) => wallpaperImage != null
       ? Image.memory(
           wallpaperImage,
           key: Key("background"),
@@ -103,8 +114,5 @@ class FLauncher extends StatelessWidget {
           height: window.physicalSize.height,
           width: window.physicalSize.width,
         )
-      : Container(
-          key: Key("background"),
-          color: Theme.of(context).scaffoldBackgroundColor,
-        );
+      : Container(key: Key("background"), decoration: BoxDecoration(gradient: gradient));
 }

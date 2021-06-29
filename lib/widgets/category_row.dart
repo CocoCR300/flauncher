@@ -41,7 +41,11 @@ class CategoryRow extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(category.name, style: Theme.of(context).textTheme.headline6),
+            child: Text(category.name,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6!
+                    .copyWith(shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])),
           ),
           SizedBox(
             height: 110,

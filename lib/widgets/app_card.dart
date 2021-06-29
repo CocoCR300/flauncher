@@ -76,6 +76,7 @@ class _AppCardState extends State<AppCard> {
             child: Material(
               borderRadius: BorderRadius.circular(16),
               clipBehavior: Clip.antiAlias,
+              elevation: 4,
               child: Stack(
                 children: [
                   InkWell(

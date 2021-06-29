@@ -21,6 +21,8 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flauncher/flauncher_channel.dart';
+import 'package:flauncher/gradients.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
@@ -31,11 +33,19 @@ class WallpaperService extends ChangeNotifier {
   final ImagePicker _imagePicker;
   final FLauncherChannel _fLauncherChannel;
   final UnsplashClient _unsplashClient;
-  late File _wallpaperFile;
+  late SettingsService _settingsService;
 
+  late File _wallpaperFile;
   Uint8List? _wallpaper;
 
   Uint8List? get wallpaperBytes => _wallpaper;
+
+  FLauncherGradient get gradient => FLauncherGradients.all.firstWhere(
+        (gradient) => gradient.uuid == _settingsService.gradientUuid,
+        orElse: () => FLauncherGradients.greatWhale,
+      );
+
+  set settingsService(SettingsService settingsService) => _settingsService = settingsService;
 
   WallpaperService(this._imagePicker, this._fLauncherChannel, this._unsplashClient) {
     _init();
@@ -63,7 +73,7 @@ class WallpaperService extends ChangeNotifier {
     }
   }
 
-  Future<void> random(String query) async {
+  Future<void> randomFromUnsplash(String query) async {
     final size = window.physicalSize;
     final image =
         (await _unsplashClient.photos.random(query: query, orientation: PhotoOrientation.landscape).goAndGet()).first;
@@ -82,7 +92,7 @@ class WallpaperService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Photo>> search(String query) =>
+  Future<List<Photo>> searchFromUnsplash(String query) =>
       _unsplashClient.photos.random(query: query, orientation: PhotoOrientation.landscape, count: 30).goAndGet();
 
   Future<void> setFromUnsplash(Photo image) async {
@@ -102,11 +112,12 @@ class WallpaperService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> clearWallpaper() async {
+  Future<void> setGradient(FLauncherGradient fLauncherGradient) async {
     if (await _wallpaperFile.exists()) {
       await _wallpaperFile.delete();
     }
     _wallpaper = null;
+    _settingsService.setGradientUuid(fLauncherGradient.uuid);
     notifyListeners();
   }
 }

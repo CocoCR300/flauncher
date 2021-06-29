@@ -65,15 +65,6 @@ void main() {
       expect(() async => await wallpaperService.pickWallpaper(), throwsA(isInstanceOf<NoFileExplorerException>()));
     });
   });
-
-  test("clearWallpaper", () async {
-    final wallpaperService = WallpaperService(_MockImagePicker(), MockFLauncherChannel());
-    await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
-
-    await wallpaperService.clearWallpaper();
-
-    expect(wallpaperService.wallpaperBytes, null);
-  });
 }
 
 class _MockImagePicker extends Mock implements ImagePicker {

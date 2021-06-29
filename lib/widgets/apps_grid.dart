@@ -47,7 +47,10 @@ class AppsGrid extends StatelessWidget {
               padding: EdgeInsets.only(left: 16),
               child: Text(
                 "Applications",
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6!
+                    .copyWith(shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)]),
               ),
             ),
             GridView.custom(

@@ -67,10 +67,12 @@ class FLauncherApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => WallpaperService(_imagePicker, _fLauncherChannel, _unsplashClient)),
-          ChangeNotifierProvider(create: (_) => AppsService(_fLauncherChannel, _fLauncherDatabase)),
           ChangeNotifierProvider(
               create: (_) => SettingsService(_sharedPreferences, _firebaseCrashlytics, _remoteConfig), lazy: false),
+          ChangeNotifierProvider(create: (_) => AppsService(_fLauncherChannel, _fLauncherDatabase)),
+          ChangeNotifierProxyProvider<SettingsService, WallpaperService>(
+              create: (_) => WallpaperService(_imagePicker, _fLauncherChannel, _unsplashClient),
+              update: (_, settingsService, wallpaperService) => wallpaperService!..settingsService = settingsService)
         ],
         child: MaterialApp(
           shortcuts: {...WidgetsApp.defaultShortcuts, LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent()},
