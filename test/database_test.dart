@@ -180,11 +180,15 @@ void main() {
         " VALUES('me.efesser.flauncher', 'FLauncher', '1.0.0', null, null);");
     await database.customInsert("INSERT INTO apps(package_name, name, version, banner, icon)"
         " VALUES('me.efesser.flauncher.2', 'FLauncher 2', '1.0.0', null, null);");
+    await database.customInsert("INSERT INTO apps(package_name, name, version, banner, icon, hidden)"
+        " VALUES('me.efesser.flauncher.3', 'FLauncher 3', '1.0.0', null, null, true);");
     final categoryId = await database.customInsert("INSERT INTO categories(name, 'order') VALUES('Test', 2);");
     await database.customInsert("INSERT INTO apps_categories(category_id, app_package_name, 'order')"
         " VALUES($categoryId, 'me.efesser.flauncher', 1);");
     await database.customInsert("INSERT INTO apps_categories(category_id, app_package_name, 'order')"
         " VALUES($categoryId, 'me.efesser.flauncher.2', 0);");
+    await database.customInsert("INSERT INTO apps_categories(category_id, app_package_name, 'order')"
+        " VALUES($categoryId, 'me.efesser.flauncher.3', 2);");
 
     final categoriesWithApps = await database.listCategoriesWithApps();
 
@@ -211,5 +215,18 @@ void main() {
     final index = await database.nextAppCategoryOrder(categoryId);
 
     expect(index, 2);
+  });
+
+  test("listHiddenApplications", () async {
+    await database.customInsert("INSERT INTO apps(package_name, name, version, banner, icon)"
+        " VALUES('me.efesser.flauncher', 'FLauncher', '1.0.0', null, null);");
+    await database.customInsert("INSERT INTO apps(package_name, name, version, banner, icon, hidden)"
+        " VALUES('me.efesser.flauncher.2', 'FLauncher 2', '2.0.0', null, null, true);");
+
+    final hiddenApplications = await database.listHiddenApplications();
+
+    expect(hiddenApplications.length, 1);
+    expect(hiddenApplications[0].name, "FLauncher 2");
+    expect(hiddenApplications[0].packageName, "me.efesser.flauncher.2");
   });
 }

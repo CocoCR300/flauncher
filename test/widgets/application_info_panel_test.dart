@@ -70,6 +70,29 @@ void main() {
     verify(appsService.moveToCategory(app, category1, category2));
   });
 
+  testWidgets("'Hide' calls AppsService", (tester) async {
+    final appsService = MockAppsService();
+    final category = fakeCategory("Category 1", 0);
+    final app = fakeApp(
+      "me.efesser.flauncher",
+      "FLauncher",
+      "1.0.0",
+      kTransparentImage,
+      kTransparentImage,
+    );
+    when(appsService.categoriesWithApps).thenReturn([
+      CategoryWithApps(category, [app]),
+    ]);
+    when(appsService.hiddenApplications).thenReturn([]);
+    await _pumpWidgetWithProviders(tester, appsService, category, app);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    verify(appsService.hideApplication(app));
+  });
+
   testWidgets("'App info' calls AppsService", (tester) async {
     final appsService = MockAppsService();
     final category = fakeCategory("Category 1", 0);

@@ -79,6 +79,24 @@ void main() {
     expect(find.byKey(Key("WallpaperPanelPage")), findsOneWidget);
   });
 
+  testWidgets("'Hidden applications' navigates to HiddenApplicationsPanelPage", (tester) async {
+    final settingsService = MockSettingsService();
+    final appsService = MockAppsService();
+    when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.hiddenApplications).thenReturn([]);
+    when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
+
+    await _pumpWidgetWithProviders(tester, settingsService, appsService);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byKey(Key("HiddenApplicationsPanelPage")), findsOneWidget);
+  });
+
   testWidgets("'Android settings' calls AppsService", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();

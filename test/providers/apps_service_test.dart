@@ -66,6 +66,7 @@ void main() {
         )
       ]));
       verify(database.listCategoriesWithApps());
+      verify(database.listHiddenApplications());
     });
 
     test("with newly installed, uninstalled and existing apps", () async {
@@ -125,6 +126,7 @@ void main() {
         )
       ]));
       verify(database.listCategoriesWithApps());
+      verify(database.listHiddenApplications());
     });
   });
 
@@ -344,6 +346,32 @@ void main() {
       ],
     ));
     verify(database.listCategoriesWithApps());
+  });
+
+  test("hideApplication hides application", () async {
+    final database = MockFLauncherDatabase();
+    final application = fakeApp();
+    final appsService = await _buildInitialisedAppsService(MockFLauncherChannel(), database, []);
+    when(database.listHiddenApplications()).thenAnswer((_) => Future.value([application]));
+
+    await appsService.hideApplication(application);
+
+    verify(database.persistApps([application.toCompanion(false).copyWith(hidden: Value(true))]));
+    verify(database.listCategoriesWithApps());
+    verify(database.listHiddenApplications());
+    expect(appsService.hiddenApplications, [application]);
+  });
+
+  test("unHideApplication hides application", () async {
+    final database = MockFLauncherDatabase();
+    final application = fakeApp();
+    final appsService = await _buildInitialisedAppsService(MockFLauncherChannel(), database, []);
+
+    await appsService.unHideApplication(application);
+
+    verify(database.persistApps([application.toCompanion(false).copyWith(hidden: Value(false))]));
+    verify(database.listCategoriesWithApps());
+    verify(database.listHiddenApplications());
   });
 }
 
