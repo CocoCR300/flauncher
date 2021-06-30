@@ -54,7 +54,7 @@ Future<void> main() async {
     final unsplashService = UnsplashService(
       UnsplashClient(
         settings: ClientSettings(
-          debug: !kReleaseMode,
+          debug: kDebugMode,
           credentials: AppCredentials(
             accessKey: remoteConfig.getString("unsplash_access_key"),
             secretKey: remoteConfig.getString("unsplash_secret_key"),

@@ -21,6 +21,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
+import 'package:moor_inspector/moor_inspector.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
@@ -36,6 +37,8 @@ class Apps extends Table {
   BlobColumn get banner => blob().nullable()();
 
   BlobColumn get icon => blob().nullable()();
+
+  BoolColumn get hidden => boolean().withDefault(Constant(false))();
 
   @override
   Set<Column> get primaryKey => {packageName};
@@ -71,10 +74,17 @@ class CategoryWithApps {
 
 @UseMoor(tables: [Apps, Categories, AppsCategories])
 class FLauncherDatabase extends _$FLauncherDatabase {
-  FLauncherDatabase([DatabaseOpener databaseOpener = _openConnection]) : super(LazyDatabase(databaseOpener));
+  FLauncherDatabase([DatabaseOpener databaseOpener = _openConnection]) : super(LazyDatabase(databaseOpener)) {
+    if (kDebugMode && !Platform.environment.containsKey('FLUTTER_TEST')) {
+      MoorInspectorBuilder()
+        ..bundleId = 'me.efesser.flauncher'
+        ..addDatabase('FLauncher', this)
+        ..build().start();
+    }
+  }
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -82,8 +92,8 @@ class FLauncherDatabase extends _$FLauncherDatabase {
           await migrator.createAll();
         },
         onUpgrade: (migrator, from, to) async {
-          if (from == 1) {
-            await migrator.alterTable(TableMigration(apps));
+          if (from <= 2) {
+            await migrator.alterTable(TableMigration(apps, newColumns: [apps.hidden]));
           }
         },
         beforeOpen: (openingDetails) async {
@@ -124,7 +134,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
   Future<List<CategoryWithApps>> listCategoriesWithApps() async {
     final query = select(categories).join([
       leftOuterJoin(appsCategories, appsCategories.categoryId.equalsExp(categories.id)),
-      leftOuterJoin(apps, apps.packageName.equalsExp(appsCategories.appPackageName)),
+      leftOuterJoin(apps, apps.packageName.equalsExp(appsCategories.appPackageName) & apps.hidden.equals(false)),
     ]);
     query.orderBy([OrderingTerm.asc(categories.order), OrderingTerm.asc(appsCategories.order)]);
 
@@ -149,10 +159,12 @@ class FLauncherDatabase extends _$FLauncherDatabase {
     final result = await query.getSingle();
     return result.read(maxExpression);
   }
+
+  Future<List<App>> listHiddenApplications() => (select(apps)..where((tbl) => tbl.hidden.equals(true))).get();
 }
 
 Future<VmDatabase> _openConnection() async {
   final dbFolder = await getApplicationDocumentsDirectory();
   final file = File(path.join(dbFolder.path, 'db.sqlite'));
-  return VmDatabase(file, logStatements: !kReleaseMode);
+  return VmDatabase(file, logStatements: kDebugMode);
 }

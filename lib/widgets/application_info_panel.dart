@@ -92,6 +92,19 @@ class ApplicationInfoPanel extends StatelessWidget {
               ),
               onPressed: () => Navigator.of(context).pop(ApplicationInfoPanelResult.reorderApp),
             ),
+            TextButton(
+              child: Row(
+                children: [
+                  Icon(Icons.visibility_off_outlined),
+                  Container(width: 8),
+                  Text("Hide", style: Theme.of(context).textTheme.bodyText2),
+                ],
+              ),
+              onPressed: () async {
+                await context.read<AppsService>().hideApplication(application);
+                Navigator.of(context).pop();
+              },
+            ),
             Divider(),
             TextButton(
               child: Row(

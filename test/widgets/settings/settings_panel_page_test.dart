@@ -22,6 +22,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/categories_dialog.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
+import 'package:flauncher/widgets/settings/hidden_applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,7 @@ void main() {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.hiddenApplications).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
 
@@ -64,6 +66,7 @@ void main() {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.hiddenApplications).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
 
@@ -80,11 +83,13 @@ void main() {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.hiddenApplications).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -97,11 +102,13 @@ void main() {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.hiddenApplications).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -115,11 +122,13 @@ void main() {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.hiddenApplications).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -134,6 +143,7 @@ void main() {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.hiddenApplications).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
     PackageInfo.disablePackageInfoPlatformOverride = true;
@@ -141,6 +151,7 @@ void main() {
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -165,7 +176,10 @@ Future<void> _pumpWidgetWithProviders(
         ChangeNotifierProvider<AppsService>.value(value: appsService),
       ],
       builder: (_, __) => MaterialApp(
-        routes: {WallpaperPanelPage.routeName: (_) => Container(key: Key("WallpaperPanelPage"))},
+        routes: {
+          WallpaperPanelPage.routeName: (_) => Container(key: Key("WallpaperPanelPage")),
+          HiddenApplicationsPanelPage.routeName: (_) => Container(key: Key("HiddenApplicationsPanelPage")),
+        },
         home: Material(child: SettingsPanelPage()),
       ),
     ),

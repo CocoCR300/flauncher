@@ -32,9 +32,13 @@ class AppsService extends ChangeNotifier {
 
   List<CategoryWithApps> _categoriesWithApps = [];
 
+  List<App> _hiddenApplications = [];
+
   List<CategoryWithApps> get categoriesWithApps => _categoriesWithApps
       .map((item) => CategoryWithApps(item.category, UnmodifiableListView(item.applications)))
       .toList(growable: false);
+
+  List<App> get hiddenApplications => UnmodifiableListView(_hiddenApplications);
 
   AppsService(this._fLauncherChannel, this._database) {
     _init();
@@ -51,12 +55,13 @@ class AppsService extends ChangeNotifier {
 
   Future<void> _refreshState() async {
     final appsFromSystem = (await _fLauncherChannel.getInstalledApplications())
-        .map((data) => AppsCompanion.insert(
-              packageName: data["packageName"],
-              name: data["name"],
-              version: data["version"],
+        .map((data) => AppsCompanion(
+              packageName: Value(data["packageName"]),
+              name: Value(data["name"]),
+              version: Value(data["version"]),
               banner: Value(data["banner"]),
               icon: Value(data["icon"]),
+              hidden: Value.absent(),
             ))
         .toList();
 
@@ -86,6 +91,7 @@ class AppsService extends ChangeNotifier {
       await _database.persistAppsCategories(newAppCategories);
     }
     _categoriesWithApps = await _database.listCategoriesWithApps();
+    _hiddenApplications = await _database.listHiddenApplications();
     notifyListeners();
   }
 
@@ -185,6 +191,20 @@ class AppsService extends ChangeNotifier {
     }
     await _database.persistCategories(orderedCategories);
     _categoriesWithApps = await _database.listCategoriesWithApps();
+    notifyListeners();
+  }
+
+  Future<void> hideApplication(App application) async {
+    await _database.persistApps([application.toCompanion(false).copyWith(hidden: Value(true))]);
+    _categoriesWithApps = await _database.listCategoriesWithApps();
+    _hiddenApplications = await _database.listHiddenApplications();
+    notifyListeners();
+  }
+
+  Future<void> unHideApplication(App application) async {
+    await _database.persistApps([application.toCompanion(false).copyWith(hidden: Value(false))]);
+    _categoriesWithApps = await _database.listCategoriesWithApps();
+    _hiddenApplications = await _database.listHiddenApplications();
     notifyListeners();
   }
 }

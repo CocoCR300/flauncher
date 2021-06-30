@@ -60,7 +60,6 @@ void main() {
         fakeApp(
           "me.efesser.flauncher",
           "FLauncher",
-          ".MainActivity",
           "1.0.0",
           kTransparentImage,
           null,
@@ -140,7 +139,6 @@ void main() {
     final app = fakeApp(
       "me.efesser.flauncher",
       "FLauncher",
-      ".MainActivity",
       "1.0.0",
       kTransparentImage,
       kTransparentImage,
@@ -171,7 +169,6 @@ void main() {
         fakeApp(
           "me.efesser.flauncher",
           "FLauncher",
-          ".MainActivity",
           "1.0.0",
           kTransparentImage,
           kTransparentImage,
@@ -200,7 +197,6 @@ void main() {
         fakeApp(
           "me.efesser.flauncher",
           "FLauncher",
-          ".MainActivity",
           "1.0.0",
           kTransparentImage,
           kTransparentImage,
@@ -208,7 +204,6 @@ void main() {
         fakeApp(
           "me.efesser.flauncher.2",
           "FLauncher 2",
-          ".MainActivity",
           "1.0.0",
           kTransparentImage,
           kTransparentImage,

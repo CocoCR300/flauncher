@@ -20,6 +20,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/categories_dialog.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
+import 'package:flauncher/widgets/settings/hidden_applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -53,6 +54,16 @@ class SettingsPanelPage extends StatelessWidget {
                 ],
               ),
               onPressed: () => Navigator.of(context).pushNamed(WallpaperPanelPage.routeName),
+            ),
+            TextButton(
+              child: Row(
+                children: [
+                  Icon(Icons.visibility_off_outlined),
+                  Container(width: 8),
+                  Text("Hidden applications", style: Theme.of(context).textTheme.bodyText2),
+                ],
+              ),
+              onPressed: () => Navigator.of(context).pushNamed(HiddenApplicationsPanelPage.routeName),
             ),
             Divider(),
             TextButton(

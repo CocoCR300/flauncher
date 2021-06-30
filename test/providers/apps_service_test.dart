@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/database.dart';
+import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moor/moor.dart';
@@ -40,6 +40,7 @@ void main() {
             }
           ]));
       when(database.listApplications()).thenAnswer((_) => Future.value([]));
+      when(database.listHiddenApplications()).thenAnswer((_) => Future.value([]));
       when(database.listCategoriesWithApps()).thenAnswer((_) => Future.value([]));
       final applicationsCategory = fakeCategory("Applications", 0);
       when(database.getCategory("Applications")).thenAnswer((_) => Future.value(applicationsCategory));
@@ -87,9 +88,10 @@ void main() {
             }
           ]));
       when(database.listApplications()).thenAnswer((_) => Future.value([
-            fakeApp("me.efesser.flauncher", "FLauncher", ".MainActivity", "1.0.0", null, null),
-            fakeApp("uninstalled.app", "Uninstalled Application", ".MainActivity", "1.0.0", null, null)
+            fakeApp("me.efesser.flauncher", "FLauncher", "1.0.0", null, null),
+            fakeApp("uninstalled.app", "Uninstalled Application", "1.0.0", null, null)
           ]));
+      when(database.listHiddenApplications()).thenAnswer((_) => Future.value([]));
       when(database.listCategoriesWithApps()).thenAnswer((_) => Future.value([]));
       final applicationsCategory = fakeCategory("Applications", 0);
       when(database.getCategory("Applications")).thenAnswer((_) => Future.value(applicationsCategory));
@@ -352,6 +354,7 @@ Future<AppsService> _buildInitialisedAppsService(
 ) async {
   when(channel.getInstalledApplications()).thenAnswer((_) => Future.value([]));
   when(database.listApplications()).thenAnswer((_) => Future.value([]));
+  when(database.listHiddenApplications()).thenAnswer((_) => Future.value([]));
   when(database.listCategoriesWithApps()).thenAnswer((_) => Future.value(categoriesWithApps));
   final appsService = AppsService(channel, database);
   await untilCalled(database.listCategoriesWithApps());

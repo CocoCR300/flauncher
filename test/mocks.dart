@@ -44,12 +44,12 @@ void main() {}
 App fakeApp([
   String packageName = "me.efesser.flauncher",
   String name = "FLauncher",
-  String className = "",
   String version = "1.0.0",
   Uint8List? banner,
   Uint8List? icon,
+  bool hidden = false,
 ]) =>
-    App(packageName: packageName, name: name, version: version, banner: banner, icon: icon);
+    App(packageName: packageName, name: name, version: version, banner: banner, icon: icon, hidden: hidden);
 
 Category fakeCategory([String name = "Favorites", int order = 0]) =>
     Category(id: Random().nextInt(1 << 32), name: name, order: order);

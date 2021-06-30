@@ -13,7 +13,14 @@ class App extends DataClass implements Insertable<App> {
   final String version;
   final Uint8List? banner;
   final Uint8List? icon;
-  App({required this.packageName, required this.name, required this.version, this.banner, this.icon});
+  final bool hidden;
+  App(
+      {required this.packageName,
+      required this.name,
+      required this.version,
+      this.banner,
+      this.icon,
+      required this.hidden});
   factory App.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return App(
@@ -22,6 +29,7 @@ class App extends DataClass implements Insertable<App> {
       version: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}version'])!,
       banner: const BlobType().mapFromDatabaseResponse(data['${effectivePrefix}banner']),
       icon: const BlobType().mapFromDatabaseResponse(data['${effectivePrefix}icon']),
+      hidden: const BoolType().mapFromDatabaseResponse(data['${effectivePrefix}hidden'])!,
     );
   }
   @override
@@ -36,6 +44,7 @@ class App extends DataClass implements Insertable<App> {
     if (!nullToAbsent || icon != null) {
       map['icon'] = Variable<Uint8List?>(icon);
     }
+    map['hidden'] = Variable<bool>(hidden);
     return map;
   }
 
@@ -46,6 +55,7 @@ class App extends DataClass implements Insertable<App> {
       version: Value(version),
       banner: banner == null && nullToAbsent ? const Value.absent() : Value(banner),
       icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
+      hidden: Value(hidden),
     );
   }
 
@@ -57,6 +67,7 @@ class App extends DataClass implements Insertable<App> {
       version: serializer.fromJson<String>(json['version']),
       banner: serializer.fromJson<Uint8List?>(json['banner']),
       icon: serializer.fromJson<Uint8List?>(json['icon']),
+      hidden: serializer.fromJson<bool>(json['hidden']),
     );
   }
   @override
@@ -68,15 +79,19 @@ class App extends DataClass implements Insertable<App> {
       'version': serializer.toJson<String>(version),
       'banner': serializer.toJson<Uint8List?>(banner),
       'icon': serializer.toJson<Uint8List?>(icon),
+      'hidden': serializer.toJson<bool>(hidden),
     };
   }
 
-  App copyWith({String? packageName, String? name, String? version, Uint8List? banner, Uint8List? icon}) => App(
+  App copyWith(
+          {String? packageName, String? name, String? version, Uint8List? banner, Uint8List? icon, bool? hidden}) =>
+      App(
         packageName: packageName ?? this.packageName,
         name: name ?? this.name,
         version: version ?? this.version,
         banner: banner ?? this.banner,
         icon: icon ?? this.icon,
+        hidden: hidden ?? this.hidden,
       );
   @override
   String toString() {
@@ -85,14 +100,15 @@ class App extends DataClass implements Insertable<App> {
           ..write('name: $name, ')
           ..write('version: $version, ')
           ..write('banner: $banner, ')
-          ..write('icon: $icon')
+          ..write('icon: $icon, ')
+          ..write('hidden: $hidden')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      packageName.hashCode, $mrjc(name.hashCode, $mrjc(version.hashCode, $mrjc(banner.hashCode, icon.hashCode)))));
+  int get hashCode => $mrjf($mrjc(packageName.hashCode,
+      $mrjc(name.hashCode, $mrjc(version.hashCode, $mrjc(banner.hashCode, $mrjc(icon.hashCode, hidden.hashCode))))));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -101,7 +117,8 @@ class App extends DataClass implements Insertable<App> {
           other.name == this.name &&
           other.version == this.version &&
           other.banner == this.banner &&
-          other.icon == this.icon);
+          other.icon == this.icon &&
+          other.hidden == this.hidden);
 }
 
 class AppsCompanion extends UpdateCompanion<App> {
@@ -110,12 +127,14 @@ class AppsCompanion extends UpdateCompanion<App> {
   final Value<String> version;
   final Value<Uint8List?> banner;
   final Value<Uint8List?> icon;
+  final Value<bool> hidden;
   const AppsCompanion({
     this.packageName = const Value.absent(),
     this.name = const Value.absent(),
     this.version = const Value.absent(),
     this.banner = const Value.absent(),
     this.icon = const Value.absent(),
+    this.hidden = const Value.absent(),
   });
   AppsCompanion.insert({
     required String packageName,
@@ -123,6 +142,7 @@ class AppsCompanion extends UpdateCompanion<App> {
     required String version,
     this.banner = const Value.absent(),
     this.icon = const Value.absent(),
+    this.hidden = const Value.absent(),
   })  : packageName = Value(packageName),
         name = Value(name),
         version = Value(version);
@@ -132,6 +152,7 @@ class AppsCompanion extends UpdateCompanion<App> {
     Expression<String>? version,
     Expression<Uint8List?>? banner,
     Expression<Uint8List?>? icon,
+    Expression<bool>? hidden,
   }) {
     return RawValuesInsertable({
       if (packageName != null) 'package_name': packageName,
@@ -139,6 +160,7 @@ class AppsCompanion extends UpdateCompanion<App> {
       if (version != null) 'version': version,
       if (banner != null) 'banner': banner,
       if (icon != null) 'icon': icon,
+      if (hidden != null) 'hidden': hidden,
     });
   }
 
@@ -147,13 +169,15 @@ class AppsCompanion extends UpdateCompanion<App> {
       Value<String>? name,
       Value<String>? version,
       Value<Uint8List?>? banner,
-      Value<Uint8List?>? icon}) {
+      Value<Uint8List?>? icon,
+      Value<bool>? hidden}) {
     return AppsCompanion(
       packageName: packageName ?? this.packageName,
       name: name ?? this.name,
       version: version ?? this.version,
       banner: banner ?? this.banner,
       icon: icon ?? this.icon,
+      hidden: hidden ?? this.hidden,
     );
   }
 
@@ -175,6 +199,9 @@ class AppsCompanion extends UpdateCompanion<App> {
     if (icon.present) {
       map['icon'] = Variable<Uint8List?>(icon.value);
     }
+    if (hidden.present) {
+      map['hidden'] = Variable<bool>(hidden.value);
+    }
     return map;
   }
 
@@ -185,7 +212,8 @@ class AppsCompanion extends UpdateCompanion<App> {
           ..write('name: $name, ')
           ..write('version: $version, ')
           ..write('banner: $banner, ')
-          ..write('icon: $icon')
+          ..write('icon: $icon, ')
+          ..write('hidden: $hidden')
           ..write(')'))
         .toString();
   }
@@ -250,8 +278,15 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
     );
   }
 
+  final VerificationMeta _hiddenMeta = const VerificationMeta('hidden');
   @override
-  List<GeneratedColumn> get $columns => [packageName, name, version, banner, icon];
+  late final GeneratedBoolColumn hidden = _constructHidden();
+  GeneratedBoolColumn _constructHidden() {
+    return GeneratedBoolColumn('hidden', $tableName, false, defaultValue: Constant(false));
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [packageName, name, version, banner, icon, hidden];
   @override
   $AppsTable get asDslTable => this;
   @override
@@ -282,6 +317,9 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
     }
     if (data.containsKey('icon')) {
       context.handle(_iconMeta, icon.isAcceptableOrUnknown(data['icon']!, _iconMeta));
+    }
+    if (data.containsKey('hidden')) {
+      context.handle(_hiddenMeta, hidden.isAcceptableOrUnknown(data['hidden']!, _hiddenMeta));
     }
     return context;
   }

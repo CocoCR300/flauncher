@@ -235,6 +235,10 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
       (super.noSuchMethod(Invocation.method(#nextAppCategoryOrder, [categoryId]), returnValue: Future<int>.value(0))
           as _i14.Future<int>);
   @override
+  _i14.Future<List<_i3.App>> listHiddenApplications() =>
+      (super.noSuchMethod(Invocation.method(#listHiddenApplications, []),
+          returnValue: Future<List<_i3.App>>.value(<_i3.App>[])) as _i14.Future<List<_i3.App>>);
+  @override
   _i2.Migrator createMigrator() =>
       (super.noSuchMethod(Invocation.method(#createMigrator, []), returnValue: _FakeMigrator()) as _i2.Migrator);
   @override
@@ -408,6 +412,9 @@ class MockAppsService extends _i1.Mock implements _i20.AppsService {
       (super.noSuchMethod(Invocation.getter(#categoriesWithApps), returnValue: <_i3.CategoryWithApps>[])
           as List<_i3.CategoryWithApps>);
   @override
+  List<_i3.App> get hiddenApplications =>
+      (super.noSuchMethod(Invocation.getter(#hiddenApplications), returnValue: <_i3.App>[]) as List<_i3.App>);
+  @override
   bool get hasListeners => (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
   @override
   _i14.Future<void> launchApp(_i3.App? app) => (super.noSuchMethod(Invocation.method(#launchApp, [app]),
@@ -452,6 +459,14 @@ class MockAppsService extends _i1.Mock implements _i20.AppsService {
   @override
   _i14.Future<void> moveCategory(int? oldIndex, int? newIndex) =>
       (super.noSuchMethod(Invocation.method(#moveCategory, [oldIndex, newIndex]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  @override
+  _i14.Future<void> hideApplication(_i3.App? application) =>
+      (super.noSuchMethod(Invocation.method(#hideApplication, [application]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  @override
+  _i14.Future<void> unHideApplication(_i3.App? application) =>
+      (super.noSuchMethod(Invocation.method(#unHideApplication, [application]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
   void addListener(_i19.VoidCallback? listener) =>
