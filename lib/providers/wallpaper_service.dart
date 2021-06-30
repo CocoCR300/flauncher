@@ -33,7 +33,7 @@ class WallpaperService extends ChangeNotifier {
   final UnsplashService _unsplashService;
   late SettingsService _settingsService;
 
-  late File _wallpaperFile;
+  late final File _wallpaperFile;
   Uint8List? _wallpaper;
 
   Uint8List? get wallpaperBytes => _wallpaper;
@@ -59,7 +59,7 @@ class WallpaperService extends ChangeNotifier {
   }
 
   Future<void> pickWallpaper() async {
-    if (!(await _fLauncherChannel.checkForGetContentAvailability())) {
+    if (!await _fLauncherChannel.checkForGetContentAvailability()) {
       throw NoFileExplorerException();
     }
     final pickedFile = await _imagePicker.getImage(source: ImageSource.gallery);

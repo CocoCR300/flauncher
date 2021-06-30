@@ -27,7 +27,7 @@ import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
-import 'package:flauncher/widgets/settings_panel_page.dart';
+import 'package:flauncher/widgets/settings/settings_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -92,6 +92,20 @@ void main() {
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
     expect(tester.widget(find.byKey(Key("background"))), isA<Image>());
+  });
+
+  testWidgets("Home page displays background gradient", (tester) async {
+    final wallpaperService = MockWallpaperService();
+    final appsService = MockAppsService();
+    final settingsService = MockSettingsService();
+    when(appsService.categoriesWithApps).thenReturn([]);
+    when(wallpaperService.wallpaperBytes).thenReturn(null);
+    when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
+
+    await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
+
+    expect(tester.widget(find.byKey(Key("background"))), isA<Container>());
   });
 
   testWidgets("Pressing select on settings icon opens SettingsPanel", (tester) async {

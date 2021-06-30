@@ -27,7 +27,7 @@ import 'package:moor/moor.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'mocks.mocks.dart';
+import '../mocks.mocks.dart';
 
 void main() {
   late final _MockPathProviderPlatform pathProviderPlatform;

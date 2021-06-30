@@ -21,8 +21,9 @@ import 'dart:ui';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/categories_dialog.dart';
-import 'package:flauncher/widgets/flauncher_about_dialog.dart';
-import 'package:flauncher/widgets/settings_panel_page.dart';
+import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
+import 'package:flauncher/widgets/settings/settings_panel_page.dart';
+import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -33,7 +34,7 @@ import 'package:package_info_plus_platform_interface/package_info_platform_inter
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:provider/provider.dart';
 
-import 'mocks.mocks.dart';
+import '../../mocks.mocks.dart';
 
 void main() {
   setUpAll(() async {
@@ -57,6 +58,22 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(find.byType(CategoriesDialog), findsOneWidget);
+  });
+
+  testWidgets("'Wallpaper' navigates to WallpaperPanelPage", (tester) async {
+    final settingsService = MockSettingsService();
+    final appsService = MockAppsService();
+    when(appsService.categoriesWithApps).thenReturn([]);
+    when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
+
+    await _pumpWidgetWithProviders(tester, settingsService, appsService);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byKey(Key("WallpaperPanelPage")), findsOneWidget);
   });
 
   testWidgets("'Android settings' calls AppsService", (tester) async {
@@ -148,6 +165,7 @@ Future<void> _pumpWidgetWithProviders(
         ChangeNotifierProvider<AppsService>.value(value: appsService),
       ],
       builder: (_, __) => MaterialApp(
+        routes: {WallpaperPanelPage.routeName: (_) => Container(key: Key("WallpaperPanelPage"))},
         home: Material(child: SettingsPanelPage()),
       ),
     ),

@@ -22,8 +22,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moor/moor.dart';
 
-import 'mocks.dart';
-import 'mocks.mocks.dart';
+import '../mocks.dart';
+import '../mocks.mocks.dart';
 
 void main() {
   group("AppsService initialised correctly", () {

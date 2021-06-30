@@ -18,8 +18,8 @@
 
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
-import 'package:flauncher/widgets/gradient_panel_page.dart';
-import 'package:flauncher/widgets/unsplash_panel_page.dart';
+import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
+import 'package:flauncher/widgets/settings/unsplash_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +44,7 @@ class WallpaperPanelPage extends StatelessWidget {
               onPressed: () => Navigator.of(context).pushNamed(UnsplashPanelPage.routeName),
             ),
           TextButton(
-            autofocus: true,
+            autofocus: !context.read<SettingsService>().unsplashEnabled,
             child: Row(
               children: [
                 Icon(Icons.gradient),
@@ -73,7 +73,7 @@ class WallpaperPanelPage extends StatelessWidget {
                       children: [
                         Icon(Icons.error_outline, color: Colors.red),
                         SizedBox(width: 8),
-                        Text("Please install a file explorer in order pick an image.")
+                        Text("Please install a file explorer in order to pick an image.")
                       ],
                     ),
                   ),

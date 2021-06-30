@@ -24,7 +24,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
-import 'package:flauncher/widgets/settings_panel.dart';
+import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/time_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -90,7 +90,6 @@ class FLauncher extends StatelessWidget {
                 padding: EdgeInsets.all(2),
                 constraints: BoxConstraints(),
                 splashRadius: 20,
-                focusColor: Colors.black12,
                 icon: Icon(Icons.settings_outlined),
                 onPressed: () => showDialog(context: context, builder: (_) => SettingsPanel()),
               ),

@@ -48,6 +48,7 @@ class GradientPanelPage extends StatelessWidget {
       );
 
   Widget _gradientCard(FLauncherGradient fLauncherGradient) => Focus(
+        key: Key("gradient-${fLauncherGradient.uuid}"),
         canRequestFocus: false,
         child: Builder(
           builder: (context) => Column(

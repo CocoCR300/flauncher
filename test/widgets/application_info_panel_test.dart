@@ -29,8 +29,8 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import 'mocks.dart';
-import 'mocks.mocks.dart';
+import '../mocks.dart';
+import '../mocks.mocks.dart';
 
 void main() {
   setUpAll(() async {
