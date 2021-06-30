@@ -21,12 +21,12 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
+import 'package:flauncher/unsplash_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:unsplash_client/unsplash_client.dart';
 
 import 'database.dart';
 import 'flauncher.dart';
@@ -38,7 +38,7 @@ class FLauncherApp extends StatelessWidget {
   final ImagePicker _imagePicker;
   final FLauncherChannel _fLauncherChannel;
   final FLauncherDatabase _fLauncherDatabase;
-  final UnsplashClient _unsplashClient;
+  final UnsplashService _unsplashService;
   final RemoteConfig _remoteConfig;
 
   static const MaterialColor _swatch = MaterialColor(0xFF011526, <int, Color>{
@@ -60,7 +60,7 @@ class FLauncherApp extends StatelessWidget {
     this._imagePicker,
     this._fLauncherChannel,
     this._fLauncherDatabase,
-    this._unsplashClient,
+    this._unsplashService,
     this._remoteConfig,
   );
 
@@ -71,7 +71,7 @@ class FLauncherApp extends StatelessWidget {
               create: (_) => SettingsService(_sharedPreferences, _firebaseCrashlytics, _remoteConfig), lazy: false),
           ChangeNotifierProvider(create: (_) => AppsService(_fLauncherChannel, _fLauncherDatabase)),
           ChangeNotifierProxyProvider<SettingsService, WallpaperService>(
-              create: (_) => WallpaperService(_imagePicker, _fLauncherChannel, _unsplashClient),
+              create: (_) => WallpaperService(_imagePicker, _fLauncherChannel, _unsplashService),
               update: (_, settingsService, wallpaperService) => wallpaperService!..settingsService = settingsService)
         ],
         child: MaterialApp(

@@ -32,7 +32,8 @@ void main() {
   test("setCrashReportsEnabled", () async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final firebaseCrashlytics = MockFirebaseCrashlytics();
-    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics);
+    final firebaseRemoteConfig = MockRemoteConfig();
+    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
     await untilCalled(firebaseCrashlytics.setCrashlyticsCollectionEnabled(any));
 
     await settingsService.setCrashReportsEnabled(true);
@@ -44,10 +45,115 @@ void main() {
   test("setUse24HourTimeFormat", () async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final firebaseCrashlytics = MockFirebaseCrashlytics();
-    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics);
+    final firebaseRemoteConfig = MockRemoteConfig();
+    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
 
     await settingsService.setUse24HourTimeFormat(true);
 
     expect(sharedPreferences.getBool("use_24_hour_time_format"), isTrue);
+  });
+
+  test("setGradientUuid", () async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final firebaseCrashlytics = MockFirebaseCrashlytics();
+    final firebaseRemoteConfig = MockRemoteConfig();
+    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+
+    await settingsService.setGradientUuid("4730aa2d-1a90-49a6-9942-ffe82f470e26");
+
+    expect(sharedPreferences.getString("gradient_uuid"), "4730aa2d-1a90-49a6-9942-ffe82f470e26");
+  });
+
+  test("unsplashEnabled", () async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final firebaseCrashlytics = MockFirebaseCrashlytics();
+    final firebaseRemoteConfig = MockRemoteConfig();
+    when(firebaseRemoteConfig.getBool("unsplash_enabled")).thenReturn(true);
+    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+
+    final unsplashEnabled = settingsService.unsplashEnabled;
+
+    expect(unsplashEnabled, isTrue);
+  });
+
+  group("getGradientUuid", () {
+    test("without uuid from shared preferences", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      await sharedPreferences.clear();
+      final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseRemoteConfig = MockRemoteConfig();
+      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+
+      final gradientUuid = settingsService.gradientUuid;
+
+      expect(gradientUuid, null);
+    });
+
+    test("with uuid from shared preferences", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      await sharedPreferences.clear();
+      final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseRemoteConfig = MockRemoteConfig();
+      sharedPreferences.setString("gradient_uuid", "4730aa2d-1a90-49a6-9942-ffe82f470e26");
+      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+
+      final gradientUuid = settingsService.gradientUuid;
+
+      expect(gradientUuid, "4730aa2d-1a90-49a6-9942-ffe82f470e26");
+    });
+  });
+
+  group("getCrashReportsEnabled", () {
+    test("without value from shared preferences", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      await sharedPreferences.clear();
+      final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseRemoteConfig = MockRemoteConfig();
+      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+
+      final crashReportsEnabled = settingsService.crashReportsEnabled;
+
+      expect(crashReportsEnabled, isTrue);
+    });
+
+    test("with value from shared preferences", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      await sharedPreferences.clear();
+      final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseRemoteConfig = MockRemoteConfig();
+      sharedPreferences.setBool("crash_reports_enabled", false);
+      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+
+      final crashReportsEnabled = settingsService.crashReportsEnabled;
+
+      expect(crashReportsEnabled, isFalse);
+    });
+  });
+
+  group("getUse24HourTimeFormat", () {
+    test("without value from shared preferences", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      await sharedPreferences.clear();
+      final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseRemoteConfig = MockRemoteConfig();
+      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+
+      final use24HourTimeFormat = settingsService.use24HourTimeFormat;
+
+      expect(use24HourTimeFormat, isTrue);
+    });
+
+    test("with value from shared preferences", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      await sharedPreferences.clear();
+      final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseRemoteConfig = MockRemoteConfig();
+      sharedPreferences.setBool("use_24_hour_time_format", false);
+      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+
+      final use24HourTimeFormat = settingsService.use24HourTimeFormat;
+
+      expect(use24HourTimeFormat, isFalse);
+    });
   });
 }

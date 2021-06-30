@@ -18,21 +18,19 @@
 
 import 'dart:io';
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/gradients.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/unsplash_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:unsplash_client/unsplash_client.dart';
 
 class WallpaperService extends ChangeNotifier {
   final ImagePicker _imagePicker;
   final FLauncherChannel _fLauncherChannel;
-  final UnsplashClient _unsplashClient;
+  final UnsplashService _unsplashService;
   late SettingsService _settingsService;
 
   late File _wallpaperFile;
@@ -47,7 +45,7 @@ class WallpaperService extends ChangeNotifier {
 
   set settingsService(SettingsService settingsService) => _settingsService = settingsService;
 
-  WallpaperService(this._imagePicker, this._fLauncherChannel, this._unsplashClient) {
+  WallpaperService(this._imagePicker, this._fLauncherChannel, this._unsplashService) {
     _init();
   }
 
@@ -74,39 +72,16 @@ class WallpaperService extends ChangeNotifier {
   }
 
   Future<void> randomFromUnsplash(String query) async {
-    final size = window.physicalSize;
-    final image =
-        (await _unsplashClient.photos.random(query: query, orientation: PhotoOrientation.landscape).goAndGet()).first;
-    await _unsplashClient.photos.download(image.id).goAndGet();
-    final uri = image.urls.raw.resizePhoto(
-      width: size.width.toInt(),
-      height: size.height.toInt(),
-      fit: ResizeFitMode.clip,
-      format: ImageFormat.jpg,
-      quality: 75,
-    );
-    final response = await get(uri);
-    final bytes = response.bodyBytes;
+    final bytes = await _unsplashService.randomPhoto(query);
     await _wallpaperFile.writeAsBytes(bytes);
     _wallpaper = bytes;
     notifyListeners();
   }
 
-  Future<List<Photo>> searchFromUnsplash(String query) =>
-      _unsplashClient.photos.random(query: query, orientation: PhotoOrientation.landscape, count: 30).goAndGet();
+  Future<List<Photo>> searchFromUnsplash(String query) => _unsplashService.searchPhotos(query);
 
-  Future<void> setFromUnsplash(Photo image) async {
-    final size = window.physicalSize;
-    await _unsplashClient.photos.download(image.id).goAndGet();
-    final uri = image.urls.raw.resizePhoto(
-      width: size.width.toInt(),
-      height: size.height.toInt(),
-      fit: ResizeFitMode.clip,
-      format: ImageFormat.jpg,
-      quality: 75,
-    );
-    final response = await get(uri);
-    final bytes = response.bodyBytes;
+  Future<void> setFromUnsplash(Photo photo) async {
+    final bytes = await _unsplashService.downloadPhoto(photo);
     await _wallpaperFile.writeAsBytes(bytes);
     _wallpaper = bytes;
     notifyListeners();

@@ -17,12 +17,12 @@
  */
 
 import 'package:flauncher/providers/wallpaper_service.dart';
+import 'package:flauncher/unsplash_service.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flauncher/widgets/focus_keyboard_listener.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:unsplash_client/unsplash_client.dart';
 
 class UnsplashPanelPage extends StatelessWidget {
   static const String routeName = "unsplash_panel";
@@ -201,14 +201,14 @@ class _SearchTabState extends State<_SearchTab> {
                         }
                       }
                     },
-                    child: Ink.image(image: NetworkImage(photo.urls.small.toString()), fit: BoxFit.cover),
+                    child: Ink.image(image: NetworkImage(photo.small.toString()), fit: BoxFit.cover),
                   ),
                 ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4),
                 child: Text(
-                  photo.user.name,
+                  photo.username,
                   style: Theme.of(context).textTheme.caption!.copyWith(decoration: TextDecoration.underline),
                   overflow: TextOverflow.ellipsis,
                 ),

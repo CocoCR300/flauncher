@@ -24,6 +24,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
+import 'package:flauncher/unsplash_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -50,12 +51,14 @@ Future<void> main() async {
     final fLauncherChannel = FLauncherChannel();
     final fLauncherDatabase = FLauncherDatabase();
     final remoteConfig = await _initFirebaseRemoteConfig();
-    final unsplashClient = UnsplashClient(
-      settings: ClientSettings(
-        debug: !kReleaseMode,
-        credentials: AppCredentials(
-          accessKey: remoteConfig.getString("unsplash_access_key"),
-          secretKey: remoteConfig.getString("unsplash_secret_key"),
+    final unsplashService = UnsplashService(
+      UnsplashClient(
+        settings: ClientSettings(
+          debug: !kReleaseMode,
+          credentials: AppCredentials(
+            accessKey: remoteConfig.getString("unsplash_access_key"),
+            secretKey: remoteConfig.getString("unsplash_secret_key"),
+          ),
         ),
       ),
     );
@@ -65,7 +68,7 @@ Future<void> main() async {
       imagePicker,
       fLauncherChannel,
       fLauncherDatabase,
-      unsplashClient,
+      unsplashService,
       remoteConfig,
     ));
   }, firebaseCrashlytics.recordError);

@@ -19,11 +19,13 @@
 import 'dart:math';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
+import 'package:flauncher/unsplash_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:moor/moor.dart';
 
@@ -34,6 +36,8 @@ import 'package:moor/moor.dart';
   AppsService,
   SettingsService,
   FirebaseCrashlytics,
+  RemoteConfig,
+  UnsplashService,
 ])
 void main() {}
 

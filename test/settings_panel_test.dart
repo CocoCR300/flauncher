@@ -148,7 +148,7 @@ Future<void> _pumpWidgetWithProviders(
         ChangeNotifierProvider<AppsService>.value(value: appsService),
       ],
       builder: (_, __) => MaterialApp(
-        home: SettingsPanelPage(),
+        home: Material(child: SettingsPanelPage()),
       ),
     ),
   );
