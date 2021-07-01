@@ -4,3 +4,4 @@ analyzer:
   exclude:
     - lib/database.moor.dart
     - test/mocks.mocks.dart
+    - test/generated
