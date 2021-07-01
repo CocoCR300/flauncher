@@ -94,10 +94,10 @@ build:apk:
     paths:
       - app-release.apk
 
-upload:apk:
+deploy:gitlab-release:
   image: curlimages/curl:latest
-  stage: upload
-  needs: [ "build:apk" ]
+  stage: deploy
+  needs: [ "commitlint", "stylelint", "analyze", "test", "build:apk" ]
   only:
     - tags
   script:
@@ -118,14 +118,31 @@ deploy:play-store:
   script:
     - fastlane deploy
 
-deploy:gitlab-release:
-  stage: deploy
-  needs: [ "commitlint", "stylelint", "analyze", "test", "upload:apk" ]
+promote:play-store:
+  stage: promote
+  needs: [ "deploy:play-store" ]
+  image: ruby:2.6.3
+  when: manual
+  only:
+    - tags
+  before_script:
+    - echo "$GOOGLE_PLAY_API_KEY" > android/fastlane/google_play_api_key.json
+    - export LC_ALL=en_US.UTF-8
+    - export LANG=en_US.UTF-8
+    - gem install fastlane -NV
+    - cd android
+  script:
+    - fastlane promote
+
+promote:gitlab-release:
+  stage: promote
+  needs: [ "deploy:gitlab-release" ]
   image: registry.gitlab.com/gitlab-org/release-cli:latest
+  when: manual
   only:
     - tags
   script:
-    - echo 'running deploy:gitlab-release'
+    - echo 'running promote:gitlab-release'
   release:
     name: $CI_COMMIT_TAG
     description: FLauncher v$CI_COMMIT_TAG

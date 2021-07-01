@@ -9,3 +9,10 @@ lane :deploy do
       aab: "../build/app/outputs/bundle/release/app-release.aab"
   )
 end
+
+desc "Promote previous internal version to production"
+lane :promote do
+  upload_to_play_store(
+      track: "internal",
+      track_promote_to: "production"
+  )
