@@ -74,7 +74,7 @@ class _AppCardState extends State<AppCard> {
             transformAlignment: Alignment.center,
             transform: _scaleTransform(context),
             child: Material(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(8),
               clipBehavior: Clip.antiAlias,
               elevation: 4,
               child: Stack(
@@ -85,7 +85,7 @@ class _AppCardState extends State<AppCard> {
                     onTap: () => _onPressed(context, null),
                     onLongPress: () => _onLongPress(context, null),
                     child: widget.application.banner != null
-                        ? Ink.image(image: _cachedMemoryImage(widget.application.banner!))
+                        ? Ink.image(image: _cachedMemoryImage(widget.application.banner!), fit: BoxFit.cover)
                         : Padding(
                             padding: EdgeInsets.all(8),
                             child: Row(
@@ -108,7 +108,7 @@ class _AppCardState extends State<AppCard> {
                     child: AnimatedOpacity(
                       duration: Duration(milliseconds: 150),
                       curve: Curves.easeInOut,
-                      opacity: Focus.of(context).hasFocus ? 0 : 0.25,
+                      opacity: Focus.of(context).hasFocus ? 0 : 0.10,
                       child: Container(color: Colors.black),
                     ),
                   ),

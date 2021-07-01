@@ -39,40 +39,41 @@ class AppsGrid extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => EnsureVisible(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 16),
-              child: Text(
-                "Applications",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline6!
-                    .copyWith(shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)]),
-              ),
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: Text(
+              "Applications",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6!
+                  .copyWith(shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)]),
             ),
-            GridView.custom(
-              shrinkWrap: true,
-              primary: false,
-              gridDelegate: _buildSliverGridDelegate(),
-              padding: EdgeInsets.all(16),
-              childrenDelegate: SliverChildBuilderDelegate(
-                (context, index) => AppCard(
-                  key: Key("${category.id}-${applications[index].packageName}"),
+          ),
+          GridView.custom(
+            shrinkWrap: true,
+            primary: false,
+            gridDelegate: _buildSliverGridDelegate(),
+            padding: EdgeInsets.all(16),
+            childrenDelegate: SliverChildBuilderDelegate(
+              (context, index) => EnsureVisible(
+                key: Key("${category.id}-${applications[index].packageName}"),
+                alignment: 0.5,
+                child: AppCard(
                   category: category,
                   application: applications[index],
                   autofocus: index == 0,
                   onMove: (direction) => _onMove(context, direction, index),
                   onMoveEnd: () => _saveOrder(context),
                 ),
-                childCount: applications.length,
-                findChildIndexCallback: _findChildIndex,
               ),
+              childCount: applications.length,
+              findChildIndexCallback: _findChildIndex,
             ),
-          ],
-        ),
+          ),
+        ],
       );
 
   int _findChildIndex(Key key) =>

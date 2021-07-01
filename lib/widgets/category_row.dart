@@ -90,11 +90,11 @@ class CategoryRow extends StatelessWidget {
               aspectRatio: 16 / 9,
               child: Card(
                 clipBehavior: Clip.antiAlias,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 child: InkWell(
                   onTap: () => showDialog(context: context, builder: (_) => CategoriesDialog()),
                   child: Padding(
-                    padding: EdgeInsets.all(16),
+                    padding: EdgeInsets.all(8),
                     child: Center(
                       child: Text(
                         "This category is empty.\nLong-press an app to move it here.",
