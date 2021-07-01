@@ -18,6 +18,7 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,43 +33,49 @@ class HiddenApplicationsPanelPage extends StatelessWidget {
           Selector<AppsService, List<App>>(
             selector: (_, appsService) => appsService.hiddenApplications,
             builder: (context, hiddenApplications, _) => Expanded(
+              child: SingleChildScrollView(
                 child: Column(
                     children: hiddenApplications.isNotEmpty
                         ? hiddenApplications
                             .map(
-                              (application) => Card(
-                                clipBehavior: Clip.antiAlias,
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                                  title: Text(
-                                    application.name,
-                                    style: Theme.of(context).textTheme.bodyText2,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  leading: Image.memory(application.icon!, height: 48),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        constraints: BoxConstraints(),
-                                        splashRadius: 20,
-                                        icon: Icon(Icons.open_in_new),
-                                        onPressed: () => context.read<AppsService>().launchApp(application),
-                                      ),
-                                      IconButton(
-                                        constraints: BoxConstraints(),
-                                        splashRadius: 20,
-                                        icon: Icon(Icons.visibility),
-                                        onPressed: () => context.read<AppsService>().unHideApplication(application),
-                                      )
-                                    ],
+                              (application) => EnsureVisible(
+                                alignment: 0.5,
+                                child: Card(
+                                  clipBehavior: Clip.antiAlias,
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                                    title: Text(
+                                      application.name,
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    leading: Image.memory(application.icon!, height: 48),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          constraints: BoxConstraints(),
+                                          splashRadius: 20,
+                                          icon: Icon(Icons.open_in_new),
+                                          onPressed: () => context.read<AppsService>().launchApp(application),
+                                        ),
+                                        IconButton(
+                                          constraints: BoxConstraints(),
+                                          splashRadius: 20,
+                                          icon: Icon(Icons.visibility),
+                                          onPressed: () => context.read<AppsService>().unHideApplication(application),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             )
                             .toList()
-                        : [SizedBox(height: 16), Text("Nothing to see here.")])),
+                        : [SizedBox(height: 16), Text("Nothing to see here.")]),
+              ),
+            ),
           ),
         ],
       );
