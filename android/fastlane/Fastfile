@@ -16,3 +16,4 @@ lane :promote do
       track: "internal",
       track_promote_to: "production"
   )
+end
