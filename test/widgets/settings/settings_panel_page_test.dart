@@ -20,7 +20,7 @@ import 'dart:ui';
 
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
-import 'package:flauncher/widgets/categories_dialog.dart';
+import 'package:flauncher/widgets/settings/categories_panel_page.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/settings/hidden_applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
@@ -46,7 +46,7 @@ void main() {
     binding.window.textScaleFactorTestValue = 0.8;
   });
 
-  testWidgets("'Categories' opens CategoriesDialog", (tester) async {
+  testWidgets("'Categories' opens CategoriesPanelPage", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
@@ -59,7 +59,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
-    expect(find.byType(CategoriesDialog), findsOneWidget);
+    expect(find.byKey(Key("CategoriesPanelPage")), findsOneWidget);
   });
 
   testWidgets("'Wallpaper' navigates to WallpaperPanelPage", (tester) async {
@@ -195,6 +195,7 @@ Future<void> _pumpWidgetWithProviders(
       ],
       builder: (_, __) => MaterialApp(
         routes: {
+          CategoriesPanelPage.routeName: (_) => Container(key: Key("CategoriesPanelPage")),
           WallpaperPanelPage.routeName: (_) => Container(key: Key("WallpaperPanelPage")),
           HiddenApplicationsPanelPage.routeName: (_) => Container(key: Key("HiddenApplicationsPanelPage")),
         },

@@ -18,7 +18,7 @@
 
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
-import 'package:flauncher/widgets/categories_dialog.dart';
+import 'package:flauncher/widgets/settings/categories_panel_page.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/settings/hidden_applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
@@ -43,7 +43,7 @@ class SettingsPanelPage extends StatelessWidget {
                   Text("Categories", style: Theme.of(context).textTheme.bodyText2),
                 ],
               ),
-              onPressed: () => showDialog(context: context, builder: (context) => CategoriesDialog()),
+              onPressed: () => Navigator.of(context).pushNamed(CategoriesPanelPage.routeName),
             ),
             TextButton(
               child: Row(

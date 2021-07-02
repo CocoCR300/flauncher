@@ -19,8 +19,9 @@
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
-import 'package:flauncher/widgets/categories_dialog.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
+import 'package:flauncher/widgets/settings/categories_panel_page.dart';
+import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -92,7 +93,10 @@ class CategoryRow extends StatelessWidget {
                 clipBehavior: Clip.antiAlias,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 child: InkWell(
-                  onTap: () => showDialog(context: context, builder: (_) => CategoriesDialog()),
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (_) => SettingsPanel(initialRoute: CategoriesPanelPage.routeName),
+                  ),
                   child: Padding(
                     padding: EdgeInsets.all(8),
                     child: Center(

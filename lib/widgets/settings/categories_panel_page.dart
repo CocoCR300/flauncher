@@ -23,43 +23,35 @@ import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CategoriesDialog extends StatelessWidget {
+class CategoriesPanelPage extends StatelessWidget {
+  static const String routeName = "categories_panel";
+
   @override
-  Widget build(BuildContext context) => Dialog(
-        child: Container(
-          width: 500,
-          height: 300,
-          padding: EdgeInsets.all(24),
-          color: Theme.of(context).backgroundColor,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text("Categories", style: Theme.of(context).textTheme.headline6),
-              SizedBox(height: 16),
-              Selector<AppsService, List<CategoryWithApps>>(
-                selector: (_, appsService) => appsService.categoriesWithApps,
-                builder: (_, categories, __) => Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: categories.asMap().keys.map((index) => _category(context, categories, index)).toList(),
-                    ),
-                  ),
+  Widget build(BuildContext context) => Column(
+        children: [
+          Text("Categories", style: Theme.of(context).textTheme.headline6),
+          Divider(),
+          Selector<AppsService, List<CategoryWithApps>>(
+            selector: (_, appsService) => appsService.categoriesWithApps,
+            builder: (_, categories, __) => Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: categories.asMap().keys.map((index) => _category(context, categories, index)).toList(),
                 ),
               ),
-              TextButton.icon(
-                icon: Icon(Icons.add),
-                label: Text("Add Category"),
-                autofocus: true,
-                onPressed: () async {
-                  final categoryName = await showDialog<String>(context: context, builder: (_) => AddCategoryDialog());
-                  if (categoryName != null) {
-                    await context.read<AppsService>().addCategory(categoryName);
-                  }
-                },
-              ),
-            ],
+            ),
           ),
-        ),
+          TextButton.icon(
+            icon: Icon(Icons.add),
+            label: Text("Add Category"),
+            onPressed: () async {
+              final categoryName = await showDialog<String>(context: context, builder: (_) => AddCategoryDialog());
+              if (categoryName != null) {
+                await context.read<AppsService>().addCategory(categoryName);
+              }
+            },
+          ),
+        ],
       );
 
   Widget _category(BuildContext context, List<CategoryWithApps> categories, int index) => Padding(
