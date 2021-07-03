@@ -76,21 +76,17 @@ Future<void> main() async {
 
 Future<RemoteConfig> _initFirebaseRemoteConfig() async {
   final remoteConfig = RemoteConfig.instance;
-  try {
-    await remoteConfig.ensureInitialized();
-    await remoteConfig.setDefaults({'unsplash_enabled': false});
-    await remoteConfig.setConfigSettings(
-      RemoteConfigSettings(
-        fetchTimeout: Duration(seconds: 10),
-        minimumFetchInterval: kReleaseMode ? Duration(hours: 1) : Duration.zero,
-      ),
-    );
-    await remoteConfig.fetchAndActivate();
-  } on FirebaseException catch (e) {
-    if (e.plugin != "firebase_remote_config" && e.code != "unknown") {
-      rethrow;
-    }
-    debugPrint("Firebase Remote Config unavailable");
-  }
+  await remoteConfig.setDefaults({"unsplash_enabled": false, "unsplash_access_key": "", "unsplash_secret_key": ""});
+  await remoteConfig.setConfigSettings(
+    RemoteConfigSettings(
+      fetchTimeout: Duration(minutes: 1),
+      minimumFetchInterval: kReleaseMode ? Duration(hours: 1) : Duration.zero,
+    ),
+  );
+  await remoteConfig
+      .ensureInitialized()
+      .catchError((error, stackTrace) async => await FirebaseCrashlytics.instance.recordError(error, stackTrace));
+  remoteConfig.fetchAndActivate();
+
   return remoteConfig;
 }
