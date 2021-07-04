@@ -131,7 +131,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
   Future<void> persistAppsCategories(List<AppsCategoriesCompanion> value) =>
       batch((batch) => batch.insertAllOnConflictUpdate(appsCategories, value));
 
-  Future<List<CategoryWithApps>> listCategoriesWithApps() async {
+  Future<List<CategoryWithApps>> listCategoriesWithVisibleApps() async {
     final query = select(categories).join([
       leftOuterJoin(appsCategories, appsCategories.categoryId.equalsExp(categories.id)),
       leftOuterJoin(apps, apps.packageName.equalsExp(appsCategories.appPackageName) & apps.hidden.equals(false)),
@@ -149,6 +149,17 @@ class FLauncherDatabase extends _$FLauncherDatabase {
       }
     }
     return categoriesToApps.entries.map((entry) => CategoryWithApps(entry.key, entry.value)).toList();
+  }
+
+  Future<List<App>> listCategoryApps(int categoryId) async {
+    final query = select(appsCategories).join([
+      innerJoin(apps, apps.packageName.equalsExp(appsCategories.appPackageName)),
+    ]);
+    query.where(appsCategories.categoryId.equals(categoryId));
+    query.orderBy([OrderingTerm.asc(appsCategories.order)]);
+
+    final result = await query.get();
+    return result.map((e) => e.readTable(apps)).toList();
   }
 
   Future<int> nextAppCategoryOrder(int categoryId) async {

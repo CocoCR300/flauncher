@@ -190,7 +190,7 @@ void main() {
     await database.customInsert("INSERT INTO apps_categories(category_id, app_package_name, 'order')"
         " VALUES($categoryId, 'me.efesser.flauncher.3', 2);");
 
-    final categoriesWithApps = await database.listCategoriesWithApps();
+    final categoriesWithApps = await database.listCategoriesWithVisibleApps();
 
     expect(categoriesWithApps.length, 3);
     expect(categoriesWithApps[0].category.name, "Favorites");
@@ -228,5 +228,31 @@ void main() {
     expect(hiddenApplications.length, 1);
     expect(hiddenApplications[0].name, "FLauncher 2");
     expect(hiddenApplications[0].packageName, "me.efesser.flauncher.2");
+  });
+
+  test("listCategoryApps", () async {
+    await database.customInsert("INSERT INTO apps(package_name, name, version, banner, icon)"
+        " VALUES('me.efesser.flauncher', 'FLauncher', '1.0.0', null, null);");
+    await database.customInsert("INSERT INTO apps(package_name, name, version, banner, icon)"
+        " VALUES('me.efesser.flauncher.2', 'FLauncher 2', '1.0.0', null, null);");
+    await database.customInsert("INSERT INTO apps(package_name, name, version, banner, icon, hidden)"
+        " VALUES('me.efesser.flauncher.3', 'FLauncher 3', '1.0.0', null, null, true);");
+    final categoryId = await database.customInsert("INSERT INTO categories(name, 'order') VALUES('Test', 2);");
+    await database.customInsert("INSERT INTO apps_categories(category_id, app_package_name, 'order')"
+        " VALUES($categoryId, 'me.efesser.flauncher', 1);");
+    await database.customInsert("INSERT INTO apps_categories(category_id, app_package_name, 'order')"
+        " VALUES($categoryId, 'me.efesser.flauncher.2', 0);");
+    await database.customInsert("INSERT INTO apps_categories(category_id, app_package_name, 'order')"
+        " VALUES($categoryId, 'me.efesser.flauncher.3', 2);");
+
+    final apps = await database.listCategoryApps(categoryId);
+
+    expect(apps.length, 3);
+    expect(apps[0].packageName, "me.efesser.flauncher.2");
+    expect(apps[0].name, "FLauncher 2");
+    expect(apps[1].packageName, "me.efesser.flauncher");
+    expect(apps[1].name, "FLauncher");
+    expect(apps[2].packageName, "me.efesser.flauncher.3");
+    expect(apps[2].name, "FLauncher 3");
   });
 }

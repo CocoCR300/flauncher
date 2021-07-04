@@ -41,12 +41,12 @@ void main() {
           ]));
       when(database.listApplications()).thenAnswer((_) => Future.value([]));
       when(database.listHiddenApplications()).thenAnswer((_) => Future.value([]));
-      when(database.listCategoriesWithApps()).thenAnswer((_) => Future.value([]));
+      when(database.listCategoriesWithVisibleApps()).thenAnswer((_) => Future.value([]));
       final applicationsCategory = fakeCategory("Applications", 0);
       when(database.getCategory("Applications")).thenAnswer((_) => Future.value(applicationsCategory));
       when(database.nextAppCategoryOrder(applicationsCategory.id)).thenAnswer((_) => Future.value(0));
       AppsService(channel, database);
-      await untilCalled(database.listCategoriesWithApps());
+      await untilCalled(database.listCategoriesWithVisibleApps());
 
       verify(database.persistApps([
         AppsCompanion.insert(
@@ -65,7 +65,7 @@ void main() {
           order: 0,
         )
       ]));
-      verify(database.listCategoriesWithApps());
+      verify(database.listCategoriesWithVisibleApps());
       verify(database.listHiddenApplications());
     });
 
@@ -93,12 +93,12 @@ void main() {
             fakeApp("uninstalled.app", "Uninstalled Application", "1.0.0", null, null)
           ]));
       when(database.listHiddenApplications()).thenAnswer((_) => Future.value([]));
-      when(database.listCategoriesWithApps()).thenAnswer((_) => Future.value([]));
+      when(database.listCategoriesWithVisibleApps()).thenAnswer((_) => Future.value([]));
       final applicationsCategory = fakeCategory("Applications", 0);
       when(database.getCategory("Applications")).thenAnswer((_) => Future.value(applicationsCategory));
       when(database.nextAppCategoryOrder(applicationsCategory.id)).thenAnswer((_) => Future.value(1));
       AppsService(channel, database);
-      await untilCalled(database.listCategoriesWithApps());
+      await untilCalled(database.listCategoriesWithVisibleApps());
 
       verify(database.persistApps([
         AppsCompanion.insert(
@@ -125,7 +125,7 @@ void main() {
           order: 1,
         )
       ]));
-      verify(database.listCategoriesWithApps());
+      verify(database.listCategoriesWithVisibleApps());
       verify(database.listHiddenApplications());
     });
   });
@@ -196,7 +196,7 @@ void main() {
     verify(database.deleteAppCategory(oldCategory.id, "app.to.be.moved"));
     verify(database.insertAppCategory(
         AppsCategoriesCompanion.insert(categoryId: newCategory.id, appPackageName: "app.to.be.moved", order: 1)));
-    verify(database.listCategoriesWithApps());
+    verify(database.listCategoriesWithVisibleApps());
   });
 
   test("saveOrderInCategory persists apps order from memory to database", () async {
@@ -213,7 +213,7 @@ void main() {
       AppsCategoriesCompanion.insert(categoryId: category.id, appPackageName: "app.1", order: 0),
       AppsCategoriesCompanion.insert(categoryId: category.id, appPackageName: "app.2", order: 1)
     ]));
-    verify(database.listCategoriesWithApps());
+    verify(database.listCategoriesWithVisibleApps());
   });
 
   test("reorderApplication changes application order in-memory", () async {
@@ -246,7 +246,7 @@ void main() {
       verify(database.insertCategory(CategoriesCompanion.insert(name: "New Category", order: 0)));
       verify(database.persistCategories(
           [CategoriesCompanion(id: Value(existingCategory.id), name: Value(existingCategory.name), order: Value(1))]));
-      verify(database.listCategoriesWithApps());
+      verify(database.listCategoriesWithVisibleApps());
     });
 
     test("with 'Applications' category name does nothing", () async {
@@ -280,7 +280,7 @@ void main() {
       verify(database.persistCategories(
         [CategoriesCompanion(id: Value(category.id), name: Value("New name"), order: Value(0))],
       ));
-      verify(database.listCategoriesWithApps());
+      verify(database.listCategoriesWithVisibleApps());
     });
 
     test("with 'Applications' category name does nothing", () async {
@@ -299,30 +299,36 @@ void main() {
     });
   });
 
-  test("deleteCategory deletes category and moves apps to default one", () async {
+  test("deleteCategory deletes category and moves all its apps to default one", () async {
     final channel = MockFLauncherChannel();
     final database = MockFLauncherDatabase();
     final defaultCategory = fakeCategory("Applications", 0);
     final categoryToDelete = fakeCategory("Delete Me", 1);
     final appInDefaultCategory = fakeApp();
-    final appInCategoryToDelete = fakeApp("app.to.be.moved");
+    final appInCategoryToDelete = fakeApp("app.to.be.moved.1");
+    final hiddenAppInCategoryToDelete = fakeApp("app.to.be.moved.2").copyWith(hidden: true);
     final appsService = await _buildInitialisedAppsService(
       channel,
       database,
       [
         CategoryWithApps(defaultCategory, [appInDefaultCategory]),
-        CategoryWithApps(categoryToDelete, [appInCategoryToDelete])
+        CategoryWithApps(categoryToDelete, [appInCategoryToDelete, hiddenAppInCategoryToDelete])
       ],
     );
     when(database.nextAppCategoryOrder(defaultCategory.id)).thenAnswer((_) => Future.value(1));
+    when(database.listCategoryApps(categoryToDelete.id))
+        .thenAnswer((_) => Future.value([appInCategoryToDelete, hiddenAppInCategoryToDelete]));
 
     await appsService.deleteCategory(categoryToDelete);
 
     verify(database.persistAppsCategories(
-      [AppsCategoriesCompanion.insert(categoryId: defaultCategory.id, appPackageName: "app.to.be.moved", order: 1)],
+      [
+        AppsCategoriesCompanion.insert(categoryId: defaultCategory.id, appPackageName: "app.to.be.moved.1", order: 1),
+        AppsCategoriesCompanion.insert(categoryId: defaultCategory.id, appPackageName: "app.to.be.moved.2", order: 2),
+      ],
     ));
     verify(database.deleteCategory(categoryToDelete.id));
-    verify(database.listCategoriesWithApps());
+    verify(database.listCategoriesWithVisibleApps());
   });
 
   test("moveCategory changes categories order", () async {
@@ -345,7 +351,7 @@ void main() {
         CategoriesCompanion(id: Value(applicationsCategory.id), name: Value("Applications"), order: Value(1))
       ],
     ));
-    verify(database.listCategoriesWithApps());
+    verify(database.listCategoriesWithVisibleApps());
   });
 
   test("hideApplication hides application", () async {
@@ -357,7 +363,7 @@ void main() {
     await appsService.hideApplication(application);
 
     verify(database.persistApps([application.toCompanion(false).copyWith(hidden: Value(true))]));
-    verify(database.listCategoriesWithApps());
+    verify(database.listCategoriesWithVisibleApps());
     verify(database.listHiddenApplications());
     expect(appsService.hiddenApplications, [application]);
   });
@@ -370,7 +376,7 @@ void main() {
     await appsService.unHideApplication(application);
 
     verify(database.persistApps([application.toCompanion(false).copyWith(hidden: Value(false))]));
-    verify(database.listCategoriesWithApps());
+    verify(database.listCategoriesWithVisibleApps());
     verify(database.listHiddenApplications());
   });
 }
@@ -383,9 +389,9 @@ Future<AppsService> _buildInitialisedAppsService(
   when(channel.getInstalledApplications()).thenAnswer((_) => Future.value([]));
   when(database.listApplications()).thenAnswer((_) => Future.value([]));
   when(database.listHiddenApplications()).thenAnswer((_) => Future.value([]));
-  when(database.listCategoriesWithApps()).thenAnswer((_) => Future.value(categoriesWithApps));
+  when(database.listCategoriesWithVisibleApps()).thenAnswer((_) => Future.value(categoriesWithApps));
   final appsService = AppsService(channel, database);
-  await untilCalled(database.listCategoriesWithApps());
+  await untilCalled(database.listCategoriesWithVisibleApps());
   clearInteractions(channel);
   clearInteractions(database);
   return appsService;

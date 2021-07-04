@@ -90,7 +90,7 @@ class AppsService extends ChangeNotifier {
           .toList();
       await _database.persistAppsCategories(newAppCategories);
     }
-    _categoriesWithApps = await _database.listCategoriesWithApps();
+    _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     _hiddenApplications = await _database.listHiddenApplications();
     notifyListeners();
   }
@@ -116,7 +116,7 @@ class AppsService extends ChangeNotifier {
         order: index,
       ),
     );
-    _categoriesWithApps = await _database.listCategoriesWithApps();
+    _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     notifyListeners();
   }
 
@@ -131,7 +131,7 @@ class AppsService extends ChangeNotifier {
       ));
     }
     await _database.persistAppsCategories(orderedAppCategories);
-    _categoriesWithApps = await _database.listCategoriesWithApps();
+    _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     notifyListeners();
   }
 
@@ -152,7 +152,7 @@ class AppsService extends ChangeNotifier {
     }
     await _database.insertCategory(CategoriesCompanion.insert(name: categoryName, order: 0));
     await _database.persistCategories(orderedCategories);
-    _categoriesWithApps = await _database.listCategoriesWithApps();
+    _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     notifyListeners();
   }
 
@@ -161,13 +161,13 @@ class AppsService extends ChangeNotifier {
       return;
     }
     await _database.persistCategories([category.copyWith(name: categoryName).toCompanion(false)]);
-    _categoriesWithApps = await _database.listCategoriesWithApps();
+    _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     notifyListeners();
   }
 
   Future<void> deleteCategory(Category category) async {
     final applicationsCategory = _categoriesWithApps.firstWhere((e) => e.category.name == "Applications").category;
-    final applications = _categoriesWithApps.firstWhere((element) => element.category == category).applications;
+    final applications = await _database.listCategoryApps(category.id);
     int index = await _database.nextAppCategoryOrder(applicationsCategory.id);
     final appsCategories = applications
         .map((app) => AppsCategoriesCompanion.insert(
@@ -178,7 +178,7 @@ class AppsService extends ChangeNotifier {
         .toList();
     await _database.persistAppsCategories(appsCategories);
     await _database.deleteCategory(category.id);
-    _categoriesWithApps = await _database.listCategoriesWithApps();
+    _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     notifyListeners();
   }
 
@@ -190,20 +190,20 @@ class AppsService extends ChangeNotifier {
       orderedCategories.add(_categoriesWithApps[i].category.toCompanion(false).copyWith(order: Value(i)));
     }
     await _database.persistCategories(orderedCategories);
-    _categoriesWithApps = await _database.listCategoriesWithApps();
+    _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     notifyListeners();
   }
 
   Future<void> hideApplication(App application) async {
     await _database.persistApps([application.toCompanion(false).copyWith(hidden: Value(true))]);
-    _categoriesWithApps = await _database.listCategoriesWithApps();
+    _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     _hiddenApplications = await _database.listHiddenApplications();
     notifyListeners();
   }
 
   Future<void> unHideApplication(App application) async {
     await _database.persistApps([application.toCompanion(false).copyWith(hidden: Value(false))]);
-    _categoriesWithApps = await _database.listCategoriesWithApps();
+    _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     _hiddenApplications = await _database.listHiddenApplications();
     notifyListeners();
   }

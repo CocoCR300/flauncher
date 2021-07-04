@@ -226,10 +226,14 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
       (super.noSuchMethod(Invocation.method(#persistAppsCategories, [value]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
-  _i14.Future<List<_i3.CategoryWithApps>> listCategoriesWithApps() =>
-      (super.noSuchMethod(Invocation.method(#listCategoriesWithApps, []),
+  _i14.Future<List<_i3.CategoryWithApps>> listCategoriesWithVisibleApps() =>
+      (super.noSuchMethod(Invocation.method(#listCategoriesWithVisibleApps, []),
               returnValue: Future<List<_i3.CategoryWithApps>>.value(<_i3.CategoryWithApps>[]))
           as _i14.Future<List<_i3.CategoryWithApps>>);
+  @override
+  _i14.Future<List<_i3.App>> listCategoryApps(int? categoryId) =>
+      (super.noSuchMethod(Invocation.method(#listCategoryApps, [categoryId]),
+          returnValue: Future<List<_i3.App>>.value(<_i3.App>[])) as _i14.Future<List<_i3.App>>);
   @override
   _i14.Future<int> nextAppCategoryOrder(int? categoryId) =>
       (super.noSuchMethod(Invocation.method(#nextAppCategoryOrder, [categoryId]), returnValue: Future<int>.value(0))
