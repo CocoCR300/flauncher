@@ -35,6 +35,7 @@ import 'flauncher_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Paint.enableDithering = true;
 
   await Firebase.initializeApp();
   final firebaseCrashlytics = FirebaseCrashlytics.instance;
