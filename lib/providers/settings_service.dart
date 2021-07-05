@@ -27,6 +27,7 @@ const _crashReportsEnabledKey = "crash_reports_enabled";
 const _use24HourTimeFormatKey = "use_24_hour_time_format";
 const _gradientUuidKey = "gradient_uuid";
 const _unsplashEnabledKey = "unsplash_enabled";
+const _unsplashAuthorKey = "unsplash_author";
 
 class SettingsService extends ChangeNotifier {
   final SharedPreferences _sharedPreferences;
@@ -42,9 +43,11 @@ class SettingsService extends ChangeNotifier {
 
   bool get unsplashEnabled => _remoteConfig.getBool(_unsplashEnabledKey);
 
+  String? get unsplashAuthor => _sharedPreferences.getString(_unsplashAuthorKey);
+
   SettingsService(this._sharedPreferences, this._firebaseCrashlytics, this._remoteConfig) {
     _firebaseCrashlytics.setCrashlyticsCollectionEnabled(kReleaseMode && crashReportsEnabled);
-    _remoteConfigRefreshTimer = Timer.periodic(Duration(hours: 1, minutes: 1), (_) => _refreshFirebaseRemoteConfig());
+    _remoteConfigRefreshTimer = Timer.periodic(Duration(hours: 6, minutes: 1), (_) => _refreshFirebaseRemoteConfig());
   }
 
   @override
@@ -66,6 +69,15 @@ class SettingsService extends ChangeNotifier {
 
   Future<void> setGradientUuid(String value) async {
     await _sharedPreferences.setString(_gradientUuidKey, value);
+    notifyListeners();
+  }
+
+  Future<void> setUnsplashAuthor(String? value) async {
+    if (value == null) {
+      await _sharedPreferences.remove(_unsplashAuthorKey);
+    } else {
+      await _sharedPreferences.setString(_unsplashAuthorKey, value);
+    }
     notifyListeners();
   }
 

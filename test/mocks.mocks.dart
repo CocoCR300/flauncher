@@ -2,7 +2,7 @@
 // in flauncher/test/mocks.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i14;
+import 'dart:async' as _i15;
 import 'dart:typed_data' as _i26;
 import 'dart:ui' as _i19;
 
@@ -13,18 +13,18 @@ import 'package:firebase_remote_config_platform_interface/src/remote_config_sett
 import 'package:firebase_remote_config_platform_interface/src/remote_config_status.dart' as _i25;
 import 'package:firebase_remote_config_platform_interface/src/remote_config_value.dart' as _i12;
 import 'package:flauncher/database.dart' as _i3;
-import 'package:flauncher/flauncher_channel.dart' as _i13;
+import 'package:flauncher/flauncher_channel.dart' as _i14;
 import 'package:flauncher/gradients.dart' as _i9;
 import 'package:flauncher/providers/apps_service.dart' as _i20;
-import 'package:flauncher/providers/settings_service.dart' as _i17;
-import 'package:flauncher/providers/wallpaper_service.dart' as _i16;
-import 'package:flauncher/unsplash_service.dart' as _i18;
+import 'package:flauncher/providers/settings_service.dart' as _i18;
+import 'package:flauncher/providers/wallpaper_service.dart' as _i17;
+import 'package:flauncher/unsplash_service.dart' as _i13;
 import 'package:flutter/src/foundation/assertions.dart' as _i23;
 import 'package:flutter/src/foundation/diagnostics.dart' as _i22;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:moor/src/dsl/dsl.dart' as _i8;
 import 'package:moor/src/runtime/api/runtime_api.dart' as _i4;
-import 'package:moor/src/runtime/data_class.dart' as _i15;
+import 'package:moor/src/runtime/data_class.dart' as _i16;
 import 'package:moor/src/runtime/executor/executor.dart' as _i6;
 import 'package:moor/src/runtime/executor/stream_queries.dart' as _i7;
 import 'package:moor/src/runtime/query_builder/query_builder.dart' as _i2;
@@ -95,40 +95,42 @@ class _FakeRemoteConfigSettings extends _i1.Fake implements _i11.RemoteConfigSet
 
 class _FakeRemoteConfigValue extends _i1.Fake implements _i12.RemoteConfigValue {}
 
+class _FakePhoto extends _i1.Fake implements _i13.Photo {}
+
 /// A class which mocks [FLauncherChannel].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockFLauncherChannel extends _i1.Mock implements _i13.FLauncherChannel {
+class MockFLauncherChannel extends _i1.Mock implements _i14.FLauncherChannel {
   MockFLauncherChannel() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i14.Future<List<dynamic>> getInstalledApplications() =>
+  _i15.Future<List<dynamic>> getInstalledApplications() =>
       (super.noSuchMethod(Invocation.method(#getInstalledApplications, []),
-          returnValue: Future<List<dynamic>>.value(<dynamic>[])) as _i14.Future<List<dynamic>>);
+          returnValue: Future<List<dynamic>>.value(<dynamic>[])) as _i15.Future<List<dynamic>>);
   @override
-  _i14.Future<void> launchApp(String? packageName) => (super.noSuchMethod(Invocation.method(#launchApp, [packageName]),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> launchApp(String? packageName) => (super.noSuchMethod(Invocation.method(#launchApp, [packageName]),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> openSettings() => (super.noSuchMethod(Invocation.method(#openSettings, []),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> openSettings() => (super.noSuchMethod(Invocation.method(#openSettings, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> openAppInfo(String? packageName) =>
+  _i15.Future<void> openAppInfo(String? packageName) =>
       (super.noSuchMethod(Invocation.method(#openAppInfo, [packageName]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> uninstallApp(String? packageName) =>
+  _i15.Future<void> uninstallApp(String? packageName) =>
       (super.noSuchMethod(Invocation.method(#uninstallApp, [packageName]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<bool> isDefaultLauncher() =>
+  _i15.Future<bool> isDefaultLauncher() =>
       (super.noSuchMethod(Invocation.method(#isDefaultLauncher, []), returnValue: Future<bool>.value(false))
-          as _i14.Future<bool>);
+          as _i15.Future<bool>);
   @override
-  _i14.Future<bool> checkForGetContentAvailability() => (super
+  _i15.Future<bool> checkForGetContentAvailability() => (super
           .noSuchMethod(Invocation.method(#checkForGetContentAvailability, []), returnValue: Future<bool>.value(false))
-      as _i14.Future<bool>);
+      as _i15.Future<bool>);
   @override
   void addAppsChangedListener(void Function(Map<dynamic, dynamic>)? listener) =>
       super.noSuchMethod(Invocation.method(#addAppsChangedListener, [listener]), returnValueForMissingStub: null);
@@ -190,81 +192,81 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
       (super.noSuchMethod(Invocation.getter(#streamQueries), returnValue: _FakeStreamQueryStore())
           as _i7.StreamQueryStore);
   @override
-  _i14.Future<List<_i3.App>> listApplications() => (super.noSuchMethod(Invocation.method(#listApplications, []),
-      returnValue: Future<List<_i3.App>>.value(<_i3.App>[])) as _i14.Future<List<_i3.App>>);
+  _i15.Future<List<_i3.App>> listApplications() => (super.noSuchMethod(Invocation.method(#listApplications, []),
+      returnValue: Future<List<_i3.App>>.value(<_i3.App>[])) as _i15.Future<List<_i3.App>>);
   @override
-  _i14.Future<void> persistApps(List<_i3.AppsCompanion>? applications) =>
+  _i15.Future<void> persistApps(List<_i3.AppsCompanion>? applications) =>
       (super.noSuchMethod(Invocation.method(#persistApps, [applications]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> updateApp(String? packageName, _i3.AppsCompanion? value) =>
+  _i15.Future<void> updateApp(String? packageName, _i3.AppsCompanion? value) =>
       (super.noSuchMethod(Invocation.method(#updateApp, [packageName, value]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> deleteApps(List<String>? packageNames) =>
+  _i15.Future<void> deleteApps(List<String>? packageNames) =>
       (super.noSuchMethod(Invocation.method(#deleteApps, [packageNames]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<_i3.Category> getCategory(String? name) => (super.noSuchMethod(Invocation.method(#getCategory, [name]),
-      returnValue: Future<_i3.Category>.value(_FakeCategory())) as _i14.Future<_i3.Category>);
+  _i15.Future<_i3.Category> getCategory(String? name) => (super.noSuchMethod(Invocation.method(#getCategory, [name]),
+      returnValue: Future<_i3.Category>.value(_FakeCategory())) as _i15.Future<_i3.Category>);
   @override
-  _i14.Future<void> insertCategory(_i3.CategoriesCompanion? category) =>
+  _i15.Future<void> insertCategory(_i3.CategoriesCompanion? category) =>
       (super.noSuchMethod(Invocation.method(#insertCategory, [category]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> deleteCategory(int? id) => (super.noSuchMethod(Invocation.method(#deleteCategory, [id]),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> deleteCategory(int? id) => (super.noSuchMethod(Invocation.method(#deleteCategory, [id]),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> updateCategories(List<_i3.CategoriesCompanion>? values) =>
+  _i15.Future<void> updateCategories(List<_i3.CategoriesCompanion>? values) =>
       (super.noSuchMethod(Invocation.method(#updateCategories, [values]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> updateCategory(int? id, _i3.CategoriesCompanion? value) =>
+  _i15.Future<void> updateCategory(int? id, _i3.CategoriesCompanion? value) =>
       (super.noSuchMethod(Invocation.method(#updateCategory, [id, value]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> deleteAppCategory(int? categoryId, String? packageName) =>
+  _i15.Future<void> deleteAppCategory(int? categoryId, String? packageName) =>
       (super.noSuchMethod(Invocation.method(#deleteAppCategory, [categoryId, packageName]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> insertAppsCategories(List<_i3.AppsCategoriesCompanion>? value) =>
+  _i15.Future<void> insertAppsCategories(List<_i3.AppsCategoriesCompanion>? value) =>
       (super.noSuchMethod(Invocation.method(#insertAppsCategories, [value]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> replaceAppsCategories(List<_i3.AppsCategoriesCompanion>? value) =>
+  _i15.Future<void> replaceAppsCategories(List<_i3.AppsCategoriesCompanion>? value) =>
       (super.noSuchMethod(Invocation.method(#replaceAppsCategories, [value]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<List<_i3.CategoryWithApps>> listCategoriesWithVisibleApps() =>
+  _i15.Future<List<_i3.CategoryWithApps>> listCategoriesWithVisibleApps() =>
       (super.noSuchMethod(Invocation.method(#listCategoriesWithVisibleApps, []),
               returnValue: Future<List<_i3.CategoryWithApps>>.value(<_i3.CategoryWithApps>[]))
-          as _i14.Future<List<_i3.CategoryWithApps>>);
+          as _i15.Future<List<_i3.CategoryWithApps>>);
   @override
-  _i14.Future<List<_i3.App>> listCategoryApps(int? categoryId) =>
+  _i15.Future<List<_i3.App>> listCategoryApps(int? categoryId) =>
       (super.noSuchMethod(Invocation.method(#listCategoryApps, [categoryId]),
-          returnValue: Future<List<_i3.App>>.value(<_i3.App>[])) as _i14.Future<List<_i3.App>>);
+          returnValue: Future<List<_i3.App>>.value(<_i3.App>[])) as _i15.Future<List<_i3.App>>);
   @override
-  _i14.Future<int> nextAppCategoryOrder(int? categoryId) =>
+  _i15.Future<int> nextAppCategoryOrder(int? categoryId) =>
       (super.noSuchMethod(Invocation.method(#nextAppCategoryOrder, [categoryId]), returnValue: Future<int>.value(0))
-          as _i14.Future<int>);
+          as _i15.Future<int>);
   @override
-  _i14.Future<List<_i3.App>> listHiddenApplications() =>
+  _i15.Future<List<_i3.App>> listHiddenApplications() =>
       (super.noSuchMethod(Invocation.method(#listHiddenApplications, []),
-          returnValue: Future<List<_i3.App>>.value(<_i3.App>[])) as _i14.Future<List<_i3.App>>);
+          returnValue: Future<List<_i3.App>>.value(<_i3.App>[])) as _i15.Future<List<_i3.App>>);
   @override
   _i2.Migrator createMigrator() =>
       (super.noSuchMethod(Invocation.method(#createMigrator, []), returnValue: _FakeMigrator()) as _i2.Migrator);
   @override
-  _i14.Future<void> beforeOpen(_i6.QueryExecutor? executor, _i2.OpeningDetails? details) =>
+  _i15.Future<void> beforeOpen(_i6.QueryExecutor? executor, _i2.OpeningDetails? details) =>
       (super.noSuchMethod(Invocation.method(#beforeOpen, [executor, details]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> close() => (super.noSuchMethod(Invocation.method(#close, []),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> close() => (super.noSuchMethod(Invocation.method(#close, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Stream<List<Map<String, Object?>>> createStream(_i7.QueryStreamFetcher? stmt) =>
+  _i15.Stream<List<Map<String, Object?>>> createStream(_i7.QueryStreamFetcher? stmt) =>
       (super.noSuchMethod(Invocation.method(#createStream, [stmt]),
-          returnValue: Stream<List<Map<String, Object?>>>.empty()) as _i14.Stream<List<Map<String, Object?>>>);
+          returnValue: Stream<List<Map<String, Object?>>>.empty()) as _i15.Stream<List<Map<String, Object?>>>);
   @override
   T alias<T extends _i8.Table, D>(_i2.TableInfo<T, D>? table, String? alias) =>
       (super.noSuchMethod(Invocation.method(#alias, [table, alias]), returnValue: null) as T);
@@ -275,13 +277,13 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
   void notifyUpdates(Set<_i4.TableUpdate>? updates) =>
       super.noSuchMethod(Invocation.method(#notifyUpdates, [updates]), returnValueForMissingStub: null);
   @override
-  _i14.Stream<Set<_i4.TableUpdate>> tableUpdates([_i4.TableUpdateQuery? query = const _i4.TableUpdateQuery.any()]) =>
+  _i15.Stream<Set<_i4.TableUpdate>> tableUpdates([_i4.TableUpdateQuery? query = const _i4.TableUpdateQuery.any()]) =>
       (super.noSuchMethod(Invocation.method(#tableUpdates, [query]), returnValue: Stream<Set<_i4.TableUpdate>>.empty())
-          as _i14.Stream<Set<_i4.TableUpdate>>);
+          as _i15.Stream<Set<_i4.TableUpdate>>);
   @override
-  _i14.Future<T> doWhenOpened<T>(_i14.FutureOr<T>? Function(_i6.QueryExecutor)? fn) =>
+  _i15.Future<T> doWhenOpened<T>(_i15.FutureOr<T>? Function(_i6.QueryExecutor)? fn) =>
       (super.noSuchMethod(Invocation.method(#doWhenOpened, [fn]), returnValue: Future<T>.value(null))
-          as _i14.Future<T>);
+          as _i15.Future<T>);
   @override
   _i2.InsertStatement<T, D> into<T extends _i8.Table, D>(_i2.TableInfo<T, D>? table) =>
       (super.noSuchMethod(Invocation.method(#into, [table]), returnValue: _FakeInsertStatement<T, D>())
@@ -305,28 +307,28 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
       (super.noSuchMethod(Invocation.method(#delete, [table]), returnValue: _FakeDeleteStatement<T, D>())
           as _i2.DeleteStatement<T, D>);
   @override
-  _i14.Future<int> customUpdate(String? query,
+  _i15.Future<int> customUpdate(String? query,
           {List<_i2.Variable<dynamic>>? variables = const [],
           Set<_i2.TableInfo<_i8.Table, dynamic>>? updates,
           _i4.UpdateKind? updateKind}) =>
       (super.noSuchMethod(
           Invocation.method(
               #customUpdate, [query], {#variables: variables, #updates: updates, #updateKind: updateKind}),
-          returnValue: Future<int>.value(0)) as _i14.Future<int>);
+          returnValue: Future<int>.value(0)) as _i15.Future<int>);
   @override
-  _i14.Future<int> customInsert(String? query,
+  _i15.Future<int> customInsert(String? query,
           {List<_i2.Variable<dynamic>>? variables = const [], Set<_i2.TableInfo<_i8.Table, dynamic>>? updates}) =>
       (super.noSuchMethod(Invocation.method(#customInsert, [query], {#variables: variables, #updates: updates}),
-          returnValue: Future<int>.value(0)) as _i14.Future<int>);
+          returnValue: Future<int>.value(0)) as _i15.Future<int>);
   @override
-  _i14.Future<List<_i2.QueryRow>> customWriteReturning(String? query,
+  _i15.Future<List<_i2.QueryRow>> customWriteReturning(String? query,
           {List<_i2.Variable<dynamic>>? variables = const [],
           Set<_i2.TableInfo<_i8.Table, dynamic>>? updates,
           _i4.UpdateKind? updateKind}) =>
       (super.noSuchMethod(
           Invocation.method(
               #customWriteReturning, [query], {#variables: variables, #updates: updates, #updateKind: updateKind}),
-          returnValue: Future<List<_i2.QueryRow>>.value(<_i2.QueryRow>[])) as _i14.Future<List<_i2.QueryRow>>);
+          returnValue: Future<List<_i2.QueryRow>>.value(<_i2.QueryRow>[])) as _i15.Future<List<_i2.QueryRow>>);
   @override
   _i2.Selectable<_i2.QueryRow> customSelect(String? query,
           {List<_i2.Variable<dynamic>>? variables = const [],
@@ -341,24 +343,24 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
           Invocation.method(#customSelectQuery, [query], {#variables: variables, #readsFrom: readsFrom}),
           returnValue: _FakeSelectable<_i2.QueryRow>()) as _i2.Selectable<_i2.QueryRow>);
   @override
-  _i14.Future<void> customStatement(String? statement, [List<dynamic>? args]) =>
+  _i15.Future<void> customStatement(String? statement, [List<dynamic>? args]) =>
       (super.noSuchMethod(Invocation.method(#customStatement, [statement, args]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<T> transaction<T>(_i14.Future<T> Function()? action) =>
+  _i15.Future<T> transaction<T>(_i15.Future<T> Function()? action) =>
       (super.noSuchMethod(Invocation.method(#transaction, [action]), returnValue: Future<T>.value(null))
-          as _i14.Future<T>);
+          as _i15.Future<T>);
   @override
-  _i14.Future<void> batch(_i14.FutureOr<void>? Function(_i4.Batch)? runInBatch) =>
+  _i15.Future<void> batch(_i15.FutureOr<void>? Function(_i4.Batch)? runInBatch) =>
       (super.noSuchMethod(Invocation.method(#batch, [runInBatch]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
   _i2.GenerationContext $write(_i2.Component? component, {bool? hasMultipleTables}) =>
       (super.noSuchMethod(Invocation.method(#$write, [component], {#hasMultipleTables: hasMultipleTables}),
           returnValue: _FakeGenerationContext()) as _i2.GenerationContext);
   @override
   _i2.GenerationContext $writeInsertable(
-          _i2.TableInfo<_i8.Table, dynamic>? table, _i15.Insertable<dynamic>? insertable) =>
+          _i2.TableInfo<_i8.Table, dynamic>? table, _i16.Insertable<dynamic>? insertable) =>
       (super.noSuchMethod(Invocation.method(#$writeInsertable, [table, insertable]),
           returnValue: _FakeGenerationContext()) as _i2.GenerationContext);
 }
@@ -366,7 +368,7 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
 /// A class which mocks [WallpaperService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWallpaperService extends _i1.Mock implements _i16.WallpaperService {
+class MockWallpaperService extends _i1.Mock implements _i17.WallpaperService {
   MockWallpaperService() {
     _i1.throwOnMissingStub(this);
   }
@@ -376,29 +378,29 @@ class MockWallpaperService extends _i1.Mock implements _i16.WallpaperService {
       (super.noSuchMethod(Invocation.getter(#gradient), returnValue: _FakeFLauncherGradient())
           as _i9.FLauncherGradient);
   @override
-  set settingsService(_i17.SettingsService? settingsService) =>
+  set settingsService(_i18.SettingsService? settingsService) =>
       super.noSuchMethod(Invocation.setter(#settingsService, settingsService), returnValueForMissingStub: null);
   @override
   bool get hasListeners => (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
   @override
-  _i14.Future<void> pickWallpaper() => (super.noSuchMethod(Invocation.method(#pickWallpaper, []),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> pickWallpaper() => (super.noSuchMethod(Invocation.method(#pickWallpaper, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> randomFromUnsplash(String? query) =>
+  _i15.Future<void> randomFromUnsplash(String? query) =>
       (super.noSuchMethod(Invocation.method(#randomFromUnsplash, [query]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<List<_i18.Photo>> searchFromUnsplash(String? query) =>
+  _i15.Future<List<_i13.Photo>> searchFromUnsplash(String? query) =>
       (super.noSuchMethod(Invocation.method(#searchFromUnsplash, [query]),
-          returnValue: Future<List<_i18.Photo>>.value(<_i18.Photo>[])) as _i14.Future<List<_i18.Photo>>);
+          returnValue: Future<List<_i13.Photo>>.value(<_i13.Photo>[])) as _i15.Future<List<_i13.Photo>>);
   @override
-  _i14.Future<void> setFromUnsplash(_i18.Photo? photo) =>
+  _i15.Future<void> setFromUnsplash(_i13.Photo? photo) =>
       (super.noSuchMethod(Invocation.method(#setFromUnsplash, [photo]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> setGradient(_i9.FLauncherGradient? fLauncherGradient) =>
+  _i15.Future<void> setGradient(_i9.FLauncherGradient? fLauncherGradient) =>
       (super.noSuchMethod(Invocation.method(#setGradient, [fLauncherGradient]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
   void addListener(_i19.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
@@ -430,73 +432,73 @@ class MockAppsService extends _i1.Mock implements _i20.AppsService {
   @override
   bool get hasListeners => (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
   @override
-  _i14.Future<void> launchApp(_i3.App? app) => (super.noSuchMethod(Invocation.method(#launchApp, [app]),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> launchApp(_i3.App? app) => (super.noSuchMethod(Invocation.method(#launchApp, [app]),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> openAppInfo(_i3.App? app) => (super.noSuchMethod(Invocation.method(#openAppInfo, [app]),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> openAppInfo(_i3.App? app) => (super.noSuchMethod(Invocation.method(#openAppInfo, [app]),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> uninstallApp(_i3.App? app) => (super.noSuchMethod(Invocation.method(#uninstallApp, [app]),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> uninstallApp(_i3.App? app) => (super.noSuchMethod(Invocation.method(#uninstallApp, [app]),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> openSettings() => (super.noSuchMethod(Invocation.method(#openSettings, []),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> openSettings() => (super.noSuchMethod(Invocation.method(#openSettings, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<bool> isDefaultLauncher() =>
+  _i15.Future<bool> isDefaultLauncher() =>
       (super.noSuchMethod(Invocation.method(#isDefaultLauncher, []), returnValue: Future<bool>.value(false))
-          as _i14.Future<bool>);
+          as _i15.Future<bool>);
   @override
-  _i14.Future<void> moveToCategory(_i3.App? app, _i3.Category? oldCategory, _i3.Category? newCategory) =>
+  _i15.Future<void> moveToCategory(_i3.App? app, _i3.Category? oldCategory, _i3.Category? newCategory) =>
       (super.noSuchMethod(Invocation.method(#moveToCategory, [app, oldCategory, newCategory]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> saveOrderInCategory(_i3.Category? category) =>
+  _i15.Future<void> saveOrderInCategory(_i3.Category? category) =>
       (super.noSuchMethod(Invocation.method(#saveOrderInCategory, [category]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
   void reorderApplication(_i3.Category? category, int? oldIndex, int? newIndex) =>
       super.noSuchMethod(Invocation.method(#reorderApplication, [category, oldIndex, newIndex]),
           returnValueForMissingStub: null);
   @override
-  _i14.Future<void> addCategory(String? categoryName) =>
+  _i15.Future<void> addCategory(String? categoryName) =>
       (super.noSuchMethod(Invocation.method(#addCategory, [categoryName]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> renameCategory(_i3.Category? category, String? categoryName) =>
+  _i15.Future<void> renameCategory(_i3.Category? category, String? categoryName) =>
       (super.noSuchMethod(Invocation.method(#renameCategory, [category, categoryName]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> deleteCategory(_i3.Category? category) =>
+  _i15.Future<void> deleteCategory(_i3.Category? category) =>
       (super.noSuchMethod(Invocation.method(#deleteCategory, [category]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> moveCategory(int? oldIndex, int? newIndex) =>
+  _i15.Future<void> moveCategory(int? oldIndex, int? newIndex) =>
       (super.noSuchMethod(Invocation.method(#moveCategory, [oldIndex, newIndex]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> hideApplication(_i3.App? application) =>
+  _i15.Future<void> hideApplication(_i3.App? application) =>
       (super.noSuchMethod(Invocation.method(#hideApplication, [application]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> unHideApplication(_i3.App? application) =>
+  _i15.Future<void> unHideApplication(_i3.App? application) =>
       (super.noSuchMethod(Invocation.method(#unHideApplication, [application]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> setCategoryType(_i3.Category? category, _i3.CategoryType? display) =>
-      (super.noSuchMethod(Invocation.method(#setCategoryType, [category, display]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> setCategoryType(_i3.Category? category, _i3.CategoryType? type) =>
+      (super.noSuchMethod(Invocation.method(#setCategoryType, [category, type]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> setCategorySort(_i3.Category? category, _i3.CategorySort? sort) =>
+  _i15.Future<void> setCategorySort(_i3.Category? category, _i3.CategorySort? sort) =>
       (super.noSuchMethod(Invocation.method(#setCategorySort, [category, sort]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> setCategoryColumnsCount(_i3.Category? category, int? columnsCount) =>
+  _i15.Future<void> setCategoryColumnsCount(_i3.Category? category, int? columnsCount) =>
       (super.noSuchMethod(Invocation.method(#setCategoryColumnsCount, [category, columnsCount]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> setCategoryRowHeight(_i3.Category? category, int? rowHeight) =>
+  _i15.Future<void> setCategoryRowHeight(_i3.Category? category, int? rowHeight) =>
       (super.noSuchMethod(Invocation.method(#setCategoryRowHeight, [category, rowHeight]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
   void addListener(_i19.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
@@ -513,7 +515,7 @@ class MockAppsService extends _i1.Mock implements _i20.AppsService {
 /// A class which mocks [SettingsService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSettingsService extends _i1.Mock implements _i17.SettingsService {
+class MockSettingsService extends _i1.Mock implements _i18.SettingsService {
   MockSettingsService() {
     _i1.throwOnMissingStub(this);
   }
@@ -531,16 +533,20 @@ class MockSettingsService extends _i1.Mock implements _i17.SettingsService {
   @override
   void dispose() => super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
   @override
-  _i14.Future<void> setCrashReportsEnabled(bool? value) =>
+  _i15.Future<void> setCrashReportsEnabled(bool? value) =>
       (super.noSuchMethod(Invocation.method(#setCrashReportsEnabled, [value]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> setUse24HourTimeFormat(bool? value) =>
+  _i15.Future<void> setUse24HourTimeFormat(bool? value) =>
       (super.noSuchMethod(Invocation.method(#setUse24HourTimeFormat, [value]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> setGradientUuid(String? value) => (super.noSuchMethod(Invocation.method(#setGradientUuid, [value]),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> setGradientUuid(String? value) => (super.noSuchMethod(Invocation.method(#setGradientUuid, [value]),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
+  @override
+  _i15.Future<void> setUnsplashAuthor(String? value) =>
+      (super.noSuchMethod(Invocation.method(#setUnsplashAuthor, [value]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
   void addListener(_i19.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
@@ -573,20 +579,20 @@ class MockFirebaseCrashlytics extends _i1.Mock implements _i21.FirebaseCrashlyti
       (super.noSuchMethod(Invocation.getter(#pluginConstants), returnValue: <dynamic, dynamic>{})
           as Map<dynamic, dynamic>);
   @override
-  _i14.Future<bool> checkForUnsentReports() =>
+  _i15.Future<bool> checkForUnsentReports() =>
       (super.noSuchMethod(Invocation.method(#checkForUnsentReports, []), returnValue: Future<bool>.value(false))
-          as _i14.Future<bool>);
+          as _i15.Future<bool>);
   @override
   void crash() => super.noSuchMethod(Invocation.method(#crash, []), returnValueForMissingStub: null);
   @override
-  _i14.Future<void> deleteUnsentReports() => (super.noSuchMethod(Invocation.method(#deleteUnsentReports, []),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> deleteUnsentReports() => (super.noSuchMethod(Invocation.method(#deleteUnsentReports, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<bool> didCrashOnPreviousExecution() =>
+  _i15.Future<bool> didCrashOnPreviousExecution() =>
       (super.noSuchMethod(Invocation.method(#didCrashOnPreviousExecution, []), returnValue: Future<bool>.value(false))
-          as _i14.Future<bool>);
+          as _i15.Future<bool>);
   @override
-  _i14.Future<void> recordError(dynamic exception, StackTrace? stack,
+  _i15.Future<void> recordError(dynamic exception, StackTrace? stack,
           {dynamic reason,
           Iterable<_i22.DiagnosticsNode>? information = const [],
           bool? printDetails,
@@ -595,29 +601,29 @@ class MockFirebaseCrashlytics extends _i1.Mock implements _i21.FirebaseCrashlyti
           Invocation.method(#recordError, [exception, stack],
               {#reason: reason, #information: information, #printDetails: printDetails, #fatal: fatal}),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> recordFlutterError(_i23.FlutterErrorDetails? flutterErrorDetails) =>
+  _i15.Future<void> recordFlutterError(_i23.FlutterErrorDetails? flutterErrorDetails) =>
       (super.noSuchMethod(Invocation.method(#recordFlutterError, [flutterErrorDetails]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> log(String? message) => (super.noSuchMethod(Invocation.method(#log, [message]),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> log(String? message) => (super.noSuchMethod(Invocation.method(#log, [message]),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> sendUnsentReports() => (super.noSuchMethod(Invocation.method(#sendUnsentReports, []),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> sendUnsentReports() => (super.noSuchMethod(Invocation.method(#sendUnsentReports, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> setCrashlyticsCollectionEnabled(bool? enabled) =>
+  _i15.Future<void> setCrashlyticsCollectionEnabled(bool? enabled) =>
       (super.noSuchMethod(Invocation.method(#setCrashlyticsCollectionEnabled, [enabled]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> setUserIdentifier(String? identifier) =>
+  _i15.Future<void> setUserIdentifier(String? identifier) =>
       (super.noSuchMethod(Invocation.method(#setUserIdentifier, [identifier]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> setCustomKey(String? key, Object? value) =>
+  _i15.Future<void> setCustomKey(String? key, Object? value) =>
       (super.noSuchMethod(Invocation.method(#setCustomKey, [key, value]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
 }
 
 /// A class which mocks [RemoteConfig].
@@ -649,19 +655,19 @@ class MockRemoteConfig extends _i1.Mock implements _i24.RemoteConfig {
       (super.noSuchMethod(Invocation.getter(#pluginConstants), returnValue: <dynamic, dynamic>{})
           as Map<dynamic, dynamic>);
   @override
-  _i14.Future<bool> activate() =>
+  _i15.Future<bool> activate() =>
       (super.noSuchMethod(Invocation.method(#activate, []), returnValue: Future<bool>.value(false))
-          as _i14.Future<bool>);
+          as _i15.Future<bool>);
   @override
-  _i14.Future<void> ensureInitialized() => (super.noSuchMethod(Invocation.method(#ensureInitialized, []),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> ensureInitialized() => (super.noSuchMethod(Invocation.method(#ensureInitialized, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> fetch() => (super.noSuchMethod(Invocation.method(#fetch, []),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  _i15.Future<void> fetch() => (super.noSuchMethod(Invocation.method(#fetch, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<bool> fetchAndActivate() =>
+  _i15.Future<bool> fetchAndActivate() =>
       (super.noSuchMethod(Invocation.method(#fetchAndActivate, []), returnValue: Future<bool>.value(false))
-          as _i14.Future<bool>);
+          as _i15.Future<bool>);
   @override
   Map<String, _i12.RemoteConfigValue> getAll() =>
       (super.noSuchMethod(Invocation.method(#getAll, []), returnValue: <String, _i12.RemoteConfigValue>{})
@@ -681,13 +687,13 @@ class MockRemoteConfig extends _i1.Mock implements _i24.RemoteConfig {
       (super.noSuchMethod(Invocation.method(#getValue, [key]), returnValue: _FakeRemoteConfigValue())
           as _i12.RemoteConfigValue);
   @override
-  _i14.Future<void> setConfigSettings(_i11.RemoteConfigSettings? remoteConfigSettings) =>
+  _i15.Future<void> setConfigSettings(_i11.RemoteConfigSettings? remoteConfigSettings) =>
       (super.noSuchMethod(Invocation.method(#setConfigSettings, [remoteConfigSettings]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> setDefaults(Map<String, dynamic>? defaultParameters) =>
+  _i15.Future<void> setDefaults(Map<String, dynamic>? defaultParameters) =>
       (super.noSuchMethod(Invocation.method(#setDefaults, [defaultParameters]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
   void addListener(_i19.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
@@ -704,21 +710,21 @@ class MockRemoteConfig extends _i1.Mock implements _i24.RemoteConfig {
 /// A class which mocks [UnsplashService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUnsplashService extends _i1.Mock implements _i18.UnsplashService {
+class MockUnsplashService extends _i1.Mock implements _i13.UnsplashService {
   MockUnsplashService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i14.Future<_i26.Uint8List> randomPhoto(String? query) =>
-      (super.noSuchMethod(Invocation.method(#randomPhoto, [query]),
-          returnValue: Future<_i26.Uint8List>.value(_i26.Uint8List(0))) as _i14.Future<_i26.Uint8List>);
+  _i15.Future<_i13.Photo> randomPhoto(String? query) =>
+      (super.noSuchMethod(Invocation.method(#randomPhoto, [query]), returnValue: Future<_i13.Photo>.value(_FakePhoto()))
+          as _i15.Future<_i13.Photo>);
   @override
-  _i14.Future<List<_i18.Photo>> searchPhotos(String? query) =>
+  _i15.Future<List<_i13.Photo>> searchPhotos(String? query) =>
       (super.noSuchMethod(Invocation.method(#searchPhotos, [query]),
-          returnValue: Future<List<_i18.Photo>>.value(<_i18.Photo>[])) as _i14.Future<List<_i18.Photo>>);
+          returnValue: Future<List<_i13.Photo>>.value(<_i13.Photo>[])) as _i15.Future<List<_i13.Photo>>);
   @override
-  _i14.Future<_i26.Uint8List> downloadPhoto(_i18.Photo? photo) =>
+  _i15.Future<_i26.Uint8List> downloadPhoto(_i13.Photo? photo) =>
       (super.noSuchMethod(Invocation.method(#downloadPhoto, [photo]),
-          returnValue: Future<_i26.Uint8List>.value(_i26.Uint8List(0))) as _i14.Future<_i26.Uint8List>);
+          returnValue: Future<_i26.Uint8List>.value(_i26.Uint8List(0))) as _i15.Future<_i26.Uint8List>);
 }

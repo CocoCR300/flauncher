@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -67,14 +68,18 @@ class WallpaperService extends ChangeNotifier {
       final bytes = await pickedFile.readAsBytes();
       await _wallpaperFile.writeAsBytes(bytes);
       _wallpaper = bytes;
+      await _settingsService.setUnsplashAuthor(null);
       notifyListeners();
     }
   }
 
   Future<void> randomFromUnsplash(String query) async {
-    final bytes = await _unsplashService.randomPhoto(query);
+    final photo = await _unsplashService.randomPhoto(query);
+    final bytes = await _unsplashService.downloadPhoto(photo);
     await _wallpaperFile.writeAsBytes(bytes);
     _wallpaper = bytes;
+    await _settingsService
+        .setUnsplashAuthor(jsonEncode({"username": photo.username, "link": photo.userLink.toString()}));
     notifyListeners();
   }
 
@@ -84,6 +89,8 @@ class WallpaperService extends ChangeNotifier {
     final bytes = await _unsplashService.downloadPhoto(photo);
     await _wallpaperFile.writeAsBytes(bytes);
     _wallpaper = bytes;
+    await _settingsService
+        .setUnsplashAuthor(jsonEncode({"username": photo.username, "link": photo.userLink.toString()}));
     notifyListeners();
   }
 
@@ -92,6 +99,7 @@ class WallpaperService extends ChangeNotifier {
       await _wallpaperFile.delete();
     }
     _wallpaper = null;
+    _settingsService.setUnsplashAuthor(null);
     _settingsService.setGradientUuid(fLauncherGradient.uuid);
     notifyListeners();
   }

@@ -76,6 +76,18 @@ void main() {
     expect(unsplashEnabled, isTrue);
   });
 
+  test("unsplashAuthor", () async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setString("unsplash_author", "unsplash author");
+    final firebaseCrashlytics = MockFirebaseCrashlytics();
+    final firebaseRemoteConfig = MockRemoteConfig();
+    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+
+    final unsplashAuthor = settingsService.unsplashAuthor;
+
+    expect(unsplashAuthor, "unsplash author");
+  });
+
   group("getGradientUuid", () {
     test("without uuid from shared preferences", () async {
       final sharedPreferences = await SharedPreferences.getInstance();

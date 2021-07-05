@@ -16,12 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:convert';
+
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
 import 'package:flauncher/widgets/settings/unsplash_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class WallpaperPanelPage extends StatelessWidget {
   static const String routeName = "wallpaper_panel";
@@ -78,6 +81,30 @@ class WallpaperPanelPage extends StatelessWidget {
                     ),
                   ),
                 );
+              }
+            },
+          ),
+          Spacer(),
+          Selector<SettingsService, String?>(
+            selector: (_, settingsService) => settingsService.unsplashAuthor,
+            builder: (context, json, _) {
+              if (json != null) {
+                final authorInfo = jsonDecode(json);
+                return TextButton(
+                  onPressed: () => Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                      builder: (context) => WebView(
+                        initialUrl: authorInfo["link"],
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    "Photo by ${authorInfo["username"]} on Unsplash",
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                );
+              } else {
+                return Container();
               }
             },
           ),

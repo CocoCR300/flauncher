@@ -66,10 +66,10 @@ class _RandomTabState extends State<_RandomTab> {
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
           children: [
-            _randomCard("Abstract", AssetImage("assets/abstract.png"), autofocus: true),
+            _randomCard("Landscape", AssetImage("assets/landscape.png"), autofocus: true),
+            _randomCard("Abstract", AssetImage("assets/abstract.png")),
             _randomCard("Minimal", AssetImage("assets/minimal.png")),
             _randomCard("Texture", AssetImage("assets/texture.png")),
-            _randomCard("Nature", AssetImage("assets/nature.png")),
             _randomCard("Architecture", AssetImage("assets/architecture.png")),
             _randomCard("Plant", AssetImage("assets/plant.png")),
             _randomCard("Technology", AssetImage("assets/technology.png")),
@@ -81,32 +81,37 @@ class _RandomTabState extends State<_RandomTab> {
   Widget _randomCard(String text, AssetImage assetImage, {bool autofocus = false}) => Focus(
         canRequestFocus: false,
         child: Builder(
-          builder: (context) => Card(
-            clipBehavior: Clip.antiAlias,
-            shape: _cardBorder(Focus.of(context).hasFocus),
-            child: InkWell(
-              autofocus: autofocus,
-              onTap: () async {
-                if (enabled) {
-                  enabled = false;
-                  try {
-                    await context.read<WallpaperService>().randomFromUnsplash("${text.toLowerCase()} wallpaper");
-                  } finally {
-                    enabled = true;
-                  }
-                }
-              },
-              child: Padding(
-                padding: EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                    Ink.image(image: assetImage, width: 32),
-                    SizedBox(width: 8),
-                    Flexible(child: Text(text, overflow: TextOverflow.ellipsis))
-                  ],
+          builder: (context) => Stack(
+            children: [
+              Card(
+                clipBehavior: Clip.antiAlias,
+                shape: _cardBorder(Focus.of(context).hasFocus),
+                child: InkWell(
+                  autofocus: autofocus,
+                  onTap: () async {
+                    if (enabled) {
+                      setState(() => enabled = false);
+                      try {
+                        await context.read<WallpaperService>().randomFromUnsplash("${text.toLowerCase()} wallpaper");
+                      } finally {
+                        setState(() => enabled = true);
+                      }
+                    }
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Row(
+                      children: [
+                        Ink.image(image: assetImage, width: 32),
+                        SizedBox(width: 8),
+                        Flexible(child: Text(text, overflow: TextOverflow.ellipsis))
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+              if (!enabled && Focus.of(context).hasFocus) Center(child: CircularProgressIndicator()),
+            ],
           ),
         ),
       );
@@ -142,19 +147,20 @@ class _SearchTabState extends State<_SearchTab> {
                 }
                 return KeyEventResult.ignored;
               },
-              builder: (context) => TextFormField(
+              builder: (context) => TextField(
                 decoration: InputDecoration(labelText: "Search", isDense: true),
                 keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.sentences,
-                onFieldSubmitted: (value) async {
+                onSubmitted: (value) async {
                   if (enabled) {
-                    enabled = false;
-                    setState(() => _searchResults = []);
+                    setState(() {
+                      enabled = false;
+                      _searchResults = [];
+                    });
                     try {
                       final searchResults = await context.read<WallpaperService>().searchFromUnsplash(value);
                       setState(() => _searchResults = searchResults);
                     } finally {
-                      enabled = true;
+                      setState(() => enabled = true);
                     }
                   }
                 },
@@ -185,24 +191,29 @@ class _SearchTabState extends State<_SearchTab> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Card(
-                  clipBehavior: Clip.antiAlias,
-                  shape: _cardBorder(Focus.of(context).hasFocus),
-                  child: InkWell(
-                    autofocus: index == 0,
-                    focusColor: Colors.transparent,
-                    onTap: () async {
-                      if (enabled) {
-                        enabled = false;
-                        try {
-                          await context.read<WallpaperService>().setFromUnsplash(photo);
-                        } finally {
-                          enabled = true;
-                        }
-                      }
-                    },
-                    child: Ink.image(image: NetworkImage(photo.small.toString()), fit: BoxFit.cover),
-                  ),
+                child: Stack(
+                  children: [
+                    Card(
+                      clipBehavior: Clip.antiAlias,
+                      shape: _cardBorder(Focus.of(context).hasFocus),
+                      child: InkWell(
+                        autofocus: index == 0,
+                        focusColor: Colors.transparent,
+                        onTap: () async {
+                          if (enabled) {
+                            setState(() => enabled = false);
+                            try {
+                              await context.read<WallpaperService>().setFromUnsplash(photo);
+                            } finally {
+                              setState(() => enabled = true);
+                            }
+                          }
+                        },
+                        child: Ink.image(image: NetworkImage(photo.small.toString()), fit: BoxFit.cover),
+                      ),
+                    ),
+                    if (!enabled && Focus.of(context).hasFocus) Center(child: CircularProgressIndicator()),
+                  ],
                 ),
               ),
               Padding(

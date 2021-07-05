@@ -43,14 +43,17 @@ void main() {
       when(pickedFile.readAsBytes()).thenAnswer((_) => Future.value(Uint8List.fromList([0x01])));
       final imagePicker = _MockImagePicker();
       final fLauncherChannel = MockFLauncherChannel();
+      final settingsService = MockSettingsService();
       when(imagePicker.getImage(source: ImageSource.gallery)).thenAnswer((_) => Future.value(pickedFile));
       when(fLauncherChannel.checkForGetContentAvailability()).thenAnswer((_) => Future.value(true));
-      final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, MockUnsplashService());
+      final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, MockUnsplashService())
+        ..settingsService = settingsService;
       await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
 
       await wallpaperService.pickWallpaper();
 
       verify(imagePicker.getImage(source: ImageSource.gallery));
+      verify(settingsService.setUnsplashAuthor(null));
       expect(wallpaperService.wallpaperBytes, [0x01]);
     });
 
@@ -68,13 +71,24 @@ void main() {
     final imagePicker = _MockImagePicker();
     final fLauncherChannel = MockFLauncherChannel();
     final unsplashService = MockUnsplashService();
-    when(unsplashService.randomPhoto("test")).thenAnswer((_) => Future.value(Uint8List.fromList([0x01])));
-    final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, unsplashService);
+    final settingsService = MockSettingsService();
+    final photo = Photo(
+      "e07ebff3-0b4d-4e0a-ae94-97ef32bd59e6",
+      "John Doe",
+      Uri.parse("http://localhost/small.jpg"),
+      Uri.parse("http://localhost/raw.jpg"),
+      Uri.parse("http://localhost/@author"),
+    );
+    when(unsplashService.randomPhoto("test")).thenAnswer((_) => Future.value(photo));
+    when(unsplashService.downloadPhoto(photo)).thenAnswer((_) => Future.value(Uint8List.fromList([0x01])));
+    final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, unsplashService)
+      ..settingsService = settingsService;
     await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
 
     await wallpaperService.randomFromUnsplash("test");
 
     verify(unsplashService.randomPhoto("test"));
+    verify(settingsService.setUnsplashAuthor('{"username":"John Doe","link":"http://localhost/@author"}'));
     expect(wallpaperService.wallpaperBytes, [0x01]);
   });
 
@@ -87,6 +101,7 @@ void main() {
       "Username",
       Uri.parse("http://localhost/small.jpg"),
       Uri.parse("http://localhost/raw.jpg"),
+      Uri.parse("http://localhost/@author"),
     );
     when(unsplashService.searchPhotos("test")).thenAnswer((_) => Future.value([photo]));
     final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, unsplashService);
@@ -101,19 +116,23 @@ void main() {
     final imagePicker = _MockImagePicker();
     final fLauncherChannel = MockFLauncherChannel();
     final unsplashService = MockUnsplashService();
+    final settingsService = MockSettingsService();
     final photo = Photo(
       "e07ebff3-0b4d-4e0a-ae94-97ef32bd59e6",
-      "Username",
+      "John Doe",
       Uri.parse("http://localhost/small.jpg"),
       Uri.parse("http://localhost/raw.jpg"),
+      Uri.parse("http://localhost/@author"),
     );
     when(unsplashService.downloadPhoto(photo)).thenAnswer((_) => Future.value(Uint8List.fromList([0x01])));
-    final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, unsplashService);
+    final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, unsplashService)
+      ..settingsService = settingsService;
     await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
 
     await wallpaperService.setFromUnsplash(photo);
 
     verify(unsplashService.downloadPhoto(photo));
+    verify(settingsService.setUnsplashAuthor('{"username":"John Doe","link":"http://localhost/@author"}'));
     expect(wallpaperService.wallpaperBytes, [0x01]);
   });
 
@@ -129,6 +148,7 @@ void main() {
     await wallpaperService.setGradient(FLauncherGradients.greatWhale);
 
     verify(settingsService.setGradientUuid(FLauncherGradients.greatWhale.uuid));
+    verify(settingsService.setUnsplashAuthor(null));
     expect(wallpaperService.wallpaperBytes, null);
   });
 

@@ -44,9 +44,11 @@ void main() {
     final settingsService = MockSettingsService();
     final wallpaperService = MockWallpaperService();
     when(settingsService.unsplashEnabled).thenReturn(true);
+    when(settingsService.unsplashAuthor).thenReturn('{"username": "John Doe", "link": "https://localhost"}');
 
     await _pumpWidgetWithProviders(tester, settingsService, wallpaperService);
 
+    expect(find.text("Photo by John Doe on Unsplash"), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(find.byKey(Key("UnsplashPanelPage")), findsOneWidget);
@@ -56,6 +58,7 @@ void main() {
     final settingsService = MockSettingsService();
     final wallpaperService = MockWallpaperService();
     when(settingsService.unsplashEnabled).thenReturn(true);
+    when(settingsService.unsplashAuthor).thenReturn(null);
 
     await _pumpWidgetWithProviders(tester, settingsService, wallpaperService);
 
@@ -70,6 +73,7 @@ void main() {
       final settingsService = MockSettingsService();
       final wallpaperService = MockWallpaperService();
       when(settingsService.unsplashEnabled).thenReturn(true);
+      when(settingsService.unsplashAuthor).thenReturn(null);
 
       await _pumpWidgetWithProviders(tester, settingsService, wallpaperService);
 
@@ -85,6 +89,7 @@ void main() {
       final wallpaperService = MockWallpaperService();
       when(settingsService.unsplashEnabled).thenReturn(true);
       when(wallpaperService.pickWallpaper()).thenThrow(NoFileExplorerException());
+      when(settingsService.unsplashAuthor).thenReturn(null);
 
       await _pumpWidgetWithProviders(tester, settingsService, wallpaperService);
 

@@ -20,23 +20,23 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:http/http.dart';
-import 'package:unsplash_client/unsplash_client.dart';
+import 'package:unsplash_client/unsplash_client.dart' as unsplash;
 
 class UnsplashService {
-  final UnsplashClient _unsplashClient;
+  final unsplash.UnsplashClient _unsplashClient;
 
   UnsplashService(this._unsplashClient);
 
-  Future<Uint8List> randomPhoto(String query) async {
-    final photo =
-        (await _unsplashClient.photos.random(query: query, orientation: PhotoOrientation.landscape).goAndGet()).first;
-    return _downloadResized(Photo(photo.id, photo.user.name, photo.urls.small, photo.urls.raw));
-  }
+  Future<Photo> randomPhoto(String query) async =>
+      (await _unsplashClient.photos.random(query: query, orientation: unsplash.PhotoOrientation.landscape).goAndGet())
+          .map(_buildPhoto)
+          .first;
 
-  Future<List<Photo>> searchPhotos(String query) async =>
-      (await _unsplashClient.photos.random(query: query, orientation: PhotoOrientation.landscape, count: 30).goAndGet())
-          .map((e) => Photo(e.id, e.user.name, e.urls.small, e.urls.raw))
-          .toList();
+  Future<List<Photo>> searchPhotos(String query) async => (await _unsplashClient.photos
+          .random(query: query, orientation: unsplash.PhotoOrientation.landscape, count: 30)
+          .goAndGet())
+      .map(_buildPhoto)
+      .toList();
 
   Future<Uint8List> downloadPhoto(Photo photo) => _downloadResized(photo);
 
@@ -46,13 +46,16 @@ class UnsplashService {
     final uri = photo.raw.resizePhoto(
       width: size.width.toInt(),
       height: size.height.toInt(),
-      fit: ResizeFitMode.clip,
-      format: ImageFormat.jpg,
+      fit: unsplash.ResizeFitMode.clip,
+      format: unsplash.ImageFormat.jpg,
       quality: 75,
     );
     final response = await get(uri);
     return response.bodyBytes;
   }
+
+  Photo _buildPhoto(unsplash.Photo photo) => Photo(photo.id, photo.user.name, photo.urls.small, photo.urls.raw,
+      photo.user.links.html.replace(queryParameters: {"utm_source": "flauncher", "utm_medium": "referral"}));
 }
 
 class Photo {
@@ -60,6 +63,7 @@ class Photo {
   final String username;
   final Uri small;
   final Uri raw;
+  final Uri userLink;
 
-  Photo(this.id, this.username, this.small, this.raw);
+  Photo(this.id, this.username, this.small, this.raw, this.userLink);
 }

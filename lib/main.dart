@@ -30,12 +30,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unsplash_client/unsplash_client.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import 'flauncher_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Paint.enableDithering = true;
+  WebView.platform = SurfaceAndroidWebView();
 
   await Firebase.initializeApp();
   final firebaseCrashlytics = FirebaseCrashlytics.instance;
@@ -81,7 +83,7 @@ Future<RemoteConfig> _initFirebaseRemoteConfig() async {
   await remoteConfig.setConfigSettings(
     RemoteConfigSettings(
       fetchTimeout: Duration(minutes: 1),
-      minimumFetchInterval: kReleaseMode ? Duration(hours: 1) : Duration.zero,
+      minimumFetchInterval: kReleaseMode ? Duration(hours: 6) : Duration.zero,
     ),
   );
   await remoteConfig

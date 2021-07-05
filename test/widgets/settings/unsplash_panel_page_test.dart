@@ -44,9 +44,9 @@ void main() {
 
     await _pumpWidgetWithProviders(tester, wallpaperService);
 
-    expect(find.text("Abstract"), findsOneWidget);
+    expect(find.text("Landscape"), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    verify(wallpaperService.randomFromUnsplash("abstract wallpaper"));
+    verify(wallpaperService.randomFromUnsplash("landscape wallpaper"));
   });
 
   testWidgets("Searching on Unsplash shows results and calls WallpaperService on selection", (tester) async {
@@ -57,6 +57,7 @@ void main() {
         "Username",
         Uri.parse("http://localhost/small.jpg"),
         Uri.parse("http://localhost/raw.jpg"),
+        Uri.parse("http://localhost/@author"),
       );
       when(wallpaperService.searchFromUnsplash("cat")).thenAnswer((_) => Future.value([photo]));
 
@@ -67,7 +68,7 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextFormField), "cat");
+      await tester.enterText(find.byType(TextField), "cat");
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
