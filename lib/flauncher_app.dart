@@ -18,6 +18,7 @@
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flauncher/actions.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
@@ -75,7 +76,14 @@ class FLauncherApp extends StatelessWidget {
               update: (_, settingsService, wallpaperService) => wallpaperService!..settingsService = settingsService)
         ],
         child: MaterialApp(
-          shortcuts: {...WidgetsApp.defaultShortcuts, LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent()},
+          shortcuts: {
+            ...WidgetsApp.defaultShortcuts,
+            SingleActivator(LogicalKeyboardKey.select): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.gameButtonB): PrioritizedIntents(orderedIntents: [
+              DismissIntent(),
+              BackIntent(),
+            ]),
+          },
           title: 'FLauncher',
           theme: ThemeData(
             brightness: Brightness.dark,
@@ -103,12 +111,10 @@ class FLauncherApp extends StatelessWidget {
           ),
           home: Builder(
             builder: (context) => WillPopScope(
-              onWillPop: () => _shouldPopScope(context),
-              child: FLauncher(),
+              onWillPop: () => shouldPopScope(context),
+              child: Actions(actions: {BackIntent: BackAction(context, systemNavigator: true)}, child: FLauncher()),
             ),
           ),
         ),
       );
-
-  Future<bool> _shouldPopScope(BuildContext context) async => !(await context.read<AppsService>().isDefaultLauncher());
 }

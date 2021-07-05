@@ -16,30 +16,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/actions.dart';
+import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
-class RightPanelDialog extends StatelessWidget {
-  final Widget child;
-  final double width;
+class BackAction extends Action<BackIntent> {
+  final BuildContext context;
+  final bool systemNavigator;
 
-  RightPanelDialog({
-    required this.child,
-    this.width = 250,
-  });
+  BackAction(this.context, {this.systemNavigator = false});
 
   @override
-  Widget build(BuildContext context) => Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.zero,
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: Container(
-            padding: EdgeInsets.all(16),
-            color: Theme.of(context).backgroundColor,
-            width: width,
-            child: Actions(actions: {BackIntent: BackAction(context)}, child: child),
-          ),
-        ),
-      );
+  Future<void> invoke(BackIntent intent) async {
+    if (systemNavigator && await shouldPopScope(context)) {
+      SystemNavigator.pop();
+    } else {
+      Navigator.of(context).maybePop();
+    }
+  }
 }
+
+class BackIntent extends Intent {
+  const BackIntent();
+}
+
+Future<bool> shouldPopScope(BuildContext context) async => !await context.read<AppsService>().isDefaultLauncher();
