@@ -54,22 +54,24 @@ class FLauncher extends StatelessWidget {
 
   Widget _categories(List<CategoryWithApps> categoriesWithApps) => Column(
         children: categoriesWithApps.map((categoryWithApps) {
-          if (categoryWithApps.category.name == "Applications") {
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: AppsGrid(
-                  key: Key(categoryWithApps.category.id.toString()),
-                  category: categoryWithApps.category,
-                  applications: categoryWithApps.applications),
-            );
+          switch (categoryWithApps.category.display) {
+            case CategoryDisplay.row:
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: CategoryRow(
+                    key: Key(categoryWithApps.category.id.toString()),
+                    category: categoryWithApps.category,
+                    applications: categoryWithApps.applications),
+              );
+            case CategoryDisplay.grid:
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: AppsGrid(
+                    key: Key(categoryWithApps.category.id.toString()),
+                    category: categoryWithApps.category,
+                    applications: categoryWithApps.applications),
+              );
           }
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: CategoryRow(
-                key: Key(categoryWithApps.category.id.toString()),
-                category: categoryWithApps.category,
-                applications: categoryWithApps.applications),
-          );
         }).toList(),
       );
 

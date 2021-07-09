@@ -196,6 +196,10 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
       (super.noSuchMethod(Invocation.method(#persistApps, [applications]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
+  _i14.Future<void> updateApp(String? packageName, _i3.AppsCompanion? value) =>
+      (super.noSuchMethod(Invocation.method(#updateApp, [packageName, value]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  @override
   _i14.Future<void> deleteApps(List<String>? packageNames) =>
       (super.noSuchMethod(Invocation.method(#deleteApps, [packageNames]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
@@ -210,8 +214,12 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
   _i14.Future<void> deleteCategory(int? id) => (super.noSuchMethod(Invocation.method(#deleteCategory, [id]),
       returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
-  _i14.Future<void> persistCategories(List<_i3.CategoriesCompanion>? value) =>
-      (super.noSuchMethod(Invocation.method(#persistCategories, [value]),
+  _i14.Future<void> updateCategories(List<_i3.CategoriesCompanion>? values) =>
+      (super.noSuchMethod(Invocation.method(#updateCategories, [values]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  @override
+  _i14.Future<void> updateCategory(int? id, _i3.CategoriesCompanion? value) =>
+      (super.noSuchMethod(Invocation.method(#updateCategory, [id, value]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
   _i14.Future<void> insertAppCategory(_i3.AppsCategoriesCompanion? appCategory) =>
@@ -222,8 +230,12 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
       (super.noSuchMethod(Invocation.method(#deleteAppCategory, [categoryId, packageName]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
-  _i14.Future<void> persistAppsCategories(List<_i3.AppsCategoriesCompanion>? value) =>
-      (super.noSuchMethod(Invocation.method(#persistAppsCategories, [value]),
+  _i14.Future<void> insertAppsCategories(List<_i3.AppsCategoriesCompanion>? value) =>
+      (super.noSuchMethod(Invocation.method(#insertAppsCategories, [value]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  @override
+  _i14.Future<void> replaceAppsCategories(List<_i3.AppsCategoriesCompanion>? value) =>
+      (super.noSuchMethod(Invocation.method(#replaceAppsCategories, [value]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
   _i14.Future<List<_i3.CategoryWithApps>> listCategoriesWithVisibleApps() =>
@@ -471,6 +483,22 @@ class MockAppsService extends _i1.Mock implements _i20.AppsService {
   @override
   _i14.Future<void> unHideApplication(_i3.App? application) =>
       (super.noSuchMethod(Invocation.method(#unHideApplication, [application]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  @override
+  _i14.Future<void> setCategoryDisplay(_i3.Category? category, _i3.CategoryDisplay? display) =>
+      (super.noSuchMethod(Invocation.method(#setCategoryDisplay, [category, display]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  @override
+  _i14.Future<void> setCategorySort(_i3.Category? category, _i3.CategorySort? sort) =>
+      (super.noSuchMethod(Invocation.method(#setCategorySort, [category, sort]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  @override
+  _i14.Future<void> setCategoryColumnsCount(_i3.Category? category, int? columnsCount) =>
+      (super.noSuchMethod(Invocation.method(#setCategoryColumnsCount, [category, columnsCount]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+  @override
+  _i14.Future<void> setCategoryRowHeight(_i3.Category? category, int? rowHeight) =>
+      (super.noSuchMethod(Invocation.method(#setCategoryRowHeight, [category, rowHeight]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
   void addListener(_i19.VoidCallback? listener) =>

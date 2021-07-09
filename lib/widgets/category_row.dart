@@ -48,10 +48,10 @@ class CategoryRow extends StatelessWidget {
                     .headline6!
                     .copyWith(shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])),
           ),
-          SizedBox(
-            height: 110,
-            child: applications.isNotEmpty
-                ? ListView.custom(
+          applications.isNotEmpty
+              ? SizedBox(
+                  height: category.rowHeight.toDouble(),
+                  child: ListView.custom(
                     padding: EdgeInsets.all(8),
                     scrollDirection: Axis.horizontal,
                     childrenDelegate: SliverChildBuilderDelegate(
@@ -72,37 +72,40 @@ class CategoryRow extends StatelessWidget {
                       childCount: applications.length,
                       findChildIndexCallback: _findChildIndex,
                     ),
-                  )
-                : _emptyState(context),
-          ),
+                  ),
+                )
+              : _emptyState(context),
         ],
       );
 
   int _findChildIndex(Key key) =>
       applications.indexWhere((app) => "${category.id}-${app.packageName}" == (key as ValueKey<String>).value);
 
-  Widget _emptyState(BuildContext context) => EnsureVisible(
-        alignment: 0.1,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Card(
-                clipBehavior: Clip.antiAlias,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                child: InkWell(
-                  onTap: () => showDialog(
-                    context: context,
-                    builder: (_) => SettingsPanel(initialRoute: CategoriesPanelPage.routeName),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Center(
-                      child: Text(
-                        "This category is empty.\nLong-press an app to move it here.",
-                        textAlign: TextAlign.center,
+  Widget _emptyState(BuildContext context) => SizedBox(
+        height: 110,
+        child: EnsureVisible(
+          alignment: 0.1,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  child: InkWell(
+                    onTap: () => showDialog(
+                      context: context,
+                      builder: (_) => SettingsPanel(initialRoute: CategoriesPanelPage.routeName),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Center(
+                        child: Text(
+                          "This category is empty.\nLong-press an app to move it here.",
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
                   ),

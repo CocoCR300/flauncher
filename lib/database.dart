@@ -50,6 +50,14 @@ class Categories extends Table {
 
   TextColumn get name => text()();
 
+  IntColumn get sort => intEnum<CategorySort>().withDefault(Constant(0))();
+
+  IntColumn get display => intEnum<CategoryDisplay>().withDefault(Constant(0))();
+
+  IntColumn get rowHeight => integer().withDefault(Constant(110))();
+
+  IntColumn get columnsCount => integer().withDefault(Constant(6))();
+
   IntColumn get order => integer()();
 }
 
@@ -72,6 +80,16 @@ class CategoryWithApps {
   CategoryWithApps(this.category, this.applications);
 }
 
+enum CategorySort {
+  manual,
+  alphabetical,
+}
+
+enum CategoryDisplay {
+  row,
+  grid,
+}
+
 @UseMoor(tables: [Apps, Categories, AppsCategories])
 class FLauncherDatabase extends _$FLauncherDatabase {
   FLauncherDatabase([DatabaseOpener databaseOpener = _openConnection]) : super(LazyDatabase(databaseOpener)) {
@@ -84,7 +102,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
   }
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -92,15 +110,27 @@ class FLauncherDatabase extends _$FLauncherDatabase {
           await migrator.createAll();
         },
         onUpgrade: (migrator, from, to) async {
-          if (from <= 2) {
+          if (from <= 3) {
             await migrator.alterTable(TableMigration(apps, newColumns: [apps.hidden]));
+            await migrator.addColumn(categories, categories.sort);
+            await migrator.addColumn(categories, categories.display);
+            await migrator.addColumn(categories, categories.rowHeight);
+            await migrator.addColumn(categories, categories.columnsCount);
+            await (update(categories)..where((tbl) => tbl.name.equals("Applications")))
+                .write(CategoriesCompanion(display: Value(CategoryDisplay.grid)));
           }
         },
         beforeOpen: (openingDetails) async {
           await customStatement('PRAGMA foreign_keys = ON;');
           if (openingDetails.wasCreated) {
             await insertCategory(CategoriesCompanion.insert(name: "Favorites", order: 0));
-            await insertCategory(CategoriesCompanion.insert(name: "Applications", order: 1));
+            await insertCategory(
+              CategoriesCompanion.insert(
+                name: "Applications",
+                order: 1,
+                display: Value(CategoryDisplay.grid),
+              ),
+            );
           }
         },
       );
@@ -109,6 +139,9 @@ class FLauncherDatabase extends _$FLauncherDatabase {
 
   Future<void> persistApps(List<AppsCompanion> applications) =>
       batch((batch) => batch.insertAllOnConflictUpdate(apps, applications));
+
+  Future<void> updateApp(String packageName, AppsCompanion value) =>
+      (update(apps)..where((tbl) => tbl.packageName.equals(packageName))).write(value);
 
   Future<void> deleteApps(List<String> packageNames) =>
       (delete(apps)..where((tbl) => tbl.packageName.isIn(packageNames))).go();
@@ -119,8 +152,20 @@ class FLauncherDatabase extends _$FLauncherDatabase {
 
   Future<void> deleteCategory(int id) => (delete(categories)..where((tbl) => tbl.id.equals(id))).go();
 
-  Future<void> persistCategories(List<CategoriesCompanion> value) =>
-      batch((batch) => batch.insertAllOnConflictUpdate(categories, value));
+  Future<void> updateCategories(List<CategoriesCompanion> values) => batch(
+        (batch) {
+          for (final value in values) {
+            batch.update<$CategoriesTable, Category>(
+              categories,
+              value,
+              where: (table) => (table.id.equals(value.id.value)),
+            );
+          }
+        },
+      );
+
+  Future<void> updateCategory(int id, CategoriesCompanion value) =>
+      (update(categories)..where((tbl) => tbl.id.equals(id))).write(value);
 
   Future<void> insertAppCategory(AppsCategoriesCompanion appCategory) => into(appsCategories).insert(appCategory);
 
@@ -128,15 +173,25 @@ class FLauncherDatabase extends _$FLauncherDatabase {
         ..where((tbl) => tbl.categoryId.equals(categoryId) & tbl.appPackageName.equals(packageName)))
       .go();
 
-  Future<void> persistAppsCategories(List<AppsCategoriesCompanion> value) =>
-      batch((batch) => batch.insertAllOnConflictUpdate(appsCategories, value));
+  Future<void> insertAppsCategories(List<AppsCategoriesCompanion> value) =>
+      batch((batch) => batch.insertAll(appsCategories, value));
+
+  Future<void> replaceAppsCategories(List<AppsCategoriesCompanion> value) =>
+      batch((batch) => batch.replaceAll(appsCategories, value));
 
   Future<List<CategoryWithApps>> listCategoriesWithVisibleApps() async {
     final query = select(categories).join([
       leftOuterJoin(appsCategories, appsCategories.categoryId.equalsExp(categories.id)),
       leftOuterJoin(apps, apps.packageName.equalsExp(appsCategories.appPackageName) & apps.hidden.equals(false)),
     ]);
-    query.orderBy([OrderingTerm.asc(categories.order), OrderingTerm.asc(appsCategories.order)]);
+    query.orderBy([
+      OrderingTerm.asc(categories.order),
+      OrderingTerm.asc(
+        categories.sort.caseMatch(
+          when: {Constant(0): appsCategories.order, Constant(1): apps.name.lower()},
+        ),
+      ),
+    ]);
 
     final result = await query.get();
     final categoriesToApps = <Category, List<App>>{};

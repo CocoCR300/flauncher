@@ -16,8 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/widgets/settings/categories_panel_page.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
+import 'package:flauncher/widgets/settings/categories_panel_page.dart';
+import 'package:flauncher/widgets/settings/category_panel_page.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
 import 'package:flauncher/widgets/settings/hidden_applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
@@ -61,6 +62,10 @@ class _SettingsPanelState extends State<SettingsPanel> {
                     return MaterialPageRoute(builder: (_) => HiddenApplicationsPanelPage());
                   case CategoriesPanelPage.routeName:
                     return MaterialPageRoute(builder: (_) => CategoriesPanelPage());
+                  case CategoryPanelPage.routeName:
+                    return MaterialPageRoute(
+                      builder: (_) => CategoryPanelPage(categoryId: settings.arguments! as int),
+                    );
                 }
               },
             ),

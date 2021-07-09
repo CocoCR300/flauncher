@@ -20,6 +20,7 @@ import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/add_category_dialog.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
+import 'package:flauncher/widgets/settings/category_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -82,18 +83,11 @@ class CategoriesPanelPage extends StatelessWidget {
                   IconButton(
                     constraints: BoxConstraints(),
                     splashRadius: 20,
-                    icon: Icon(Icons.edit),
-                    onPressed: categories[index].category.name != "Applications"
-                        ? () => _renameCategory(context, categories[index].category)
-                        : null,
-                  ),
-                  IconButton(
-                    constraints: BoxConstraints(),
-                    splashRadius: 20,
-                    icon: Icon(Icons.delete),
-                    onPressed: categories[index].category.name != "Applications"
-                        ? () => _deleteCategory(context, categories[index].category)
-                        : null,
+                    icon: Icon(Icons.settings),
+                    onPressed: () => Navigator.of(context).pushNamed(
+                      CategoryPanelPage.routeName,
+                      arguments: categories[index].category.id,
+                    ),
                   ),
                 ],
               ),
@@ -104,17 +98,5 @@ class CategoriesPanelPage extends StatelessWidget {
 
   Future<void> _move(BuildContext context, int oldIndex, int newIndex) async {
     await context.read<AppsService>().moveCategory(oldIndex, newIndex);
-  }
-
-  Future<void> _renameCategory(BuildContext context, Category category) async {
-    final categoryName =
-        await showDialog<String>(context: context, builder: (_) => AddCategoryDialog(initialValue: category.name));
-    if (categoryName != null) {
-      await context.read<AppsService>().renameCategory(category, categoryName);
-    }
-  }
-
-  Future<void> _deleteCategory(BuildContext context, Category category) async {
-    await context.read<AppsService>().deleteCategory(category);
   }
 }

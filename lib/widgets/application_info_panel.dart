@@ -82,16 +82,17 @@ class ApplicationInfoPanel extends StatelessWidget {
                 }
               },
             ),
-            TextButton(
-              child: Row(
-                children: [
-                  Icon(Icons.open_with),
-                  Container(width: 8),
-                  Text("Reorder", style: Theme.of(context).textTheme.bodyText2),
-                ],
+            if (category.sort == CategorySort.manual)
+              TextButton(
+                child: Row(
+                  children: [
+                    Icon(Icons.open_with),
+                    Container(width: 8),
+                    Text("Reorder", style: Theme.of(context).textTheme.bodyText2),
+                  ],
+                ),
+                onPressed: () => Navigator.of(context).pop(ApplicationInfoPanelResult.reorderApp),
               ),
-              onPressed: () => Navigator.of(context).pop(ApplicationInfoPanelResult.reorderApp),
-            ),
             TextButton(
               child: Row(
                 children: [

@@ -340,13 +340,30 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
 class Category extends DataClass implements Insertable<Category> {
   final int id;
   final String name;
+  final CategorySort sort;
+  final CategoryDisplay display;
+  final int rowHeight;
+  final int columnsCount;
   final int order;
-  Category({required this.id, required this.name, required this.order});
+  Category(
+      {required this.id,
+      required this.name,
+      required this.sort,
+      required this.display,
+      required this.rowHeight,
+      required this.columnsCount,
+      required this.order});
   factory Category.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return Category(
       id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
       name: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
+      sort: $CategoriesTable.$converter0
+          .mapToDart(const IntType().mapFromDatabaseResponse(data['${effectivePrefix}sort']))!,
+      display: $CategoriesTable.$converter1
+          .mapToDart(const IntType().mapFromDatabaseResponse(data['${effectivePrefix}display']))!,
+      rowHeight: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}row_height'])!,
+      columnsCount: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}columns_count'])!,
       order: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}order'])!,
     );
   }
@@ -355,6 +372,16 @@ class Category extends DataClass implements Insertable<Category> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
+    {
+      final converter = $CategoriesTable.$converter0;
+      map['sort'] = Variable<int>(converter.mapToSql(sort)!);
+    }
+    {
+      final converter = $CategoriesTable.$converter1;
+      map['display'] = Variable<int>(converter.mapToSql(display)!);
+    }
+    map['row_height'] = Variable<int>(rowHeight);
+    map['columns_count'] = Variable<int>(columnsCount);
     map['order'] = Variable<int>(order);
     return map;
   }
@@ -363,6 +390,10 @@ class Category extends DataClass implements Insertable<Category> {
     return CategoriesCompanion(
       id: Value(id),
       name: Value(name),
+      sort: Value(sort),
+      display: Value(display),
+      rowHeight: Value(rowHeight),
+      columnsCount: Value(columnsCount),
       order: Value(order),
     );
   }
@@ -372,6 +403,10 @@ class Category extends DataClass implements Insertable<Category> {
     return Category(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      sort: serializer.fromJson<CategorySort>(json['sort']),
+      display: serializer.fromJson<CategoryDisplay>(json['display']),
+      rowHeight: serializer.fromJson<int>(json['rowHeight']),
+      columnsCount: serializer.fromJson<int>(json['columnsCount']),
       order: serializer.fromJson<int>(json['order']),
     );
   }
@@ -381,60 +416,127 @@ class Category extends DataClass implements Insertable<Category> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
+      'sort': serializer.toJson<CategorySort>(sort),
+      'display': serializer.toJson<CategoryDisplay>(display),
+      'rowHeight': serializer.toJson<int>(rowHeight),
+      'columnsCount': serializer.toJson<int>(columnsCount),
       'order': serializer.toJson<int>(order),
     };
   }
 
-  Category copyWith({int? id, String? name, int? order}) => Category(
+  Category copyWith(
+          {int? id,
+          String? name,
+          CategorySort? sort,
+          CategoryDisplay? display,
+          int? rowHeight,
+          int? columnsCount,
+          int? order}) =>
+      Category(
         id: id ?? this.id,
         name: name ?? this.name,
+        sort: sort ?? this.sort,
+        display: display ?? this.display,
+        rowHeight: rowHeight ?? this.rowHeight,
+        columnsCount: columnsCount ?? this.columnsCount,
         order: order ?? this.order,
       );
   @override
   String toString() {
-    return (StringBuffer('Category(')..write('id: $id, ')..write('name: $name, ')..write('order: $order')..write(')'))
+    return (StringBuffer('Category(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('sort: $sort, ')
+          ..write('display: $display, ')
+          ..write('rowHeight: $rowHeight, ')
+          ..write('columnsCount: $columnsCount, ')
+          ..write('order: $order')
+          ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode, $mrjc(name.hashCode, order.hashCode)));
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          name.hashCode,
+          $mrjc(sort.hashCode,
+              $mrjc(display.hashCode, $mrjc(rowHeight.hashCode, $mrjc(columnsCount.hashCode, order.hashCode)))))));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Category && other.id == this.id && other.name == this.name && other.order == this.order);
+      (other is Category &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.sort == this.sort &&
+          other.display == this.display &&
+          other.rowHeight == this.rowHeight &&
+          other.columnsCount == this.columnsCount &&
+          other.order == this.order);
 }
 
 class CategoriesCompanion extends UpdateCompanion<Category> {
   final Value<int> id;
   final Value<String> name;
+  final Value<CategorySort> sort;
+  final Value<CategoryDisplay> display;
+  final Value<int> rowHeight;
+  final Value<int> columnsCount;
   final Value<int> order;
   const CategoriesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.sort = const Value.absent(),
+    this.display = const Value.absent(),
+    this.rowHeight = const Value.absent(),
+    this.columnsCount = const Value.absent(),
     this.order = const Value.absent(),
   });
   CategoriesCompanion.insert({
     this.id = const Value.absent(),
     required String name,
+    this.sort = const Value.absent(),
+    this.display = const Value.absent(),
+    this.rowHeight = const Value.absent(),
+    this.columnsCount = const Value.absent(),
     required int order,
   })  : name = Value(name),
         order = Value(order);
   static Insertable<Category> custom({
     Expression<int>? id,
     Expression<String>? name,
+    Expression<CategorySort>? sort,
+    Expression<CategoryDisplay>? display,
+    Expression<int>? rowHeight,
+    Expression<int>? columnsCount,
     Expression<int>? order,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (sort != null) 'sort': sort,
+      if (display != null) 'display': display,
+      if (rowHeight != null) 'row_height': rowHeight,
+      if (columnsCount != null) 'columns_count': columnsCount,
       if (order != null) 'order': order,
     });
   }
 
-  CategoriesCompanion copyWith({Value<int>? id, Value<String>? name, Value<int>? order}) {
+  CategoriesCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<CategorySort>? sort,
+      Value<CategoryDisplay>? display,
+      Value<int>? rowHeight,
+      Value<int>? columnsCount,
+      Value<int>? order}) {
     return CategoriesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      sort: sort ?? this.sort,
+      display: display ?? this.display,
+      rowHeight: rowHeight ?? this.rowHeight,
+      columnsCount: columnsCount ?? this.columnsCount,
       order: order ?? this.order,
     );
   }
@@ -448,6 +550,20 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (sort.present) {
+      final converter = $CategoriesTable.$converter0;
+      map['sort'] = Variable<int>(converter.mapToSql(sort.value)!);
+    }
+    if (display.present) {
+      final converter = $CategoriesTable.$converter1;
+      map['display'] = Variable<int>(converter.mapToSql(display.value)!);
+    }
+    if (rowHeight.present) {
+      map['row_height'] = Variable<int>(rowHeight.value);
+    }
+    if (columnsCount.present) {
+      map['columns_count'] = Variable<int>(columnsCount.value);
+    }
     if (order.present) {
       map['order'] = Variable<int>(order.value);
     }
@@ -459,6 +575,10 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
     return (StringBuffer('CategoriesCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('sort: $sort, ')
+          ..write('display: $display, ')
+          ..write('rowHeight: $rowHeight, ')
+          ..write('columnsCount: $columnsCount, ')
           ..write('order: $order')
           ..write(')'))
         .toString();
@@ -487,6 +607,34 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
     );
   }
 
+  final VerificationMeta _sortMeta = const VerificationMeta('sort');
+  @override
+  late final GeneratedIntColumn sort = _constructSort();
+  GeneratedIntColumn _constructSort() {
+    return GeneratedIntColumn('sort', $tableName, false, defaultValue: Constant(0));
+  }
+
+  final VerificationMeta _displayMeta = const VerificationMeta('display');
+  @override
+  late final GeneratedIntColumn display = _constructDisplay();
+  GeneratedIntColumn _constructDisplay() {
+    return GeneratedIntColumn('display', $tableName, false, defaultValue: Constant(0));
+  }
+
+  final VerificationMeta _rowHeightMeta = const VerificationMeta('rowHeight');
+  @override
+  late final GeneratedIntColumn rowHeight = _constructRowHeight();
+  GeneratedIntColumn _constructRowHeight() {
+    return GeneratedIntColumn('row_height', $tableName, false, defaultValue: Constant(110));
+  }
+
+  final VerificationMeta _columnsCountMeta = const VerificationMeta('columnsCount');
+  @override
+  late final GeneratedIntColumn columnsCount = _constructColumnsCount();
+  GeneratedIntColumn _constructColumnsCount() {
+    return GeneratedIntColumn('columns_count', $tableName, false, defaultValue: Constant(6));
+  }
+
   final VerificationMeta _orderMeta = const VerificationMeta('order');
   @override
   late final GeneratedIntColumn order = _constructOrder();
@@ -499,7 +647,7 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, name, order];
+  List<GeneratedColumn> get $columns => [id, name, sort, display, rowHeight, columnsCount, order];
   @override
   $CategoriesTable get asDslTable => this;
   @override
@@ -517,6 +665,14 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
       context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    context.handle(_sortMeta, const VerificationResult.success());
+    context.handle(_displayMeta, const VerificationResult.success());
+    if (data.containsKey('row_height')) {
+      context.handle(_rowHeightMeta, rowHeight.isAcceptableOrUnknown(data['row_height']!, _rowHeightMeta));
+    }
+    if (data.containsKey('columns_count')) {
+      context.handle(_columnsCountMeta, columnsCount.isAcceptableOrUnknown(data['columns_count']!, _columnsCountMeta));
     }
     if (data.containsKey('order')) {
       context.handle(_orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
@@ -537,6 +693,10 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
   $CategoriesTable createAlias(String alias) {
     return $CategoriesTable(_db, alias);
   }
+
+  static TypeConverter<CategorySort, int> $converter0 = const EnumIndexConverter<CategorySort>(CategorySort.values);
+  static TypeConverter<CategoryDisplay, int> $converter1 =
+      const EnumIndexConverter<CategoryDisplay>(CategoryDisplay.values);
 }
 
 class AppCategory extends DataClass implements Insertable<AppCategory> {
