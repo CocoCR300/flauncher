@@ -214,68 +214,31 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
   }
 }
 
-class Apps extends Table with TableInfo {
+class Apps extends Table with TableInfo<Apps, AppsData> {
   final GeneratedDatabase _db;
   final String? _alias;
   Apps(this._db, [this._alias]);
-  late final GeneratedTextColumn packageName = _constructPackageName();
-  GeneratedTextColumn _constructPackageName() {
-    return GeneratedTextColumn(
-      'package_name',
-      $tableName,
-      false,
-    );
-  }
-
-  late final GeneratedTextColumn name = _constructName();
-  GeneratedTextColumn _constructName() {
-    return GeneratedTextColumn(
-      'name',
-      $tableName,
-      false,
-    );
-  }
-
-  late final GeneratedTextColumn version = _constructVersion();
-  GeneratedTextColumn _constructVersion() {
-    return GeneratedTextColumn(
-      'version',
-      $tableName,
-      false,
-    );
-  }
-
-  late final GeneratedBlobColumn banner = _constructBanner();
-  GeneratedBlobColumn _constructBanner() {
-    return GeneratedBlobColumn(
-      'banner',
-      $tableName,
-      true,
-    );
-  }
-
-  late final GeneratedBlobColumn icon = _constructIcon();
-  GeneratedBlobColumn _constructIcon() {
-    return GeneratedBlobColumn(
-      'icon',
-      $tableName,
-      true,
-    );
-  }
-
-  late final GeneratedBoolColumn hidden = _constructHidden();
-  GeneratedBoolColumn _constructHidden() {
-    return GeneratedBoolColumn('hidden', $tableName, false, defaultValue: Constant(false));
-  }
-
+  late final GeneratedColumn<String?> packageName =
+      GeneratedColumn<String?>('package_name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+  late final GeneratedColumn<String?> name =
+      GeneratedColumn<String?>('name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+  late final GeneratedColumn<String?> version =
+      GeneratedColumn<String?>('version', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+  late final GeneratedColumn<Uint8List?> banner =
+      GeneratedColumn<Uint8List?>('banner', aliasedName, true, typeName: 'BLOB', requiredDuringInsert: false);
+  late final GeneratedColumn<Uint8List?> icon =
+      GeneratedColumn<Uint8List?>('icon', aliasedName, true, typeName: 'BLOB', requiredDuringInsert: false);
+  late final GeneratedColumn<bool?> hidden = GeneratedColumn<bool?>('hidden', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'CHECK (hidden IN (0, 1))',
+      defaultValue: Constant(false));
   @override
   List<GeneratedColumn> get $columns => [packageName, name, version, banner, icon, hidden];
   @override
-  Apps get asDslTable => this;
+  String get aliasedName => _alias ?? 'apps';
   @override
-  String get $tableName => _alias ?? 'apps';
-  @override
-  final String actualTableName = 'apps';
+  String get actualTableName => 'apps';
   @override
   Set<GeneratedColumn> get $primaryKey => {packageName};
   @override
@@ -424,41 +387,22 @@ class CategoriesCompanion extends UpdateCompanion<CategoriesData> {
   }
 }
 
-class Categories extends Table with TableInfo {
+class Categories extends Table with TableInfo<Categories, CategoriesData> {
   final GeneratedDatabase _db;
   final String? _alias;
   Categories(this._db, [this._alias]);
-  late final GeneratedIntColumn id = _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false, hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
-  late final GeneratedTextColumn name = _constructName();
-  GeneratedTextColumn _constructName() {
-    return GeneratedTextColumn(
-      'name',
-      $tableName,
-      false,
-    );
-  }
-
-  late final GeneratedIntColumn order = _constructOrder();
-  GeneratedIntColumn _constructOrder() {
-    return GeneratedIntColumn(
-      'order',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>('id', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: false, defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+  late final GeneratedColumn<String?> name =
+      GeneratedColumn<String?>('name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+  late final GeneratedColumn<int?> order =
+      GeneratedColumn<int?>('order', aliasedName, false, typeName: 'INTEGER', requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, name, order];
   @override
-  Categories get asDslTable => this;
+  String get aliasedName => _alias ?? 'categories';
   @override
-  String get $tableName => _alias ?? 'categories';
-  @override
-  final String actualTableName = 'categories';
+  String get actualTableName => 'categories';
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
@@ -611,39 +555,26 @@ class AppsCategoriesCompanion extends UpdateCompanion<AppsCategoriesData> {
   }
 }
 
-class AppsCategories extends Table with TableInfo {
+class AppsCategories extends Table with TableInfo<AppsCategories, AppsCategoriesData> {
   final GeneratedDatabase _db;
   final String? _alias;
   AppsCategories(this._db, [this._alias]);
-  late final GeneratedIntColumn categoryId = _constructCategoryId();
-  GeneratedIntColumn _constructCategoryId() {
-    return GeneratedIntColumn('category_id', $tableName, false,
-        $customConstraints: 'REFERENCES categories(id) ON DELETE CASCADE');
-  }
-
-  late final GeneratedTextColumn appPackageName = _constructAppPackageName();
-  GeneratedTextColumn _constructAppPackageName() {
-    return GeneratedTextColumn('app_package_name', $tableName, false,
-        $customConstraints: 'REFERENCES apps(package_name) ON DELETE CASCADE');
-  }
-
-  late final GeneratedIntColumn order = _constructOrder();
-  GeneratedIntColumn _constructOrder() {
-    return GeneratedIntColumn(
-      'order',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<int?> categoryId = GeneratedColumn<int?>('category_id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: true,
+      $customConstraints: 'REFERENCES categories(id) ON DELETE CASCADE');
+  late final GeneratedColumn<String?> appPackageName = GeneratedColumn<String?>('app_package_name', aliasedName, false,
+      typeName: 'TEXT',
+      requiredDuringInsert: true,
+      $customConstraints: 'REFERENCES apps(package_name) ON DELETE CASCADE');
+  late final GeneratedColumn<int?> order =
+      GeneratedColumn<int?>('order', aliasedName, false, typeName: 'INTEGER', requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [categoryId, appPackageName, order];
   @override
-  AppsCategories get asDslTable => this;
+  String get aliasedName => _alias ?? 'apps_categories';
   @override
-  String get $tableName => _alias ?? 'apps_categories';
-  @override
-  final String actualTableName = 'apps_categories';
+  String get actualTableName => 'apps_categories';
   @override
   Set<GeneratedColumn> get $primaryKey => {categoryId, appPackageName};
   @override
