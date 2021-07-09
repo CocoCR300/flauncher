@@ -67,9 +67,10 @@ class _FakeInsertStatement<T extends _i8.Table, D> extends _i1.Fake implements _
 
 class _FakeUpdateStatement<T extends _i8.Table, D> extends _i1.Fake implements _i2.UpdateStatement<T, D> {}
 
-class _FakeSimpleSelectStatement<T extends _i8.Table, D> extends _i1.Fake implements _i2.SimpleSelectStatement<T, D> {}
+class _FakeSimpleSelectStatement<T extends _i8.HasResultSet, D> extends _i1.Fake
+    implements _i2.SimpleSelectStatement<T, D> {}
 
-class _FakeJoinedSelectStatement<FirstT extends _i8.Table, FirstD> extends _i1.Fake
+class _FakeJoinedSelectStatement<FirstT extends _i8.HasResultSet, FirstD> extends _i1.Fake
     implements _i2.JoinedSelectStatement<FirstT, FirstD> {}
 
 class _FakeDeleteStatement<T extends _i8.Table, D> extends _i1.Fake implements _i2.DeleteStatement<T, D> {}
@@ -222,10 +223,6 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
       (super.noSuchMethod(Invocation.method(#updateCategory, [id, value]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
-  _i14.Future<void> insertAppCategory(_i3.AppsCategoriesCompanion? appCategory) =>
-      (super.noSuchMethod(Invocation.method(#insertAppCategory, [appCategory]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
-  @override
   _i14.Future<void> deleteAppCategory(int? categoryId, String? packageName) =>
       (super.noSuchMethod(Invocation.method(#deleteAppCategory, [categoryId, packageName]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
@@ -278,9 +275,9 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
   void notifyUpdates(Set<_i4.TableUpdate>? updates) =>
       super.noSuchMethod(Invocation.method(#notifyUpdates, [updates]), returnValueForMissingStub: null);
   @override
-  _i14.Stream<Null?> tableUpdates([_i4.TableUpdateQuery? query = const _i4.TableUpdateQuery.any()]) =>
-      (super.noSuchMethod(Invocation.method(#tableUpdates, [query]), returnValue: Stream<Null?>.empty())
-          as _i14.Stream<Null?>);
+  _i14.Stream<Set<_i4.TableUpdate>> tableUpdates([_i4.TableUpdateQuery? query = const _i4.TableUpdateQuery.any()]) =>
+      (super.noSuchMethod(Invocation.method(#tableUpdates, [query]), returnValue: Stream<Set<_i4.TableUpdate>>.empty())
+          as _i14.Stream<Set<_i4.TableUpdate>>);
   @override
   _i14.Future<T> doWhenOpened<T>(_i14.FutureOr<T>? Function(_i6.QueryExecutor)? fn) =>
       (super.noSuchMethod(Invocation.method(#doWhenOpened, [fn]), returnValue: Future<T>.value(null))
@@ -294,12 +291,12 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
       (super.noSuchMethod(Invocation.method(#update, [table]), returnValue: _FakeUpdateStatement<Tbl, R>())
           as _i2.UpdateStatement<Tbl, R>);
   @override
-  _i2.SimpleSelectStatement<T, R> select<T extends _i8.Table, R>(_i2.TableInfo<T, R>? table,
+  _i2.SimpleSelectStatement<T, R> select<T extends _i8.HasResultSet, R>(_i2.ResultSetImplementation<T, R>? table,
           {bool? distinct = false}) =>
       (super.noSuchMethod(Invocation.method(#select, [table], {#distinct: distinct}),
           returnValue: _FakeSimpleSelectStatement<T, R>()) as _i2.SimpleSelectStatement<T, R>);
   @override
-  _i2.JoinedSelectStatement<T, R> selectOnly<T extends _i8.Table, R>(_i2.TableInfo<T, R>? table,
+  _i2.JoinedSelectStatement<T, R> selectOnly<T extends _i8.HasResultSet, R>(_i2.ResultSetImplementation<T, R>? table,
           {bool? distinct = false}) =>
       (super.noSuchMethod(Invocation.method(#selectOnly, [table], {#distinct: distinct}),
           returnValue: _FakeJoinedSelectStatement<T, R>()) as _i2.JoinedSelectStatement<T, R>);
@@ -333,13 +330,13 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
   @override
   _i2.Selectable<_i2.QueryRow> customSelect(String? query,
           {List<_i2.Variable<dynamic>>? variables = const [],
-          Set<_i2.TableInfo<_i8.Table, dynamic>>? readsFrom = const {}}) =>
+          Set<_i2.ResultSetImplementation<dynamic, dynamic>>? readsFrom = const {}}) =>
       (super.noSuchMethod(Invocation.method(#customSelect, [query], {#variables: variables, #readsFrom: readsFrom}),
           returnValue: _FakeSelectable<_i2.QueryRow>()) as _i2.Selectable<_i2.QueryRow>);
   @override
   _i2.Selectable<_i2.QueryRow> customSelectQuery(String? query,
           {List<_i2.Variable<dynamic>>? variables = const [],
-          Set<_i2.TableInfo<_i8.Table, dynamic>>? readsFrom = const {}}) =>
+          Set<_i2.ResultSetImplementation<dynamic, dynamic>>? readsFrom = const {}}) =>
       (super.noSuchMethod(
           Invocation.method(#customSelectQuery, [query], {#variables: variables, #readsFrom: readsFrom}),
           returnValue: _FakeSelectable<_i2.QueryRow>()) as _i2.Selectable<_i2.QueryRow>);
@@ -352,7 +349,7 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
       (super.noSuchMethod(Invocation.method(#transaction, [action]), returnValue: Future<T>.value(null))
           as _i14.Future<T>);
   @override
-  _i14.Future<void> batch(dynamic Function(_i4.Batch)? runInBatch) =>
+  _i14.Future<void> batch(_i14.FutureOr<void>? Function(_i4.Batch)? runInBatch) =>
       (super.noSuchMethod(Invocation.method(#batch, [runInBatch]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
@@ -485,8 +482,8 @@ class MockAppsService extends _i1.Mock implements _i20.AppsService {
       (super.noSuchMethod(Invocation.method(#unHideApplication, [application]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
-  _i14.Future<void> setCategoryDisplay(_i3.Category? category, _i3.CategoryDisplay? display) =>
-      (super.noSuchMethod(Invocation.method(#setCategoryDisplay, [category, display]),
+  _i14.Future<void> setCategoryType(_i3.Category? category, _i3.CategoryType? display) =>
+      (super.noSuchMethod(Invocation.method(#setCategoryType, [category, display]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
   _i14.Future<void> setCategorySort(_i3.Category? category, _i3.CategorySort? sort) =>

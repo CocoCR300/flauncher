@@ -54,8 +54,8 @@ class FLauncher extends StatelessWidget {
 
   Widget _categories(List<CategoryWithApps> categoriesWithApps) => Column(
         children: categoriesWithApps.map((categoryWithApps) {
-          switch (categoryWithApps.category.display) {
-            case CategoryDisplay.row:
+          switch (categoryWithApps.category.type) {
+            case CategoryType.row:
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: CategoryRow(
@@ -63,7 +63,7 @@ class FLauncher extends StatelessWidget {
                     category: categoryWithApps.category,
                     applications: categoryWithApps.applications),
               );
-            case CategoryDisplay.grid:
+            case CategoryType.grid:
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: AppsGrid(

@@ -22,6 +22,7 @@ import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/add_category_dialog.dart';
 import 'package:flauncher/widgets/settings/categories_panel_page.dart';
+import 'package:flauncher/widgets/settings/category_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -43,8 +44,8 @@ void main() {
   testWidgets("Categories are displayed", (tester) async {
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory("Favorites"), []),
-      CategoryWithApps(fakeCategory("Applications"), []),
+      CategoryWithApps(fakeCategory(name: "Favorites"), []),
+      CategoryWithApps(fakeCategory(name: "Applications"), []),
     ]);
 
     await _pumpWidgetWithProviders(tester, appsService);
@@ -56,8 +57,8 @@ void main() {
   testWidgets("'Arrow down' change category order", (tester) async {
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory("Favorites"), []),
-      CategoryWithApps(fakeCategory("Applications"), []),
+      CategoryWithApps(fakeCategory(name: "Favorites"), []),
+      CategoryWithApps(fakeCategory(name: "Applications"), []),
     ]);
     await _pumpWidgetWithProviders(tester, appsService);
 
@@ -70,11 +71,11 @@ void main() {
     expect(find.text("Applications"), findsOneWidget);
   });
 
-  testWidgets("'Edit' opens AddCategoryDialog", (tester) async {
+  testWidgets("'Settings' opens CategoryPanelPage", (tester) async {
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory("Favorites"), []),
-      CategoryWithApps(fakeCategory("Applications"), []),
+      CategoryWithApps(fakeCategory(name: "Favorites"), []),
+      CategoryWithApps(fakeCategory(name: "Applications"), []),
     ]);
     await _pumpWidgetWithProviders(tester, appsService);
 
@@ -83,32 +84,14 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
 
-    expect(find.byType(AddCategoryDialog), findsOneWidget);
-  });
-
-  testWidgets("'Delete' deletes category", (tester) async {
-    final appsService = MockAppsService();
-    final favoritesCategoryWithApps = CategoryWithApps(fakeCategory("Favorites"), []);
-    when(appsService.categoriesWithApps).thenReturn([
-      favoritesCategoryWithApps,
-      CategoryWithApps(fakeCategory("Applications"), []),
-    ]);
-    await _pumpWidgetWithProviders(tester, appsService);
-
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
-
-    verify(appsService.deleteCategory(favoritesCategoryWithApps.category));
+    expect(find.byKey(Key("CategoryPanelPage")), findsOneWidget);
   });
 
   testWidgets("'Add Category' opens AddCategoryDialog", (tester) async {
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory("Favorites"), []),
-      CategoryWithApps(fakeCategory("Applications"), []),
+      CategoryWithApps(fakeCategory(name: "Favorites"), []),
+      CategoryWithApps(fakeCategory(name: "Applications"), []),
     ]);
     await _pumpWidgetWithProviders(tester, appsService);
 
@@ -129,6 +112,9 @@ Future<void> _pumpWidgetWithProviders(WidgetTester tester, AppsService appsServi
         ChangeNotifierProvider<AppsService>.value(value: appsService),
       ],
       builder: (_, __) => MaterialApp(
+        routes: {
+          CategoryPanelPage.routeName: (_) => Container(key: Key("CategoryPanelPage")),
+        },
         home: Scaffold(body: CategoriesPanelPage()),
       ),
     ),

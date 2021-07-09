@@ -52,7 +52,7 @@ class Categories extends Table {
 
   IntColumn get sort => intEnum<CategorySort>().withDefault(Constant(0))();
 
-  IntColumn get display => intEnum<CategoryDisplay>().withDefault(Constant(0))();
+  IntColumn get type => intEnum<CategoryType>().withDefault(Constant(0))();
 
   IntColumn get rowHeight => integer().withDefault(Constant(110))();
 
@@ -85,7 +85,7 @@ enum CategorySort {
   alphabetical,
 }
 
-enum CategoryDisplay {
+enum CategoryType {
   row,
   grid,
 }
@@ -113,11 +113,11 @@ class FLauncherDatabase extends _$FLauncherDatabase {
           if (from <= 3) {
             await migrator.alterTable(TableMigration(apps, newColumns: [apps.hidden]));
             await migrator.addColumn(categories, categories.sort);
-            await migrator.addColumn(categories, categories.display);
+            await migrator.addColumn(categories, categories.type);
             await migrator.addColumn(categories, categories.rowHeight);
             await migrator.addColumn(categories, categories.columnsCount);
             await (update(categories)..where((tbl) => tbl.name.equals("Applications")))
-                .write(CategoriesCompanion(display: Value(CategoryDisplay.grid)));
+                .write(CategoriesCompanion(type: Value(CategoryType.grid)));
           }
         },
         beforeOpen: (openingDetails) async {
@@ -128,7 +128,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
               CategoriesCompanion.insert(
                 name: "Applications",
                 order: 1,
-                display: Value(CategoryDisplay.grid),
+                type: Value(CategoryType.grid),
               ),
             );
           }
@@ -166,8 +166,6 @@ class FLauncherDatabase extends _$FLauncherDatabase {
 
   Future<void> updateCategory(int id, CategoriesCompanion value) =>
       (update(categories)..where((tbl) => tbl.id.equals(id))).write(value);
-
-  Future<void> insertAppCategory(AppsCategoriesCompanion appCategory) => into(appsCategories).insert(appCategory);
 
   Future<void> deleteAppCategory(int categoryId, String packageName) => (delete(appsCategories)
         ..where((tbl) => tbl.categoryId.equals(categoryId) & tbl.appPackageName.equals(packageName)))

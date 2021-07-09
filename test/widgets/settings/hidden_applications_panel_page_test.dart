@@ -50,7 +50,13 @@ void main() {
 
   testWidgets("'Open' launches the application", (tester) async {
     final appsService = MockAppsService();
-    final application = fakeApp("me.efesser.flauncher", "FLauncher", "1.0.0", kTransparentImage, kTransparentImage);
+    final application = fakeApp(
+      packageName: "me.efesser.flauncher",
+      name: "FLauncher",
+      version: "1.0.0",
+      banner: kTransparentImage,
+      icon: kTransparentImage,
+    );
     when(appsService.hiddenApplications).thenReturn([application]);
 
     await _pumpWidgetWithProviders(tester, appsService);
@@ -63,7 +69,13 @@ void main() {
 
   testWidgets("'Unhide' unhides the application", (tester) async {
     final appsService = MockAppsService();
-    final application = fakeApp("me.efesser.flauncher", "FLauncher", "1.0.0", kTransparentImage, kTransparentImage);
+    final application = fakeApp(
+      packageName: "me.efesser.flauncher",
+      name: "FLauncher",
+      version: "1.0.0",
+      banner: kTransparentImage,
+      icon: kTransparentImage,
+    );
     when(appsService.hiddenApplications).thenReturn([application]);
 
     await _pumpWidgetWithProviders(tester, appsService);

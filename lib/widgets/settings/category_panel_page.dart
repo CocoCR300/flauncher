@@ -77,22 +77,22 @@ class CategoryPanelPage extends StatelessWidget {
                     ),
                     _listTile(
                       context,
-                      Text("Display"),
+                      Text("Type"),
                       Column(
                         children: [
                           SizedBox(height: 4),
-                          DropdownButton<CategoryDisplay>(
-                            value: category.display,
-                            onChanged: (value) => context.read<AppsService>().setCategoryDisplay(category, value!),
+                          DropdownButton<CategoryType>(
+                            value: category.type,
+                            onChanged: (value) => context.read<AppsService>().setCategoryType(category, value!),
                             isDense: true,
                             isExpanded: true,
                             items: [
                               DropdownMenuItem(
-                                value: CategoryDisplay.row,
+                                value: CategoryType.row,
                                 child: Text("Row", style: Theme.of(context).textTheme.caption),
                               ),
                               DropdownMenuItem(
-                                value: CategoryDisplay.grid,
+                                value: CategoryType.grid,
                                 child: Text("Grid", style: Theme.of(context).textTheme.caption),
                               ),
                             ],
@@ -100,7 +100,7 @@ class CategoryPanelPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (category.display == CategoryDisplay.grid)
+                    if (category.type == CategoryType.grid)
                       _listTile(
                         context,
                         Text("Columns count"),
@@ -119,15 +119,13 @@ class CategoryPanelPage extends StatelessWidget {
                                     ),
                                   )
                                   .toList(),
-                              onChanged: (value) async {
-                                debugPrint(value.toString());
-                                await context.read<AppsService>().setCategoryColumnsCount(category, value!);
-                              },
+                              onChanged: (value) =>
+                                  context.read<AppsService>().setCategoryColumnsCount(category, value!),
                             ),
                           ],
                         ),
                       ),
-                    if (category.display == CategoryDisplay.row)
+                    if (category.type == CategoryType.row)
                       _listTile(
                         context,
                         Text("Row height"),
@@ -146,10 +144,7 @@ class CategoryPanelPage extends StatelessWidget {
                                     ),
                                   )
                                   .toList(),
-                              onChanged: (value) async {
-                                debugPrint(value.toString());
-                                await context.read<AppsService>().setCategoryRowHeight(category, value!);
-                              },
+                              onChanged: (value) => context.read<AppsService>().setCategoryRowHeight(category, value!),
                             ),
                           ],
                         ),

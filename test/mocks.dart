@@ -41,15 +41,30 @@ import 'package:moor/moor.dart';
 ])
 void main() {}
 
-App fakeApp([
+App fakeApp({
   String packageName = "me.efesser.flauncher",
   String name = "FLauncher",
   String version = "1.0.0",
   Uint8List? banner,
   Uint8List? icon,
   bool hidden = false,
-]) =>
+}) =>
     App(packageName: packageName, name: name, version: version, banner: banner, icon: icon, hidden: hidden);
 
-Category fakeCategory([String name = "Favorites", int order = 0]) =>
-    Category(id: Random().nextInt(1 << 32), name: name, order: order);
+Category fakeCategory({
+  String name = "Favorites",
+  int order = 0,
+  CategorySort sort = CategorySort.manual,
+  CategoryType type = CategoryType.grid,
+  int rowHeight = 110,
+  int columnsCount = 6,
+}) =>
+    Category(
+      id: Random().nextInt(1 << 32),
+      name: name,
+      sort: sort,
+      type: type,
+      rowHeight: rowHeight,
+      columnsCount: columnsCount,
+      order: order,
+    );

@@ -109,13 +109,13 @@ class AppsService extends ChangeNotifier {
     await _database.deleteAppCategory(oldCategory.id, app.packageName);
 
     int index = await _database.nextAppCategoryOrder(newCategory.id);
-    await _database.insertAppCategory(
+    await _database.insertAppsCategories([
       AppsCategoriesCompanion.insert(
         categoryId: newCategory.id,
         appPackageName: app.packageName,
         order: index,
-      ),
-    );
+      )
+    ]);
     _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     notifyListeners();
   }
@@ -149,7 +149,7 @@ class AppsService extends ChangeNotifier {
     final orderedCategories = <CategoriesCompanion>[];
     for (int i = 0; i < _categoriesWithApps.length; ++i) {
       final category = _categoriesWithApps[i].category;
-      orderedCategories.add(category.toCompanion(false).copyWith(order: Value(i + 1)));
+      orderedCategories.add(CategoriesCompanion(id: Value(category.id), order: Value(i + 1)));
     }
     await _database.insertCategory(CategoriesCompanion.insert(name: categoryName, order: 0));
     await _database.updateCategories(orderedCategories);
@@ -177,7 +177,7 @@ class AppsService extends ChangeNotifier {
               order: index++,
             ))
         .toList();
-    await _database.replaceAppsCategories(appsCategories);
+    await _database.insertAppsCategories(appsCategories);
     await _database.deleteCategory(category.id);
     _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     notifyListeners();
@@ -210,8 +210,8 @@ class AppsService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setCategoryDisplay(Category category, CategoryDisplay display) async {
-    await _database.updateCategory(category.id, CategoriesCompanion(display: Value(display)));
+  Future<void> setCategoryType(Category category, CategoryType type) async {
+    await _database.updateCategory(category.id, CategoriesCompanion(type: Value(type)));
     _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     notifyListeners();
   }

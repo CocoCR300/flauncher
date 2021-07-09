@@ -53,16 +53,25 @@ void main() {
     final settingsService = MockSettingsService();
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
-    final applicationsCategory = fakeCategory("Applications", 1);
+    final favoritesCategory = fakeCategory(name: "Favorites", order: 0, type: CategoryType.row);
+    final applicationsCategory = fakeCategory(name: "Applications", order: 1);
     when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory("Favorites", 0), []),
+      CategoryWithApps(favoritesCategory, [
+        fakeApp(
+          packageName: "me.efesser.flauncher.1",
+          name: "FLauncher 1",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: null,
+        )
+      ]),
       CategoryWithApps(applicationsCategory, [
         fakeApp(
-          "me.efesser.flauncher",
-          "FLauncher",
-          "1.0.0",
-          kTransparentImage,
-          null,
+          packageName: "me.efesser.flauncher.2",
+          name: "FLauncher 2",
+          version: "2.0.0",
+          banner: kTransparentImage,
+          icon: null,
         )
       ]),
     ]);
@@ -73,10 +82,33 @@ void main() {
     expect(find.text("Applications"), findsOneWidget);
     expect(find.text("Favorites"), findsOneWidget);
     expect(find.byType(AppsGrid), findsOneWidget);
-    expect(find.byKey(Key("${applicationsCategory.id}-me.efesser.flauncher")), findsOneWidget);
+    expect(find.byKey(Key("${applicationsCategory.id}-me.efesser.flauncher.2")), findsOneWidget);
     expect(find.byType(CategoryRow), findsOneWidget);
-    expect(find.text("This category is empty.\nLong-press an app to move it here."), findsOneWidget);
+    expect(find.byKey(Key("${favoritesCategory.id}-me.efesser.flauncher.1")), findsOneWidget);
     expect(tester.widget(find.byKey(Key("background"))), isA<Container>());
+  });
+
+  testWidgets("Home page shows category empty-state", (tester) async {
+    final wallpaperService = MockWallpaperService();
+    final appsService = MockAppsService();
+    final settingsService = MockSettingsService();
+    when(wallpaperService.wallpaperBytes).thenReturn(null);
+    when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
+    final applicationsCategory = fakeCategory(name: "Applications", order: 0, type: CategoryType.grid);
+    final favoritesCategory = fakeCategory(name: "Favorites", order: 1, type: CategoryType.row);
+    when(appsService.categoriesWithApps).thenReturn([
+      CategoryWithApps(applicationsCategory, []),
+      CategoryWithApps(favoritesCategory, []),
+    ]);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
+
+    await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
+
+    expect(find.text("Applications"), findsOneWidget);
+    expect(find.text("Favorites"), findsOneWidget);
+    expect(find.byType(CategoryRow), findsOneWidget);
+    expect(find.byType(AppsGrid), findsOneWidget);
+    expect(find.text("This category is empty.\nLong-press an app to move it here."), findsNWidgets(2));
   });
 
   testWidgets("Home page displays background image", (tester) async {
@@ -114,13 +146,14 @@ void main() {
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory("Favorites", 0), []),
-      CategoryWithApps(fakeCategory("Applications", 1), []),
+      CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
+      CategoryWithApps(fakeCategory(name: "Applications", order: 1), []),
     ]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
@@ -137,15 +170,15 @@ void main() {
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
     final app = fakeApp(
-      "me.efesser.flauncher",
-      "FLauncher",
-      "1.0.0",
-      kTransparentImage,
-      kTransparentImage,
+      packageName: "me.efesser.flauncher",
+      name: "FLauncher",
+      version: "1.0.0",
+      banner: kTransparentImage,
+      icon: kTransparentImage,
     );
     when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory("Favorites", 0), []),
-      CategoryWithApps(fakeCategory("Applications", 1), [app]),
+      CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
+      CategoryWithApps(fakeCategory(name: "Applications", order: 1), [app]),
     ]);
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
@@ -162,16 +195,16 @@ void main() {
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
-    final applicationsCategory = fakeCategory("Applications", 1);
+    final applicationsCategory = fakeCategory(name: "Applications", order: 1);
     when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory("Favorites", 0), []),
+      CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
       CategoryWithApps(applicationsCategory, [
         fakeApp(
-          "me.efesser.flauncher",
-          "FLauncher",
-          "1.0.0",
-          kTransparentImage,
-          kTransparentImage,
+          packageName: "me.efesser.flauncher",
+          name: "FLauncher",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
         )
       ]),
     ]);
@@ -183,30 +216,73 @@ void main() {
     expect(find.byType(ApplicationInfoPanel), findsOneWidget);
   });
 
-  testWidgets("AppCard moves", (tester) async {
+  testWidgets("AppCard moves in grid", (tester) async {
     final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
-    final applicationsCategory = fakeCategory("Applications", 1);
+    final applicationsCategory = fakeCategory(name: "Applications", order: 1, type: CategoryType.grid);
     when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory("Favorites", 0), []),
+      CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
       CategoryWithApps(applicationsCategory, [
         fakeApp(
-          "me.efesser.flauncher",
-          "FLauncher",
-          "1.0.0",
-          kTransparentImage,
-          kTransparentImage,
+          packageName: "me.efesser.flauncher",
+          name: "FLauncher",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
         ),
         fakeApp(
-          "me.efesser.flauncher.2",
-          "FLauncher 2",
-          "1.0.0",
-          kTransparentImage,
-          kTransparentImage,
+          packageName: "me.efesser.flauncher.2",
+          name: "FLauncher 2",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        )
+      ]),
+    ]);
+    await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
+
+    await tester.longPress(find.byKey(Key("${applicationsCategory.id}-me.efesser.flauncher")));
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    verify(appsService.reorderApplication(applicationsCategory, 0, 1));
+    await tester.sendKeyEvent(LogicalKeyboardKey.select);
+    await tester.pumpAndSettle();
+    verify(appsService.saveOrderInCategory(applicationsCategory));
+  });
+
+  testWidgets("AppCard moves in row", (tester) async {
+    final wallpaperService = MockWallpaperService();
+    final appsService = MockAppsService();
+    final settingsService = MockSettingsService();
+    when(wallpaperService.wallpaperBytes).thenReturn(null);
+    when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
+    final applicationsCategory = fakeCategory(name: "Applications", order: 1, type: CategoryType.row);
+    when(appsService.categoriesWithApps).thenReturn([
+      CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
+      CategoryWithApps(applicationsCategory, [
+        fakeApp(
+          packageName: "me.efesser.flauncher",
+          name: "FLauncher",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.flauncher.2",
+          name: "FLauncher 2",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
         )
       ]),
     ]);

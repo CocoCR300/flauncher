@@ -74,7 +74,7 @@ void main() {
     expect(category.name, "Applications");
     expect(category.order, 0);
     expect(category.sort, 0);
-    expect(category.display, 1);
+    expect(category.type, 1);
     expect(category.columnsCount, 6);
     expect(category.rowHeight, 110);
     expect(appsCategory.appPackageName, "me.efesser.flauncher");
@@ -122,7 +122,7 @@ void main() {
     expect(category.name, "Applications");
     expect(category.order, 0);
     expect(category.sort, 0);
-    expect(category.display, 1);
+    expect(category.type, 1);
     expect(category.columnsCount, 6);
     expect(category.rowHeight, 110);
     expect(appsCategory.appPackageName, "me.efesser.flauncher");
@@ -170,7 +170,7 @@ void main() {
     expect(category.name, "Applications");
     expect(category.order, 0);
     expect(category.sort, 0);
-    expect(category.display, 1);
+    expect(category.type, 1);
     expect(category.columnsCount, 6);
     expect(category.rowHeight, 110);
     expect(appsCategory.appPackageName, "me.efesser.flauncher");

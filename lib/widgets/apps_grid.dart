@@ -32,8 +32,6 @@ class AppsGrid extends StatelessWidget {
   final Category category;
   final List<App> applications;
 
-  // static const _crossAxisCount = 6;
-
   AppsGrid({
     Key? key,
     required this.category,

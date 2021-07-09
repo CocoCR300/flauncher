@@ -43,14 +43,14 @@ void main() {
 
   testWidgets("'Move to...' opens MoveToCategoryDialog and sends its result to AppsService", (tester) async {
     final appsService = MockAppsService();
-    final category1 = fakeCategory("Category 1", 0);
-    final category2 = fakeCategory("Category 2", 1);
+    final category1 = fakeCategory(name: "Category 1", order: 0);
+    final category2 = fakeCategory(name: "Category 2", order: 1);
     final app = fakeApp(
-      "me.efesser.flauncher",
-      "FLauncher",
-      "1.0.0",
-      kTransparentImage,
-      kTransparentImage,
+      packageName: "me.efesser.flauncher",
+      name: "FLauncher",
+      version: "1.0.0",
+      banner: kTransparentImage,
+      icon: kTransparentImage,
     );
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(category1, [app]),
@@ -72,13 +72,13 @@ void main() {
 
   testWidgets("'Hide' calls AppsService", (tester) async {
     final appsService = MockAppsService();
-    final category = fakeCategory("Category 1", 0);
+    final category = fakeCategory(name: "Category 1", order: 0);
     final app = fakeApp(
-      "me.efesser.flauncher",
-      "FLauncher",
-      "1.0.0",
-      kTransparentImage,
-      kTransparentImage,
+      packageName: "me.efesser.flauncher",
+      name: "FLauncher",
+      version: "1.0.0",
+      banner: kTransparentImage,
+      icon: kTransparentImage,
     );
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(category, [app]),
@@ -95,13 +95,13 @@ void main() {
 
   testWidgets("'App info' calls AppsService", (tester) async {
     final appsService = MockAppsService();
-    final category = fakeCategory("Category 1", 0);
+    final category = fakeCategory(name: "Category 1", order: 0);
     final app = fakeApp(
-      "me.efesser.flauncher",
-      "FLauncher",
-      "1.0.0",
-      kTransparentImage,
-      kTransparentImage,
+      packageName: "me.efesser.flauncher",
+      name: "FLauncher",
+      version: "1.0.0",
+      banner: kTransparentImage,
+      icon: kTransparentImage,
     );
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(category, [app]),
@@ -119,13 +119,13 @@ void main() {
 
   testWidgets("'Uninstall' calls AppsService", (tester) async {
     final appsService = MockAppsService();
-    final category = fakeCategory("Category 1", 0);
+    final category = fakeCategory(name: "Category 1", order: 0);
     final app = fakeApp(
-      "me.efesser.flauncher",
-      "FLauncher",
-      "1.0.0",
-      kTransparentImage,
-      kTransparentImage,
+      packageName: "me.efesser.flauncher",
+      name: "FLauncher",
+      version: "1.0.0",
+      banner: kTransparentImage,
+      icon: kTransparentImage,
     );
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(category, [app]),

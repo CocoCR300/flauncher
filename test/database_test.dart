@@ -59,6 +59,20 @@ void main() {
     expect(app.read<Uint8List?>("icon"), null);
   });
 
+  test("updateApp", () async {
+    await database.customInsert("INSERT INTO apps(package_name, name, version, banner, icon, hidden)"
+        " VALUES('me.efesser.flauncher', 'FLauncher', '1.0.0', null, null, false);");
+    await database.updateApp("me.efesser.flauncher", AppsCompanion(hidden: Value(true)));
+
+    final app = await database.customSelect("SELECT * FROM apps;").getSingle();
+    expect(app.read<String>("package_name"), "me.efesser.flauncher");
+    expect(app.read<String>("name"), "FLauncher");
+    expect(app.read<String>("version"), "1.0.0");
+    expect(app.read<Uint8List?>("banner"), null);
+    expect(app.read<Uint8List?>("icon"), null);
+    expect(app.read<bool>("hidden"), true);
+  });
+
   test("deleteApps", () async {
     await database.customInsert("INSERT INTO apps(package_name, name, version, banner, icon)"
         " VALUES('me.efesser.flauncher', 'FLauncher', '1.0.0', null, null);");
@@ -108,13 +122,13 @@ void main() {
     expect(categories[1].read<String>("name"), "Applications");
   });
 
-  test("persistCategories", () async {
+  test("updateCategories", () async {
     final test1Id = await database.customInsert("INSERT INTO categories(name, 'order') VALUES('Test 1', 2);");
     final test2Id = await database.customInsert("INSERT INTO categories(name, 'order') VALUES('Test 2', 3);");
 
-    await database.persistCategories([
-      CategoriesCompanion(id: Value(test2Id), name: Value("Test 2"), order: Value(2)),
-      CategoriesCompanion(id: Value(test1Id), name: Value("Test 1"), order: Value(3)),
+    await database.updateCategories([
+      CategoriesCompanion(id: Value(test2Id), order: Value(2)),
+      CategoriesCompanion(id: Value(test1Id), order: Value(3)),
     ]);
 
     final categories = await database.customSelect("SELECT * FROM categories c ORDER BY c.'order' ASC;").get();
@@ -125,18 +139,17 @@ void main() {
     expect(categories[3].read<String>("name"), "Test 1");
   });
 
-  test("insertAppCategory", () async {
-    await database.customInsert("INSERT INTO apps(package_name, name, version, banner, icon)"
-        " VALUES('me.efesser.flauncher', 'FLauncher', '1.0.0', null, null);");
-    final categoryId = await database.customInsert("INSERT INTO categories(name, 'order')"
-        " VALUES('Test', 2);");
-    await database.insertAppCategory(
-        AppsCategoriesCompanion.insert(categoryId: categoryId, appPackageName: "me.efesser.flauncher", order: 0));
+  test("updateCategory", () async {
+    final categoryId = await database.customInsert("INSERT INTO categories(name, 'order') VALUES('Test', 2);");
 
-    final appCategory = await database.customSelect("SELECT * FROM apps_categories;").getSingle();
-    expect(appCategory.read<int>("category_id"), categoryId);
-    expect(appCategory.read<String>("app_package_name"), "me.efesser.flauncher");
-    expect(appCategory.read<int>("order"), 0);
+    await database.updateCategory(categoryId, CategoriesCompanion(order: Value(5)));
+
+    final categories = await database.customSelect("SELECT * FROM categories c ORDER BY c.'order' ASC;").get();
+    expect(categories.length, 3);
+    expect(categories[0].read<String>("name"), "Favorites");
+    expect(categories[1].read<String>("name"), "Applications");
+    expect(categories[2].read<String>("name"), "Test");
+    expect(categories[2].read<int>("order"), 5);
   });
 
   test("deleteAppCategory", () async {
@@ -159,14 +172,29 @@ void main() {
     expect(categories[2].read<String>("name"), "Test");
   });
 
-  test("persistAppsCategories", () async {
+  test("insertAppsCategories", () async {
+    await database.customInsert("INSERT INTO apps(package_name, name, version, banner, icon)"
+        " VALUES('me.efesser.flauncher', 'FLauncher', '1.0.0', null, null);");
+    final categoryId = await database.customInsert("INSERT INTO categories(name, 'order')"
+        " VALUES('Test', 2);");
+    await database.insertAppsCategories([
+      AppsCategoriesCompanion.insert(categoryId: categoryId, appPackageName: "me.efesser.flauncher", order: 0),
+    ]);
+
+    final appCategory = await database.customSelect("SELECT * FROM apps_categories;").getSingle();
+    expect(appCategory.read<int>("category_id"), categoryId);
+    expect(appCategory.read<String>("app_package_name"), "me.efesser.flauncher");
+    expect(appCategory.read<int>("order"), 0);
+  });
+
+  test("replaceAppsCategories", () async {
     await database.customInsert("INSERT INTO apps(package_name, name, version, banner, icon)"
         " VALUES('me.efesser.flauncher', 'FLauncher', '1.0.0', null, null);");
     final categoryId = await database.customInsert("INSERT INTO categories(name, 'order') VALUES('Test', 2);");
     await database.customInsert("INSERT INTO apps_categories(category_id, app_package_name, 'order')"
         " VALUES($categoryId, 'me.efesser.flauncher', 0);");
 
-    await database.persistAppsCategories(
+    await database.replaceAppsCategories(
         [AppsCategoriesCompanion.insert(categoryId: categoryId, appPackageName: "me.efesser.flauncher", order: 1)]);
 
     final appCategory = await database.customSelect("SELECT * FROM apps_categories;").getSingle();

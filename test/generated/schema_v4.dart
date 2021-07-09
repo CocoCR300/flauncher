@@ -259,7 +259,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
   final int id;
   final String name;
   final int sort;
-  final int display;
+  final int type;
   final int rowHeight;
   final int columnsCount;
   final int order;
@@ -267,7 +267,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
       {required this.id,
       required this.name,
       required this.sort,
-      required this.display,
+      required this.type,
       required this.rowHeight,
       required this.columnsCount,
       required this.order});
@@ -277,7 +277,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
       id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
       name: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
       sort: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}sort'])!,
-      display: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}display'])!,
+      type: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}type'])!,
       rowHeight: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}row_height'])!,
       columnsCount: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}columns_count'])!,
       order: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}order'])!,
@@ -289,7 +289,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['sort'] = Variable<int>(sort);
-    map['display'] = Variable<int>(display);
+    map['type'] = Variable<int>(type);
     map['row_height'] = Variable<int>(rowHeight);
     map['columns_count'] = Variable<int>(columnsCount);
     map['order'] = Variable<int>(order);
@@ -301,7 +301,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
       id: Value(id),
       name: Value(name),
       sort: Value(sort),
-      display: Value(display),
+      type: Value(type),
       rowHeight: Value(rowHeight),
       columnsCount: Value(columnsCount),
       order: Value(order),
@@ -314,7 +314,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       sort: serializer.fromJson<int>(json['sort']),
-      display: serializer.fromJson<int>(json['display']),
+      type: serializer.fromJson<int>(json['type']),
       rowHeight: serializer.fromJson<int>(json['rowHeight']),
       columnsCount: serializer.fromJson<int>(json['columnsCount']),
       order: serializer.fromJson<int>(json['order']),
@@ -327,7 +327,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'sort': serializer.toJson<int>(sort),
-      'display': serializer.toJson<int>(display),
+      'type': serializer.toJson<int>(type),
       'rowHeight': serializer.toJson<int>(rowHeight),
       'columnsCount': serializer.toJson<int>(columnsCount),
       'order': serializer.toJson<int>(order),
@@ -335,12 +335,12 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
   }
 
   CategoriesData copyWith(
-          {int? id, String? name, int? sort, int? display, int? rowHeight, int? columnsCount, int? order}) =>
+          {int? id, String? name, int? sort, int? type, int? rowHeight, int? columnsCount, int? order}) =>
       CategoriesData(
         id: id ?? this.id,
         name: name ?? this.name,
         sort: sort ?? this.sort,
-        display: display ?? this.display,
+        type: type ?? this.type,
         rowHeight: rowHeight ?? this.rowHeight,
         columnsCount: columnsCount ?? this.columnsCount,
         order: order ?? this.order,
@@ -351,7 +351,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('sort: $sort, ')
-          ..write('display: $display, ')
+          ..write('type: $type, ')
           ..write('rowHeight: $rowHeight, ')
           ..write('columnsCount: $columnsCount, ')
           ..write('order: $order')
@@ -365,7 +365,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
       $mrjc(
           name.hashCode,
           $mrjc(sort.hashCode,
-              $mrjc(display.hashCode, $mrjc(rowHeight.hashCode, $mrjc(columnsCount.hashCode, order.hashCode)))))));
+              $mrjc(type.hashCode, $mrjc(rowHeight.hashCode, $mrjc(columnsCount.hashCode, order.hashCode)))))));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -373,7 +373,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
           other.id == this.id &&
           other.name == this.name &&
           other.sort == this.sort &&
-          other.display == this.display &&
+          other.type == this.type &&
           other.rowHeight == this.rowHeight &&
           other.columnsCount == this.columnsCount &&
           other.order == this.order);
@@ -383,7 +383,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoriesData> {
   final Value<int> id;
   final Value<String> name;
   final Value<int> sort;
-  final Value<int> display;
+  final Value<int> type;
   final Value<int> rowHeight;
   final Value<int> columnsCount;
   final Value<int> order;
@@ -391,7 +391,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoriesData> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.sort = const Value.absent(),
-    this.display = const Value.absent(),
+    this.type = const Value.absent(),
     this.rowHeight = const Value.absent(),
     this.columnsCount = const Value.absent(),
     this.order = const Value.absent(),
@@ -400,7 +400,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoriesData> {
     this.id = const Value.absent(),
     required String name,
     this.sort = const Value.absent(),
-    this.display = const Value.absent(),
+    this.type = const Value.absent(),
     this.rowHeight = const Value.absent(),
     this.columnsCount = const Value.absent(),
     required int order,
@@ -410,7 +410,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoriesData> {
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? sort,
-    Expression<int>? display,
+    Expression<int>? type,
     Expression<int>? rowHeight,
     Expression<int>? columnsCount,
     Expression<int>? order,
@@ -419,7 +419,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoriesData> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (sort != null) 'sort': sort,
-      if (display != null) 'display': display,
+      if (type != null) 'type': type,
       if (rowHeight != null) 'row_height': rowHeight,
       if (columnsCount != null) 'columns_count': columnsCount,
       if (order != null) 'order': order,
@@ -430,7 +430,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoriesData> {
       {Value<int>? id,
       Value<String>? name,
       Value<int>? sort,
-      Value<int>? display,
+      Value<int>? type,
       Value<int>? rowHeight,
       Value<int>? columnsCount,
       Value<int>? order}) {
@@ -438,7 +438,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoriesData> {
       id: id ?? this.id,
       name: name ?? this.name,
       sort: sort ?? this.sort,
-      display: display ?? this.display,
+      type: type ?? this.type,
       rowHeight: rowHeight ?? this.rowHeight,
       columnsCount: columnsCount ?? this.columnsCount,
       order: order ?? this.order,
@@ -457,8 +457,8 @@ class CategoriesCompanion extends UpdateCompanion<CategoriesData> {
     if (sort.present) {
       map['sort'] = Variable<int>(sort.value);
     }
-    if (display.present) {
-      map['display'] = Variable<int>(display.value);
+    if (type.present) {
+      map['type'] = Variable<int>(type.value);
     }
     if (rowHeight.present) {
       map['row_height'] = Variable<int>(rowHeight.value);
@@ -478,7 +478,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoriesData> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('sort: $sort, ')
-          ..write('display: $display, ')
+          ..write('type: $type, ')
           ..write('rowHeight: $rowHeight, ')
           ..write('columnsCount: $columnsCount, ')
           ..write('order: $order')
@@ -497,7 +497,7 @@ class Categories extends Table with TableInfo<Categories, CategoriesData> {
       GeneratedColumn<String?>('name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
   late final GeneratedColumn<int?> sort = GeneratedColumn<int?>('sort', aliasedName, false,
       typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(0));
-  late final GeneratedColumn<int?> display = GeneratedColumn<int?>('display', aliasedName, false,
+  late final GeneratedColumn<int?> type = GeneratedColumn<int?>('type', aliasedName, false,
       typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(0));
   late final GeneratedColumn<int?> rowHeight = GeneratedColumn<int?>('row_height', aliasedName, false,
       typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(110));
@@ -506,7 +506,7 @@ class Categories extends Table with TableInfo<Categories, CategoriesData> {
   late final GeneratedColumn<int?> order =
       GeneratedColumn<int?>('order', aliasedName, false, typeName: 'INTEGER', requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [id, name, sort, display, rowHeight, columnsCount, order];
+  List<GeneratedColumn> get $columns => [id, name, sort, type, rowHeight, columnsCount, order];
   @override
   String get aliasedName => _alias ?? 'categories';
   @override
