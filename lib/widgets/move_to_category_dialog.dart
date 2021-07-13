@@ -21,19 +21,13 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MoveToCategoryDialog extends StatelessWidget {
-  final Category excludedCategory;
-
-  MoveToCategoryDialog({required this.excludedCategory});
-
+class AddToCategoryDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Selector<AppsService, List<Category>>(
-        selector: (_, appsService) => appsService.categoriesWithApps
-            .map((categoryWithApps) => categoryWithApps.category)
-            .where((category) => category.name != excludedCategory.name)
-            .toList(),
+        selector: (_, appsService) =>
+            appsService.categoriesWithApps.map((categoryWithApps) => categoryWithApps.category).toList(),
         builder: (context, categories, _) => SimpleDialog(
-          title: Text("Move to..."),
+          title: Text("Add to..."),
           contentPadding: EdgeInsets.all(16),
           children: [
             ...categories

@@ -48,8 +48,17 @@ App fakeApp({
   Uint8List? banner,
   Uint8List? icon,
   bool hidden = false,
+  bool sideloaded = false,
 }) =>
-    App(packageName: packageName, name: name, version: version, banner: banner, icon: icon, hidden: hidden);
+    App(
+      packageName: packageName,
+      name: name,
+      version: version,
+      banner: banner,
+      icon: icon,
+      hidden: hidden,
+      sideloaded: sideloaded,
+    );
 
 Category fakeCategory({
   String name = "Favorites",

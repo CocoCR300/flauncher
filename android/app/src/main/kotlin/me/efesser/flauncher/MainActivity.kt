@@ -21,6 +21,7 @@ package me.efesser.flauncher
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.CATEGORY_LAUNCHER
 import android.content.Intent.CATEGORY_LEANBACK_LAUNCHER
 import android.content.IntentFilter
 import android.content.pm.ResolveInfo
@@ -48,7 +49,7 @@ class MainActivity : FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, METHOD_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
-                "getInstalledApplications" -> result.success(getInstalledApplications())
+                "getInstalledApplications" -> result.success(getInstalledApplications(call.arguments as Boolean))
                 "launchApp" -> result.success(launchApp(call.arguments as String))
                 "openSettings" -> result.success(openSettings())
                 "openAppInfo" -> result.success(openAppInfo(call.arguments as String))
@@ -84,8 +85,9 @@ class MainActivity : FlutterActivity() {
         super.onDestroy()
     }
 
-    private fun getInstalledApplications() = packageManager
-            .queryIntentActivities(Intent(Intent.ACTION_MAIN, null).addCategory(CATEGORY_LEANBACK_LAUNCHER), 0)
+    private fun getInstalledApplications(sideloaded: Boolean) = packageManager
+            .queryIntentActivities(Intent(Intent.ACTION_MAIN, null)
+                    .addCategory(if (sideloaded) CATEGORY_LAUNCHER else CATEGORY_LEANBACK_LAUNCHER), 0)
             .map(ResolveInfo::activityInfo)
             .map {
                 mapOf(
@@ -99,7 +101,9 @@ class MainActivity : FlutterActivity() {
             .sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it["name"] as String })
 
     private fun launchApp(packageName: String) = try {
-        startActivity(packageManager.getLeanbackLaunchIntentForPackage(packageName))
+        val intent = packageManager.getLeanbackLaunchIntentForPackage(packageName)
+                ?: packageManager.getLaunchIntentForPackage(packageName)
+        startActivity(intent)
         true
     } catch (e: Exception) {
         false

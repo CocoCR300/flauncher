@@ -56,11 +56,6 @@ class _FakeQueryExecutor extends _i1.Fake implements _i6.QueryExecutor {}
 
 class _FakeStreamQueryStore extends _i1.Fake implements _i7.StreamQueryStore {}
 
-class _FakeCategory extends _i1.Fake implements _i3.Category {
-  @override
-  String toString() => super.toString();
-}
-
 class _FakeMigrator extends _i1.Fake implements _i2.Migrator {}
 
 class _FakeInsertStatement<T extends _i8.Table, D> extends _i1.Fake implements _i2.InsertStatement<T, D> {}
@@ -108,6 +103,10 @@ class MockFLauncherChannel extends _i1.Mock implements _i14.FLauncherChannel {
   @override
   _i15.Future<List<dynamic>> getInstalledApplications() =>
       (super.noSuchMethod(Invocation.method(#getInstalledApplications, []),
+          returnValue: Future<List<dynamic>>.value(<dynamic>[])) as _i15.Future<List<dynamic>>);
+  @override
+  _i15.Future<List<dynamic>> getSideloadedApplications() =>
+      (super.noSuchMethod(Invocation.method(#getSideloadedApplications, []),
           returnValue: Future<List<dynamic>>.value(<dynamic>[])) as _i15.Future<List<dynamic>>);
   @override
   _i15.Future<void> launchApp(String? packageName) => (super.noSuchMethod(Invocation.method(#launchApp, [packageName]),
@@ -207,9 +206,6 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
       (super.noSuchMethod(Invocation.method(#deleteApps, [packageNames]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i15.Future<_i3.Category> getCategory(String? name) => (super.noSuchMethod(Invocation.method(#getCategory, [name]),
-      returnValue: Future<_i3.Category>.value(_FakeCategory())) as _i15.Future<_i3.Category>);
-  @override
   _i15.Future<void> insertCategory(_i3.CategoriesCompanion? category) =>
       (super.noSuchMethod(Invocation.method(#insertCategory, [category]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
@@ -242,17 +238,9 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
               returnValue: Future<List<_i3.CategoryWithApps>>.value(<_i3.CategoryWithApps>[]))
           as _i15.Future<List<_i3.CategoryWithApps>>);
   @override
-  _i15.Future<List<_i3.App>> listCategoryApps(int? categoryId) =>
-      (super.noSuchMethod(Invocation.method(#listCategoryApps, [categoryId]),
-          returnValue: Future<List<_i3.App>>.value(<_i3.App>[])) as _i15.Future<List<_i3.App>>);
-  @override
   _i15.Future<int> nextAppCategoryOrder(int? categoryId) =>
       (super.noSuchMethod(Invocation.method(#nextAppCategoryOrder, [categoryId]), returnValue: Future<int>.value(0))
           as _i15.Future<int>);
-  @override
-  _i15.Future<List<_i3.App>> listHiddenApplications() =>
-      (super.noSuchMethod(Invocation.method(#listHiddenApplications, []),
-          returnValue: Future<List<_i3.App>>.value(<_i3.App>[])) as _i15.Future<List<_i3.App>>);
   @override
   _i2.Migrator createMigrator() =>
       (super.noSuchMethod(Invocation.method(#createMigrator, []), returnValue: _FakeMigrator()) as _i2.Migrator);
@@ -423,12 +411,12 @@ class MockAppsService extends _i1.Mock implements _i20.AppsService {
   }
 
   @override
+  List<_i3.App> get applications =>
+      (super.noSuchMethod(Invocation.getter(#applications), returnValue: <_i3.App>[]) as List<_i3.App>);
+  @override
   List<_i3.CategoryWithApps> get categoriesWithApps =>
       (super.noSuchMethod(Invocation.getter(#categoriesWithApps), returnValue: <_i3.CategoryWithApps>[])
           as List<_i3.CategoryWithApps>);
-  @override
-  List<_i3.App> get hiddenApplications =>
-      (super.noSuchMethod(Invocation.getter(#hiddenApplications), returnValue: <_i3.App>[]) as List<_i3.App>);
   @override
   bool get hasListeners => (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
   @override
@@ -448,8 +436,12 @@ class MockAppsService extends _i1.Mock implements _i20.AppsService {
       (super.noSuchMethod(Invocation.method(#isDefaultLauncher, []), returnValue: Future<bool>.value(false))
           as _i15.Future<bool>);
   @override
-  _i15.Future<void> moveToCategory(_i3.App? app, _i3.Category? oldCategory, _i3.Category? newCategory) =>
-      (super.noSuchMethod(Invocation.method(#moveToCategory, [app, oldCategory, newCategory]),
+  _i15.Future<void> addToCategory(_i3.App? app, _i3.Category? category) =>
+      (super.noSuchMethod(Invocation.method(#addToCategory, [app, category]),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
+  @override
+  _i15.Future<void> removeFromCategory(_i3.App? app, _i3.Category? category) =>
+      (super.noSuchMethod(Invocation.method(#removeFromCategory, [app, category]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
   _i15.Future<void> saveOrderInCategory(_i3.Category? category) =>

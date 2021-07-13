@@ -189,20 +189,6 @@ void main() {
 
     verify(appsService.deleteCategory(favoritesCategory));
   });
-
-  testWidgets("'Applications' category has restrictions", (tester) async {
-    final appsService = MockAppsService();
-    final applicationsCategory = fakeCategory(name: "Applications");
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "Favorites"), []),
-      CategoryWithApps(applicationsCategory, []),
-    ]);
-
-    await _pumpWidgetWithProviders(tester, appsService, applicationsCategory.id);
-
-    expect(tester.widget<IconButton>(find.byType(IconButton)).onPressed, isNull);
-    expect(tester.widget<ElevatedButton>(find.byType(ElevatedButton)).onPressed, isNull);
-  });
 }
 
 Future<void> _pumpWidgetWithProviders(WidgetTester tester, AppsService appsService, int categoryId) async {

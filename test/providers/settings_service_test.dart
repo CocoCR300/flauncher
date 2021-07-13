@@ -64,6 +64,31 @@ void main() {
     expect(sharedPreferences.getString("gradient_uuid"), "4730aa2d-1a90-49a6-9942-ffe82f470e26");
   });
 
+  group("setUnsplashAuthor", () {
+    test("with value saves author info", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseRemoteConfig = MockRemoteConfig();
+      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+
+      await settingsService.setUnsplashAuthor("unsplash author");
+
+      expect(sharedPreferences.getString("unsplash_author"), "unsplash author");
+    });
+
+    test("without value erases author info", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      await sharedPreferences.setString("unsplash_author", "unsplash author");
+      final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseRemoteConfig = MockRemoteConfig();
+      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+
+      await settingsService.setUnsplashAuthor(null);
+
+      expect(sharedPreferences.getString("unsplash_author"), isNull);
+    });
+  });
+
   test("unsplashEnabled", () async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final firebaseCrashlytics = MockFirebaseCrashlytics();

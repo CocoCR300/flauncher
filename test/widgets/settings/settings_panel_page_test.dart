@@ -22,7 +22,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/categories_panel_page.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
-import 'package:flauncher/widgets/settings/hidden_applications_panel_page.dart';
+import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
@@ -46,16 +46,33 @@ void main() {
     binding.window.textScaleFactorTestValue = 0.8;
   });
 
-  testWidgets("'Categories' opens CategoriesPanelPage", (tester) async {
+  testWidgets("'Applications' opens ApplicationsPanelPage", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
-    when(appsService.hiddenApplications).thenReturn([]);
+    when(appsService.applications).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byKey(Key("ApplicationsPanelPage")), findsOneWidget);
+  });
+
+  testWidgets("'Categories' opens CategoriesPanelPage", (tester) async {
+    final settingsService = MockSettingsService();
+    final appsService = MockAppsService();
+    when(appsService.categoriesWithApps).thenReturn([]);
+    when(appsService.applications).thenReturn([]);
+    when(settingsService.crashReportsEnabled).thenReturn(false);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
+
+    await _pumpWidgetWithProviders(tester, settingsService, appsService);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
@@ -66,12 +83,13 @@ void main() {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
-    when(appsService.hiddenApplications).thenReturn([]);
+    when(appsService.applications).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
@@ -79,29 +97,11 @@ void main() {
     expect(find.byKey(Key("WallpaperPanelPage")), findsOneWidget);
   });
 
-  testWidgets("'Hidden applications' navigates to HiddenApplicationsPanelPage", (tester) async {
-    final settingsService = MockSettingsService();
-    final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([]);
-    when(appsService.hiddenApplications).thenReturn([]);
-    when(settingsService.crashReportsEnabled).thenReturn(false);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
-
-    await _pumpWidgetWithProviders(tester, settingsService, appsService);
-
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
-    expect(find.byKey(Key("HiddenApplicationsPanelPage")), findsOneWidget);
-  });
-
   testWidgets("'Android settings' calls AppsService", (tester) async {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
-    when(appsService.hiddenApplications).thenReturn([]);
+    when(appsService.applications).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
 
@@ -120,7 +120,7 @@ void main() {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
-    when(appsService.hiddenApplications).thenReturn([]);
+    when(appsService.applications).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
 
@@ -140,7 +140,7 @@ void main() {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
-    when(appsService.hiddenApplications).thenReturn([]);
+    when(appsService.applications).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
 
@@ -161,7 +161,7 @@ void main() {
     final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
-    when(appsService.hiddenApplications).thenReturn([]);
+    when(appsService.applications).thenReturn([]);
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
     PackageInfo.disablePackageInfoPlatformOverride = true;
@@ -197,7 +197,7 @@ Future<void> _pumpWidgetWithProviders(
         routes: {
           CategoriesPanelPage.routeName: (_) => Container(key: Key("CategoriesPanelPage")),
           WallpaperPanelPage.routeName: (_) => Container(key: Key("WallpaperPanelPage")),
-          HiddenApplicationsPanelPage.routeName: (_) => Container(key: Key("HiddenApplicationsPanelPage")),
+          ApplicationsPanelPage.routeName: (_) => Container(key: Key("ApplicationsPanelPage")),
         },
         home: Material(child: SettingsPanelPage()),
       ),

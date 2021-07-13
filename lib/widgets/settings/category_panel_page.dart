@@ -47,7 +47,7 @@ class CategoryPanelPage extends StatelessWidget {
                         constraints: BoxConstraints(),
                         splashRadius: 20,
                         icon: Icon(Icons.edit),
-                        onPressed: category.name != "Applications" ? () => _renameCategory(context, category) : null,
+                        onPressed: () => _renameCategory(context, category),
                       ),
                     ),
                     _listTile(
@@ -155,12 +155,10 @@ class CategoryPanelPage extends StatelessWidget {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(primary: Colors.red[400]),
                         child: Text("Delete"),
-                        onPressed: category.name != "Applications"
-                            ? () async {
-                                await context.read<AppsService>().deleteCategory(category);
-                                Navigator.of(context).pop();
-                              }
-                            : null,
+                        onPressed: () async {
+                          await context.read<AppsService>().deleteCategory(category);
+                          Navigator.of(context).pop();
+                        },
                       ),
                     )
                   ],

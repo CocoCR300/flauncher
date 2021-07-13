@@ -90,13 +90,20 @@ class _AppCardState extends State<AppCard> {
                             padding: EdgeInsets.all(8),
                             child: Row(
                               children: [
-                                Expanded(child: Ink.image(image: _cachedMemoryImage(widget.application.icon!))),
+                                Expanded(
+                                  flex: 2,
+                                  child: Ink.image(image: _cachedMemoryImage(widget.application.icon!)),
+                                ),
                                 Flexible(
-                                  child: Text(
-                                    widget.application.name,
-                                    style: Theme.of(context).textTheme.caption,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
+                                  flex: 3,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 8),
+                                    child: Text(
+                                      widget.application.name,
+                                      style: Theme.of(context).textTheme.caption,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                    ),
                                   ),
                                 )
                               ],

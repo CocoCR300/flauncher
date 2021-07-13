@@ -21,7 +21,6 @@ import 'dart:ui';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
-import 'package:flauncher/widgets/move_to_category_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -41,10 +40,8 @@ void main() {
     binding.window.textScaleFactorTestValue = 0.8;
   });
 
-  testWidgets("'Move to...' opens MoveToCategoryDialog and sends its result to AppsService", (tester) async {
+  testWidgets("'Open' calls launchApp on AppsService", (tester) async {
     final appsService = MockAppsService();
-    final category1 = fakeCategory(name: "Category 1", order: 0);
-    final category2 = fakeCategory(name: "Category 2", order: 1);
     final app = fakeApp(
       packageName: "me.efesser.flauncher",
       name: "FLauncher",
@@ -52,22 +49,13 @@ void main() {
       banner: kTransparentImage,
       icon: kTransparentImage,
     );
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(category1, [app]),
-      CategoryWithApps(category2, []),
-    ]);
-    when(appsService.hiddenApplications).thenReturn([]);
-    await _pumpWidgetWithProviders(tester, appsService, category1, app);
+    when(appsService.applications).thenReturn([app]);
+    await _pumpWidgetWithProviders(tester, appsService, null, app);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
-    expect(find.byType(MoveToCategoryDialog), findsOneWidget);
-    expect(find.text("Category 1"), findsNothing);
-    expect(find.text("Category 2"), findsOneWidget);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    verify(appsService.moveToCategory(app, category1, category2));
+    verify(appsService.launchApp(app));
   });
 
   testWidgets("'Hide' calls AppsService", (tester) async {
@@ -83,7 +71,7 @@ void main() {
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(category, [app]),
     ]);
-    when(appsService.hiddenApplications).thenReturn([]);
+    when(appsService.applications).thenReturn([]);
     await _pumpWidgetWithProviders(tester, appsService, category, app);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -91,6 +79,30 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     verify(appsService.hideApplication(app));
+  });
+
+  testWidgets("'Remove from...' calls AppsService", (tester) async {
+    final appsService = MockAppsService();
+    final category = fakeCategory(name: "Category 1", order: 0);
+    final app = fakeApp(
+      packageName: "me.efesser.flauncher",
+      name: "FLauncher",
+      version: "1.0.0",
+      banner: kTransparentImage,
+      icon: kTransparentImage,
+    );
+    when(appsService.categoriesWithApps).thenReturn([
+      CategoryWithApps(category, [app]),
+    ]);
+    when(appsService.applications).thenReturn([]);
+    await _pumpWidgetWithProviders(tester, appsService, category, app);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    verify(appsService.removeFromCategory(app, category));
   });
 
   testWidgets("'App info' calls AppsService", (tester) async {
@@ -106,9 +118,10 @@ void main() {
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(category, [app]),
     ]);
-    when(appsService.hiddenApplications).thenReturn([]);
+    when(appsService.applications).thenReturn([]);
     await _pumpWidgetWithProviders(tester, appsService, category, app);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -130,9 +143,10 @@ void main() {
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(category, [app]),
     ]);
-    when(appsService.hiddenApplications).thenReturn([]);
+    when(appsService.applications).thenReturn([]);
     await _pumpWidgetWithProviders(tester, appsService, category, app);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -146,7 +160,7 @@ void main() {
 Future<void> _pumpWidgetWithProviders(
   WidgetTester tester,
   AppsService appsService,
-  Category category,
+  Category? category,
   App application,
 ) async {
   await tester.pumpWidget(

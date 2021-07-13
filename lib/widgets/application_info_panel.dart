@@ -18,13 +18,12 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/widgets/move_to_category_dialog.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ApplicationInfoPanel extends StatelessWidget {
-  final Category category;
+  final Category? category;
   final App application;
 
   ApplicationInfoPanel({
@@ -66,23 +65,36 @@ class ApplicationInfoPanel extends StatelessWidget {
             TextButton(
               child: Row(
                 children: [
-                  Icon(Icons.category),
+                  Icon(Icons.open_in_new),
                   Container(width: 8),
-                  Text("Move to...", style: Theme.of(context).textTheme.bodyText2),
+                  Text("Open", style: Theme.of(context).textTheme.bodyText2),
                 ],
               ),
               onPressed: () async {
-                final newCategory = await showDialog<Category>(
-                  context: context,
-                  builder: (_) => MoveToCategoryDialog(excludedCategory: category),
-                );
-                if (newCategory != null) {
-                  await context.read<AppsService>().moveToCategory(application, category, newCategory);
-                  Navigator.of(context).pop(ApplicationInfoPanelResult.none);
-                }
+                await context.read<AppsService>().launchApp(application);
+                Navigator.of(context).pop(ApplicationInfoPanelResult.none);
               },
             ),
-            if (category.sort == CategorySort.manual)
+            // TextButton(
+            //   child: Row(
+            //     children: [
+            //       Icon(Icons.category),
+            //       Container(width: 8),
+            //       Text("Move to...", style: Theme.of(context).textTheme.bodyText2),
+            //     ],
+            //   ),
+            //   onPressed: () async {
+            //     final newCategory = await showDialog<Category>(
+            //       context: context,
+            //       builder: (_) => MoveToCategoryDialog(excludedCategory: category),
+            //     );
+            //     if (newCategory != null) {
+            //       await context.read<AppsService>().moveToCategory(application, category, newCategory);
+            //       Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+            //     }
+            //   },
+            // ),
+            if (category?.sort == CategorySort.manual)
               TextButton(
                 child: Row(
                   children: [
@@ -96,16 +108,41 @@ class ApplicationInfoPanel extends StatelessWidget {
             TextButton(
               child: Row(
                 children: [
-                  Icon(Icons.visibility_off_outlined),
+                  Icon(application.hidden ? Icons.visibility : Icons.visibility_off_outlined),
                   Container(width: 8),
-                  Text("Hide", style: Theme.of(context).textTheme.bodyText2),
+                  Text(application.hidden ? "Unhide" : "Hide", style: Theme.of(context).textTheme.bodyText2),
                 ],
               ),
               onPressed: () async {
-                await context.read<AppsService>().hideApplication(application);
-                Navigator.of(context).pop();
+                if (application.hidden) {
+                  await context.read<AppsService>().unHideApplication(application);
+                } else {
+                  await context.read<AppsService>().hideApplication(application);
+                }
+                Navigator.of(context).pop(ApplicationInfoPanelResult.none);
               },
             ),
+            if (category != null)
+              TextButton(
+                child: Row(
+                  children: [
+                    Icon(Icons.delete_sweep_outlined),
+                    Container(width: 8),
+                    Flexible(
+                      child: Text(
+                        "Remove from ${category!.name}",
+                        style: Theme.of(context).textTheme.bodyText2,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                onPressed: () async {
+                  await context.read<AppsService>().removeFromCategory(application, category!);
+                  Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+                },
+              ),
             Divider(),
             TextButton(
               child: Row(
