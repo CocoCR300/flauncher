@@ -5,6 +5,8 @@ targets:
         enabled: false
       moor_generator|moor_generator_not_shared:
         enabled: true
+        options:
+          generate_connect_constructor: true
       mockito|mockBuilder:
         enabled: false
 

@@ -18,13 +18,12 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart' hide isNull;
 
 void main() {
   late FLauncherDatabase database;
   setUp(() {
-    database = FLauncherDatabase(() => VmDatabase.memory());
+    database = FLauncherDatabase.inMemory();
   });
 
   tearDown(() async {

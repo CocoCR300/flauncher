@@ -52,8 +52,10 @@ Future<void> main() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final imagePicker = ImagePicker();
     final fLauncherChannel = FLauncherChannel();
-    final fLauncherDatabase = FLauncherDatabase();
     final remoteConfig = await _initFirebaseRemoteConfig();
+    final fLauncherDatabase = FLauncherDatabase.connect(
+      (sharedPreferences.getBool("use_moor_isolate") ?? false) ? connectOnBackgroundIsolate() : connect(),
+    );
     final unsplashService = UnsplashService(
       UnsplashClient(
         settings: ClientSettings(
@@ -65,15 +67,17 @@ Future<void> main() async {
         ),
       ),
     );
-    runApp(FLauncherApp(
-      sharedPreferences,
-      firebaseCrashlytics,
-      imagePicker,
-      fLauncherChannel,
-      fLauncherDatabase,
-      unsplashService,
-      remoteConfig,
-    ));
+    runApp(
+      FLauncherApp(
+        sharedPreferences,
+        firebaseCrashlytics,
+        imagePicker,
+        fLauncherChannel,
+        fLauncherDatabase,
+        unsplashService,
+        remoteConfig,
+      ),
+    );
   }, firebaseCrashlytics.recordError);
 }
 

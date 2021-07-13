@@ -57,7 +57,7 @@ void main() {
         );
     await oldDb.close();
 
-    final db = FLauncherDatabase(() => schema.newConnection().executor);
+    final db = FLauncherDatabase.connect(schema.newConnection());
     await verifier.migrateAndValidate(db, 5);
     await db.close();
 
@@ -106,7 +106,7 @@ void main() {
         );
     await oldDb.close();
 
-    final db = FLauncherDatabase(() => schema.newConnection().executor);
+    final db = FLauncherDatabase.connect(schema.newConnection());
     await verifier.migrateAndValidate(db, 5);
     await db.close();
 
@@ -155,7 +155,7 @@ void main() {
         );
     await oldDb.close();
 
-    final db = FLauncherDatabase(() => schema.newConnection().executor);
+    final db = FLauncherDatabase.connect(schema.newConnection());
     await verifier.migrateAndValidate(db, 5);
     await db.close();
 
@@ -204,7 +204,7 @@ void main() {
         );
     await oldDb.close();
 
-    final db = FLauncherDatabase(() => schema.newConnection().executor);
+    final db = FLauncherDatabase.connect(schema.newConnection());
     await verifier.migrateAndValidate(db, 5);
     await db.close();
 

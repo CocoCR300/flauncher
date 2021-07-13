@@ -75,25 +75,6 @@ class ApplicationInfoPanel extends StatelessWidget {
                 Navigator.of(context).pop(ApplicationInfoPanelResult.none);
               },
             ),
-            // TextButton(
-            //   child: Row(
-            //     children: [
-            //       Icon(Icons.category),
-            //       Container(width: 8),
-            //       Text("Move to...", style: Theme.of(context).textTheme.bodyText2),
-            //     ],
-            //   ),
-            //   onPressed: () async {
-            //     final newCategory = await showDialog<Category>(
-            //       context: context,
-            //       builder: (_) => MoveToCategoryDialog(excludedCategory: category),
-            //     );
-            //     if (newCategory != null) {
-            //       await context.read<AppsService>().moveToCategory(application, category, newCategory);
-            //       Navigator.of(context).pop(ApplicationInfoPanelResult.none);
-            //     }
-            //   },
-            // ),
             if (category?.sort == CategorySort.manual)
               TextButton(
                 child: Row(
