@@ -103,7 +103,7 @@ class CategoryRow extends StatelessWidget {
                       padding: EdgeInsets.all(8),
                       child: Center(
                         child: Text(
-                          "This category is empty.\nLong-press an app to move it here.",
+                          "This category is empty.",
                           textAlign: TextAlign.center,
                         ),
                       ),

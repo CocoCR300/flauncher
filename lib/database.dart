@@ -94,6 +94,8 @@ enum CategoryType {
 
 @UseMoor(tables: [Apps, Categories, AppsCategories])
 class FLauncherDatabase extends _$FLauncherDatabase {
+  late final bool wasCreated;
+
   FLauncherDatabase([DatabaseOpener databaseOpener = _openConnection]) : super(LazyDatabase(databaseOpener)) {
     if (kDebugMode && !Platform.environment.containsKey('FLUTTER_TEST')) {
       MoorInspectorBuilder()
@@ -132,11 +134,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
         },
         beforeOpen: (openingDetails) async {
           await customStatement('PRAGMA foreign_keys = ON;');
-          if (openingDetails.wasCreated) {
-            await insertCategory(
-              CategoriesCompanion.insert(name: "Applications", order: 0, type: Value(CategoryType.grid)),
-            );
-          }
+          wasCreated = openingDetails.wasCreated;
         },
       );
 

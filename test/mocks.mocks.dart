@@ -144,6 +144,11 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
   }
 
   @override
+  bool get wasCreated => (super.noSuchMethod(Invocation.getter(#wasCreated), returnValue: false) as bool);
+  @override
+  set wasCreated(bool? _wasCreated) =>
+      super.noSuchMethod(Invocation.setter(#wasCreated, _wasCreated), returnValueForMissingStub: null);
+  @override
   int get schemaVersion => (super.noSuchMethod(Invocation.getter(#schemaVersion), returnValue: 0) as int);
   @override
   _i2.MigrationStrategy get migration =>
@@ -411,6 +416,8 @@ class MockAppsService extends _i1.Mock implements _i20.AppsService {
   }
 
   @override
+  bool get initialized => (super.noSuchMethod(Invocation.getter(#initialized), returnValue: false) as bool);
+  @override
   List<_i3.App> get applications =>
       (super.noSuchMethod(Invocation.getter(#applications), returnValue: <_i3.App>[]) as List<_i3.App>);
   @override
@@ -436,8 +443,8 @@ class MockAppsService extends _i1.Mock implements _i20.AppsService {
       (super.noSuchMethod(Invocation.method(#isDefaultLauncher, []), returnValue: Future<bool>.value(false))
           as _i15.Future<bool>);
   @override
-  _i15.Future<void> addToCategory(_i3.App? app, _i3.Category? category) =>
-      (super.noSuchMethod(Invocation.method(#addToCategory, [app, category]),
+  _i15.Future<void> addToCategory(_i3.App? app, _i3.Category? category, {bool? shouldNotifyListeners = true}) => (super
+      .noSuchMethod(Invocation.method(#addToCategory, [app, category], {#shouldNotifyListeners: shouldNotifyListeners}),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
   _i15.Future<void> removeFromCategory(_i3.App? app, _i3.Category? category) =>
@@ -452,9 +459,10 @@ class MockAppsService extends _i1.Mock implements _i20.AppsService {
       super.noSuchMethod(Invocation.method(#reorderApplication, [category, oldIndex, newIndex]),
           returnValueForMissingStub: null);
   @override
-  _i15.Future<void> addCategory(String? categoryName) =>
-      (super.noSuchMethod(Invocation.method(#addCategory, [categoryName]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
+  _i15.Future<void> addCategory(String? categoryName, {bool? shouldNotifyListeners = true}) => (super.noSuchMethod(
+      Invocation.method(#addCategory, [categoryName], {#shouldNotifyListeners: shouldNotifyListeners}),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
   _i15.Future<void> renameCategory(_i3.Category? category, String? categoryName) =>
       (super.noSuchMethod(Invocation.method(#renameCategory, [category, categoryName]),
@@ -476,9 +484,12 @@ class MockAppsService extends _i1.Mock implements _i20.AppsService {
       (super.noSuchMethod(Invocation.method(#unHideApplication, [application]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i15.Future<void> setCategoryType(_i3.Category? category, _i3.CategoryType? type) =>
-      (super.noSuchMethod(Invocation.method(#setCategoryType, [category, type]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
+  _i15.Future<void> setCategoryType(_i3.Category? category, _i3.CategoryType? type,
+          {bool? shouldNotifyListeners = true}) =>
+      (super.noSuchMethod(
+          Invocation.method(#setCategoryType, [category, type], {#shouldNotifyListeners: shouldNotifyListeners}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
   _i15.Future<void> setCategorySort(_i3.Category? category, _i3.CategorySort? sort) =>
       (super.noSuchMethod(Invocation.method(#setCategorySort, [category, sort]),

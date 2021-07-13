@@ -51,6 +51,7 @@ void main() {
     final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
+    when(appsService.initialized).thenReturn(true);
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     final favoritesCategory = fakeCategory(name: "Favorites", order: 0, type: CategoryType.row);
@@ -92,6 +93,7 @@ void main() {
     final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
+    when(appsService.initialized).thenReturn(true);
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     final applicationsCategory = fakeCategory(name: "Applications", order: 0, type: CategoryType.grid);
@@ -108,13 +110,14 @@ void main() {
     expect(find.text("Favorites"), findsOneWidget);
     expect(find.byType(CategoryRow), findsOneWidget);
     expect(find.byType(AppsGrid), findsOneWidget);
-    expect(find.text("This category is empty.\nLong-press an app to move it here."), findsNWidgets(2));
+    expect(find.text("This category is empty."), findsNWidgets(2));
   });
 
   testWidgets("Home page displays background image", (tester) async {
     final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
+    when(appsService.initialized).thenReturn(true);
     when(appsService.categoriesWithApps).thenReturn([]);
     when(wallpaperService.wallpaperBytes).thenReturn(kTransparentImage);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
@@ -129,6 +132,7 @@ void main() {
     final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
+    when(appsService.initialized).thenReturn(true);
     when(appsService.categoriesWithApps).thenReturn([]);
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
@@ -143,6 +147,7 @@ void main() {
     final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
+    when(appsService.initialized).thenReturn(true);
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(appsService.categoriesWithApps).thenReturn([
@@ -166,6 +171,7 @@ void main() {
     final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
+    when(appsService.initialized).thenReturn(true);
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
@@ -192,6 +198,7 @@ void main() {
     final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
+    when(appsService.initialized).thenReturn(true);
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
@@ -220,6 +227,7 @@ void main() {
     final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
+    when(appsService.initialized).thenReturn(true);
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
@@ -263,6 +271,7 @@ void main() {
     final wallpaperService = MockWallpaperService();
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
+    when(appsService.initialized).thenReturn(true);
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);

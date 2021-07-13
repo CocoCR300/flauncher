@@ -43,9 +43,9 @@ class FLauncher extends StatelessWidget {
             body: Padding(
               padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: Consumer<AppsService>(
-                builder: (context, apps, _) => SingleChildScrollView(
-                  child: _categories(apps.categoriesWithApps),
-                ),
+                builder: (context, appsService, _) => appsService.initialized
+                    ? SingleChildScrollView(child: _categories(appsService.categoriesWithApps))
+                    : _emptyState(context),
               ),
             ),
           ),
@@ -116,4 +116,15 @@ class FLauncher extends StatelessWidget {
           width: window.physicalSize.width,
         )
       : Container(key: Key("background"), decoration: BoxDecoration(gradient: gradient));
+
+  Widget _emptyState(BuildContext context) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text("Getting things ready...", style: Theme.of(context).textTheme.headline6),
+          ],
+        ),
+      );
 }
