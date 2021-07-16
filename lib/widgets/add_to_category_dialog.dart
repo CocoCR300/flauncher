@@ -22,26 +22,33 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AddToCategoryDialog extends StatelessWidget {
+  final App application;
+
+  AddToCategoryDialog(this.application);
+
   @override
   Widget build(BuildContext context) => Selector<AppsService, List<Category>>(
-        selector: (_, appsService) =>
-            appsService.categoriesWithApps.map((categoryWithApps) => categoryWithApps.category).toList(),
+        selector: (_, appsService) => appsService.categoriesWithApps
+            .where((element) => !element.applications.any((app) => app.packageName == application.packageName))
+            .map((categoryWithApps) => categoryWithApps.category)
+            .toList(),
         builder: (context, categories, _) => SimpleDialog(
           title: Text("Add to..."),
           contentPadding: EdgeInsets.all(16),
-          children: [
-            ...categories
-                .map(
-                  (category) => Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: ListTile(
-                      onTap: () => Navigator.of(context).pop(category),
-                      title: Text(category.name),
-                    ),
+          children: categories
+              .map(
+                (category) => Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: ListTile(
+                    onTap: () async {
+                      await context.read<AppsService>().addToCategory(application, category);
+                      Navigator.of(context).pop();
+                    },
+                    title: Text(category.name),
                   ),
-                )
-                .toList(),
-          ],
+                ),
+              )
+              .toList(),
         ),
       );
 }

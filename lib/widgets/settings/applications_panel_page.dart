@@ -18,9 +18,9 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/widgets/add_to_category_dialog.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
-import 'package:flauncher/widgets/move_to_category_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -123,20 +123,16 @@ Widget _appCard(BuildContext context, App application) => Card(
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              constraints: BoxConstraints(),
-              splashRadius: 20,
-              icon: Icon(Icons.add_box_outlined),
-              onPressed: () async {
-                final newCategory = await showDialog<Category>(
+            if (!application.hidden)
+              IconButton(
+                constraints: BoxConstraints(),
+                splashRadius: 20,
+                icon: Icon(Icons.add_box_outlined),
+                onPressed: () => showDialog<Category>(
                   context: context,
-                  builder: (_) => AddToCategoryDialog(),
-                );
-                if (newCategory != null) {
-                  await context.read<AppsService>().addToCategory(application, newCategory);
-                }
-              },
-            ),
+                  builder: (_) => AddToCategoryDialog(application),
+                ),
+              ),
             IconButton(
               constraints: BoxConstraints(),
               splashRadius: 20,
