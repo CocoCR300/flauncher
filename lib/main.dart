@@ -90,10 +90,17 @@ Future<RemoteConfig> _initFirebaseRemoteConfig() async {
       minimumFetchInterval: kReleaseMode ? Duration(hours: 6) : Duration.zero,
     ),
   );
-  await remoteConfig
-      .ensureInitialized()
-      .catchError((error, stackTrace) async => await FirebaseCrashlytics.instance.recordError(error, stackTrace));
-  remoteConfig.fetchAndActivate();
+  await remoteConfig.ensureInitialized().catchError((error, stackTrace) async {
+    if (!(error is FormatException && error.message == "Invalid envelope")) {
+      await FirebaseCrashlytics.instance.recordError(error, stackTrace);
+    }
+  });
+  remoteConfig.fetchAndActivate().catchError((error, stackTrace) async {
+    if (!(error is FormatException && error.message == "Invalid envelope")) {
+      await FirebaseCrashlytics.instance.recordError(error, stackTrace);
+    }
+    return false;
+  });
 
   return remoteConfig;
 }
