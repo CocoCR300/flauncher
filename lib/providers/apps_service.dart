@@ -51,10 +51,33 @@ class AppsService extends ChangeNotifier {
     if (_database.wasCreated) {
       await _initDefaultCategories();
     }
-    _fLauncherChannel.addAppsChangedListener((_) => _refreshState());
+    _fLauncherChannel.addAppsChangedListener((event) async {
+      switch (event["action"]) {
+        case "PACKAGE_ADDED":
+        case "PACKAGE_REPLACED":
+          await _database.persistApps((event["activitiesInfo"] as List<dynamic>).map(_buildAppCompanion).toList());
+          break;
+        case "PACKAGE_REMOVED":
+          await _database.deleteApps([event["packageName"]]);
+          break;
+      }
+      _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
+      _applications = await _database.listApplications();
+      notifyListeners();
+    });
     _initialized = true;
     notifyListeners();
   }
+
+  AppsCompanion _buildAppCompanion(dynamic data) => AppsCompanion(
+        packageName: Value(data["packageName"]),
+        name: Value(data["name"]),
+        version: Value(data["version"]),
+        banner: Value(data["banner"]),
+        icon: Value(data["icon"]),
+        hidden: Value.absent(),
+        sideloaded: Value(data["sideloaded"]),
+      );
 
   Future<void> _initDefaultCategories() => _database.transaction(() async {
         final tvApplications = _applications.where((element) => element.sideloaded == false);
@@ -92,36 +115,7 @@ class AppsService extends ChangeNotifier {
 
   Future<void> _refreshState({bool shouldNotifyListeners = true}) async {
     await _database.transaction(() async {
-      final appsFromSystem = (await _fLauncherChannel.getInstalledApplications())
-          .map(
-            (data) => AppsCompanion(
-              packageName: Value(data["packageName"]),
-              name: Value(data["name"]),
-              version: Value(data["version"]),
-              banner: Value(data["banner"]),
-              icon: Value(data["icon"]),
-              hidden: Value.absent(),
-              sideloaded: Value(false),
-            ),
-          )
-          .toList();
-
-      final sideloadedAppsFromSystem = (await _fLauncherChannel.getSideloadedApplications())
-          .map(
-            (data) => AppsCompanion(
-              packageName: Value(data["packageName"]),
-              name: Value(data["name"]),
-              version: Value(data["version"]),
-              banner: Value(data["banner"]),
-              icon: Value(data["icon"]),
-              hidden: Value.absent(),
-              sideloaded: Value(true),
-            ),
-          )
-          .where((app) => !appsFromSystem.any((systemApp) => systemApp.packageName == app.packageName))
-          .toList();
-
-      appsFromSystem.addAll(sideloadedAppsFromSystem);
+      final appsFromSystem = (await _fLauncherChannel.getApplications()).map(_buildAppCompanion).toList();
 
       final uninstalledApplications = (await _database.listApplications())
           .where((app) => !appsFromSystem.any((systemApp) => systemApp.packageName.value == app.packageName))

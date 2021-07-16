@@ -30,22 +30,22 @@ void main() {
     test("with empty database", () async {
       final channel = MockFLauncherChannel();
       final database = MockFLauncherDatabase();
-      when(channel.getInstalledApplications()).thenAnswer((_) => Future.value([
+      when(channel.getApplications()).thenAnswer((_) => Future.value([
             {
               'packageName': 'me.efesser.flauncher',
               'name': 'FLauncher',
               'version': '1.0.0',
               'banner': null,
               'icon': null,
-            }
-          ]));
-      when(channel.getSideloadedApplications()).thenAnswer((_) => Future.value([
+              'sideloaded': false
+            },
             {
               'packageName': 'me.efesser.flauncher.2',
               'name': 'FLauncher 2',
               'version': '2.0.0',
               'banner': null,
               'icon': null,
+              'sideloaded': true
             }
           ]));
       when(database.listApplications()).thenAnswer((_) => Future.value([
@@ -132,13 +132,14 @@ void main() {
     test("with newly installed, uninstalled and existing apps", () async {
       final channel = MockFLauncherChannel();
       final database = MockFLauncherDatabase();
-      when(channel.getInstalledApplications()).thenAnswer((_) => Future.value([
+      when(channel.getApplications()).thenAnswer((_) => Future.value([
             {
               'packageName': 'me.efesser.flauncher',
               'name': 'FLauncher',
               'version': '2.0.0',
               'banner': null,
               'icon': null,
+              'sideloaded': false,
             },
             {
               'packageName': 'me.efesser.flauncher.2',
@@ -146,9 +147,9 @@ void main() {
               'version': '1.0.0',
               'banner': null,
               'icon': null,
+              'sideloaded': false,
             }
           ]));
-      when(channel.getSideloadedApplications()).thenAnswer((_) => Future.value([]));
       when(database.listApplications()).thenAnswer((_) => Future.value([
             fakeApp(packageName: "me.efesser.flauncher", name: "FLauncher", version: "1.0.0"),
             fakeApp(packageName: "uninstalled.app", name: "Uninstalled Application", version: "1.0.0")
@@ -452,9 +453,8 @@ Future<AppsService> _buildInitialisedAppsService(
   MockFLauncherDatabase database,
   List<CategoryWithApps> categoriesWithApps,
 ) async {
-  when(channel.getInstalledApplications()).thenAnswer((_) => Future.value([]));
+  when(channel.getApplications()).thenAnswer((_) => Future.value([]));
   when(database.listApplications()).thenAnswer((_) => Future.value([]));
-  when(channel.getSideloadedApplications()).thenAnswer((_) => Future.value([]));
   when(database.listCategoriesWithVisibleApps()).thenAnswer((_) => Future.value(categoriesWithApps));
   when(database.transaction(any)).thenAnswer((realInvocation) => realInvocation.positionalArguments[0]());
   when(database.wasCreated).thenReturn(false);

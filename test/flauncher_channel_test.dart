@@ -25,10 +25,10 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
 
-  test("getInstalledApplications", () async {
+  test("getApplications", () async {
     final channel = MethodChannel('me.efesser.flauncher/method');
     channel.setMockMethodCallHandler((call) async {
-      if (call.method == "getInstalledApplications" && call.arguments == false) {
+      if (call.method == "getApplications") {
         return [
           {'packageName': 'me.efesser.flauncher'}
         ];
@@ -37,26 +37,7 @@ void main() {
     });
     final fLauncherChannel = FLauncherChannel();
 
-    final apps = await fLauncherChannel.getInstalledApplications();
-
-    expect(apps, [
-      {'packageName': 'me.efesser.flauncher'}
-    ]);
-  });
-
-  test("getSideloadedApplications", () async {
-    final channel = MethodChannel('me.efesser.flauncher/method');
-    channel.setMockMethodCallHandler((call) async {
-      if (call.method == "getInstalledApplications" && call.arguments == true) {
-        return [
-          {'packageName': 'me.efesser.flauncher'}
-        ];
-      }
-      fail("Unhandled method name");
-    });
-    final fLauncherChannel = FLauncherChannel();
-
-    final apps = await fLauncherChannel.getSideloadedApplications();
+    final apps = await fLauncherChannel.getApplications();
 
     expect(apps, [
       {'packageName': 'me.efesser.flauncher'}

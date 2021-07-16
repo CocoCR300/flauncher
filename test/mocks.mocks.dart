@@ -101,13 +101,8 @@ class MockFLauncherChannel extends _i1.Mock implements _i14.FLauncherChannel {
   }
 
   @override
-  _i15.Future<List<dynamic>> getInstalledApplications() =>
-      (super.noSuchMethod(Invocation.method(#getInstalledApplications, []),
-          returnValue: Future<List<dynamic>>.value(<dynamic>[])) as _i15.Future<List<dynamic>>);
-  @override
-  _i15.Future<List<dynamic>> getSideloadedApplications() =>
-      (super.noSuchMethod(Invocation.method(#getSideloadedApplications, []),
-          returnValue: Future<List<dynamic>>.value(<dynamic>[])) as _i15.Future<List<dynamic>>);
+  _i15.Future<List<dynamic>> getApplications() => (super.noSuchMethod(Invocation.method(#getApplications, []),
+      returnValue: Future<List<dynamic>>.value(<dynamic>[])) as _i15.Future<List<dynamic>>);
   @override
   _i15.Future<void> launchApp(String? packageName) => (super.noSuchMethod(Invocation.method(#launchApp, [packageName]),
       returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
