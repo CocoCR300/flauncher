@@ -28,7 +28,6 @@ const _use24HourTimeFormatKey = "use_24_hour_time_format";
 const _gradientUuidKey = "gradient_uuid";
 const _unsplashEnabledKey = "unsplash_enabled";
 const _unsplashAuthorKey = "unsplash_author";
-const _useMoorIsolateKey = "use_moor_isolate";
 
 class SettingsService extends ChangeNotifier {
   final SharedPreferences _sharedPreferences;
@@ -80,12 +79,6 @@ class SettingsService extends ChangeNotifier {
       await _sharedPreferences.setString(_unsplashAuthorKey, value);
     }
     notifyListeners();
-  }
-
-  Future<bool> toggleUseMoorIsolate() async {
-    final enabled = _sharedPreferences.getBool(_useMoorIsolateKey) ?? false;
-    await _sharedPreferences.setBool(_useMoorIsolateKey, !enabled);
-    return _sharedPreferences.getBool(_useMoorIsolateKey)!;
   }
 
   Future<void> _refreshFirebaseRemoteConfig() async {

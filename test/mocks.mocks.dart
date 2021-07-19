@@ -546,10 +546,6 @@ class MockSettingsService extends _i1.Mock implements _i18.SettingsService {
       (super.noSuchMethod(Invocation.method(#setUnsplashAuthor, [value]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i15.Future<bool> toggleUseMoorIsolate() =>
-      (super.noSuchMethod(Invocation.method(#toggleUseMoorIsolate, []), returnValue: Future<bool>.value(false))
-          as _i15.Future<bool>);
-  @override
   void addListener(_i19.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
   @override

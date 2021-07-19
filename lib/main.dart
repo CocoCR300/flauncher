@@ -53,9 +53,7 @@ Future<void> main() async {
     final imagePicker = ImagePicker();
     final fLauncherChannel = FLauncherChannel();
     final remoteConfig = await _initFirebaseRemoteConfig();
-    final fLauncherDatabase = FLauncherDatabase.connect(
-      (sharedPreferences.getBool("use_moor_isolate") ?? false) ? connectOnBackgroundIsolate() : connect(),
-    );
+    final fLauncherDatabase = FLauncherDatabase.connect(connect());
     final unsplashService = UnsplashService(
       UnsplashClient(
         settings: ClientSettings(

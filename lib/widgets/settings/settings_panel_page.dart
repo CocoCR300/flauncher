@@ -18,13 +18,11 @@
 
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
-import 'package:flauncher/widgets/focus_keyboard_listener.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/categories_panel_page.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
@@ -96,44 +94,24 @@ class SettingsPanelPage extends StatelessWidget {
               subtitle: Text("Automatically send crash reports through Firebase Crashlytics."),
             ),
             Spacer(),
-            FocusKeyboardListener(
-                onPressed: (key) {
-                  if ([LogicalKeyboardKey.select, LogicalKeyboardKey.enter, LogicalKeyboardKey.gameButtonA]
-                      .contains(key)) {
-                    showDialog(
-                      context: context,
-                      builder: (_) => FutureBuilder<PackageInfo>(
-                        future: PackageInfo.fromPlatform(),
-                        builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done
-                            ? FLauncherAboutDialog(packageInfo: snapshot.data!)
-                            : Container(),
-                      ),
-                    );
-                    return KeyEventResult.handled;
-                  }
-                  return KeyEventResult.ignored;
-                },
-                onLongPress: (key) {
-                  if ([LogicalKeyboardKey.select, LogicalKeyboardKey.enter, LogicalKeyboardKey.gameButtonA]
-                      .contains(key)) {
-                    settingsService.toggleUseMoorIsolate().then((enabled) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text("MoorIsolate enabled: $enabled")));
-                    });
-                    return KeyEventResult.handled;
-                  }
-                  return KeyEventResult.ignored;
-                },
-                builder: (context) => TextButton(
-                      child: Row(
-                        children: [
-                          Icon(Icons.info_outline),
-                          Container(width: 8),
-                          Text("About FLauncher", style: Theme.of(context).textTheme.bodyText2),
-                        ],
-                      ),
-                      onPressed: () {},
-                    ))
+            TextButton(
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline),
+                  Container(width: 8),
+                  Text("About FLauncher", style: Theme.of(context).textTheme.bodyText2),
+                ],
+              ),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (_) => FutureBuilder<PackageInfo>(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done
+                      ? FLauncherAboutDialog(packageInfo: snapshot.data!)
+                      : Container(),
+                ),
+              ),
+            ),
           ],
         ),
       );

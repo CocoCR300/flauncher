@@ -17,11 +17,9 @@
  */
 
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
 import 'package:moor/ffi.dart';
-import 'package:moor/isolate.dart';
 import 'package:moor/moor.dart';
 import 'package:moor_inspector/moor_inspector.dart';
 import 'package:path/path.dart' as path;
@@ -225,29 +223,3 @@ DatabaseConnection connect() => DatabaseConnection.delayed(() async {
       final file = File(path.join(dbFolder.path, 'db.sqlite'));
       return DatabaseConnection.fromExecutor(VmDatabase(file, logStatements: kDebugMode));
     }());
-
-DatabaseConnection connectOnBackgroundIsolate() => DatabaseConnection.delayed(() async {
-      final isolate = await _createMoorIsolate();
-      return await isolate.connect();
-    }());
-
-Future<MoorIsolate> _createMoorIsolate() async {
-  final dbFolder = await getApplicationDocumentsDirectory();
-  final file = path.join(dbFolder.path, 'db.sqlite');
-  final receivePort = ReceivePort();
-  await Isolate.spawn(_startBackground, _IsolateStartRequest(receivePort.sendPort, file), debugName: "MoorIsolate");
-  return await receivePort.first as MoorIsolate;
-}
-
-void _startBackground(_IsolateStartRequest request) {
-  final executor = VmDatabase(File(request.targetPath), logStatements: kDebugMode);
-  final moorIsolate = MoorIsolate.inCurrent(() => DatabaseConnection.fromExecutor(executor));
-  request.sendMoorIsolate.send(moorIsolate);
-}
-
-class _IsolateStartRequest {
-  final SendPort sendMoorIsolate;
-  final String targetPath;
-
-  _IsolateStartRequest(this.sendMoorIsolate, this.targetPath);
-}
