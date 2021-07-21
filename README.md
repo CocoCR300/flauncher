@@ -16,8 +16,9 @@ The project is still at an early development stage and may be unstable. It curre
 - [x] Open "App info"
 - [x] Uninstall app
 - [x] Clock
-- [ ] Switch between row and grid for categories
-- [ ] Support for non-TV (sideloaded) apps
+- [x] Switch between row and grid for categories
+- [x] Support for non-TV (sideloaded) apps
+- [ ] Navigation sound feedback
 - [ ] Force stop app
 
 ## Screenshots
