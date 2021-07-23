@@ -54,7 +54,7 @@ class AppsService extends ChangeNotifier {
     _fLauncherChannel.addAppsChangedListener((event) async {
       switch (event["action"]) {
         case "PACKAGE_ADDED":
-        case "PACKAGE_REPLACED":
+        case "PACKAGE_CHANGED":
           await _database.persistApps((event["activitiesInfo"] as List<dynamic>).map(_buildAppCompanion).toList());
           break;
         case "PACKAGE_REMOVED":

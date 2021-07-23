@@ -18,17 +18,16 @@
 
 package me.efesser.flauncher
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
-import android.content.IntentFilter
 import android.content.pm.ActivityInfo
+import android.content.pm.LauncherApps
 import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.UserHandle
 import android.provider.Settings
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
@@ -44,7 +43,7 @@ private const val METHOD_CHANNEL = "me.efesser.flauncher/method"
 private const val EVENT_CHANNEL = "me.efesser.flauncher/event"
 
 class MainActivity : FlutterActivity() {
-    val broadcastReceivers = ArrayList<BroadcastReceiver>()
+    val launcherAppsCallbacks = ArrayList<LauncherApps.Callback>()
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -62,26 +61,46 @@ class MainActivity : FlutterActivity() {
         }
 
         EventChannel(flutterEngine.dartExecutor.binaryMessenger, EVENT_CHANNEL).setStreamHandler(object : StreamHandler {
-            lateinit var broadcastReceiver: SinkBroadcastReceiver
+            lateinit var launcherAppsCallback: LauncherApps.Callback
+            val launcherApps = getSystemService(LAUNCHER_APPS_SERVICE) as LauncherApps
             override fun onListen(arguments: Any?, events: EventSink) {
-                broadcastReceiver = SinkBroadcastReceiver(events, this@MainActivity)
-                val intentFilter = IntentFilter()
-                intentFilter.addAction(ACTION_PACKAGE_ADDED)
-                intentFilter.addAction(ACTION_PACKAGE_REMOVED)
-                intentFilter.addDataScheme("package")
-                broadcastReceivers.add(broadcastReceiver)
-                registerReceiver(broadcastReceiver, intentFilter)
+                launcherAppsCallback = object : LauncherApps.Callback() {
+                    override fun onPackageRemoved(packageName: String, user: UserHandle) {
+                        events.success(mapOf("action" to "PACKAGE_REMOVED", "packageName" to packageName))
+                    }
+
+                    override fun onPackageAdded(packageName: String, user: UserHandle) {
+                        val applications = getApplication(packageName)
+                        if (applications.isNotEmpty()) {
+                            events.success(mapOf("action" to "PACKAGE_ADDED", "activitiesInfo" to applications))
+                        }
+                    }
+
+                    override fun onPackageChanged(packageName: String, user: UserHandle) {
+                        val applications = getApplication(packageName)
+                        if (applications.isNotEmpty()) {
+                            events.success(mapOf("action" to "PACKAGE_CHANGED", "activitiesInfo" to applications))
+                        }
+                    }
+
+                    override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle, replacing: Boolean) {}
+                    override fun onPackagesUnavailable(packageNames: Array<out String>, user: UserHandle, replacing: Boolean) {}
+                }
+
+                launcherAppsCallbacks.add(launcherAppsCallback)
+                launcherApps.registerCallback(launcherAppsCallback)
             }
 
             override fun onCancel(arguments: Any?) {
-                unregisterReceiver(broadcastReceiver)
-                broadcastReceivers.remove(broadcastReceiver)
+                launcherApps.unregisterCallback(launcherAppsCallback)
+                launcherAppsCallbacks.remove(launcherAppsCallback)
             }
         })
     }
 
     override fun onDestroy() {
-        broadcastReceivers.forEach(::unregisterReceiver)
+        val launcherApps = getSystemService(LAUNCHER_APPS_SERVICE) as LauncherApps
+        launcherAppsCallbacks.forEach(launcherApps::unregisterCallback)
         super.onDestroy()
     }
 
@@ -180,29 +199,5 @@ class MainActivity : FlutterActivity() {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
         return stream.toByteArray()
-    }
-}
-
-class SinkBroadcastReceiver(private val sink: EventSink, private val mainActivity: MainActivity) : BroadcastReceiver() {
-    override fun onReceive(context: Context, intent: Intent) {
-        val packageName = intent.data!!.schemeSpecificPart
-        val replacing = intent.getBooleanExtra(EXTRA_REPLACING, false)
-        when (intent.action) {
-            ACTION_PACKAGE_REMOVED -> {
-                if (!replacing) {
-                    sink.success(mapOf("action" to "PACKAGE_REMOVED", "packageName" to packageName))
-                }
-            }
-            ACTION_PACKAGE_ADDED -> {
-                val applications = mainActivity.getApplication(packageName!!)
-                if (applications.isNotEmpty()) {
-                    if (replacing) {
-                        sink.success(mapOf("action" to "PACKAGE_REPLACED", "activitiesInfo" to applications))
-                    } else {
-                        sink.success(mapOf("action" to "PACKAGE_ADDED", "activitiesInfo" to applications))
-                    }
-                }
-            }
-        }
     }
 }
