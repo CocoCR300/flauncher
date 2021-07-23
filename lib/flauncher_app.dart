@@ -84,6 +84,10 @@ class FLauncherApp extends StatelessWidget {
               BackIntent(),
             ]),
           },
+          actions: {
+            ...WidgetsApp.defaultActions,
+            DirectionalFocusIntent: SoundFeedbackDirectionalFocusAction(),
+          },
           title: 'FLauncher',
           theme: ThemeData(
             brightness: Brightness.dark,

@@ -22,6 +22,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+class SoundFeedbackDirectionalFocusAction extends DirectionalFocusAction {
+  @override
+  void invoke(DirectionalFocusIntent intent) {
+    super.invoke(intent);
+    SystemSound.play(SystemSoundType.click);
+  }
+}
+
 class BackAction extends Action<BackIntent> {
   final BuildContext context;
   final bool systemNavigator;
