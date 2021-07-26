@@ -20,9 +20,9 @@ import 'dart:ui';
 
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/categories_panel_page.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
-import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
@@ -213,5 +213,6 @@ class _MockPackageInfoPlatform with MockPlatformInterfaceMixin implements Packag
         packageName: "me.efesser.flauncher",
         version: "1.0.0",
         buildNumber: "1",
+        buildSignature: "",
       );
 }

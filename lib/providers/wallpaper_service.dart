@@ -63,7 +63,7 @@ class WallpaperService extends ChangeNotifier {
     if (!await _fLauncherChannel.checkForGetContentAvailability()) {
       throw NoFileExplorerException();
     }
-    final pickedFile = await _imagePicker.getImage(source: ImageSource.gallery);
+    final pickedFile = await _imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
       await _wallpaperFile.writeAsBytes(bytes);

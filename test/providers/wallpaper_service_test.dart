@@ -39,12 +39,12 @@ void main() {
 
   group("pickWallpaper", () {
     test("picks image", () async {
-      final pickedFile = _MockPickedFile();
+      final pickedFile = _MockXFile();
       when(pickedFile.readAsBytes()).thenAnswer((_) => Future.value(Uint8List.fromList([0x01])));
       final imagePicker = _MockImagePicker();
       final fLauncherChannel = MockFLauncherChannel();
       final settingsService = MockSettingsService();
-      when(imagePicker.getImage(source: ImageSource.gallery)).thenAnswer((_) => Future.value(pickedFile));
+      when(imagePicker.pickImage(source: ImageSource.gallery)).thenAnswer((_) => Future.value(pickedFile));
       when(fLauncherChannel.checkForGetContentAvailability()).thenAnswer((_) => Future.value(true));
       final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, MockUnsplashService())
         ..settingsService = settingsService;
@@ -52,7 +52,7 @@ void main() {
 
       await wallpaperService.pickWallpaper();
 
-      verify(imagePicker.getImage(source: ImageSource.gallery));
+      verify(imagePicker.pickImage(source: ImageSource.gallery));
       verify(settingsService.setUnsplashAuthor(null));
       expect(wallpaperService.wallpaperBytes, [0x01]);
     });
@@ -187,38 +187,25 @@ void main() {
 
 class _MockImagePicker extends Mock implements ImagePicker {
   @override
-  Future<PickedFile?> getImage(
+  Future<XFile?> pickImage(
           {required ImageSource source,
           double? maxWidth,
           double? maxHeight,
           int? imageQuality,
           CameraDevice preferredCameraDevice = CameraDevice.rear}) =>
       super.noSuchMethod(
-          Invocation.method(#getImage, [], {
+          Invocation.method(#pickImage, [], {
             #source: source,
             #maxWidth: maxWidth,
             #maxHeight: maxHeight,
             #imageQuality: imageQuality,
             #preferredCameraDevice: preferredCameraDevice
           }),
-          returnValue: Future<PickedFile?>.value());
-
-  @override
-  Future<LostData> getLostData() => super.noSuchMethod(Invocation.method(#getLostData, []));
-
-  @override
-  Future<PickedFile?> getVideo(
-          {required ImageSource source,
-          CameraDevice preferredCameraDevice = CameraDevice.rear,
-          Duration? maxDuration}) =>
-      super.noSuchMethod(
-          Invocation.method(#getVideo, [],
-              {#source: source, #preferredCameraDevice: preferredCameraDevice, #maxDuration: maxDuration}),
-          returnValue: Future<PickedFile?>.value());
+          returnValue: Future<XFile?>.value());
 }
 
 // ignore: must_be_immutable
-class _MockPickedFile extends Mock implements PickedFile {
+class _MockXFile extends Mock implements XFile {
   @override
   Future<Uint8List> readAsBytes() => super
       .noSuchMethod(Invocation.method(#readAsBytes, []), returnValue: Future<Uint8List>.value(Uint8List.fromList([])));
