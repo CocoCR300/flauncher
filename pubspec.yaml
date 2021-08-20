@@ -11,28 +11,28 @@ dependencies:
   flutter:
     sdk: flutter
 
-  firebase_core: ^1.4.0
-  firebase_crashlytics: ^2.1.1
-  firebase_remote_config: ^0.10.0+3
-  image_picker: ^0.8.2
+  firebase_core: ^1.5.0
+  firebase_crashlytics: ^2.2.0
+  firebase_remote_config: ^0.10.0+4
+  image_picker: ^0.8.3+2
   intl: ^0.17.0
   moor: ^4.4.1
   moor_inspector: ^0.3.1
   path_provider: ^2.0.2
-  package_info_plus: ^1.0.4
-  provider: ^5.0.0
+  package_info_plus: ^1.0.5
+  provider: ^6.0.0
   shared_preferences: ^2.0.6
   sqlite3_flutter_libs: ^0.5.0
   unsplash_client: ^2.1.0
-  webview_flutter: ^2.0.10
+  webview_flutter: ^2.0.12
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  build_runner: ^2.0.6
+  build_runner: ^2.1.1
   lints: ^1.0.1
-  mockito: ^5.0.12
+  mockito: ^5.0.14
   moor_generator: ^4.4.1
   network_image_mock: ^2.0.1
   transparent_image: ^2.0.0
