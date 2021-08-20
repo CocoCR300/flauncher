@@ -18,7 +18,7 @@ The project is still at an early development stage and may be unstable. It curre
 - [x] Clock
 - [x] Switch between row and grid for categories
 - [x] Support for non-TV (sideloaded) apps
-- [ ] Navigation sound feedback
+- [x] Navigation sound feedback
 - [ ] Force stop app
 
 ## Screenshots
@@ -62,3 +62,5 @@ On Chromecast with Google TV (maybe others), the "YouTube" remote button will st
 Because Android's `WallpaperManager` is not available on some Android TV devices, FLauncher implements its own wallpaper management method.
 
 Please note that changing wallpaper requires a file explorer to be installed on the device in order to pick a file.
+
+<a href="https://www.buymeacoffee.com/etienn01" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
