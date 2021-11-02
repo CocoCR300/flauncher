@@ -23,16 +23,24 @@ class App extends DataClass implements Insertable<App> {
       this.icon,
       required this.hidden,
       required this.sideloaded});
-  factory App.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
+  factory App.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return App(
-      packageName: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}package_name'])!,
-      name: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
-      version: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}version'])!,
-      banner: const BlobType().mapFromDatabaseResponse(data['${effectivePrefix}banner']),
-      icon: const BlobType().mapFromDatabaseResponse(data['${effectivePrefix}icon']),
-      hidden: const BoolType().mapFromDatabaseResponse(data['${effectivePrefix}hidden'])!,
-      sideloaded: const BoolType().mapFromDatabaseResponse(data['${effectivePrefix}sideloaded'])!,
+      packageName: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}package_name'])!,
+      name: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
+      version: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}version'])!,
+      banner: const BlobType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}banner']),
+      icon: const BlobType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}icon']),
+      hidden: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}hidden'])!,
+      sideloaded: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}sideloaded'])!,
     );
   }
   @override
@@ -57,14 +65,16 @@ class App extends DataClass implements Insertable<App> {
       packageName: Value(packageName),
       name: Value(name),
       version: Value(version),
-      banner: banner == null && nullToAbsent ? const Value.absent() : Value(banner),
+      banner:
+          banner == null && nullToAbsent ? const Value.absent() : Value(banner),
       icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
       hidden: Value(hidden),
       sideloaded: Value(sideloaded),
     );
   }
 
-  factory App.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+  factory App.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return App(
       packageName: serializer.fromJson<String>(json['packageName']),
@@ -122,12 +132,8 @@ class App extends DataClass implements Insertable<App> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      packageName.hashCode,
-      $mrjc(
-          name.hashCode,
-          $mrjc(version.hashCode,
-              $mrjc(banner.hashCode, $mrjc(icon.hashCode, $mrjc(hidden.hashCode, sideloaded.hashCode)))))));
+  int get hashCode =>
+      Object.hash(packageName, name, version, banner, icon, hidden, sideloaded);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -254,69 +260,90 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   final GeneratedDatabase _db;
   final String? _alias;
   $AppsTable(this._db, [this._alias]);
-  final VerificationMeta _packageNameMeta = const VerificationMeta('packageName');
-  late final GeneratedColumn<String?> packageName =
-      GeneratedColumn<String?>('package_name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+  final VerificationMeta _packageNameMeta =
+      const VerificationMeta('packageName');
+  late final GeneratedColumn<String?> packageName = GeneratedColumn<String?>(
+      'package_name', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
-  late final GeneratedColumn<String?> name =
-      GeneratedColumn<String?>('name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
+      'name', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _versionMeta = const VerificationMeta('version');
-  late final GeneratedColumn<String?> version =
-      GeneratedColumn<String?>('version', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+  late final GeneratedColumn<String?> version = GeneratedColumn<String?>(
+      'version', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _bannerMeta = const VerificationMeta('banner');
-  late final GeneratedColumn<Uint8List?> banner =
-      GeneratedColumn<Uint8List?>('banner', aliasedName, true, typeName: 'BLOB', requiredDuringInsert: false);
+  late final GeneratedColumn<Uint8List?> banner = GeneratedColumn<Uint8List?>(
+      'banner', aliasedName, true,
+      typeName: 'BLOB', requiredDuringInsert: false);
   final VerificationMeta _iconMeta = const VerificationMeta('icon');
-  late final GeneratedColumn<Uint8List?> icon =
-      GeneratedColumn<Uint8List?>('icon', aliasedName, true, typeName: 'BLOB', requiredDuringInsert: false);
+  late final GeneratedColumn<Uint8List?> icon = GeneratedColumn<Uint8List?>(
+      'icon', aliasedName, true,
+      typeName: 'BLOB', requiredDuringInsert: false);
   final VerificationMeta _hiddenMeta = const VerificationMeta('hidden');
-  late final GeneratedColumn<bool?> hidden = GeneratedColumn<bool?>('hidden', aliasedName, false,
+  late final GeneratedColumn<bool?> hidden = GeneratedColumn<bool?>(
+      'hidden', aliasedName, false,
       typeName: 'INTEGER',
       requiredDuringInsert: false,
       defaultConstraints: 'CHECK (hidden IN (0, 1))',
       defaultValue: Constant(false));
   final VerificationMeta _sideloadedMeta = const VerificationMeta('sideloaded');
-  late final GeneratedColumn<bool?> sideloaded = GeneratedColumn<bool?>('sideloaded', aliasedName, false,
+  late final GeneratedColumn<bool?> sideloaded = GeneratedColumn<bool?>(
+      'sideloaded', aliasedName, false,
       typeName: 'INTEGER',
       requiredDuringInsert: false,
       defaultConstraints: 'CHECK (sideloaded IN (0, 1))',
       defaultValue: Constant(false));
   @override
-  List<GeneratedColumn> get $columns => [packageName, name, version, banner, icon, hidden, sideloaded];
+  List<GeneratedColumn> get $columns =>
+      [packageName, name, version, banner, icon, hidden, sideloaded];
   @override
   String get aliasedName => _alias ?? 'apps';
   @override
   String get actualTableName => 'apps';
   @override
-  VerificationContext validateIntegrity(Insertable<App> instance, {bool isInserting = false}) {
+  VerificationContext validateIntegrity(Insertable<App> instance,
+      {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('package_name')) {
-      context.handle(_packageNameMeta, packageName.isAcceptableOrUnknown(data['package_name']!, _packageNameMeta));
+      context.handle(
+          _packageNameMeta,
+          packageName.isAcceptableOrUnknown(
+              data['package_name']!, _packageNameMeta));
     } else if (isInserting) {
       context.missing(_packageNameMeta);
     }
     if (data.containsKey('name')) {
-      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('version')) {
-      context.handle(_versionMeta, version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
     } else if (isInserting) {
       context.missing(_versionMeta);
     }
     if (data.containsKey('banner')) {
-      context.handle(_bannerMeta, banner.isAcceptableOrUnknown(data['banner']!, _bannerMeta));
+      context.handle(_bannerMeta,
+          banner.isAcceptableOrUnknown(data['banner']!, _bannerMeta));
     }
     if (data.containsKey('icon')) {
-      context.handle(_iconMeta, icon.isAcceptableOrUnknown(data['icon']!, _iconMeta));
+      context.handle(
+          _iconMeta, icon.isAcceptableOrUnknown(data['icon']!, _iconMeta));
     }
     if (data.containsKey('hidden')) {
-      context.handle(_hiddenMeta, hidden.isAcceptableOrUnknown(data['hidden']!, _hiddenMeta));
+      context.handle(_hiddenMeta,
+          hidden.isAcceptableOrUnknown(data['hidden']!, _hiddenMeta));
     }
     if (data.containsKey('sideloaded')) {
-      context.handle(_sideloadedMeta, sideloaded.isAcceptableOrUnknown(data['sideloaded']!, _sideloadedMeta));
+      context.handle(
+          _sideloadedMeta,
+          sideloaded.isAcceptableOrUnknown(
+              data['sideloaded']!, _sideloadedMeta));
     }
     return context;
   }
@@ -325,7 +352,8 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   Set<GeneratedColumn> get $primaryKey => {packageName};
   @override
   App map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return App.fromData(data, _db, prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    return App.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -350,18 +378,24 @@ class Category extends DataClass implements Insertable<Category> {
       required this.rowHeight,
       required this.columnsCount,
       required this.order});
-  factory Category.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
+  factory Category.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return Category(
-      id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      name: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
-      sort: $CategoriesTable.$converter0
-          .mapToDart(const IntType().mapFromDatabaseResponse(data['${effectivePrefix}sort']))!,
-      type: $CategoriesTable.$converter1
-          .mapToDart(const IntType().mapFromDatabaseResponse(data['${effectivePrefix}type']))!,
-      rowHeight: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}row_height'])!,
-      columnsCount: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}columns_count'])!,
-      order: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}order'])!,
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      name: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
+      sort: $CategoriesTable.$converter0.mapToDart(const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}sort']))!,
+      type: $CategoriesTable.$converter1.mapToDart(const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}type']))!,
+      rowHeight: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}row_height'])!,
+      columnsCount: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}columns_count'])!,
+      order: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}order'])!,
     );
   }
   @override
@@ -395,7 +429,8 @@ class Category extends DataClass implements Insertable<Category> {
     );
   }
 
-  factory Category.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+  factory Category.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return Category(
       id: serializer.fromJson<int>(json['id']),
@@ -453,12 +488,8 @@ class Category extends DataClass implements Insertable<Category> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      id.hashCode,
-      $mrjc(
-          name.hashCode,
-          $mrjc(sort.hashCode,
-              $mrjc(type.hashCode, $mrjc(rowHeight.hashCode, $mrjc(columnsCount.hashCode, order.hashCode)))))));
+  int get hashCode =>
+      Object.hash(id, name, sort, type, rowHeight, columnsCount, order);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -582,63 +613,88 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
   }
 }
 
-class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Category> {
+class $CategoriesTable extends Categories
+    with TableInfo<$CategoriesTable, Category> {
   final GeneratedDatabase _db;
   final String? _alias;
   $CategoriesTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
-  late final GeneratedColumn<int?> id = GeneratedColumn<int?>('id', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: false, defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _nameMeta = const VerificationMeta('name');
-  late final GeneratedColumn<String?> name =
-      GeneratedColumn<String?>('name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
+      'name', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _sortMeta = const VerificationMeta('sort');
-  late final GeneratedColumnWithTypeConverter<CategorySort, int?> sort = GeneratedColumn<int?>(
-          'sort', aliasedName, false,
-          typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(0))
-      .withConverter<CategorySort>($CategoriesTable.$converter0);
+  late final GeneratedColumnWithTypeConverter<CategorySort, int?> sort =
+      GeneratedColumn<int?>('sort', aliasedName, false,
+              typeName: 'INTEGER',
+              requiredDuringInsert: false,
+              defaultValue: Constant(0))
+          .withConverter<CategorySort>($CategoriesTable.$converter0);
   final VerificationMeta _typeMeta = const VerificationMeta('type');
-  late final GeneratedColumnWithTypeConverter<CategoryType, int?> type = GeneratedColumn<int?>(
-          'type', aliasedName, false,
-          typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(0))
-      .withConverter<CategoryType>($CategoriesTable.$converter1);
+  late final GeneratedColumnWithTypeConverter<CategoryType, int?> type =
+      GeneratedColumn<int?>('type', aliasedName, false,
+              typeName: 'INTEGER',
+              requiredDuringInsert: false,
+              defaultValue: Constant(0))
+          .withConverter<CategoryType>($CategoriesTable.$converter1);
   final VerificationMeta _rowHeightMeta = const VerificationMeta('rowHeight');
-  late final GeneratedColumn<int?> rowHeight = GeneratedColumn<int?>('row_height', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(110));
-  final VerificationMeta _columnsCountMeta = const VerificationMeta('columnsCount');
-  late final GeneratedColumn<int?> columnsCount = GeneratedColumn<int?>('columns_count', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(6));
+  late final GeneratedColumn<int?> rowHeight = GeneratedColumn<int?>(
+      'row_height', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultValue: Constant(110));
+  final VerificationMeta _columnsCountMeta =
+      const VerificationMeta('columnsCount');
+  late final GeneratedColumn<int?> columnsCount = GeneratedColumn<int?>(
+      'columns_count', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultValue: Constant(6));
   final VerificationMeta _orderMeta = const VerificationMeta('order');
-  late final GeneratedColumn<int?> order =
-      GeneratedColumn<int?>('order', aliasedName, false, typeName: 'INTEGER', requiredDuringInsert: true);
+  late final GeneratedColumn<int?> order = GeneratedColumn<int?>(
+      'order', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [id, name, sort, type, rowHeight, columnsCount, order];
+  List<GeneratedColumn> get $columns =>
+      [id, name, sort, type, rowHeight, columnsCount, order];
   @override
   String get aliasedName => _alias ?? 'categories';
   @override
   String get actualTableName => 'categories';
   @override
-  VerificationContext validateIntegrity(Insertable<Category> instance, {bool isInserting = false}) {
+  VerificationContext validateIntegrity(Insertable<Category> instance,
+      {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('name')) {
-      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     context.handle(_sortMeta, const VerificationResult.success());
     context.handle(_typeMeta, const VerificationResult.success());
     if (data.containsKey('row_height')) {
-      context.handle(_rowHeightMeta, rowHeight.isAcceptableOrUnknown(data['row_height']!, _rowHeightMeta));
+      context.handle(_rowHeightMeta,
+          rowHeight.isAcceptableOrUnknown(data['row_height']!, _rowHeightMeta));
     }
     if (data.containsKey('columns_count')) {
-      context.handle(_columnsCountMeta, columnsCount.isAcceptableOrUnknown(data['columns_count']!, _columnsCountMeta));
+      context.handle(
+          _columnsCountMeta,
+          columnsCount.isAcceptableOrUnknown(
+              data['columns_count']!, _columnsCountMeta));
     }
     if (data.containsKey('order')) {
-      context.handle(_orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
+      context.handle(
+          _orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
     } else if (isInserting) {
       context.missing(_orderMeta);
     }
@@ -649,7 +705,8 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Category map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return Category.fromData(data, _db, prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    return Category.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -657,21 +714,30 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
     return $CategoriesTable(_db, alias);
   }
 
-  static TypeConverter<CategorySort, int> $converter0 = const EnumIndexConverter<CategorySort>(CategorySort.values);
-  static TypeConverter<CategoryType, int> $converter1 = const EnumIndexConverter<CategoryType>(CategoryType.values);
+  static TypeConverter<CategorySort, int> $converter0 =
+      const EnumIndexConverter<CategorySort>(CategorySort.values);
+  static TypeConverter<CategoryType, int> $converter1 =
+      const EnumIndexConverter<CategoryType>(CategoryType.values);
 }
 
 class AppCategory extends DataClass implements Insertable<AppCategory> {
   final int categoryId;
   final String appPackageName;
   final int order;
-  AppCategory({required this.categoryId, required this.appPackageName, required this.order});
-  factory AppCategory.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
+  AppCategory(
+      {required this.categoryId,
+      required this.appPackageName,
+      required this.order});
+  factory AppCategory.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return AppCategory(
-      categoryId: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}category_id'])!,
-      appPackageName: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}app_package_name'])!,
-      order: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}order'])!,
+      categoryId: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}category_id'])!,
+      appPackageName: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}app_package_name'])!,
+      order: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}order'])!,
     );
   }
   @override
@@ -691,7 +757,8 @@ class AppCategory extends DataClass implements Insertable<AppCategory> {
     );
   }
 
-  factory AppCategory.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+  factory AppCategory.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return AppCategory(
       categoryId: serializer.fromJson<int>(json['categoryId']),
@@ -709,7 +776,8 @@ class AppCategory extends DataClass implements Insertable<AppCategory> {
     };
   }
 
-  AppCategory copyWith({int? categoryId, String? appPackageName, int? order}) => AppCategory(
+  AppCategory copyWith({int? categoryId, String? appPackageName, int? order}) =>
+      AppCategory(
         categoryId: categoryId ?? this.categoryId,
         appPackageName: appPackageName ?? this.appPackageName,
         order: order ?? this.order,
@@ -725,7 +793,7 @@ class AppCategory extends DataClass implements Insertable<AppCategory> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(categoryId.hashCode, $mrjc(appPackageName.hashCode, order.hashCode)));
+  int get hashCode => Object.hash(categoryId, appPackageName, order);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -763,7 +831,10 @@ class AppsCategoriesCompanion extends UpdateCompanion<AppCategory> {
     });
   }
 
-  AppsCategoriesCompanion copyWith({Value<int>? categoryId, Value<String>? appPackageName, Value<int>? order}) {
+  AppsCategoriesCompanion copyWith(
+      {Value<int>? categoryId,
+      Value<String>? appPackageName,
+      Value<int>? order}) {
     return AppsCategoriesCompanion(
       categoryId: categoryId ?? this.categoryId,
       appPackageName: appPackageName ?? this.appPackageName,
@@ -797,23 +868,28 @@ class AppsCategoriesCompanion extends UpdateCompanion<AppCategory> {
   }
 }
 
-class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategoriesTable, AppCategory> {
+class $AppsCategoriesTable extends AppsCategories
+    with TableInfo<$AppsCategoriesTable, AppCategory> {
   final GeneratedDatabase _db;
   final String? _alias;
   $AppsCategoriesTable(this._db, [this._alias]);
   final VerificationMeta _categoryIdMeta = const VerificationMeta('categoryId');
-  late final GeneratedColumn<int?> categoryId = GeneratedColumn<int?>('category_id', aliasedName, false,
+  late final GeneratedColumn<int?> categoryId = GeneratedColumn<int?>(
+      'category_id', aliasedName, false,
       typeName: 'INTEGER',
       requiredDuringInsert: true,
       $customConstraints: 'REFERENCES categories(id) ON DELETE CASCADE');
-  final VerificationMeta _appPackageNameMeta = const VerificationMeta('appPackageName');
-  late final GeneratedColumn<String?> appPackageName = GeneratedColumn<String?>('app_package_name', aliasedName, false,
+  final VerificationMeta _appPackageNameMeta =
+      const VerificationMeta('appPackageName');
+  late final GeneratedColumn<String?> appPackageName = GeneratedColumn<String?>(
+      'app_package_name', aliasedName, false,
       typeName: 'TEXT',
       requiredDuringInsert: true,
       $customConstraints: 'REFERENCES apps(package_name) ON DELETE CASCADE');
   final VerificationMeta _orderMeta = const VerificationMeta('order');
-  late final GeneratedColumn<int?> order =
-      GeneratedColumn<int?>('order', aliasedName, false, typeName: 'INTEGER', requiredDuringInsert: true);
+  late final GeneratedColumn<int?> order = GeneratedColumn<int?>(
+      'order', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [categoryId, appPackageName, order];
   @override
@@ -821,22 +897,29 @@ class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategories
   @override
   String get actualTableName => 'apps_categories';
   @override
-  VerificationContext validateIntegrity(Insertable<AppCategory> instance, {bool isInserting = false}) {
+  VerificationContext validateIntegrity(Insertable<AppCategory> instance,
+      {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('category_id')) {
-      context.handle(_categoryIdMeta, categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta));
+      context.handle(
+          _categoryIdMeta,
+          categoryId.isAcceptableOrUnknown(
+              data['category_id']!, _categoryIdMeta));
     } else if (isInserting) {
       context.missing(_categoryIdMeta);
     }
     if (data.containsKey('app_package_name')) {
       context.handle(
-          _appPackageNameMeta, appPackageName.isAcceptableOrUnknown(data['app_package_name']!, _appPackageNameMeta));
+          _appPackageNameMeta,
+          appPackageName.isAcceptableOrUnknown(
+              data['app_package_name']!, _appPackageNameMeta));
     } else if (isInserting) {
       context.missing(_appPackageNameMeta);
     }
     if (data.containsKey('order')) {
-      context.handle(_orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
+      context.handle(
+          _orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
     } else if (isInserting) {
       context.missing(_orderMeta);
     }
@@ -847,7 +930,8 @@ class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategories
   Set<GeneratedColumn> get $primaryKey => {categoryId, appPackageName};
   @override
   AppCategory map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return AppCategory.fromData(data, _db, prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    return AppCategory.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -857,7 +941,8 @@ class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategories
 }
 
 abstract class _$FLauncherDatabase extends GeneratedDatabase {
-  _$FLauncherDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
+  _$FLauncherDatabase(QueryExecutor e)
+      : super(SqlTypeSystem.defaultInstance, e);
   _$FLauncherDatabase.connect(DatabaseConnection c) : super.connect(c);
   late final $AppsTable apps = $AppsTable(this);
   late final $CategoriesTable categories = $CategoriesTable(this);
@@ -865,5 +950,6 @@ abstract class _$FLauncherDatabase extends GeneratedDatabase {
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [apps, categories, appsCategories];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [apps, categories, appsCategories];
 }

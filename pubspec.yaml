@@ -16,7 +16,7 @@ dependencies:
   firebase_remote_config: ^0.11.0
   image_picker: ^0.8.4+2
   intl: ^0.17.0
-  moor: ^4.5.0
+  moor: ^4.6.1+1
   moor_inspector: ^0.3.1
   path_provider: ^2.0.5
   package_info_plus: ^1.0.6
@@ -33,7 +33,7 @@ dev_dependencies:
   build_runner: ^2.1.2
   lints: ^1.0.1
   mockito: ^5.0.16
-  moor_generator: ^4.5.1
+  moor_generator: ^4.6.0+1
   network_image_mock: ^2.0.1
   transparent_image: ^2.0.0
 
