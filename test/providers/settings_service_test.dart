@@ -32,8 +32,10 @@ void main() {
   test("setCrashReportsEnabled", () async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final firebaseCrashlytics = MockFirebaseCrashlytics();
+    final firebaseAnalytics = MockFirebaseAnalytics();
     final firebaseRemoteConfig = MockRemoteConfig();
-    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+    final settingsService =
+        SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
     await untilCalled(firebaseCrashlytics.setCrashlyticsCollectionEnabled(any));
 
     await settingsService.setCrashReportsEnabled(true);
@@ -42,11 +44,28 @@ void main() {
     expect(sharedPreferences.getBool("crash_reports_enabled"), isTrue);
   });
 
+  test("setAnalyticsEnabled", () async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final firebaseCrashlytics = MockFirebaseCrashlytics();
+    final firebaseAnalytics = MockFirebaseAnalytics();
+    final firebaseRemoteConfig = MockRemoteConfig();
+    final settingsService =
+        SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
+    await untilCalled(firebaseCrashlytics.setCrashlyticsCollectionEnabled(any));
+
+    await settingsService.setAnalyticsEnabled(true);
+
+    verify(firebaseAnalytics.setAnalyticsCollectionEnabled(false)).called(2);
+    expect(sharedPreferences.getBool("analytics_enabled"), isTrue);
+  });
+
   test("setUse24HourTimeFormat", () async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final firebaseCrashlytics = MockFirebaseCrashlytics();
+    final firebaseAnalytics = MockFirebaseAnalytics();
     final firebaseRemoteConfig = MockRemoteConfig();
-    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+    final settingsService =
+        SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
     await settingsService.setUse24HourTimeFormat(true);
 
@@ -56,8 +75,10 @@ void main() {
   test("setGradientUuid", () async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final firebaseCrashlytics = MockFirebaseCrashlytics();
+    final firebaseAnalytics = MockFirebaseAnalytics();
     final firebaseRemoteConfig = MockRemoteConfig();
-    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+    final settingsService =
+        SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
     await settingsService.setGradientUuid("4730aa2d-1a90-49a6-9942-ffe82f470e26");
 
@@ -68,8 +89,10 @@ void main() {
     test("with value saves author info", () async {
       final sharedPreferences = await SharedPreferences.getInstance();
       final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseAnalytics = MockFirebaseAnalytics();
       final firebaseRemoteConfig = MockRemoteConfig();
-      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+      final settingsService =
+          SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
       await settingsService.setUnsplashAuthor("unsplash author");
 
@@ -80,8 +103,10 @@ void main() {
       final sharedPreferences = await SharedPreferences.getInstance();
       await sharedPreferences.setString("unsplash_author", "unsplash author");
       final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseAnalytics = MockFirebaseAnalytics();
       final firebaseRemoteConfig = MockRemoteConfig();
-      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+      final settingsService =
+          SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
       await settingsService.setUnsplashAuthor(null);
 
@@ -92,9 +117,11 @@ void main() {
   test("unsplashEnabled", () async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final firebaseCrashlytics = MockFirebaseCrashlytics();
+    final firebaseAnalytics = MockFirebaseAnalytics();
     final firebaseRemoteConfig = MockRemoteConfig();
     when(firebaseRemoteConfig.getBool("unsplash_enabled")).thenReturn(true);
-    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+    final settingsService =
+        SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
     final unsplashEnabled = settingsService.unsplashEnabled;
 
@@ -105,8 +132,10 @@ void main() {
     final sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString("unsplash_author", "unsplash author");
     final firebaseCrashlytics = MockFirebaseCrashlytics();
+    final firebaseAnalytics = MockFirebaseAnalytics();
     final firebaseRemoteConfig = MockRemoteConfig();
-    final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+    final settingsService =
+        SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
     final unsplashAuthor = settingsService.unsplashAuthor;
 
@@ -118,8 +147,10 @@ void main() {
       final sharedPreferences = await SharedPreferences.getInstance();
       await sharedPreferences.clear();
       final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseAnalytics = MockFirebaseAnalytics();
       final firebaseRemoteConfig = MockRemoteConfig();
-      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+      final settingsService =
+          SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
       final gradientUuid = settingsService.gradientUuid;
 
@@ -130,9 +161,11 @@ void main() {
       final sharedPreferences = await SharedPreferences.getInstance();
       await sharedPreferences.clear();
       final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseAnalytics = MockFirebaseAnalytics();
       final firebaseRemoteConfig = MockRemoteConfig();
       sharedPreferences.setString("gradient_uuid", "4730aa2d-1a90-49a6-9942-ffe82f470e26");
-      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+      final settingsService =
+          SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
       final gradientUuid = settingsService.gradientUuid;
 
@@ -145,8 +178,10 @@ void main() {
       final sharedPreferences = await SharedPreferences.getInstance();
       await sharedPreferences.clear();
       final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseAnalytics = MockFirebaseAnalytics();
       final firebaseRemoteConfig = MockRemoteConfig();
-      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+      final settingsService =
+          SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
       final crashReportsEnabled = settingsService.crashReportsEnabled;
 
@@ -157,9 +192,11 @@ void main() {
       final sharedPreferences = await SharedPreferences.getInstance();
       await sharedPreferences.clear();
       final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseAnalytics = MockFirebaseAnalytics();
       final firebaseRemoteConfig = MockRemoteConfig();
       sharedPreferences.setBool("crash_reports_enabled", false);
-      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+      final settingsService =
+          SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
       final crashReportsEnabled = settingsService.crashReportsEnabled;
 
@@ -172,8 +209,10 @@ void main() {
       final sharedPreferences = await SharedPreferences.getInstance();
       await sharedPreferences.clear();
       final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseAnalytics = MockFirebaseAnalytics();
       final firebaseRemoteConfig = MockRemoteConfig();
-      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+      final settingsService =
+          SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
       final use24HourTimeFormat = settingsService.use24HourTimeFormat;
 
@@ -184,9 +223,11 @@ void main() {
       final sharedPreferences = await SharedPreferences.getInstance();
       await sharedPreferences.clear();
       final firebaseCrashlytics = MockFirebaseCrashlytics();
+      final firebaseAnalytics = MockFirebaseAnalytics();
       final firebaseRemoteConfig = MockRemoteConfig();
       sharedPreferences.setBool("use_24_hour_time_format", false);
-      final settingsService = SettingsService(sharedPreferences, firebaseCrashlytics, firebaseRemoteConfig);
+      final settingsService =
+          SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
       final use24HourTimeFormat = settingsService.use24HourTimeFormat;
 

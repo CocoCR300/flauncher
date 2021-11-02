@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flauncher/actions.dart';
@@ -36,6 +37,7 @@ import 'flauncher_channel.dart';
 class FLauncherApp extends StatelessWidget {
   final SharedPreferences _sharedPreferences;
   final FirebaseCrashlytics _firebaseCrashlytics;
+  final FirebaseAnalytics _firebaseAnalytics;
   final ImagePicker _imagePicker;
   final FLauncherChannel _fLauncherChannel;
   final FLauncherDatabase _fLauncherDatabase;
@@ -58,6 +60,7 @@ class FLauncherApp extends StatelessWidget {
   FLauncherApp(
     this._sharedPreferences,
     this._firebaseCrashlytics,
+    this._firebaseAnalytics,
     this._imagePicker,
     this._fLauncherChannel,
     this._fLauncherDatabase,
@@ -69,7 +72,9 @@ class FLauncherApp extends StatelessWidget {
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           ChangeNotifierProvider(
-              create: (_) => SettingsService(_sharedPreferences, _firebaseCrashlytics, _remoteConfig), lazy: false),
+              create: (_) =>
+                  SettingsService(_sharedPreferences, _firebaseCrashlytics, _firebaseAnalytics, _remoteConfig),
+              lazy: false),
           ChangeNotifierProvider(create: (_) => AppsService(_fLauncherChannel, _fLauncherDatabase)),
           ChangeNotifierProxyProvider<SettingsService, WallpaperService>(
               create: (_) => WallpaperService(_imagePicker, _fLauncherChannel, _unsplashService),

@@ -18,6 +18,7 @@
 
 import 'dart:math';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flauncher/database.dart';
@@ -36,6 +37,7 @@ import 'package:moor/moor.dart';
   AppsService,
   SettingsService,
   FirebaseCrashlytics,
+  FirebaseAnalytics,
   RemoteConfig,
   UnsplashService,
 ])

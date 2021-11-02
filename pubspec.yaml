@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  firebase_analytics: ^8.3.4
   firebase_core: ^1.6.0
   firebase_crashlytics: ^2.2.1
   firebase_remote_config: ^0.11.0
