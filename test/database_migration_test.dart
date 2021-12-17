@@ -16,17 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart';
+import 'package:drift_dev/api/migrations.dart';
 import 'package:flauncher/database.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moor/moor.dart';
-import 'package:moor_generator/api/migrations.dart';
 
-import 'generated/schema.dart';
-import 'generated/schema_v1.dart' as v1;
-import 'generated/schema_v2.dart' as v2;
-import 'generated/schema_v3.dart' as v3;
-import 'generated/schema_v4.dart' as v4;
-import 'generated/schema_v5.dart' as v5;
+import 'generated_migrations/schema.dart';
+import 'generated_migrations/schema_v1.dart' as v1;
+import 'generated_migrations/schema_v2.dart' as v2;
+import 'generated_migrations/schema_v3.dart' as v3;
+import 'generated_migrations/schema_v4.dart' as v4;
+import 'generated_migrations/schema_v5.dart' as v5;
 
 void main() {
   late SchemaVerifier verifier;

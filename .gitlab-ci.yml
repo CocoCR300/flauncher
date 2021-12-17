@@ -46,7 +46,7 @@ test:
   script:
     - flutter test --coverage
   after_script:
-    - lcov --remove coverage/lcov.info lib/database.moor.dart --output-file coverage/lcov.info
+    - lcov --remove coverage/lcov.info lib/database.drift.dart --output-file coverage/lcov.info
     - genhtml --output ./coverage coverage/lcov.info
   coverage: '/^\s+lines\.+:\s+([\d.]+\%)\s+/'
 

@@ -17,7 +17,6 @@
  */
 
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
@@ -25,7 +24,6 @@ import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/focus_keyboard_listener.dart';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 

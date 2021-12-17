@@ -18,14 +18,14 @@
 
 import 'dart:io';
 
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
+import 'package:drift_inspector/drift_inspector.dart';
 import 'package:flutter/foundation.dart';
-import 'package:moor/ffi.dart';
-import 'package:moor/moor.dart';
-import 'package:moor_inspector/moor_inspector.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
-part 'database.moor.dart';
+part 'database.drift.dart';
 
 class Apps extends Table {
   TextColumn get packageName => text()();
@@ -92,20 +92,20 @@ enum CategoryType {
   grid,
 }
 
-@UseMoor(tables: [Apps, Categories, AppsCategories])
+@DriftDatabase(tables: [Apps, Categories, AppsCategories])
 class FLauncherDatabase extends _$FLauncherDatabase {
   late final bool wasCreated;
 
   FLauncherDatabase.connect(DatabaseConnection databaseConnection) : super.connect(databaseConnection) {
     if (kDebugMode && !Platform.environment.containsKey('FLUTTER_TEST')) {
-      MoorInspectorBuilder()
+      DriftInspectorBuilder()
         ..bundleId = 'me.efesser.flauncher'
         ..addDatabase('FLauncher', this)
         ..build().start();
     }
   }
 
-  FLauncherDatabase.inMemory() : super(LazyDatabase(() => VmDatabase.memory()));
+  FLauncherDatabase.inMemory() : super(LazyDatabase(() => NativeDatabase.memory()));
 
   @override
   int get schemaVersion => 5;
@@ -221,5 +221,5 @@ class FLauncherDatabase extends _$FLauncherDatabase {
 DatabaseConnection connect() => DatabaseConnection.delayed(() async {
       final dbFolder = await getApplicationDocumentsDirectory();
       final file = File(path.join(dbFolder.path, 'db.sqlite'));
-      return DatabaseConnection.fromExecutor(VmDatabase(file, logStatements: kDebugMode));
+      return DatabaseConnection.fromExecutor(NativeDatabase(file, logStatements: kDebugMode));
     }());

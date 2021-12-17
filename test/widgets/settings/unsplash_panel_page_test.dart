@@ -16,8 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:ui';
-
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/unsplash_service.dart';
 import 'package:flauncher/widgets/settings/unsplash_panel_page.dart';

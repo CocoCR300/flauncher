@@ -20,7 +20,7 @@ import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import '../mocks.dart';
 import '../mocks.mocks.dart';

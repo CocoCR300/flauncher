@@ -23,7 +23,7 @@ class App extends DataClass implements Insertable<App> {
       this.icon,
       required this.hidden,
       required this.sideloaded});
-  factory App.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
+  factory App.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return App(
       packageName: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}package_name'])!,
@@ -65,7 +65,7 @@ class App extends DataClass implements Insertable<App> {
   }
 
   factory App.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return App(
       packageName: serializer.fromJson<String>(json['packageName']),
       name: serializer.fromJson<String>(json['name']),
@@ -78,7 +78,7 @@ class App extends DataClass implements Insertable<App> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'packageName': serializer.toJson<String>(packageName),
       'name': serializer.toJson<String>(name),
@@ -327,7 +327,7 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   Set<GeneratedColumn> get $primaryKey => {packageName};
   @override
   App map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return App.fromData(data, _db, prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    return App.fromData(data, prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -352,7 +352,7 @@ class Category extends DataClass implements Insertable<Category> {
       required this.rowHeight,
       required this.columnsCount,
       required this.order});
-  factory Category.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
+  factory Category.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return Category(
       id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
@@ -398,7 +398,7 @@ class Category extends DataClass implements Insertable<Category> {
   }
 
   factory Category.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return Category(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
@@ -411,7 +411,7 @@ class Category extends DataClass implements Insertable<Category> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
@@ -653,7 +653,7 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Category map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return Category.fromData(data, _db, prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    return Category.fromData(data, prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -670,7 +670,7 @@ class AppCategory extends DataClass implements Insertable<AppCategory> {
   final String appPackageName;
   final int order;
   AppCategory({required this.categoryId, required this.appPackageName, required this.order});
-  factory AppCategory.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
+  factory AppCategory.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return AppCategory(
       categoryId: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}category_id'])!,
@@ -696,7 +696,7 @@ class AppCategory extends DataClass implements Insertable<AppCategory> {
   }
 
   factory AppCategory.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return AppCategory(
       categoryId: serializer.fromJson<int>(json['categoryId']),
       appPackageName: serializer.fromJson<String>(json['appPackageName']),
@@ -705,7 +705,7 @@ class AppCategory extends DataClass implements Insertable<AppCategory> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'categoryId': serializer.toJson<int>(categoryId),
       'appPackageName': serializer.toJson<String>(appPackageName),
@@ -854,7 +854,7 @@ class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategories
   Set<GeneratedColumn> get $primaryKey => {categoryId, appPackageName};
   @override
   AppCategory map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return AppCategory.fromData(data, _db, prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    return AppCategory.fromData(data, prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override

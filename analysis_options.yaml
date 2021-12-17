@@ -2,6 +2,6 @@ include: package:lints/recommended.yaml
 
 analyzer:
   exclude:
-    - lib/database.moor.dart
+    - lib/database.drift.dart
     - test/mocks.mocks.dart
-    - test/generated
+    - test/generated_migrations

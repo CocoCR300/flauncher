@@ -24,7 +24,7 @@ import 'package:flauncher/flauncher_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 class AppsService extends ChangeNotifier {
   final FLauncherChannel _fLauncherChannel;

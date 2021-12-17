@@ -18,7 +18,7 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moor/moor.dart' hide isNull;
+import 'package:drift/drift.dart' hide isNull;
 
 void main() {
   late FLauncherDatabase database;

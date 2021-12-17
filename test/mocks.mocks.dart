@@ -6,6 +6,7 @@ import 'dart:async' as _i10;
 import 'dart:typed_data' as _i18;
 import 'dart:ui' as _i13;
 
+import 'package:drift/drift.dart' as _i2;
 import 'package:drift/src/runtime/executor/stream_queries.dart' as _i4;
 import 'package:firebase_analytics/firebase_analytics.dart' as _i17;
 import 'package:firebase_core/firebase_core.dart' as _i6;
@@ -20,7 +21,6 @@ import 'package:flauncher/providers/wallpaper_service.dart' as _i11;
 import 'package:flauncher/unsplash_service.dart' as _i8;
 import 'package:flutter/foundation.dart' as _i16;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:moor/moor.dart' as _i2;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: avoid_setters_without_getters

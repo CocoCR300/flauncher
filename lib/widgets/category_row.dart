@@ -23,7 +23,6 @@ import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flauncher/widgets/settings/categories_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class CategoryRow extends StatelessWidget {

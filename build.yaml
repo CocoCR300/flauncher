@@ -1,9 +1,9 @@
 targets:
   $default:
     builders:
-      moor_generator:
+      drift_dev:
         enabled: false
-      moor_generator|moor_generator_not_shared:
+      drift_dev|not_shared:
         enabled: true
         options:
           generate_connect_constructor: true
@@ -13,7 +13,7 @@ targets:
   run_built_value:
     dependencies: [ 'flauncher' ]
     builders:
-      moor_generator:
+      drift_dev:
         enabled: false
-      moor_generator|preparing_builder:
+      drift_dev|preparing_builder:
         enabled: false

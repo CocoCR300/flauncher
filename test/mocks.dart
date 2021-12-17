@@ -28,7 +28,7 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/unsplash_service.dart';
 import 'package:mockito/annotations.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 @GenerateMocks([
   FLauncherChannel,

@@ -1,6 +1,6 @@
 // GENERATED CODE, DO NOT EDIT BY HAND.
 //@dart=2.12
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 class AppsData extends DataClass implements Insertable<AppsData> {
   final String packageName;
@@ -16,7 +16,7 @@ class AppsData extends DataClass implements Insertable<AppsData> {
       this.banner,
       this.icon,
       required this.hidden});
-  factory AppsData.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
+  factory AppsData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return AppsData(
       packageName: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}package_name'])!,
@@ -55,7 +55,7 @@ class AppsData extends DataClass implements Insertable<AppsData> {
   }
 
   factory AppsData.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return AppsData(
       packageName: serializer.fromJson<String>(json['packageName']),
       name: serializer.fromJson<String>(json['name']),
@@ -67,7 +67,7 @@ class AppsData extends DataClass implements Insertable<AppsData> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'packageName': serializer.toJson<String>(packageName),
       'name': serializer.toJson<String>(name),
@@ -102,8 +102,7 @@ class AppsData extends DataClass implements Insertable<AppsData> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(packageName.hashCode,
-      $mrjc(name.hashCode, $mrjc(version.hashCode, $mrjc(banner.hashCode, $mrjc(icon.hashCode, hidden.hashCode))))));
+  int get hashCode => Object.hash(packageName, name, version, banner, icon, hidden);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -218,18 +217,18 @@ class Apps extends Table with TableInfo<Apps, AppsData> {
   final GeneratedDatabase _db;
   final String? _alias;
   Apps(this._db, [this._alias]);
-  late final GeneratedColumn<String?> packageName =
-      GeneratedColumn<String?>('package_name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+  late final GeneratedColumn<String?> packageName = GeneratedColumn<String?>('package_name', aliasedName, false,
+      type: const StringType(), requiredDuringInsert: true);
   late final GeneratedColumn<String?> name =
-      GeneratedColumn<String?>('name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+      GeneratedColumn<String?>('name', aliasedName, false, type: const StringType(), requiredDuringInsert: true);
   late final GeneratedColumn<String?> version =
-      GeneratedColumn<String?>('version', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+      GeneratedColumn<String?>('version', aliasedName, false, type: const StringType(), requiredDuringInsert: true);
   late final GeneratedColumn<Uint8List?> banner =
-      GeneratedColumn<Uint8List?>('banner', aliasedName, true, typeName: 'BLOB', requiredDuringInsert: false);
+      GeneratedColumn<Uint8List?>('banner', aliasedName, true, type: const BlobType(), requiredDuringInsert: false);
   late final GeneratedColumn<Uint8List?> icon =
-      GeneratedColumn<Uint8List?>('icon', aliasedName, true, typeName: 'BLOB', requiredDuringInsert: false);
+      GeneratedColumn<Uint8List?>('icon', aliasedName, true, type: const BlobType(), requiredDuringInsert: false);
   late final GeneratedColumn<bool?> hidden = GeneratedColumn<bool?>('hidden', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const BoolType(),
       requiredDuringInsert: false,
       defaultConstraints: 'CHECK (hidden IN (0, 1))',
       defaultValue: Constant(false));
@@ -243,7 +242,7 @@ class Apps extends Table with TableInfo<Apps, AppsData> {
   Set<GeneratedColumn> get $primaryKey => {packageName};
   @override
   AppsData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return AppsData.fromData(data, _db, prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    return AppsData.fromData(data, prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -271,7 +270,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
       required this.rowHeight,
       required this.columnsCount,
       required this.order});
-  factory CategoriesData.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
+  factory CategoriesData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return CategoriesData(
       id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
@@ -309,7 +308,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
   }
 
   factory CategoriesData.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return CategoriesData(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
@@ -322,7 +321,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
@@ -360,12 +359,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      id.hashCode,
-      $mrjc(
-          name.hashCode,
-          $mrjc(sort.hashCode,
-              $mrjc(type.hashCode, $mrjc(rowHeight.hashCode, $mrjc(columnsCount.hashCode, order.hashCode)))))));
+  int get hashCode => Object.hash(id, name, sort, type, rowHeight, columnsCount, order);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -492,19 +486,19 @@ class Categories extends Table with TableInfo<Categories, CategoriesData> {
   final String? _alias;
   Categories(this._db, [this._alias]);
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>('id', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: false, defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+      type: const IntType(), requiredDuringInsert: false, defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   late final GeneratedColumn<String?> name =
-      GeneratedColumn<String?>('name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+      GeneratedColumn<String?>('name', aliasedName, false, type: const StringType(), requiredDuringInsert: true);
   late final GeneratedColumn<int?> sort = GeneratedColumn<int?>('sort', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(0));
+      type: const IntType(), requiredDuringInsert: false, defaultValue: Constant(0));
   late final GeneratedColumn<int?> type = GeneratedColumn<int?>('type', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(0));
+      type: const IntType(), requiredDuringInsert: false, defaultValue: Constant(0));
   late final GeneratedColumn<int?> rowHeight = GeneratedColumn<int?>('row_height', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(110));
+      type: const IntType(), requiredDuringInsert: false, defaultValue: Constant(110));
   late final GeneratedColumn<int?> columnsCount = GeneratedColumn<int?>('columns_count', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(6));
+      type: const IntType(), requiredDuringInsert: false, defaultValue: Constant(6));
   late final GeneratedColumn<int?> order =
-      GeneratedColumn<int?>('order', aliasedName, false, typeName: 'INTEGER', requiredDuringInsert: true);
+      GeneratedColumn<int?>('order', aliasedName, false, type: const IntType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, name, sort, type, rowHeight, columnsCount, order];
   @override
@@ -515,7 +509,7 @@ class Categories extends Table with TableInfo<Categories, CategoriesData> {
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   CategoriesData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return CategoriesData.fromData(data, _db, prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    return CategoriesData.fromData(data, prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -532,7 +526,7 @@ class AppsCategoriesData extends DataClass implements Insertable<AppsCategoriesD
   final String appPackageName;
   final int order;
   AppsCategoriesData({required this.categoryId, required this.appPackageName, required this.order});
-  factory AppsCategoriesData.fromData(Map<String, dynamic> data, GeneratedDatabase db, {String? prefix}) {
+  factory AppsCategoriesData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return AppsCategoriesData(
       categoryId: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}category_id'])!,
@@ -558,7 +552,7 @@ class AppsCategoriesData extends DataClass implements Insertable<AppsCategoriesD
   }
 
   factory AppsCategoriesData.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return AppsCategoriesData(
       categoryId: serializer.fromJson<int>(json['categoryId']),
       appPackageName: serializer.fromJson<String>(json['appPackageName']),
@@ -567,7 +561,7 @@ class AppsCategoriesData extends DataClass implements Insertable<AppsCategoriesD
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'categoryId': serializer.toJson<int>(categoryId),
       'appPackageName': serializer.toJson<String>(appPackageName),
@@ -591,7 +585,7 @@ class AppsCategoriesData extends DataClass implements Insertable<AppsCategoriesD
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(categoryId.hashCode, $mrjc(appPackageName.hashCode, order.hashCode)));
+  int get hashCode => Object.hash(categoryId, appPackageName, order);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -668,15 +662,15 @@ class AppsCategories extends Table with TableInfo<AppsCategories, AppsCategories
   final String? _alias;
   AppsCategories(this._db, [this._alias]);
   late final GeneratedColumn<int?> categoryId = GeneratedColumn<int?>('category_id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: true,
       $customConstraints: 'REFERENCES categories(id) ON DELETE CASCADE');
   late final GeneratedColumn<String?> appPackageName = GeneratedColumn<String?>('app_package_name', aliasedName, false,
-      typeName: 'TEXT',
+      type: const StringType(),
       requiredDuringInsert: true,
       $customConstraints: 'REFERENCES apps(package_name) ON DELETE CASCADE');
   late final GeneratedColumn<int?> order =
-      GeneratedColumn<int?>('order', aliasedName, false, typeName: 'INTEGER', requiredDuringInsert: true);
+      GeneratedColumn<int?>('order', aliasedName, false, type: const IntType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [categoryId, appPackageName, order];
   @override
@@ -687,7 +681,7 @@ class AppsCategories extends Table with TableInfo<AppsCategories, AppsCategories
   Set<GeneratedColumn> get $primaryKey => {categoryId, appPackageName};
   @override
   AppsCategoriesData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return AppsCategoriesData.fromData(data, _db, prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    return AppsCategoriesData.fromData(data, prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
