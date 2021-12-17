@@ -50,7 +50,7 @@ Future<void> main() async {
       )).sendPort);
 
   runZonedGuarded<void>(() async {
-    final firebaseAnalytics = FirebaseAnalytics();
+    final firebaseAnalytics = FirebaseAnalytics.instance;
     final sharedPreferences = await SharedPreferences.getInstance();
     final imagePicker = ImagePicker();
     final fLauncherChannel = FLauncherChannel();

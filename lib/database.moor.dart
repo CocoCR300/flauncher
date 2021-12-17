@@ -250,29 +250,36 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   final String? _alias;
   $AppsTable(this._db, [this._alias]);
   final VerificationMeta _packageNameMeta = const VerificationMeta('packageName');
-  late final GeneratedColumn<String?> packageName =
-      GeneratedColumn<String?>('package_name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+  @override
+  late final GeneratedColumn<String?> packageName = GeneratedColumn<String?>('package_name', aliasedName, false,
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
   late final GeneratedColumn<String?> name =
-      GeneratedColumn<String?>('name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+      GeneratedColumn<String?>('name', aliasedName, false, type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _versionMeta = const VerificationMeta('version');
+  @override
   late final GeneratedColumn<String?> version =
-      GeneratedColumn<String?>('version', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+      GeneratedColumn<String?>('version', aliasedName, false, type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _bannerMeta = const VerificationMeta('banner');
+  @override
   late final GeneratedColumn<Uint8List?> banner =
-      GeneratedColumn<Uint8List?>('banner', aliasedName, true, typeName: 'BLOB', requiredDuringInsert: false);
+      GeneratedColumn<Uint8List?>('banner', aliasedName, true, type: const BlobType(), requiredDuringInsert: false);
   final VerificationMeta _iconMeta = const VerificationMeta('icon');
+  @override
   late final GeneratedColumn<Uint8List?> icon =
-      GeneratedColumn<Uint8List?>('icon', aliasedName, true, typeName: 'BLOB', requiredDuringInsert: false);
+      GeneratedColumn<Uint8List?>('icon', aliasedName, true, type: const BlobType(), requiredDuringInsert: false);
   final VerificationMeta _hiddenMeta = const VerificationMeta('hidden');
+  @override
   late final GeneratedColumn<bool?> hidden = GeneratedColumn<bool?>('hidden', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const BoolType(),
       requiredDuringInsert: false,
       defaultConstraints: 'CHECK (hidden IN (0, 1))',
       defaultValue: Constant(false));
   final VerificationMeta _sideloadedMeta = const VerificationMeta('sideloaded');
+  @override
   late final GeneratedColumn<bool?> sideloaded = GeneratedColumn<bool?>('sideloaded', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const BoolType(),
       requiredDuringInsert: false,
       defaultConstraints: 'CHECK (sideloaded IN (0, 1))',
       defaultValue: Constant(false));
@@ -577,30 +584,37 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
   final String? _alias;
   $CategoriesTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>('id', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: false, defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+      type: const IntType(), requiredDuringInsert: false, defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
   late final GeneratedColumn<String?> name =
-      GeneratedColumn<String?>('name', aliasedName, false, typeName: 'TEXT', requiredDuringInsert: true);
+      GeneratedColumn<String?>('name', aliasedName, false, type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _sortMeta = const VerificationMeta('sort');
+  @override
   late final GeneratedColumnWithTypeConverter<CategorySort, int?> sort = GeneratedColumn<int?>(
           'sort', aliasedName, false,
-          typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(0))
+          type: const IntType(), requiredDuringInsert: false, defaultValue: Constant(0))
       .withConverter<CategorySort>($CategoriesTable.$converter0);
   final VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
   late final GeneratedColumnWithTypeConverter<CategoryType, int?> type = GeneratedColumn<int?>(
           'type', aliasedName, false,
-          typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(0))
+          type: const IntType(), requiredDuringInsert: false, defaultValue: Constant(0))
       .withConverter<CategoryType>($CategoriesTable.$converter1);
   final VerificationMeta _rowHeightMeta = const VerificationMeta('rowHeight');
+  @override
   late final GeneratedColumn<int?> rowHeight = GeneratedColumn<int?>('row_height', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(110));
+      type: const IntType(), requiredDuringInsert: false, defaultValue: Constant(110));
   final VerificationMeta _columnsCountMeta = const VerificationMeta('columnsCount');
+  @override
   late final GeneratedColumn<int?> columnsCount = GeneratedColumn<int?>('columns_count', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: false, defaultValue: Constant(6));
+      type: const IntType(), requiredDuringInsert: false, defaultValue: Constant(6));
   final VerificationMeta _orderMeta = const VerificationMeta('order');
+  @override
   late final GeneratedColumn<int?> order =
-      GeneratedColumn<int?>('order', aliasedName, false, typeName: 'INTEGER', requiredDuringInsert: true);
+      GeneratedColumn<int?>('order', aliasedName, false, type: const IntType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, name, sort, type, rowHeight, columnsCount, order];
   @override
@@ -792,18 +806,21 @@ class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategories
   final String? _alias;
   $AppsCategoriesTable(this._db, [this._alias]);
   final VerificationMeta _categoryIdMeta = const VerificationMeta('categoryId');
+  @override
   late final GeneratedColumn<int?> categoryId = GeneratedColumn<int?>('category_id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: true,
       $customConstraints: 'REFERENCES categories(id) ON DELETE CASCADE');
   final VerificationMeta _appPackageNameMeta = const VerificationMeta('appPackageName');
+  @override
   late final GeneratedColumn<String?> appPackageName = GeneratedColumn<String?>('app_package_name', aliasedName, false,
-      typeName: 'TEXT',
+      type: const StringType(),
       requiredDuringInsert: true,
       $customConstraints: 'REFERENCES apps(package_name) ON DELETE CASCADE');
   final VerificationMeta _orderMeta = const VerificationMeta('order');
+  @override
   late final GeneratedColumn<int?> order =
-      GeneratedColumn<int?>('order', aliasedName, false, typeName: 'INTEGER', requiredDuringInsert: true);
+      GeneratedColumn<int?>('order', aliasedName, false, type: const IntType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [categoryId, appPackageName, order];
   @override

@@ -17,7 +17,6 @@
  */
 
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/categories_panel_page.dart';
@@ -50,7 +49,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
             child: Navigator(
               key: _navigatorKey,
               initialRoute: widget.initialRoute ?? SettingsPanelPage.routeName,
-              observers: [FirebaseAnalyticsObserver(analytics: FirebaseAnalytics())],
+              observers: [FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)],
               onGenerateRoute: (settings) {
                 switch (settings.name) {
                   case SettingsPanelPage.routeName:

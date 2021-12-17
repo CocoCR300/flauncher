@@ -284,8 +284,10 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
           returnValue: _FakeSimpleSelectStatement_14<T, R>()) as _i2.SimpleSelectStatement<T, R>);
   @override
   _i2.JoinedSelectStatement<T, R> selectOnly<T extends _i2.HasResultSet, R>(_i2.ResultSetImplementation<T, R>? table,
-          {bool? distinct = false}) =>
-      (super.noSuchMethod(Invocation.method(#selectOnly, [table], {#distinct: distinct}),
+          {bool? distinct = false, bool? includeJoinedTableColumns = true}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #selectOnly, [table], {#distinct: distinct, #includeJoinedTableColumns: includeJoinedTableColumns}),
           returnValue: _FakeJoinedSelectStatement_15<T, R>()) as _i2.JoinedSelectStatement<T, R>);
   @override
   _i2.DeleteStatement<T, D> delete<T extends _i2.Table, D>(_i2.TableInfo<T, D>? table) =>
@@ -340,14 +342,18 @@ class MockFLauncherDatabase extends _i1.Mock implements _i3.FLauncherDatabase {
       (super.noSuchMethod(Invocation.method(#batch, [runInBatch]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
-  _i2.GenerationContext $write(_i2.Component? component, {bool? hasMultipleTables}) =>
-      (super.noSuchMethod(Invocation.method(#$write, [component], {#hasMultipleTables: hasMultipleTables}),
+  _i2.GenerationContext $write(_i2.Component? component, {bool? hasMultipleTables, int? startIndex}) =>
+      (super.noSuchMethod(
+          Invocation.method(#$write, [component], {#hasMultipleTables: hasMultipleTables, #startIndex: startIndex}),
           returnValue: _FakeGenerationContext_18()) as _i2.GenerationContext);
   @override
-  _i2.GenerationContext $writeInsertable(
-          _i2.TableInfo<_i2.Table, dynamic>? table, _i2.Insertable<dynamic>? insertable) =>
-      (super.noSuchMethod(Invocation.method(#$writeInsertable, [table, insertable]),
+  _i2.GenerationContext $writeInsertable(_i2.TableInfo<_i2.Table, dynamic>? table, _i2.Insertable<dynamic>? insertable,
+          {int? startIndex}) =>
+      (super.noSuchMethod(Invocation.method(#$writeInsertable, [table, insertable], {#startIndex: startIndex}),
           returnValue: _FakeGenerationContext_18()) as _i2.GenerationContext);
+  @override
+  String $expandVar(int? start, int? amount) =>
+      (super.noSuchMethod(Invocation.method(#$expandVar, [start, amount]), returnValue: '') as String);
   @override
   String toString() => super.toString();
 }
@@ -646,145 +652,117 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   }
 
   @override
-  _i10.Future<void> logEvent({String? name, Map<String, Object?>? parameters}) =>
-      (super.noSuchMethod(Invocation.method(#logEvent, [], {#name: name, #parameters: parameters}),
+  _i6.FirebaseApp get app =>
+      (super.noSuchMethod(Invocation.getter(#app), returnValue: _FakeFirebaseApp_20()) as _i6.FirebaseApp);
+  @override
+  set app(_i6.FirebaseApp? _app) => super.noSuchMethod(Invocation.setter(#app, _app), returnValueForMissingStub: null);
+  @override
+  Map<dynamic, dynamic> get pluginConstants =>
+      (super.noSuchMethod(Invocation.getter(#pluginConstants), returnValue: <dynamic, dynamic>{})
+          as Map<dynamic, dynamic>);
+  @override
+  _i10.Future<void> logEvent(
+          {String? name, Map<String, Object?>? parameters, _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logEvent, [], {#name: name, #parameters: parameters, #callOptions: callOptions}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> setConsent({bool? adStorageConsentGranted, bool? analyticsStorageConsentGranted}) =>
+      (super.noSuchMethod(
+          Invocation.method(#setConsent, [], {
+            #adStorageConsentGranted: adStorageConsentGranted,
+            #analyticsStorageConsentGranted: analyticsStorageConsentGranted
+          }),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> setDefaultEventParameters(Map<String, Object>? defaultParameters) =>
+      (super.noSuchMethod(Invocation.method(#setDefaultEventParameters, [defaultParameters]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
   _i10.Future<void> setAnalyticsCollectionEnabled(bool? enabled) =>
       (super.noSuchMethod(Invocation.method(#setAnalyticsCollectionEnabled, [enabled]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
-  _i10.Future<void> setUserId(String? id) => (super.noSuchMethod(Invocation.method(#setUserId, [id]),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  _i10.Future<void> setUserId({String? id, _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(Invocation.method(#setUserId, [], {#id: id, #callOptions: callOptions}),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
-  _i10.Future<void> setCurrentScreen({String? screenName, String? screenClassOverride = r'Flutter'}) =>
+  _i10.Future<void> setCurrentScreen(
+          {String? screenName, String? screenClassOverride = r'Flutter', _i17.AnalyticsCallOptions? callOptions}) =>
       (super.noSuchMethod(
-          Invocation.method(
-              #setCurrentScreen, [], {#screenName: screenName, #screenClassOverride: screenClassOverride}),
+          Invocation.method(#setCurrentScreen, [],
+              {#screenName: screenName, #screenClassOverride: screenClassOverride, #callOptions: callOptions}),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
-  _i10.Future<void> setUserProperty({String? name, String? value}) =>
-      (super.noSuchMethod(Invocation.method(#setUserProperty, [], {#name: name, #value: value}),
+  _i10.Future<void> setUserProperty({String? name, String? value, _i17.AnalyticsCallOptions? callOptions}) => (super
+      .noSuchMethod(Invocation.method(#setUserProperty, [], {#name: name, #value: value, #callOptions: callOptions}),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
   _i10.Future<void> resetAnalyticsData() => (super.noSuchMethod(Invocation.method(#resetAnalyticsData, []),
       returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
-  _i10.Future<void> logAddPaymentInfo() => (super.noSuchMethod(Invocation.method(#logAddPaymentInfo, []),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  _i10.Future<void> logAddPaymentInfo(
+          {String? coupon,
+          String? currency,
+          String? paymentType,
+          double? value,
+          List<_i17.AnalyticsEventItem>? items,
+          _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logAddPaymentInfo, [], {
+            #coupon: coupon,
+            #currency: currency,
+            #paymentType: paymentType,
+            #value: value,
+            #items: items,
+            #callOptions: callOptions
+          }),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logAddShippingInfo(
+          {String? coupon,
+          String? currency,
+          double? value,
+          String? shippingTier,
+          List<_i17.AnalyticsEventItem>? items,
+          _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logAddShippingInfo, [], {
+            #coupon: coupon,
+            #currency: currency,
+            #value: value,
+            #shippingTier: shippingTier,
+            #items: items,
+            #callOptions: callOptions
+          }),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
   _i10.Future<void> logAddToCart(
-          {String? itemId,
-          String? itemName,
-          String? itemCategory,
-          int? quantity,
-          double? price,
+          {List<_i17.AnalyticsEventItem>? items,
           double? value,
           String? currency,
-          String? origin,
-          String? itemLocationId,
-          String? destination,
-          String? startDate,
-          String? endDate}) =>
+          _i17.AnalyticsCallOptions? callOptions}) =>
       (super.noSuchMethod(
-          Invocation.method(#logAddToCart, [], {
-            #itemId: itemId,
-            #itemName: itemName,
-            #itemCategory: itemCategory,
-            #quantity: quantity,
-            #price: price,
-            #value: value,
-            #currency: currency,
-            #origin: origin,
-            #itemLocationId: itemLocationId,
-            #destination: destination,
-            #startDate: startDate,
-            #endDate: endDate
-          }),
+          Invocation.method(
+              #logAddToCart, [], {#items: items, #value: value, #currency: currency, #callOptions: callOptions}),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
   _i10.Future<void> logAddToWishlist(
-          {String? itemId,
-          String? itemName,
-          String? itemCategory,
-          int? quantity,
-          double? price,
+          {List<_i17.AnalyticsEventItem>? items,
           double? value,
           String? currency,
-          String? itemLocationId}) =>
+          _i17.AnalyticsCallOptions? callOptions}) =>
       (super.noSuchMethod(
-          Invocation.method(#logAddToWishlist, [], {
-            #itemId: itemId,
-            #itemName: itemName,
-            #itemCategory: itemCategory,
-            #quantity: quantity,
-            #price: price,
-            #value: value,
-            #currency: currency,
-            #itemLocationId: itemLocationId
-          }),
+          Invocation.method(
+              #logAddToWishlist, [], {#items: items, #value: value, #currency: currency, #callOptions: callOptions}),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
-  @override
-  _i10.Future<void> logAppOpen() => (super.noSuchMethod(Invocation.method(#logAppOpen, []),
-      returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
-  @override
-  _i10.Future<void> logBeginCheckout(
-          {double? value,
-          String? currency,
-          String? transactionId,
-          int? numberOfNights,
-          int? numberOfRooms,
-          int? numberOfPassengers,
-          String? origin,
-          String? destination,
-          String? startDate,
-          String? endDate,
-          String? travelClass}) =>
-      (super.noSuchMethod(
-          Invocation.method(#logBeginCheckout, [], {
-            #value: value,
-            #currency: currency,
-            #transactionId: transactionId,
-            #numberOfNights: numberOfNights,
-            #numberOfRooms: numberOfRooms,
-            #numberOfPassengers: numberOfPassengers,
-            #origin: origin,
-            #destination: destination,
-            #startDate: startDate,
-            #endDate: endDate,
-            #travelClass: travelClass
-          }),
-          returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
-  @override
-  _i10.Future<void> logCampaignDetails(
-          {String? source,
-          String? medium,
-          String? campaign,
-          String? term,
-          String? content,
-          String? aclid,
-          String? cp1}) =>
-      (super.noSuchMethod(
-          Invocation.method(#logCampaignDetails, [], {
-            #source: source,
-            #medium: medium,
-            #campaign: campaign,
-            #term: term,
-            #content: content,
-            #aclid: aclid,
-            #cp1: cp1
-          }),
-          returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
-  @override
-  _i10.Future<void> logEarnVirtualCurrency({String? virtualCurrencyName, num? value}) => (super.noSuchMethod(
-      Invocation.method(#logEarnVirtualCurrency, [], {#virtualCurrencyName: virtualCurrencyName, #value: value}),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
   _i10.Future<void> logEcommercePurchase(
           {String? currency,
@@ -823,33 +801,73 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
-  _i10.Future<void> logGenerateLead({String? currency, double? value}) =>
-      (super.noSuchMethod(Invocation.method(#logGenerateLead, [], {#currency: currency, #value: value}),
+  _i10.Future<void> logAdImpression(
+          {String? adPlatform,
+          String? adSource,
+          String? adFormat,
+          String? adUnitName,
+          double? value,
+          String? currency,
+          _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logAdImpression, [], {
+            #adPlatform: adPlatform,
+            #adSource: adSource,
+            #adFormat: adFormat,
+            #adUnitName: adUnitName,
+            #value: value,
+            #currency: currency,
+            #callOptions: callOptions
+          }),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logAppOpen({_i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(Invocation.method(#logAppOpen, [], {#callOptions: callOptions}),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
-  _i10.Future<void> logJoinGroup({String? groupId}) =>
-      (super.noSuchMethod(Invocation.method(#logJoinGroup, [], {#groupId: groupId}),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  _i10.Future<void> logBeginCheckout(
+          {double? value,
+          String? currency,
+          List<_i17.AnalyticsEventItem>? items,
+          String? coupon,
+          _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logBeginCheckout, [],
+              {#value: value, #currency: currency, #items: items, #coupon: coupon, #callOptions: callOptions}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
-  _i10.Future<void> logLevelUp({int? level, String? character}) =>
-      (super.noSuchMethod(Invocation.method(#logLevelUp, [], {#level: level, #character: character}),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  _i10.Future<void> logCampaignDetails(
+          {String? source,
+          String? medium,
+          String? campaign,
+          String? term,
+          String? content,
+          String? aclid,
+          String? cp1,
+          _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logCampaignDetails, [], {
+            #source: source,
+            #medium: medium,
+            #campaign: campaign,
+            #term: term,
+            #content: content,
+            #aclid: aclid,
+            #cp1: cp1,
+            #callOptions: callOptions
+          }),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
-  _i10.Future<void> logLevelStart({String? levelName}) =>
-      (super.noSuchMethod(Invocation.method(#logLevelStart, [], {#levelName: levelName}),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
-  @override
-  _i10.Future<void> logLevelEnd({String? levelName, int? success}) =>
-      (super.noSuchMethod(Invocation.method(#logLevelEnd, [], {#levelName: levelName, #success: success}),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
-  @override
-  _i10.Future<void> logLogin({String? loginMethod}) =>
-      (super.noSuchMethod(Invocation.method(#logLogin, [], {#loginMethod: loginMethod}),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
-  @override
-  _i10.Future<void> logPostScore({int? score, int? level, String? character}) =>
-      (super.noSuchMethod(Invocation.method(#logPostScore, [], {#score: score, #level: level, #character: character}),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  _i10.Future<void> logEarnVirtualCurrency(
+          {String? virtualCurrencyName, num? value, _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logEarnVirtualCurrency, [],
+              {#virtualCurrencyName: virtualCurrencyName, #value: value, #callOptions: callOptions}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
   _i10.Future<void> logPresentOffer(
           {String? itemId,
@@ -879,34 +897,131 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
       returnValue: Future<void>.value(),
       returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
-  _i10.Future<void> logRemoveFromCart(
-          {String? itemId,
-          String? itemName,
-          String? itemCategory,
-          int? quantity,
-          double? price,
-          double? value,
-          String? currency,
-          String? origin,
-          String? itemLocationId,
-          String? destination,
-          String? startDate,
-          String? endDate}) =>
+  _i10.Future<void> logGenerateLead({String? currency, double? value, _i17.AnalyticsCallOptions? callOptions}) =>
       (super.noSuchMethod(
-          Invocation.method(#logRemoveFromCart, [], {
-            #itemId: itemId,
-            #itemName: itemName,
-            #itemCategory: itemCategory,
-            #quantity: quantity,
-            #price: price,
-            #value: value,
+          Invocation.method(#logGenerateLead, [], {#currency: currency, #value: value, #callOptions: callOptions}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logJoinGroup({String? groupId, _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(Invocation.method(#logJoinGroup, [], {#groupId: groupId, #callOptions: callOptions}),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logLevelUp({int? level, String? character, _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logLevelUp, [], {#level: level, #character: character, #callOptions: callOptions}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logLevelStart({String? levelName, _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(Invocation.method(#logLevelStart, [], {#levelName: levelName, #callOptions: callOptions}),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logLevelEnd({String? levelName, int? success, _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logLevelEnd, [], {#levelName: levelName, #success: success, #callOptions: callOptions}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logSetCheckoutOption({int? checkoutStep, String? checkoutOption}) => (super.noSuchMethod(
+      Invocation.method(#logSetCheckoutOption, [], {#checkoutStep: checkoutStep, #checkoutOption: checkoutOption}),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logLogin({String? loginMethod, _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(Invocation.method(#logLogin, [], {#loginMethod: loginMethod, #callOptions: callOptions}),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logPostScore({int? score, int? level, String? character, _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #logPostScore, [], {#score: score, #level: level, #character: character, #callOptions: callOptions}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logPurchase(
+          {String? currency,
+          String? coupon,
+          double? value,
+          List<_i17.AnalyticsEventItem>? items,
+          double? tax,
+          double? shipping,
+          String? transactionId,
+          String? affiliation,
+          _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logPurchase, [], {
             #currency: currency,
-            #origin: origin,
-            #itemLocationId: itemLocationId,
-            #destination: destination,
-            #startDate: startDate,
-            #endDate: endDate
+            #coupon: coupon,
+            #value: value,
+            #items: items,
+            #tax: tax,
+            #shipping: shipping,
+            #transactionId: transactionId,
+            #affiliation: affiliation,
+            #callOptions: callOptions
           }),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logRemoveFromCart(
+          {String? currency,
+          double? value,
+          List<_i17.AnalyticsEventItem>? items,
+          _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #logRemoveFromCart, [], {#currency: currency, #value: value, #items: items, #callOptions: callOptions}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logScreenView({String? screenClass, String? screenName, _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #logScreenView, [], {#screenClass: screenClass, #screenName: screenName, #callOptions: callOptions}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logSelectItem(
+          {String? itemListId,
+          String? itemListName,
+          List<_i17.AnalyticsEventItem>? items,
+          _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logSelectItem, [],
+              {#itemListId: itemListId, #itemListName: itemListName, #items: items, #callOptions: callOptions}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logSelectPromotion(
+          {String? creativeName,
+          String? creativeSlot,
+          List<_i17.AnalyticsEventItem>? items,
+          String? locationId,
+          String? promotionId,
+          String? promotionName,
+          _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logSelectPromotion, [], {
+            #creativeName: creativeName,
+            #creativeSlot: creativeSlot,
+            #items: items,
+            #locationId: locationId,
+            #promotionId: promotionId,
+            #promotionName: promotionName,
+            #callOptions: callOptions
+          }),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logViewCart(
+          {String? currency,
+          double? value,
+          List<_i17.AnalyticsEventItem>? items,
+          _i17.AnalyticsCallOptions? callOptions}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #logViewCart, [], {#currency: currency, #value: value, #items: items, #callOptions: callOptions}),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
@@ -919,7 +1034,8 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
           String? destination,
           String? startDate,
           String? endDate,
-          String? travelClass}) =>
+          String? travelClass,
+          _i17.AnalyticsCallOptions? callOptions}) =>
       (super.noSuchMethod(
           Invocation.method(#logSearch, [], {
             #searchTerm: searchTerm,
@@ -930,7 +1046,8 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
             #destination: destination,
             #startDate: startDate,
             #endDate: endDate,
-            #travelClass: travelClass
+            #travelClass: travelClass,
+            #callOptions: callOptions
           }),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
@@ -938,11 +1055,6 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i10.Future<void> logSelectContent({String? contentType, String? itemId}) =>
       (super.noSuchMethod(Invocation.method(#logSelectContent, [], {#contentType: contentType, #itemId: itemId}),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
-  @override
-  _i10.Future<void> logSetCheckoutOption({int? checkoutStep, String? checkoutOption}) => (super.noSuchMethod(
-      Invocation.method(#logSetCheckoutOption, [], {#checkoutStep: checkoutStep, #checkoutOption: checkoutOption}),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
   _i10.Future<void> logShare({String? contentType, String? itemId, String? method}) => (super.noSuchMethod(
       Invocation.method(#logShare, [], {#contentType: contentType, #itemId: itemId, #method: method}),
@@ -970,55 +1082,65 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
       (super.noSuchMethod(Invocation.method(#logUnlockAchievement, [], {#id: id}),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
-  _i10.Future<void> logViewItem(
-          {String? itemId,
-          String? itemName,
-          String? itemCategory,
-          String? itemLocationId,
-          double? price,
-          int? quantity,
-          String? currency,
-          double? value,
-          String? flightNumber,
-          int? numberOfPassengers,
-          int? numberOfNights,
-          int? numberOfRooms,
-          String? origin,
-          String? destination,
-          String? startDate,
-          String? endDate,
-          String? searchTerm,
-          String? travelClass}) =>
+  _i10.Future<void> logViewItem({String? currency, double? value, List<_i17.AnalyticsEventItem>? items}) =>
+      (super.noSuchMethod(Invocation.method(#logViewItem, [], {#currency: currency, #value: value, #items: items}),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logViewItemList({List<_i17.AnalyticsEventItem>? items, String? itemListId, String? itemListName}) =>
       (super.noSuchMethod(
-          Invocation.method(#logViewItem, [], {
-            #itemId: itemId,
-            #itemName: itemName,
-            #itemCategory: itemCategory,
-            #itemLocationId: itemLocationId,
-            #price: price,
-            #quantity: quantity,
-            #currency: currency,
-            #value: value,
-            #flightNumber: flightNumber,
-            #numberOfPassengers: numberOfPassengers,
-            #numberOfNights: numberOfNights,
-            #numberOfRooms: numberOfRooms,
-            #origin: origin,
-            #destination: destination,
-            #startDate: startDate,
-            #endDate: endDate,
-            #searchTerm: searchTerm,
-            #travelClass: travelClass
+          Invocation.method(
+              #logViewItemList, [], {#items: items, #itemListId: itemListId, #itemListName: itemListName}),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logViewPromotion(
+          {String? creativeName,
+          String? creativeSlot,
+          List<_i17.AnalyticsEventItem>? items,
+          String? locationId,
+          String? promotionId,
+          String? promotionName}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logViewPromotion, [], {
+            #creativeName: creativeName,
+            #creativeSlot: creativeSlot,
+            #items: items,
+            #locationId: locationId,
+            #promotionId: promotionId,
+            #promotionName: promotionName
           }),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
-  _i10.Future<void> logViewItemList({String? itemCategory}) =>
-      (super.noSuchMethod(Invocation.method(#logViewItemList, [], {#itemCategory: itemCategory}),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
-  @override
   _i10.Future<void> logViewSearchResults({String? searchTerm}) =>
       (super.noSuchMethod(Invocation.method(#logViewSearchResults, [], {#searchTerm: searchTerm}),
+          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> logRefund(
+          {String? currency,
+          String? coupon,
+          double? value,
+          double? tax,
+          double? shipping,
+          String? transactionId,
+          String? affiliation,
+          List<_i17.AnalyticsEventItem>? items}) =>
+      (super.noSuchMethod(
+          Invocation.method(#logRefund, [], {
+            #currency: currency,
+            #coupon: coupon,
+            #value: value,
+            #tax: tax,
+            #shipping: shipping,
+            #transactionId: transactionId,
+            #affiliation: affiliation,
+            #items: items
+          }),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
+  _i10.Future<void> setSessionTimeoutDuration(Duration? timeout) =>
+      (super.noSuchMethod(Invocation.method(#setSessionTimeoutDuration, [timeout]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
   String toString() => super.toString();
