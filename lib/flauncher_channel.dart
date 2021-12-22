@@ -39,6 +39,8 @@ class FLauncherChannel {
   Future<bool> checkForGetContentAvailability() async =>
       await _methodChannel.invokeMethod("checkForGetContentAvailability");
 
+  Future<void> startAmbientMode() async => await _methodChannel.invokeMethod("startAmbientMode");
+
   void addAppsChangedListener(void Function(Map<dynamic, dynamic>) listener) =>
       _eventChannel.receiveBroadcastStream().listen((event) => listener(event));
 }

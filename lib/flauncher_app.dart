@@ -120,7 +120,13 @@ class FLauncherApp extends StatelessWidget {
           ),
           home: Builder(
             builder: (context) => WillPopScope(
-              onWillPop: () => shouldPopScope(context),
+              onWillPop: () async {
+                final shouldPop = await shouldPopScope(context);
+                if (!shouldPop) {
+                  context.read<AppsService>().startAmbientMode();
+                }
+                return shouldPop;
+              },
               child: Actions(actions: {BackIntent: BackAction(context, systemNavigator: true)}, child: FLauncher()),
             ),
           ),

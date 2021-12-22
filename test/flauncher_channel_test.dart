@@ -141,4 +141,21 @@ void main() {
 
     expect(getContentAvailable, isTrue);
   });
+
+  test("startAmbientMode", () async {
+    final channel = MethodChannel('me.efesser.flauncher/method');
+    bool called = false;
+    channel.setMockMethodCallHandler((call) async {
+      if (call.method == "startAmbientMode") {
+        called = true;
+        return;
+      }
+      fail("Unhandled method name");
+    });
+    final fLauncherChannel = FLauncherChannel();
+
+    await fLauncherChannel.startAmbientMode();
+
+    expect(called, isTrue);
+  });
 }

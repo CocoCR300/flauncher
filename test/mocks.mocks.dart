@@ -117,6 +117,9 @@ class MockFLauncherChannel extends _i1.Mock implements _i9.FLauncherChannel {
           .noSuchMethod(Invocation.method(#checkForGetContentAvailability, []), returnValue: Future<bool>.value(false))
       as _i10.Future<bool>);
   @override
+  _i10.Future<void> startAmbientMode() => (super.noSuchMethod(Invocation.method(#startAmbientMode, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
   void addAppsChangedListener(void Function(Map<dynamic, dynamic>)? listener) =>
       super.noSuchMethod(Invocation.method(#addAppsChangedListener, [listener]), returnValueForMissingStub: null);
   @override
@@ -444,6 +447,9 @@ class MockAppsService extends _i1.Mock implements _i14.AppsService {
   _i10.Future<bool> isDefaultLauncher() =>
       (super.noSuchMethod(Invocation.method(#isDefaultLauncher, []), returnValue: Future<bool>.value(false))
           as _i10.Future<bool>);
+  @override
+  _i10.Future<void> startAmbientMode() => (super.noSuchMethod(Invocation.method(#startAmbientMode, []),
+      returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
   _i10.Future<void> addToCategory(_i3.App? app, _i3.Category? category, {bool? shouldNotifyListeners = true}) => (super
       .noSuchMethod(Invocation.method(#addToCategory, [app, category], {#shouldNotifyListeners: shouldNotifyListeners}),

@@ -56,6 +56,7 @@ class MainActivity : FlutterActivity() {
                 "uninstallApp" -> result.success(uninstallApp(call.arguments as String))
                 "isDefaultLauncher" -> result.success(isDefaultLauncher())
                 "checkForGetContentAvailability" -> result.success(checkForGetContentAvailability())
+                "startAmbientMode" -> result.success(startAmbientMode())
                 else -> throw IllegalArgumentException()
             }
         }
@@ -115,12 +116,10 @@ class MainActivity : FlutterActivity() {
         val tvActivitiesInfo = queryIntentActivities(false)
                 .filter { it.packageName == packageName }
                 .map { buildAppMap(it, false) }
-        return if (tvActivitiesInfo.isNotEmpty()) {
-            tvActivitiesInfo
-        } else {
+        return tvActivitiesInfo.ifEmpty {
             queryIntentActivities(true)
-                    .filter { it.packageName == packageName }
-                    .map { buildAppMap(it, true) }
+                .filter { it.packageName == packageName }
+                .map { buildAppMap(it, true) }
         }
     }
 
@@ -182,6 +181,15 @@ class MainActivity : FlutterActivity() {
     private fun isDefaultLauncher() = try {
         val defaultLauncher = packageManager.resolveActivity(Intent(ACTION_MAIN).addCategory(CATEGORY_HOME), 0)
         defaultLauncher?.activityInfo?.packageName == packageName
+    } catch (e: Exception) {
+        false
+    }
+
+    private fun startAmbientMode() = try {
+        Intent(ACTION_MAIN)
+            .setClassName("com.android.systemui", "com.android.systemui.Somnambulator")
+            .let(::startActivity)
+        true
     } catch (e: Exception) {
         false
     }
