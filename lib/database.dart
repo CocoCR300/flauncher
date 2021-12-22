@@ -136,6 +136,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
         },
         beforeOpen: (openingDetails) async {
           await customStatement('PRAGMA foreign_keys = ON;');
+          await customStatement('PRAGMA journal_mode = WAL;');
           wasCreated = openingDetails.wasCreated;
         },
       );
