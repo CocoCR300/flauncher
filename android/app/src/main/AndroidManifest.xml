@@ -56,9 +56,6 @@
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
             <meta-data
-                android:name="io.flutter.embedding.android.SplashScreenDrawable"
-                android:resource="@drawable/launch_background" />
-            <meta-data
                 android:name="firebase_crashlytics_collection_enabled"
                 android:value="false" />
 
