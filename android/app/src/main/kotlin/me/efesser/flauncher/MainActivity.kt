@@ -194,7 +194,11 @@ class MainActivity : FlutterActivity() {
         false
     }
 
-    private fun drawableToByteArray(drawable: Drawable): ByteArray {
+    private fun drawableToByteArray(drawable: Drawable): ByteArray? {
+        if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
+            return null
+        }
+
         fun drawableToBitmap(drawable: Drawable): Bitmap {
             val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(bitmap)
