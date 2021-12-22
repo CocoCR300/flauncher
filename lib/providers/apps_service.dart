@@ -72,7 +72,7 @@ class AppsService extends ChangeNotifier {
   AppsCompanion _buildAppCompanion(dynamic data) => AppsCompanion(
         packageName: Value(data["packageName"]),
         name: Value(data["name"]),
-        version: Value(data["version"]),
+        version: Value(data["version"] ?? "(unknown)"),
         banner: Value(data["banner"]),
         icon: Value(data["icon"]),
         hidden: Value.absent(),

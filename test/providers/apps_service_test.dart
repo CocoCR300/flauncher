@@ -34,7 +34,7 @@ void main() {
             {
               'packageName': 'me.efesser.flauncher',
               'name': 'FLauncher',
-              'version': '1.0.0',
+              'version': null,
               'banner': null,
               'icon': null,
               'sideloaded': false
@@ -84,7 +84,7 @@ void main() {
           AppsCompanion.insert(
             packageName: "me.efesser.flauncher",
             name: "FLauncher",
-            version: "1.0.0",
+            version: "(unknown)",
             banner: Value(null),
             icon: Value(null),
             sideloaded: Value(false),
