@@ -21,6 +21,7 @@ import 'package:flauncher/flauncher.dart';
 import 'package:flauncher/gradients.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/ticker_model.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
@@ -161,7 +162,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(find.byType(SettingsPanelPage), findsOneWidget);
   });
@@ -188,7 +189,7 @@ void main() {
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.select);
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     verify(appsService.launchApp(app));
   });
@@ -217,7 +218,7 @@ void main() {
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
     await tester.longPress(find.byKey(Key("${applicationsCategory.id}-me.efesser.flauncher")));
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(find.byType(ApplicationInfoPanel), findsOneWidget);
   });
@@ -253,16 +254,16 @@ void main() {
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
     await tester.longPress(find.byKey(Key("${applicationsCategory.id}-me.efesser.flauncher")));
-    await tester.pumpAndSettle();
+    await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
+    await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-    await tester.pumpAndSettle();
+    await tester.pump();
     verify(appsService.reorderApplication(applicationsCategory, 0, 1));
     await tester.sendKeyEvent(LogicalKeyboardKey.select);
-    await tester.pumpAndSettle();
+    await tester.pump();
     verify(appsService.saveOrderInCategory(applicationsCategory));
   });
 
@@ -297,16 +298,16 @@ void main() {
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
     await tester.longPress(find.byKey(Key("${applicationsCategory.id}-me.efesser.flauncher")));
-    await tester.pumpAndSettle();
+    await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
+    await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-    await tester.pumpAndSettle();
+    await tester.pump();
     verify(appsService.reorderApplication(applicationsCategory, 0, 1));
     await tester.sendKeyEvent(LogicalKeyboardKey.select);
-    await tester.pumpAndSettle();
+    await tester.pump();
     verify(appsService.saveOrderInCategory(applicationsCategory));
   });
 }
@@ -323,11 +324,12 @@ Future<void> _pumpWidgetWithProviders(
         ChangeNotifierProvider<WallpaperService>.value(value: wallpaperService),
         ChangeNotifierProvider<AppsService>.value(value: appsService),
         ChangeNotifierProvider<SettingsService>.value(value: settingsService),
+        Provider<TickerModel>(create: (_) => TickerModel(tester))
       ],
       builder: (_, __) => MaterialApp(
         home: FLauncher(),
       ),
     ),
   );
-  await tester.pumpAndSettle();
+  await tester.pump(Duration(seconds: 30), EnginePhase.sendSemanticsUpdate);
 }

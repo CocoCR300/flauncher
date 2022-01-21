@@ -22,6 +22,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flauncher/actions.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/ticker_model.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/unsplash_service.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +79,8 @@ class FLauncherApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => AppsService(_fLauncherChannel, _fLauncherDatabase)),
           ChangeNotifierProxyProvider<SettingsService, WallpaperService>(
               create: (_) => WallpaperService(_imagePicker, _fLauncherChannel, _unsplashService),
-              update: (_, settingsService, wallpaperService) => wallpaperService!..settingsService = settingsService)
+              update: (_, settingsService, wallpaperService) => wallpaperService!..settingsService = settingsService),
+          Provider<TickerModel>(create: (context) => TickerModel(null))
         ],
         child: MaterialApp(
           shortcuts: {
