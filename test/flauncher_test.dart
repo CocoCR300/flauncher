@@ -34,6 +34,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import 'helpers.dart';
 import 'mocks.dart';
 import 'mocks.mocks.dart';
 
@@ -309,6 +310,330 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.select);
     await tester.pump();
     verify(appsService.saveOrderInCategory(applicationsCategory));
+  });
+
+  testWidgets("Moving down does not skip row", (tester) async {
+    // given
+    final appsService = MockAppsService();
+    final wallpaperService = MockWallpaperService();
+    final settingsService = MockSettingsService();
+
+    when(appsService.initialized).thenReturn(true);
+    when(wallpaperService.wallpaperBytes).thenReturn(null);
+    when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
+
+    /*
+     * we are creating 3 rows like the following:
+     * ▭ ▭ ▭
+     * ▭ ▭
+     * ▭ ▭ ▭
+     */
+    when(appsService.categoriesWithApps).thenReturn([
+      CategoryWithApps(fakeCategory(name: "tv", order: 0), [
+        fakeApp(
+          packageName: "me.efesser.tv1",
+          name: "tv 1",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.tv2",
+          name: "tv 2",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.tv3",
+          name: "tv 3",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        )
+      ]),
+      CategoryWithApps(fakeCategory(name: "music", order: 1), [
+        fakeApp(
+          packageName: "me.efesser.music1",
+          name: "music 1",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.music2",
+          name: "music 2",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        )
+      ]),
+      CategoryWithApps(fakeCategory(name: "games", order: 2), [
+        fakeApp(
+          packageName: "me.efesser.game1",
+          name: "game 1",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.game2",
+          name: "game 2",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.game3",
+          name: "game 3",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        )
+      ]),
+    ]);
+
+    await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
+
+    // when
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+
+    // then
+    Element? tv1 = findAppCardByPackageName(tester, "me.efesser.tv1");
+    expect(tv1, isNotNull);
+    Element? music2 = findAppCardByPackageName(tester, "me.efesser.music2");
+    expect(music2, isNotNull);
+    expect(Focus.of(tv1!).hasFocus, isFalse);
+    expect(Focus.of(music2!).hasFocus, isTrue); // this is new, before it was going straight to the third row
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    Element? game2 = findAppCardByPackageName(tester, "me.efesser.game2");
+    expect(game2, isNotNull);
+    expect(Focus.of(tv1).hasFocus, isFalse);
+    expect(Focus.of(music2).hasFocus, isFalse);
+    expect(Focus.of(game2!).hasFocus, isTrue);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    expect(Focus.of(tv1).hasFocus, isFalse);
+    expect(Focus.of(music2).hasFocus, isTrue);
+    expect(Focus.of(game2).hasFocus, isFalse);
+  });
+
+  testWidgets("Moving left or right stays on the same row", (tester) async {
+    // given
+    final appsService = MockAppsService();
+    final wallpaperService = MockWallpaperService();
+    final settingsService = MockSettingsService();
+
+    when(appsService.initialized).thenReturn(true);
+    when(wallpaperService.wallpaperBytes).thenReturn(null);
+    when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
+
+    /*
+     * we are creating 2 rows like the following:
+     * ▭ ▭
+     * ▭ ▭ ▭ ▭ ▭
+     */
+    when(appsService.categoriesWithApps).thenReturn([
+      CategoryWithApps(fakeCategory(name: "tv", order: 0), [
+        fakeApp(
+          packageName: "me.efesser.tv1",
+          name: "tv 1",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.tv2",
+          name: "tv 2",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+      ]),
+      CategoryWithApps(fakeCategory(name: "music", order: 1, columnsCount: 5), [
+        fakeApp(
+          packageName: "me.efesser.music1",
+          name: "music 1",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.music2",
+          name: "music 2",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.music3",
+          name: "music 3",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.music4",
+          name: "music 4",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.music5",
+          name: "music 5",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+      ]),
+    ]);
+
+    await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
+
+    // then
+    Element? tv1 = findAppCardByPackageName(tester, "me.efesser.tv1");
+    expect(tv1, isNotNull);
+    expect(Focus.of(tv1!).hasFocus, isTrue);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    Element? music1 = findAppCardByPackageName(tester, "me.efesser.music1");
+    expect(music1, isNotNull);
+    expect(Focus.of(tv1).hasFocus, isFalse);
+    expect(Focus.of(music1!).hasFocus, isTrue);
+
+    // check right direction
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    Element? music2 = findAppCardByPackageName(tester, "me.efesser.music2");
+    expect(music2, isNotNull);
+    expect(Focus.of(tv1).hasFocus, isFalse);
+    expect(Focus.of(music1).hasFocus, isFalse);
+    expect(Focus.of(music2!).hasFocus, isTrue);
+
+    // check if right on the last app stays on the same app
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    Element? music5 = findAppCardByPackageName(tester, "me.efesser.music5");
+    expect(music5, isNotNull);
+    // Element? settings = findSettingsIcon(tester);
+    // expect(settings, isNotNull);
+    expect(Focus.of(music5!).hasFocus, isTrue);
+    // expect(Focus.of(settings!).hasFocus, isTrue);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    Element? tv2 = findAppCardByPackageName(tester, "me.efesser.tv2");
+    expect(tv2, isNotNull);
+    expect(Focus.of(tv2!).hasFocus, isTrue);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    expect(Focus.of(music2).hasFocus, isTrue);
+
+    // check left direction
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    expect(Focus.of(music1).hasFocus, isTrue);
+
+    // check if going left on the first app stays on the same app
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    expect(Focus.of(music1).hasFocus, isTrue);
+  });
+
+  testWidgets("Moving right or up can go the settings icon", (tester) async {
+    // given
+    final appsService = MockAppsService();
+    final wallpaperService = MockWallpaperService();
+    final settingsService = MockSettingsService();
+
+    when(appsService.initialized).thenReturn(true);
+    when(wallpaperService.wallpaperBytes).thenReturn(null);
+    when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
+    when(settingsService.use24HourTimeFormat).thenReturn(false);
+
+    /*
+     * we are creating 2 rows like the following:
+     * ▭ ▭
+     * ▭ ▭ ▭
+     */
+    when(appsService.categoriesWithApps).thenReturn([
+      CategoryWithApps(fakeCategory(name: "tv", order: 0), [
+        fakeApp(
+          packageName: "me.efesser.tv1",
+          name: "tv 1",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.tv2",
+          name: "tv 2",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+      ]),
+      CategoryWithApps(fakeCategory(name: "music", order: 1), [
+        fakeApp(
+          packageName: "me.efesser.music1",
+          name: "music 1",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.music2",
+          name: "music 2",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+        fakeApp(
+          packageName: "me.efesser.music3",
+          name: "music 3",
+          version: "1.0.0",
+          banner: kTransparentImage,
+          icon: kTransparentImage,
+        ),
+      ]),
+    ]);
+
+    await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
+
+    // then
+    Element? tv1 = findAppCardByPackageName(tester, "me.efesser.tv1");
+    expect(tv1, isNotNull);
+    expect(Focus.of(tv1!).hasFocus, isTrue);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+
+    Element? settingsIcon = findSettingsIcon(tester);
+    expect(settingsIcon, isNotNull);
+    expect(Focus.of(tv1).hasFocus, isFalse);
+    expect(Focus.of(settingsIcon!).hasFocus, isTrue);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    Element? tv2 = findAppCardByPackageName(tester, "me.efesser.tv2");
+    expect(tv2, isNotNull);
+    expect(Focus.of(settingsIcon).hasFocus, isFalse);
+    expect(Focus.of(tv1).hasFocus, isFalse);
+    expect(Focus.of(tv2!).hasFocus, isTrue);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    expect(Focus.of(settingsIcon).hasFocus, isTrue);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    expect(Focus.of(settingsIcon).hasFocus, isTrue);
   });
 }
 

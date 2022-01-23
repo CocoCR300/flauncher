@@ -19,6 +19,7 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:flauncher/custom_traversal_policy.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
@@ -31,24 +32,27 @@ import 'package:provider/provider.dart';
 
 class FLauncher extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => Stack(
-        children: [
-          Consumer<WallpaperService>(
-            builder: (_, wallpaper, __) => _wallpaper(context, wallpaper.wallpaperBytes, wallpaper.gradient.gradient),
-          ),
-          Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: _appBar(context),
-            body: Padding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: Consumer<AppsService>(
-                builder: (context, appsService, _) => appsService.initialized
-                    ? SingleChildScrollView(child: _categories(appsService.categoriesWithApps))
-                    : _emptyState(context),
+  Widget build(BuildContext context) => FocusTraversalGroup(
+        policy: RowByRowTraversalPolicy(),
+        child: Stack(
+          children: [
+            Consumer<WallpaperService>(
+              builder: (_, wallpaper, __) => _wallpaper(context, wallpaper.wallpaperBytes, wallpaper.gradient.gradient),
+            ),
+            Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: _appBar(context),
+              body: Padding(
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Consumer<AppsService>(
+                  builder: (context, appsService, _) => appsService.initialized
+                      ? SingleChildScrollView(child: _categories(appsService.categoriesWithApps))
+                      : _emptyState(context),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
 
   Widget _categories(List<CategoryWithApps> categoriesWithApps) => Column(
