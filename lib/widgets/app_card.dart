@@ -86,8 +86,8 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    super.dispose();
     _animation.dispose();
+    super.dispose();
   }
 
   ImageProvider _cachedMemoryImage(Uint8List bytes) {
