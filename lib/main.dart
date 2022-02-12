@@ -82,8 +82,8 @@ Future<void> main() async {
   }, firebaseCrashlytics.recordError);
 }
 
-Future<RemoteConfig> _initFirebaseRemoteConfig() async {
-  final remoteConfig = RemoteConfig.instance;
+Future<FirebaseRemoteConfig> _initFirebaseRemoteConfig() async {
+  final remoteConfig = FirebaseRemoteConfig.instance;
   await remoteConfig.setDefaults({"unsplash_enabled": false, "unsplash_access_key": "", "unsplash_secret_key": ""});
   await remoteConfig.setConfigSettings(
     RemoteConfigSettings(

@@ -246,9 +246,10 @@ class AppsCompanion extends UpdateCompanion<App> {
 }
 
 class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $AppsTable(this._db, [this._alias]);
+  $AppsTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _packageNameMeta = const VerificationMeta('packageName');
   @override
   late final GeneratedColumn<String?> packageName = GeneratedColumn<String?>('package_name', aliasedName, false,
@@ -332,7 +333,7 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
 
   @override
   $AppsTable createAlias(String alias) {
-    return $AppsTable(_db, alias);
+    return $AppsTable(attachedDatabase, alias);
   }
 }
 
@@ -580,9 +581,10 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
 }
 
 class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Category> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $CategoriesTable(this._db, [this._alias]);
+  $CategoriesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>('id', aliasedName, false,
@@ -658,7 +660,7 @@ class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, Categ
 
   @override
   $CategoriesTable createAlias(String alias) {
-    return $CategoriesTable(_db, alias);
+    return $CategoriesTable(attachedDatabase, alias);
   }
 
   static TypeConverter<CategorySort, int> $converter0 = const EnumIndexConverter<CategorySort>(CategorySort.values);
@@ -802,9 +804,10 @@ class AppsCategoriesCompanion extends UpdateCompanion<AppCategory> {
 }
 
 class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategoriesTable, AppCategory> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $AppsCategoriesTable(this._db, [this._alias]);
+  $AppsCategoriesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _categoryIdMeta = const VerificationMeta('categoryId');
   @override
   late final GeneratedColumn<int?> categoryId = GeneratedColumn<int?>('category_id', aliasedName, false,
@@ -859,7 +862,7 @@ class $AppsCategoriesTable extends AppsCategories with TableInfo<$AppsCategories
 
   @override
   $AppsCategoriesTable createAlias(String alias) {
-    return $AppsCategoriesTable(_db, alias);
+    return $AppsCategoriesTable(attachedDatabase, alias);
   }
 }
 

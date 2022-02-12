@@ -43,7 +43,7 @@ class FLauncherApp extends StatelessWidget {
   final FLauncherChannel _fLauncherChannel;
   final FLauncherDatabase _fLauncherDatabase;
   final UnsplashService _unsplashService;
-  final RemoteConfig _remoteConfig;
+  final FirebaseRemoteConfig _firebaseRemoteConfig;
 
   static const MaterialColor _swatch = MaterialColor(0xFF011526, <int, Color>{
     50: Color(0xFF36A0FA),
@@ -66,7 +66,7 @@ class FLauncherApp extends StatelessWidget {
     this._fLauncherChannel,
     this._fLauncherDatabase,
     this._unsplashService,
-    this._remoteConfig,
+    this._firebaseRemoteConfig,
   );
 
   @override
@@ -74,7 +74,7 @@ class FLauncherApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(
               create: (_) =>
-                  SettingsService(_sharedPreferences, _firebaseCrashlytics, _firebaseAnalytics, _remoteConfig),
+                  SettingsService(_sharedPreferences, _firebaseCrashlytics, _firebaseAnalytics, _firebaseRemoteConfig),
               lazy: false),
           ChangeNotifierProvider(create: (_) => AppsService(_fLauncherChannel, _fLauncherDatabase)),
           ChangeNotifierProxyProvider<SettingsService, WallpaperService>(

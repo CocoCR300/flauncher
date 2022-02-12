@@ -35,7 +35,7 @@ class SettingsService extends ChangeNotifier {
   final SharedPreferences _sharedPreferences;
   final FirebaseCrashlytics _firebaseCrashlytics;
   final FirebaseAnalytics _firebaseAnalytics;
-  final RemoteConfig _remoteConfig;
+  final FirebaseRemoteConfig _firebaseRemoteConfig;
   late final Timer _remoteConfigRefreshTimer;
 
   bool get crashReportsEnabled => _sharedPreferences.getBool(_crashReportsEnabledKey) ?? true;
@@ -46,11 +46,16 @@ class SettingsService extends ChangeNotifier {
 
   String? get gradientUuid => _sharedPreferences.getString(_gradientUuidKey);
 
-  bool get unsplashEnabled => _remoteConfig.getBool(_unsplashEnabledKey);
+  bool get unsplashEnabled => _firebaseRemoteConfig.getBool(_unsplashEnabledKey);
 
   String? get unsplashAuthor => _sharedPreferences.getString(_unsplashAuthorKey);
 
-  SettingsService(this._sharedPreferences, this._firebaseCrashlytics, this._firebaseAnalytics, this._remoteConfig) {
+  SettingsService(
+    this._sharedPreferences,
+    this._firebaseCrashlytics,
+    this._firebaseAnalytics,
+    this._firebaseRemoteConfig,
+  ) {
     _firebaseCrashlytics.setCrashlyticsCollectionEnabled(kReleaseMode && crashReportsEnabled);
     _firebaseAnalytics.setAnalyticsCollectionEnabled(kReleaseMode && analyticsEnabled);
     _remoteConfigRefreshTimer = Timer.periodic(Duration(hours: 6, minutes: 1), (_) => _refreshFirebaseRemoteConfig());
@@ -96,7 +101,7 @@ class SettingsService extends ChangeNotifier {
   Future<void> _refreshFirebaseRemoteConfig() async {
     bool updated = false;
     try {
-      updated = await _remoteConfig.fetchAndActivate();
+      updated = await _firebaseRemoteConfig.fetchAndActivate();
     } catch (e) {
       debugPrint("Could not refresh Firebase Remote Config: $e");
     }

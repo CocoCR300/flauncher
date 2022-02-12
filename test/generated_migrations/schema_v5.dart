@@ -241,9 +241,10 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
 }
 
 class Apps extends Table with TableInfo<Apps, AppsData> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  Apps(this._db, [this._alias]);
+  Apps(this.attachedDatabase, [this._alias]);
   late final GeneratedColumn<String?> packageName = GeneratedColumn<String?>('package_name', aliasedName, false,
       type: const StringType(), requiredDuringInsert: true);
   late final GeneratedColumn<String?> name =
@@ -279,7 +280,7 @@ class Apps extends Table with TableInfo<Apps, AppsData> {
 
   @override
   Apps createAlias(String alias) {
-    return Apps(_db, alias);
+    return Apps(attachedDatabase, alias);
   }
 
   @override
@@ -514,9 +515,10 @@ class CategoriesCompanion extends UpdateCompanion<CategoriesData> {
 }
 
 class Categories extends Table with TableInfo<Categories, CategoriesData> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  Categories(this._db, [this._alias]);
+  Categories(this.attachedDatabase, [this._alias]);
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>('id', aliasedName, false,
       type: const IntType(), requiredDuringInsert: false, defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   late final GeneratedColumn<String?> name =
@@ -546,7 +548,7 @@ class Categories extends Table with TableInfo<Categories, CategoriesData> {
 
   @override
   Categories createAlias(String alias) {
-    return Categories(_db, alias);
+    return Categories(attachedDatabase, alias);
   }
 
   @override
@@ -690,9 +692,10 @@ class AppsCategoriesCompanion extends UpdateCompanion<AppsCategoriesData> {
 }
 
 class AppsCategories extends Table with TableInfo<AppsCategories, AppsCategoriesData> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  AppsCategories(this._db, [this._alias]);
+  AppsCategories(this.attachedDatabase, [this._alias]);
   late final GeneratedColumn<int?> categoryId = GeneratedColumn<int?>('category_id', aliasedName, false,
       type: const IntType(),
       requiredDuringInsert: true,
@@ -718,7 +721,7 @@ class AppsCategories extends Table with TableInfo<AppsCategories, AppsCategories
 
   @override
   AppsCategories createAlias(String alias) {
-    return AppsCategories(_db, alias);
+    return AppsCategories(attachedDatabase, alias);
   }
 
   @override
