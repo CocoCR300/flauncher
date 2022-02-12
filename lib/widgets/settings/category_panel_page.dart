@@ -18,6 +18,7 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/add_category_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,134 +35,145 @@ class CategoryPanelPage extends StatelessWidget {
         child: Selector<AppsService, Category?>(
           selector: (_, appsService) => _categorySelector(appsService),
           builder: (_, category, __) => category != null
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(category.name, style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center),
-                    Divider(),
-                    _listTile(
-                      context,
-                      Text("Name"),
-                      Text(category.name),
-                      trailing: IconButton(
-                        constraints: BoxConstraints(),
-                        splashRadius: 20,
-                        icon: Icon(Icons.edit),
-                        onPressed: () => _renameCategory(context, category),
-                      ),
-                    ),
-                    _listTile(
-                      context,
-                      Text("Sort"),
-                      Column(
-                        children: [
-                          SizedBox(height: 4),
-                          DropdownButton<CategorySort>(
-                            value: category.sort,
-                            onChanged: (value) => context.read<AppsService>().setCategorySort(category, value!),
-                            isDense: true,
-                            isExpanded: true,
-                            items: [
-                              DropdownMenuItem(
-                                value: CategorySort.alphabetical,
-                                child: Text("Alphabetical", style: Theme.of(context).textTheme.caption),
-                              ),
-                              DropdownMenuItem(
-                                value: CategorySort.manual,
-                                child: Text("Manual", style: Theme.of(context).textTheme.caption),
+              ? Selector<SettingsService, bool>(
+                  selector: (_, settingsService) => settingsService.soundFeedbackEnabled,
+                  builder: (context, soundFeedbackEnabled, _) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(category.name, style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center),
+                        Divider(),
+                        _listTile(
+                          context,
+                          Text("Name"),
+                          Text(category.name),
+                          trailing: IconButton(
+                            constraints: BoxConstraints(),
+                            splashRadius: 20,
+                            icon: Icon(Icons.edit),
+                            enableFeedback: soundFeedbackEnabled,
+                            onPressed: () => _renameCategory(context, category),
+                          ),
+                        ),
+                        _listTile(
+                          context,
+                          Text("Sort"),
+                          Column(
+                            children: [
+                              SizedBox(height: 4),
+                              DropdownButton<CategorySort>(
+                                value: category.sort,
+                                enableFeedback: soundFeedbackEnabled,
+                                onChanged: (value) => context.read<AppsService>().setCategorySort(category, value!),
+                                isDense: true,
+                                isExpanded: true,
+                                items: [
+                                  DropdownMenuItem(
+                                    value: CategorySort.alphabetical,
+                                    child: Text("Alphabetical", style: Theme.of(context).textTheme.caption),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: CategorySort.manual,
+                                    child: Text("Manual", style: Theme.of(context).textTheme.caption),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    _listTile(
-                      context,
-                      Text("Type"),
-                      Column(
-                        children: [
-                          SizedBox(height: 4),
-                          DropdownButton<CategoryType>(
-                            value: category.type,
-                            onChanged: (value) => context.read<AppsService>().setCategoryType(category, value!),
-                            isDense: true,
-                            isExpanded: true,
-                            items: [
-                              DropdownMenuItem(
-                                value: CategoryType.row,
-                                child: Text("Row", style: Theme.of(context).textTheme.caption),
-                              ),
-                              DropdownMenuItem(
-                                value: CategoryType.grid,
-                                child: Text("Grid", style: Theme.of(context).textTheme.caption),
+                        ),
+                        _listTile(
+                          context,
+                          Text("Type"),
+                          Column(
+                            children: [
+                              SizedBox(height: 4),
+                              DropdownButton<CategoryType>(
+                                value: category.type,
+                                enableFeedback: soundFeedbackEnabled,
+                                onChanged: (value) => context.read<AppsService>().setCategoryType(category, value!),
+                                isDense: true,
+                                isExpanded: true,
+                                items: [
+                                  DropdownMenuItem(
+                                    value: CategoryType.row,
+                                    child: Text("Row", style: Theme.of(context).textTheme.caption),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: CategoryType.grid,
+                                    child: Text("Grid", style: Theme.of(context).textTheme.caption),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    if (category.type == CategoryType.grid)
-                      _listTile(
-                        context,
-                        Text("Columns count"),
-                        Column(
-                          children: [
-                            SizedBox(height: 4),
-                            DropdownButton<int>(
-                              value: category.columnsCount,
-                              isDense: true,
-                              isExpanded: true,
-                              items: [for (int i = 5; i <= 10; i++) i]
-                                  .map(
-                                    (value) => DropdownMenuItem(
-                                      value: value,
-                                      child: Text(value.toString(), style: Theme.of(context).textTheme.caption),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (value) =>
-                                  context.read<AppsService>().setCategoryColumnsCount(category, value!),
-                            ),
-                          ],
                         ),
-                      ),
-                    if (category.type == CategoryType.row)
-                      _listTile(
-                        context,
-                        Text("Row height"),
-                        Column(
-                          children: [
-                            SizedBox(height: 4),
-                            DropdownButton<int>(
-                              value: category.rowHeight,
-                              isDense: true,
-                              isExpanded: true,
-                              items: [for (int i = 80; i <= 150; i += 10) i]
-                                  .map(
-                                    (value) => DropdownMenuItem(
-                                      value: value,
-                                      child: Text(value.toString(), style: Theme.of(context).textTheme.caption),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (value) => context.read<AppsService>().setCategoryRowHeight(category, value!),
+                        if (category.type == CategoryType.grid)
+                          _listTile(
+                            context,
+                            Text("Columns count"),
+                            Column(
+                              children: [
+                                SizedBox(height: 4),
+                                DropdownButton<int>(
+                                  value: category.columnsCount,
+                                  isDense: true,
+                                  isExpanded: true,
+                                  items: [for (int i = 5; i <= 10; i++) i]
+                                      .map(
+                                        (value) => DropdownMenuItem(
+                                          value: value,
+                                          child: Text(value.toString(), style: Theme.of(context).textTheme.caption),
+                                        ),
+                                      )
+                                      .toList(),
+                                  enableFeedback: soundFeedbackEnabled,
+                                  onChanged: (value) =>
+                                      context.read<AppsService>().setCategoryColumnsCount(category, value!),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    Divider(),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: Colors.red[400]),
-                        child: Text("Delete"),
-                        onPressed: () async {
-                          await context.read<AppsService>().deleteCategory(category);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    )
-                  ],
+                          ),
+                        if (category.type == CategoryType.row)
+                          _listTile(
+                            context,
+                            Text("Row height"),
+                            Column(
+                              children: [
+                                SizedBox(height: 4),
+                                DropdownButton<int>(
+                                  value: category.rowHeight,
+                                  isDense: true,
+                                  isExpanded: true,
+                                  items: [for (int i = 80; i <= 150; i += 10) i]
+                                      .map(
+                                        (value) => DropdownMenuItem(
+                                          value: value,
+                                          child: Text(value.toString(), style: Theme.of(context).textTheme.caption),
+                                        ),
+                                      )
+                                      .toList(),
+                                  enableFeedback: soundFeedbackEnabled,
+                                  onChanged: (value) =>
+                                      context.read<AppsService>().setCategoryRowHeight(category, value!),
+                                ),
+                              ],
+                            ),
+                          ),
+                        Divider(),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(primary: Colors.red[400]),
+                            child: Text("Delete"),
+                            onPressed: () async {
+                              await context.read<AppsService>().deleteCategory(category);
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        )
+                      ],
+                    );
+                  },
                 )
               : Container(),
         ),

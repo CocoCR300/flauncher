@@ -69,6 +69,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
                     return MaterialPageRoute(
                       builder: (_) => CategoryPanelPage(categoryId: settings.arguments! as int),
                     );
+                  default:
+                    throw ArgumentError.value(settings.name, "settings.name", "Route not supported.");
                 }
               },
             ),

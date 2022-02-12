@@ -18,6 +18,7 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/add_category_dialog.dart';
 import 'package:flauncher/widgets/settings/category_panel_page.dart';
 import 'package:flutter/material.dart';
@@ -190,9 +191,12 @@ void main() {
 }
 
 Future<void> _pumpWidgetWithProviders(WidgetTester tester, AppsService appsService, int categoryId) async {
+  final settingsService = MockSettingsService();
+  when(settingsService.soundFeedbackEnabled).thenReturn(true);
   await tester.pumpWidget(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider<SettingsService>.value(value: settingsService),
         ChangeNotifierProvider<AppsService>.value(value: appsService),
       ],
       builder: (_, __) => MaterialApp(

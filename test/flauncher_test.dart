@@ -643,6 +643,7 @@ Future<void> _pumpWidgetWithProviders(
   AppsService appsService,
   SettingsService settingsService,
 ) async {
+  when(settingsService.soundFeedbackEnabled).thenReturn(true);
   await tester.pumpWidget(
     MultiProvider(
       providers: [

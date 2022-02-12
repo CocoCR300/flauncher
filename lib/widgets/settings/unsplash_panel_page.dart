@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/unsplash_service.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
@@ -88,6 +89,7 @@ class _RandomTabState extends State<_RandomTab> {
                 shape: _cardBorder(Focus.of(context).hasFocus),
                 child: InkWell(
                   autofocus: autofocus,
+                  enableFeedback: context.select<SettingsService, bool>((s) => s.soundFeedbackEnabled),
                   onTap: () async {
                     if (enabled) {
                       setState(() => enabled = false);
@@ -199,6 +201,7 @@ class _SearchTabState extends State<_SearchTab> {
                       child: InkWell(
                         autofocus: index == 0,
                         focusColor: Colors.transparent,
+                        enableFeedback: context.select<SettingsService, bool>((s) => s.soundFeedbackEnabled),
                         onTap: () async {
                           if (enabled) {
                             setState(() => enabled = false);

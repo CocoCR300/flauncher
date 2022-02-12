@@ -82,56 +82,68 @@ class FLauncherApp extends StatelessWidget {
               update: (_, settingsService, wallpaperService) => wallpaperService!..settingsService = settingsService),
           Provider<TickerModel>(create: (context) => TickerModel(null))
         ],
-        child: MaterialApp(
-          shortcuts: {
-            ...WidgetsApp.defaultShortcuts,
-            SingleActivator(LogicalKeyboardKey.select): ActivateIntent(),
-            SingleActivator(LogicalKeyboardKey.gameButtonB): PrioritizedIntents(orderedIntents: [
-              DismissIntent(),
-              BackIntent(),
-            ]),
-          },
-          actions: {
-            ...WidgetsApp.defaultActions,
-            DirectionalFocusIntent: SoundFeedbackDirectionalFocusAction(),
-          },
-          title: 'FLauncher',
-          theme: ThemeData(
-            brightness: Brightness.dark,
-            primarySwatch: _swatch,
-            toggleableActiveColor: _swatch[200],
-            // ignore: deprecated_member_use
-            accentColor: _swatch[200],
-            cardColor: _swatch[300],
-            canvasColor: _swatch[300],
-            dialogBackgroundColor: _swatch[400],
-            backgroundColor: _swatch[400],
-            scaffoldBackgroundColor: _swatch[400],
-            textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(primary: Colors.white)),
-            appBarTheme: AppBarTheme(elevation: 0, backgroundColor: Colors.transparent),
-            typography: Typography.material2018(),
-            inputDecorationTheme: InputDecorationTheme(
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-              labelStyle: Typography.material2018().white.bodyText2,
-            ),
-            textSelectionTheme: TextSelectionThemeData(
-              cursorColor: Colors.white,
-              selectionColor: _swatch[200],
-              selectionHandleColor: _swatch[200],
-            ),
-          ),
-          home: Builder(
-            builder: (context) => WillPopScope(
-              onWillPop: () async {
-                final shouldPop = await shouldPopScope(context);
-                if (!shouldPop) {
-                  context.read<AppsService>().startAmbientMode();
-                }
-                return shouldPop;
-              },
-              child: Actions(actions: {BackIntent: BackAction(context, systemNavigator: true)}, child: FLauncher()),
-            ),
-          ),
-        ),
+        child: Selector<SettingsService, bool>(
+            selector: (_, settingsService) => settingsService.soundFeedbackEnabled,
+            builder: (context, soundFeedbackEnabled, _) {
+              return MaterialApp(
+                shortcuts: {
+                  ...WidgetsApp.defaultShortcuts,
+                  SingleActivator(LogicalKeyboardKey.select): ActivateIntent(),
+                  SingleActivator(LogicalKeyboardKey.gameButtonB): PrioritizedIntents(orderedIntents: [
+                    DismissIntent(),
+                    BackIntent(),
+                  ]),
+                },
+                actions: {
+                  ...WidgetsApp.defaultActions,
+                  if (soundFeedbackEnabled) DirectionalFocusIntent: SoundFeedbackDirectionalFocusAction(context),
+                },
+                title: 'FLauncher',
+                theme: ThemeData(
+                  brightness: Brightness.dark,
+                  primarySwatch: _swatch,
+                  toggleableActiveColor: _swatch[200],
+                  // ignore: deprecated_member_use
+                  accentColor: _swatch[200],
+                  cardColor: _swatch[300],
+                  canvasColor: _swatch[300],
+                  dialogBackgroundColor: _swatch[400],
+                  backgroundColor: _swatch[400],
+                  scaffoldBackgroundColor: _swatch[400],
+                  textButtonTheme: TextButtonThemeData(
+                    style: TextButton.styleFrom(primary: Colors.white, enableFeedback: soundFeedbackEnabled),
+                  ),
+                  elevatedButtonTheme: ElevatedButtonThemeData(
+                    style: TextButton.styleFrom(enableFeedback: soundFeedbackEnabled),
+                  ),
+
+                  listTileTheme: ListTileThemeData(enableFeedback: soundFeedbackEnabled),
+                  appBarTheme: AppBarTheme(elevation: 0, backgroundColor: Colors.transparent),
+                  typography: Typography.material2018(),
+                  inputDecorationTheme: InputDecorationTheme(
+                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                    labelStyle: Typography.material2018().white.bodyText2,
+                  ),
+                  textSelectionTheme: TextSelectionThemeData(
+                    cursorColor: Colors.white,
+                    selectionColor: _swatch[200],
+                    selectionHandleColor: _swatch[200],
+                  ),
+                ),
+                home: Builder(
+                  builder: (context) => WillPopScope(
+                    onWillPop: () async {
+                      final shouldPop = await shouldPopScope(context);
+                      if (!shouldPop) {
+                        context.read<AppsService>().startAmbientMode();
+                      }
+                      return shouldPop;
+                    },
+                    child:
+                        Actions(actions: {BackIntent: BackAction(context, systemNavigator: true)}, child: FLauncher()),
+                  ),
+                ),
+              );
+            }),
       );
 }
