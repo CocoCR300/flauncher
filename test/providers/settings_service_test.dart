@@ -44,20 +44,6 @@ void main() {
     expect(sharedPreferences.getBool("crash_reports_enabled"), isTrue);
   });
 
-  test("setSoundFeedbackEnabled", () async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    final firebaseCrashlytics = MockFirebaseCrashlytics();
-    final firebaseAnalytics = MockFirebaseAnalytics();
-    final firebaseRemoteConfig = MockFirebaseRemoteConfig();
-    final settingsService =
-        SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
-    await untilCalled(firebaseCrashlytics.setCrashlyticsCollectionEnabled(any));
-
-    await settingsService.setSoundFeedbackEnabled(true);
-
-    expect(sharedPreferences.getBool("sound_feedback_enabled"), isTrue);
-  });
-
   test("setAnalyticsEnabled", () async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final firebaseCrashlytics = MockFirebaseCrashlytics();
@@ -213,37 +199,6 @@ void main() {
           SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
 
       final crashReportsEnabled = settingsService.crashReportsEnabled;
-
-      expect(crashReportsEnabled, isFalse);
-    });
-  });
-
-  group("getSoundFeedbackEnabled", () {
-    test("without value from shared preferences", () async {
-      final sharedPreferences = await SharedPreferences.getInstance();
-      await sharedPreferences.clear();
-      final firebaseCrashlytics = MockFirebaseCrashlytics();
-      final firebaseAnalytics = MockFirebaseAnalytics();
-      final firebaseRemoteConfig = MockFirebaseRemoteConfig();
-      final settingsService =
-          SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
-
-      final crashReportsEnabled = settingsService.soundFeedbackEnabled;
-
-      expect(crashReportsEnabled, isTrue);
-    });
-
-    test("with value from shared preferences", () async {
-      final sharedPreferences = await SharedPreferences.getInstance();
-      await sharedPreferences.clear();
-      final firebaseCrashlytics = MockFirebaseCrashlytics();
-      final firebaseAnalytics = MockFirebaseAnalytics();
-      final firebaseRemoteConfig = MockFirebaseRemoteConfig();
-      sharedPreferences.setBool("sound_feedback_enabled", false);
-      final settingsService =
-          SettingsService(sharedPreferences, firebaseCrashlytics, firebaseAnalytics, firebaseRemoteConfig);
-
-      final crashReportsEnabled = settingsService.soundFeedbackEnabled;
 
       expect(crashReportsEnabled, isFalse);
     });

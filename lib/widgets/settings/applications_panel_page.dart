@@ -18,7 +18,6 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/add_to_category_dialog.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
@@ -45,7 +44,6 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
             Material(
               type: MaterialType.transparency,
               child: TabBar(
-                enableFeedback: context.select<SettingsService, bool>((s) => s.soundFeedbackEnabled),
                 onTap: (index) {
                   switch (index) {
                     case 0:
@@ -122,39 +120,32 @@ Widget _appCard(BuildContext context, App application) => Card(
           overflow: TextOverflow.ellipsis,
         ),
         leading: Image.memory(application.icon!, height: 48),
-        trailing: Selector<SettingsService, bool>(
-          selector: (_, settingsService) => settingsService.soundFeedbackEnabled,
-          builder: (context, soundFeedbackEnabled, _) {
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!application.hidden)
-                  IconButton(
-                    constraints: BoxConstraints(),
-                    splashRadius: 20,
-                    icon: Icon(Icons.add_box_outlined),
-                    enableFeedback: soundFeedbackEnabled,
-                    onPressed: () => showDialog<Category>(
-                      context: context,
-                      builder: (_) => AddToCategoryDialog(application),
-                    ),
-                  ),
-                IconButton(
-                  constraints: BoxConstraints(),
-                  splashRadius: 20,
-                  icon: Icon(Icons.info_outline),
-                  enableFeedback: soundFeedbackEnabled,
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => ApplicationInfoPanel(
-                      category: null,
-                      application: application,
-                    ),
-                  ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!application.hidden)
+              IconButton(
+                constraints: BoxConstraints(),
+                splashRadius: 20,
+                icon: Icon(Icons.add_box_outlined),
+                onPressed: () => showDialog<Category>(
+                  context: context,
+                  builder: (_) => AddToCategoryDialog(application),
                 ),
-              ],
-            );
-          },
+              ),
+            IconButton(
+              constraints: BoxConstraints(),
+              splashRadius: 20,
+              icon: Icon(Icons.info_outline),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => ApplicationInfoPanel(
+                  category: null,
+                  application: application,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

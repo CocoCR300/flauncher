@@ -17,7 +17,6 @@
  */
 
 import 'package:flauncher/gradients.dart';
-import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +57,6 @@ class GradientPanelPage extends StatelessWidget {
                   shape: _cardBorder(Focus.of(context).hasFocus),
                   child: InkWell(
                     autofocus: fLauncherGradient == FLauncherGradients.greatWhale,
-                    enableFeedback: context.select<SettingsService, bool>((s) => s.soundFeedbackEnabled),
                     onTap: () => context.read<WallpaperService>().setGradient(fLauncherGradient),
                     child: Container(decoration: BoxDecoration(gradient: fLauncherGradient.gradient)),
                   ),

@@ -18,7 +18,6 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flauncher/widgets/settings/categories_panel_page.dart';
@@ -95,7 +94,6 @@ class CategoryRow extends StatelessWidget {
                   clipBehavior: Clip.antiAlias,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   child: InkWell(
-                    enableFeedback: context.select<SettingsService, bool>((s) => s.soundFeedbackEnabled),
                     onTap: () => showDialog(
                       context: context,
                       builder: (_) => SettingsPanel(initialRoute: CategoriesPanelPage.routeName),

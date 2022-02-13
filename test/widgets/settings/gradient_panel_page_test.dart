@@ -17,7 +17,6 @@
  */
 
 import 'package:flauncher/gradients.dart';
-import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
 import 'package:flutter/material.dart';
@@ -50,12 +49,9 @@ void main() {
 }
 
 Future<void> _pumpWidgetWithProviders(WidgetTester tester, WallpaperService wallpaperService) async {
-  final settingsService = MockSettingsService();
-  when(settingsService.soundFeedbackEnabled).thenReturn(true);
   await tester.pumpWidget(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<SettingsService>.value(value: settingsService),
         ChangeNotifierProvider<WallpaperService>.value(value: wallpaperService),
       ],
       builder: (_, __) => MaterialApp(home: GradientPanelPage()),

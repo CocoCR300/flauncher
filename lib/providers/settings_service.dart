@@ -27,7 +27,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 const _crashReportsEnabledKey = "crash_reports_enabled";
 const _analyticsEnabledKey = "analytics_enabled";
 const _use24HourTimeFormatKey = "use_24_hour_time_format";
-const _soundFeedbackEnabledKey = "sound_feedback_enabled";
 const _gradientUuidKey = "gradient_uuid";
 const _unsplashEnabledKey = "unsplash_enabled";
 const _unsplashAuthorKey = "unsplash_author";
@@ -44,8 +43,6 @@ class SettingsService extends ChangeNotifier {
   bool get analyticsEnabled => _sharedPreferences.getBool(_analyticsEnabledKey) ?? true;
 
   bool get use24HourTimeFormat => _sharedPreferences.getBool(_use24HourTimeFormatKey) ?? true;
-
-  bool get soundFeedbackEnabled => _sharedPreferences.getBool(_soundFeedbackEnabledKey) ?? true;
 
   String? get gradientUuid => _sharedPreferences.getString(_gradientUuidKey);
 
@@ -84,11 +81,6 @@ class SettingsService extends ChangeNotifier {
 
   Future<void> setUse24HourTimeFormat(bool value) async {
     await _sharedPreferences.setBool(_use24HourTimeFormatKey, value);
-    notifyListeners();
-  }
-
-  Future<void> setSoundFeedbackEnabled(bool value) async {
-    await _sharedPreferences.setBool(_soundFeedbackEnabledKey, value);
     notifyListeners();
   }
 

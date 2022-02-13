@@ -21,7 +21,6 @@ import 'dart:typed_data';
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/ticker_model.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/color_helpers.dart';
@@ -122,7 +121,6 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                       InkWell(
                         autofocus: widget.autofocus,
                         focusColor: Colors.transparent,
-                        enableFeedback: context.select<SettingsService, bool>((s) => s.soundFeedbackEnabled),
                         onTap: () => _onPressed(context, null),
                         onLongPress: () => _onLongPress(context, null),
                         child: widget.application.banner != null

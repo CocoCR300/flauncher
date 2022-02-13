@@ -34,107 +34,90 @@ class SettingsPanelPage extends StatelessWidget {
         builder: (context, settingsService, __) => Column(
           children: [
             Text("Settings", style: Theme.of(context).textTheme.headline6),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Divider(),
-                    TextButton(
-                      child: Row(
-                        children: [
-                          Icon(Icons.apps),
-                          Container(width: 8),
-                          Text("Applications", style: Theme.of(context).textTheme.bodyText2),
-                        ],
-                      ),
-                      onPressed: () => Navigator.of(context).pushNamed(ApplicationsPanelPage.routeName),
-                    ),
-                    TextButton(
-                      child: Row(
-                        children: [
-                          Icon(Icons.category),
-                          Container(width: 8),
-                          Text("Categories", style: Theme.of(context).textTheme.bodyText2),
-                        ],
-                      ),
-                      onPressed: () => Navigator.of(context).pushNamed(CategoriesPanelPage.routeName),
-                    ),
-                    TextButton(
-                      child: Row(
-                        children: [
-                          Icon(Icons.wallpaper_outlined),
-                          Container(width: 8),
-                          Text("Wallpaper", style: Theme.of(context).textTheme.bodyText2),
-                        ],
-                      ),
-                      onPressed: () => Navigator.of(context).pushNamed(WallpaperPanelPage.routeName),
-                    ),
-                    Divider(),
-                    TextButton(
-                      child: Row(
-                        children: [
-                          Icon(Icons.settings_outlined),
-                          Container(width: 8),
-                          Text("Android settings", style: Theme.of(context).textTheme.bodyText2),
-                        ],
-                      ),
-                      onPressed: () => context.read<AppsService>().openSettings(),
-                    ),
-                    Divider(),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                      value: settingsService.use24HourTimeFormat,
-                      onChanged: (value) => settingsService.setUse24HourTimeFormat(value),
-                      title: Text("Use 24-hour time format"),
-                      dense: true,
-                    ),
-                    Divider(),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                      value: settingsService.soundFeedbackEnabled,
-                      onChanged: (value) => settingsService.setSoundFeedbackEnabled(value),
-                      title: Text("Sound Feedback"),
-                      dense: true,
-                      subtitle: Text("Play a click sound when navigating through the app."),
-                    ),
-                    Divider(),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                      value: settingsService.crashReportsEnabled,
-                      onChanged: (value) => settingsService.setCrashReportsEnabled(value),
-                      title: Text("Crash Reporting"),
-                      dense: true,
-                      subtitle: Text("Automatically send crash reports through Firebase Crashlytics."),
-                    ),
-                    Divider(),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                      value: settingsService.analyticsEnabled,
-                      onChanged: (value) => settingsService.setAnalyticsEnabled(value),
-                      title: Text("Analytics Reporting"),
-                      dense: true,
-                      subtitle: Text("Share analytics data through Firebase Analytics."),
-                    ),
-                    Divider(),
-                    TextButton(
-                      child: Row(
-                        children: [
-                          Icon(Icons.info_outline),
-                          Container(width: 8),
-                          Text("About FLauncher", style: Theme.of(context).textTheme.bodyText2),
-                        ],
-                      ),
-                      onPressed: () => showDialog(
-                        context: context,
-                        builder: (_) => FutureBuilder<PackageInfo>(
-                          future: PackageInfo.fromPlatform(),
-                          builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done
-                              ? FLauncherAboutDialog(packageInfo: snapshot.data!)
-                              : Container(),
-                        ),
-                      ),
-                    ),
-                  ],
+            Divider(),
+            TextButton(
+              child: Row(
+                children: [
+                  Icon(Icons.apps),
+                  Container(width: 8),
+                  Text("Applications", style: Theme.of(context).textTheme.bodyText2),
+                ],
+              ),
+              onPressed: () => Navigator.of(context).pushNamed(ApplicationsPanelPage.routeName),
+            ),
+            TextButton(
+              child: Row(
+                children: [
+                  Icon(Icons.category),
+                  Container(width: 8),
+                  Text("Categories", style: Theme.of(context).textTheme.bodyText2),
+                ],
+              ),
+              onPressed: () => Navigator.of(context).pushNamed(CategoriesPanelPage.routeName),
+            ),
+            TextButton(
+              child: Row(
+                children: [
+                  Icon(Icons.wallpaper_outlined),
+                  Container(width: 8),
+                  Text("Wallpaper", style: Theme.of(context).textTheme.bodyText2),
+                ],
+              ),
+              onPressed: () => Navigator.of(context).pushNamed(WallpaperPanelPage.routeName),
+            ),
+            Divider(),
+            TextButton(
+              child: Row(
+                children: [
+                  Icon(Icons.settings_outlined),
+                  Container(width: 8),
+                  Text("Android settings", style: Theme.of(context).textTheme.bodyText2),
+                ],
+              ),
+              onPressed: () => context.read<AppsService>().openSettings(),
+            ),
+            Divider(),
+            SwitchListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: 8),
+              value: settingsService.use24HourTimeFormat,
+              onChanged: (value) => settingsService.setUse24HourTimeFormat(value),
+              title: Text("Use 24-hour time format"),
+              dense: true,
+            ),
+            Divider(),
+            SwitchListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: 8),
+              value: settingsService.crashReportsEnabled,
+              onChanged: (value) => settingsService.setCrashReportsEnabled(value),
+              title: Text("Crash Reporting"),
+              dense: true,
+              subtitle: Text("Automatically send crash reports through Firebase Crashlytics."),
+            ),
+            Divider(),
+            SwitchListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: 8),
+              value: settingsService.analyticsEnabled,
+              onChanged: (value) => settingsService.setAnalyticsEnabled(value),
+              title: Text("Analytics Reporting"),
+              dense: true,
+              subtitle: Text("Share analytics data through Firebase Analytics."),
+            ),
+            Spacer(),
+            TextButton(
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline),
+                  Container(width: 8),
+                  Text("About FLauncher", style: Theme.of(context).textTheme.bodyText2),
+                ],
+              ),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (_) => FutureBuilder<PackageInfo>(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done
+                      ? FLauncherAboutDialog(packageInfo: snapshot.data!)
+                      : Container(),
                 ),
               ),
             ),

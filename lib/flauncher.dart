@@ -22,7 +22,6 @@ import 'dart:ui';
 import 'package:flauncher/custom_traversal_policy.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
@@ -97,7 +96,6 @@ class FLauncher extends StatelessWidget {
                 constraints: BoxConstraints(),
                 splashRadius: 20,
                 icon: Icon(Icons.settings_outlined),
-                enableFeedback: context.select<SettingsService, bool>((s) => s.soundFeedbackEnabled),
                 onPressed: () => showDialog(context: context, builder: (_) => SettingsPanel()),
               ),
             ],

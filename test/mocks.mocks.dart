@@ -305,9 +305,6 @@ class MockSettingsService extends _i1.Mock implements _i12.SettingsService {
   bool get use24HourTimeFormat =>
       (super.noSuchMethod(Invocation.getter(#use24HourTimeFormat), returnValue: false) as bool);
   @override
-  bool get soundFeedbackEnabled =>
-      (super.noSuchMethod(Invocation.getter(#soundFeedbackEnabled), returnValue: false) as bool);
-  @override
   bool get unsplashEnabled => (super.noSuchMethod(Invocation.getter(#unsplashEnabled), returnValue: false) as bool);
   @override
   bool get hasListeners => (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false) as bool);
@@ -324,10 +321,6 @@ class MockSettingsService extends _i1.Mock implements _i12.SettingsService {
   @override
   _i10.Future<void> setUse24HourTimeFormat(bool? value) =>
       (super.noSuchMethod(Invocation.method(#setUse24HourTimeFormat, [value]),
-          returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
-  @override
-  _i10.Future<void> setSoundFeedbackEnabled(bool? value) =>
-      (super.noSuchMethod(Invocation.method(#setSoundFeedbackEnabled, [value]),
           returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
   _i10.Future<void> setGradientUuid(String? value) => (super.noSuchMethod(Invocation.method(#setGradientUuid, [value]),

@@ -18,7 +18,6 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/add_category_dialog.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flauncher/widgets/settings/category_panel_page.dart';
@@ -63,43 +62,35 @@ class CategoriesPanelPage extends StatelessWidget {
           margin: EdgeInsets.zero,
           child: EnsureVisible(
             alignment: 0.5,
-            child: Selector<SettingsService, bool>(
-              selector: (_, settingsService) => settingsService.soundFeedbackEnabled,
-              builder: (context, soundFeedbackEnabled, _) {
-                return ListTile(
-                  dense: true,
-                  title: Text(categories[index].category.name, style: Theme.of(context).textTheme.bodyText2),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        constraints: BoxConstraints(),
-                        splashRadius: 20,
-                        icon: Icon(Icons.arrow_upward),
-                        enableFeedback: soundFeedbackEnabled,
-                        onPressed: index > 0 ? () => _move(context, index, index - 1) : null,
-                      ),
-                      IconButton(
-                        constraints: BoxConstraints(),
-                        splashRadius: 20,
-                        icon: Icon(Icons.arrow_downward),
-                        enableFeedback: soundFeedbackEnabled,
-                        onPressed: index < categories.length - 1 ? () => _move(context, index, index + 1) : null,
-                      ),
-                      IconButton(
-                        constraints: BoxConstraints(),
-                        splashRadius: 20,
-                        icon: Icon(Icons.settings),
-                        enableFeedback: soundFeedbackEnabled,
-                        onPressed: () => Navigator.of(context).pushNamed(
-                          CategoryPanelPage.routeName,
-                          arguments: categories[index].category.id,
-                        ),
-                      ),
-                    ],
+            child: ListTile(
+              dense: true,
+              title: Text(categories[index].category.name, style: Theme.of(context).textTheme.bodyText2),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    constraints: BoxConstraints(),
+                    splashRadius: 20,
+                    icon: Icon(Icons.arrow_upward),
+                    onPressed: index > 0 ? () => _move(context, index, index - 1) : null,
                   ),
-                );
-              },
+                  IconButton(
+                    constraints: BoxConstraints(),
+                    splashRadius: 20,
+                    icon: Icon(Icons.arrow_downward),
+                    onPressed: index < categories.length - 1 ? () => _move(context, index, index + 1) : null,
+                  ),
+                  IconButton(
+                    constraints: BoxConstraints(),
+                    splashRadius: 20,
+                    icon: Icon(Icons.settings),
+                    onPressed: () => Navigator.of(context).pushNamed(
+                      CategoryPanelPage.routeName,
+                      arguments: categories[index].category.id,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
