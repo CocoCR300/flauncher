@@ -19,14 +19,17 @@
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class SoundFeedbackDirectionalFocusAction extends DirectionalFocusAction {
+  final BuildContext context;
+
+  SoundFeedbackDirectionalFocusAction(this.context);
+
   @override
   void invoke(DirectionalFocusIntent intent) {
     super.invoke(intent);
-    SystemSound.play(SystemSoundType.click);
+    Feedback.forTap(context);
   }
 }
 
