@@ -55,6 +55,9 @@ class AppsService extends ChangeNotifier {
       switch (event["action"]) {
         case "PACKAGE_ADDED":
         case "PACKAGE_CHANGED":
+          await _database.persistApps([_buildAppCompanion(event["activitiyInfo"])]);
+          break;
+        case "PACKAGES_AVAILABLE":
           await _database.persistApps((event["activitiesInfo"] as List<dynamic>).map(_buildAppCompanion).toList());
           break;
         case "PACKAGE_REMOVED":
@@ -117,10 +120,17 @@ class AppsService extends ChangeNotifier {
     await _database.transaction(() async {
       final appsFromSystem = (await _fLauncherChannel.getApplications()).map(_buildAppCompanion).toList();
 
-      final uninstalledApplications = (await _database.listApplications())
+      final appsRemovedFromSystem = (await _database.listApplications())
           .where((app) => !appsFromSystem.any((systemApp) => systemApp.packageName.value == app.packageName))
           .map((app) => app.packageName)
           .toList();
+
+      final List<String> uninstalledApplications = [];
+      await Future.forEach(appsRemovedFromSystem, (String packageName) async {
+        if (!(await _fLauncherChannel.applicationExists(packageName))) {
+          uninstalledApplications.add(packageName);
+        }
+      });
 
       await _database.persistApps(appsFromSystem);
       await _database.deleteApps(uninstalledApplications);

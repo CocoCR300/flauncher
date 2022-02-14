@@ -20,13 +20,12 @@ package me.efesser.flauncher
 
 import android.content.Intent
 import android.content.Intent.*
-import android.content.pm.ActivityInfo
-import android.content.pm.LauncherApps
-import android.content.pm.ResolveInfo
+import android.content.pm.*
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.UserHandle
 import android.provider.Settings
 import androidx.annotation.NonNull
@@ -50,6 +49,7 @@ class MainActivity : FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, METHOD_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "getApplications" -> result.success(getApplications())
+                "applicationExists" -> result.success(applicationExists(call.arguments as String))
                 "launchApp" -> result.success(launchApp(call.arguments as String))
                 "openSettings" -> result.success(openSettings())
                 "openAppInfo" -> result.success(openAppInfo(call.arguments as String))
@@ -71,20 +71,22 @@ class MainActivity : FlutterActivity() {
                     }
 
                     override fun onPackageAdded(packageName: String, user: UserHandle) {
-                        val applications = getApplication(packageName)
-                        if (applications.isNotEmpty()) {
-                            events.success(mapOf("action" to "PACKAGE_ADDED", "activitiesInfo" to applications))
-                        }
+                        getApplication(packageName)
+                            ?.let { events.success(mapOf("action" to "PACKAGE_ADDED", "activitiyInfo" to it)) }
                     }
 
                     override fun onPackageChanged(packageName: String, user: UserHandle) {
-                        val applications = getApplication(packageName)
+                        getApplication(packageName)
+                            ?.let { events.success(mapOf("action" to "PACKAGE_CHANGED", "activitiyInfo" to it)) }
+                    }
+
+                    override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle, replacing: Boolean) {
+                        val applications = packageNames.map(::getApplication)
                         if (applications.isNotEmpty()) {
-                            events.success(mapOf("action" to "PACKAGE_CHANGED", "activitiesInfo" to applications))
+                            events.success(mapOf("action" to "PACKAGES_AVAILABLE", "activitiesInfo" to applications))
                         }
                     }
 
-                    override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle, replacing: Boolean) {}
                     override fun onPackagesUnavailable(packageNames: Array<out String>, user: UserHandle, replacing: Boolean) {}
                 }
 
@@ -112,15 +114,26 @@ class MainActivity : FlutterActivity() {
         return tvActivitiesInfo.map { buildAppMap(it, false) } + nonTvActivitiesInfo.map { buildAppMap(it, true) }
     }
 
-    fun getApplication(packageName: String): List<Map<String, Serializable?>> {
-        val tvActivitiesInfo = queryIntentActivities(false)
-                .filter { it.packageName == packageName }
-                .map { buildAppMap(it, false) }
-        return tvActivitiesInfo.ifEmpty {
-            queryIntentActivities(true)
-                .filter { it.packageName == packageName }
-                .map { buildAppMap(it, true) }
+    private fun getApplication(packageName: String): Map<String, Serializable?>? {
+        return packageManager.getLeanbackLaunchIntentForPackage(packageName)
+            ?.resolveActivityInfo(packageManager, 0)
+            ?.let { buildAppMap(it, false) }
+            ?: return packageManager.getLaunchIntentForPackage(packageName)
+                ?.resolveActivityInfo(packageManager, 0)
+                ?.let { buildAppMap(it, true) }
+    }
+
+    private fun applicationExists(packageName: String) = try {
+        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            PackageManager.MATCH_UNINSTALLED_PACKAGES
+        } else {
+            @Suppress("DEPRECATION")
+            PackageManager.GET_UNINSTALLED_PACKAGES
         }
+        packageManager.getApplicationInfo(packageName, flag)
+        true
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
     }
 
     private fun queryIntentActivities(sideloaded: Boolean) = packageManager

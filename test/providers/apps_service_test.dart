@@ -150,9 +150,12 @@ void main() {
               'sideloaded': false,
             }
           ]));
+      when(channel.applicationExists("uninstalled.app")).thenAnswer((_) => Future.value(false));
+      when(channel.applicationExists("not.uninstalled.app")).thenAnswer((_) => Future.value(true));
       when(database.listApplications()).thenAnswer((_) => Future.value([
             fakeApp(packageName: "me.efesser.flauncher", name: "FLauncher", version: "1.0.0"),
-            fakeApp(packageName: "uninstalled.app", name: "Uninstalled Application", version: "1.0.0")
+            fakeApp(packageName: "uninstalled.app", name: "Uninstalled Application", version: "1.0.0"),
+            fakeApp(packageName: "not.uninstalled.app", name: "Not Uninstalled Application", version: "1.0.0")
           ]));
       when(database.listCategoriesWithVisibleApps()).thenAnswer((_) => Future.value([]));
       when(database.transaction(any)).thenAnswer((realInvocation) => realInvocation.positionalArguments[0]());
