@@ -13,15 +13,6 @@ class RowByRowTraversalPolicy extends FocusTraversalPolicy with DirectionalFocus
 
   @override
   bool inDirection(FocusNode currentNode, TraversalDirection direction) {
-    // only up and down are managed in this custom traversal policy. In other cases
-    // delegate to default policy
-    // if (direction != TraversalDirection.up && direction != TraversalDirection.down) {
-    //   if (direction == TraversalDirection.left) {
-    //     debugPrint("Going left → not managing");
-    //   }
-    //   return super.inDirection(currentNode, direction);
-    // }
-
     List<FocusNode>? nodes = currentNode.nearestScope?.traversalDescendants.toList();
     if (nodes == null) {
       return super.inDirection(currentNode, direction);
@@ -95,48 +86,50 @@ class CandidateNode {
 
 /// Some conversion utilities used internally
 List<CandidateNode> toCandidateNodes(List<FocusNode> nodes) => nodes.map((e) => CandidateNode(e)).toList();
+
 List<FocusNode> toFocusNodes(List<CandidateNode> nodes) => nodes.map((e) => e.node).toList();
 
 /// A few extension methods to the [FocusNode] to be able to compare their
 /// respective position easily.
 extension Geometry on FocusNode {
   bool isBelow(FocusNode other) {
-    return rect.center.dy > other.rect.center.dy;
+    return rect.center.dy.round() > other.rect.center.dy.round();
   }
 
   bool isBelowOrEquals(FocusNode other) {
-    return rect.center.dy >= other.rect.center.dy;
+    return rect.center.dy.round() >= other.rect.center.dy.round();
   }
 
   bool isRightTo(FocusNode other) {
-    return rect.center.dx > other.rect.center.dx;
+    return rect.center.dx.round() > other.rect.center.dx.round();
   }
 
   bool isRightToOrEquals(FocusNode other) {
-    return rect.center.dx >= other.rect.center.dx;
+    return rect.center.dx.round() >= other.rect.center.dx.round();
   }
 
   bool isLeftTo(FocusNode other) {
-    return rect.center.dx < other.rect.center.dx;
+    return rect.center.dx.round() < other.rect.center.dx.round();
   }
 
   bool isLeftToOrEquals(FocusNode other) {
-    return rect.center.dx <= other.rect.center.dx;
+    return rect.center.dx.round() <= other.rect.center.dx.round();
   }
 
   bool isAbove(FocusNode other) {
-    return rect.center.dy < other.rect.center.dy;
+    return rect.center.dy.round() < other.rect.center.dy.round();
   }
 
   bool isAboveOrEquals(FocusNode other) {
-    return rect.center.dy <= other.rect.center.dy;
+    return rect.center.dy.round() <= other.rect.center.dy.round();
   }
 
   bool isOnTheSameRow(FocusNode other) {
-    return rect.center.dy == other.rect.center.dy;
+    return rect.center.dy.round() == other.rect.center.dy.round();
   }
 
   double distance(FocusNode other) {
-    return sqrt(pow(rect.center.dx - other.rect.center.dx, 2) + pow(rect.center.dy - other.rect.center.dy, 2));
+    return sqrt(pow(rect.center.dx.round() - other.rect.center.dx.round(), 2) +
+        pow(rect.center.dy.round() - other.rect.center.dy.round(), 2));
   }
 }
