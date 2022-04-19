@@ -835,6 +835,11 @@ class MockSettingsService extends _i1.Mock implements _i12.SettingsService {
         returnValue: false,
       ) as bool);
   @override
+  bool get appHighlightAnimationEnabled => (super.noSuchMethod(
+        Invocation.getter(#appHighlightAnimationEnabled),
+        returnValue: false,
+      ) as bool);
+  @override
   bool get unsplashEnabled => (super.noSuchMethod(
         Invocation.getter(#unsplashEnabled),
         returnValue: false,
@@ -874,6 +879,15 @@ class MockSettingsService extends _i1.Mock implements _i12.SettingsService {
   _i10.Future<void> setUse24HourTimeFormat(bool? value) => (super.noSuchMethod(
         Invocation.method(
           #setUse24HourTimeFormat,
+          [value],
+        ),
+        returnValue: _i10.Future<void>.value(),
+        returnValueForMissingStub: _i10.Future<void>.value(),
+      ) as _i10.Future<void>);
+  @override
+  _i10.Future<void> setAppHighlightAnimationEnabled(bool? value) => (super.noSuchMethod(
+        Invocation.method(
+          #setAppHighlightAnimationEnabled,
           [value],
         ),
         returnValue: _i10.Future<void>.value(),
@@ -2556,13 +2570,13 @@ class MockFLauncherDatabase extends _i1.Mock implements _i7.FLauncherDatabase {
         returnValue: _i10.Future<List<_i7.CategoryWithApps>>.value(<_i7.CategoryWithApps>[]),
       ) as _i10.Future<List<_i7.CategoryWithApps>>);
   @override
-  _i10.Future<int> nextAppCategoryOrder(int? categoryId) => (super.noSuchMethod(
+  _i10.Future<int?> nextAppCategoryOrder(int? categoryId) => (super.noSuchMethod(
         Invocation.method(
           #nextAppCategoryOrder,
           [categoryId],
         ),
-        returnValue: _i10.Future<int>.value(0),
-      ) as _i10.Future<int>);
+        returnValue: _i10.Future<int?>.value(),
+      ) as _i10.Future<int?>);
   @override
   _i6.Migrator createMigrator() => (super.noSuchMethod(
         Invocation.method(

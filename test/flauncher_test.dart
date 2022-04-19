@@ -77,6 +77,7 @@ void main() {
       ]),
     ]);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
@@ -157,6 +158,7 @@ void main() {
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.analyticsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
@@ -176,6 +178,7 @@ void main() {
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     final app = fakeApp(
       packageName: "me.efesser.flauncher",
       name: "FLauncher",
@@ -203,6 +206,7 @@ void main() {
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     final applicationsCategory = fakeCategory(name: "Applications", order: 1);
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
@@ -232,6 +236,7 @@ void main() {
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     final applicationsCategory = fakeCategory(name: "Applications", order: 1, type: CategoryType.grid);
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
@@ -276,6 +281,7 @@ void main() {
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     final applicationsCategory = fakeCategory(name: "Applications", order: 1, type: CategoryType.row);
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
@@ -322,6 +328,7 @@ void main() {
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     /*
      * we are creating 3 rows like the following:
@@ -433,6 +440,7 @@ void main() {
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     /*
      * we are creating 2 rows like the following:
@@ -556,6 +564,7 @@ void main() {
     when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     /*
      * we are creating 2 rows like the following:

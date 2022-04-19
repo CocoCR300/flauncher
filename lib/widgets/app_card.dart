@@ -20,6 +20,7 @@ import 'dart:async';
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/ticker_model.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/color_helpers.dart';
@@ -54,17 +55,17 @@ class AppCard extends StatefulWidget {
 class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   bool _moving = false;
   MemoryImage? _imageProvider;
-  late AnimationController _animation;
+  late final AnimationController _animation = AnimationController(
+    vsync: Provider.of<TickerModel>(context, listen: false).tickerProvider ?? this,
+    duration: Duration(
+      milliseconds: 800,
+    ),
+  );
   Color _lastBorderColor = Colors.white;
 
   @override
   void initState() {
-    _animation = AnimationController(
-      vsync: Provider.of<TickerModel>(context, listen: false).tickerProvider ?? this,
-      duration: Duration(
-        milliseconds: 800,
-      ),
-    );
+    super.initState();
     _animation.addStatusListener((animationStatus) {
       switch (animationStatus) {
         case AnimationStatus.completed:
@@ -79,8 +80,6 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
           break;
       }
     });
-    _animation.forward();
-    super.initState();
   }
 
   @override
@@ -102,84 +101,93 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
         onLongPress: (key) => _onLongPress(context, key),
         builder: (context) => AspectRatio(
           aspectRatio: 16 / 9,
-          child: AnimatedBuilder(
-            animation: _animation,
-            builder: (context, child) {
-              return AnimatedContainer(
-                duration: Duration(milliseconds: 200),
-                curve: Curves.easeInOut,
-                transformAlignment: Alignment.center,
-                transform: _scaleTransform(context),
-                child: Material(
-                  borderRadius: BorderRadius.circular(8),
-                  clipBehavior: Clip.antiAlias,
-                  elevation: Focus.of(context).hasFocus ? 16 : 0,
-                  shadowColor: Colors.black,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      InkWell(
-                        autofocus: widget.autofocus,
-                        focusColor: Colors.transparent,
-                        onTap: () => _onPressed(context, null),
-                        onLongPress: () => _onLongPress(context, null),
-                        child: widget.application.banner != null
-                            ? Ink.image(image: _cachedMemoryImage(widget.application.banner!), fit: BoxFit.cover)
-                            : Padding(
-                                padding: EdgeInsets.all(8),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Ink.image(
-                                        image: _cachedMemoryImage(widget.application.icon!),
-                                        height: double.infinity,
-                                      ),
-                                    ),
-                                    Flexible(
-                                      flex: 3,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(left: 8),
-                                        child: Text(
-                                          widget.application.name,
-                                          style: Theme.of(context).textTheme.bodySmall,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 3,
-                                        ),
-                                      ),
-                                    )
-                                  ],
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            transformAlignment: Alignment.center,
+            transform: _scaleTransform(context),
+            child: Material(
+              borderRadius: BorderRadius.circular(8),
+              clipBehavior: Clip.antiAlias,
+              elevation: Focus.of(context).hasFocus ? 16 : 0,
+              shadowColor: Colors.black,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  InkWell(
+                    autofocus: widget.autofocus,
+                    focusColor: Colors.transparent,
+                    onTap: () => _onPressed(context, null),
+                    onLongPress: () => _onLongPress(context, null),
+                    child: widget.application.banner != null
+                        ? Ink.image(image: _cachedMemoryImage(widget.application.banner!), fit: BoxFit.cover)
+                        : Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Ink.image(
+                                    image: _cachedMemoryImage(widget.application.icon!),
+                                    height: double.infinity,
+                                  ),
                                 ),
-                              ),
-                      ),
-                      if (_moving) ..._arrows(),
-                      IgnorePointer(
-                        child: AnimatedOpacity(
-                          duration: Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                          opacity: Focus.of(context).hasFocus ? 0 : 0.10,
-                          child: Container(color: Colors.black),
-                        ),
-                      ),
-                      IgnorePointer(
-                        child: AnimatedContainer(
-                          duration: Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                          decoration: BoxDecoration(
-                            border: Focus.of(context).hasFocus
-                                ? Border.all(
-                                    color: _lastBorderColor = computeBorderColor(_animation.value, _lastBorderColor),
-                                    width: 3)
-                                : null,
-                            borderRadius: BorderRadius.circular(8),
+                                Flexible(
+                                  flex: 3,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 8),
+                                    child: Text(
+                                      widget.application.name,
+                                      style: Theme.of(context).textTheme.bodySmall,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
                   ),
-                ),
-              );
-            },
+                  if (_moving) ..._arrows(),
+                  IgnorePointer(
+                    child: AnimatedOpacity(
+                      duration: Duration(milliseconds: 200),
+                      curve: Curves.easeInOut,
+                      opacity: Focus.of(context).hasFocus ? 0 : 0.10,
+                      child: Container(color: Colors.black),
+                    ),
+                  ),
+                  Selector<SettingsService, bool>(
+                    selector: (_, settingsService) => settingsService.appHighlightAnimationEnabled,
+                    builder: (context, appHighlightAnimationEnabled, __) {
+                      if (appHighlightAnimationEnabled) {
+                        _animation.forward();
+                        return AnimatedBuilder(
+                          animation: _animation,
+                          builder: (context, child) => IgnorePointer(
+                            child: AnimatedContainer(
+                              duration: Duration(milliseconds: 200),
+                              curve: Curves.easeInOut,
+                              decoration: BoxDecoration(
+                                border: Focus.of(context).hasFocus
+                                    ? Border.all(
+                                        color: _lastBorderColor =
+                                            computeBorderColor(_animation.value, _lastBorderColor),
+                                        width: 3)
+                                    : null,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      _animation.stop();
+                      return SizedBox();
+                    },
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       );

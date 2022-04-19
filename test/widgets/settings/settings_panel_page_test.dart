@@ -51,6 +51,7 @@ void main() {
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.analyticsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
@@ -68,6 +69,7 @@ void main() {
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.analyticsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
@@ -86,6 +88,7 @@ void main() {
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.analyticsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
@@ -105,6 +108,7 @@ void main() {
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.analyticsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
@@ -125,6 +129,7 @@ void main() {
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.analyticsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
@@ -146,9 +151,11 @@ void main() {
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.analyticsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -168,9 +175,11 @@ void main() {
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.analyticsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -191,10 +200,12 @@ void main() {
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.analyticsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
+    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     PackageInfoPlatform.instance = _MockPackageInfoPlatform();
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);

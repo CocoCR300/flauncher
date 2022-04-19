@@ -866,7 +866,6 @@ class AppsCategoriesCompanion extends UpdateCompanion<AppCategory> {
 
 abstract class _$FLauncherDatabase extends GeneratedDatabase {
   _$FLauncherDatabase(QueryExecutor e) : super(e);
-  _$FLauncherDatabase.connect(DatabaseConnection c) : super.connect(c);
   late final $AppsTable apps = $AppsTable(this);
   late final $CategoriesTable categories = $CategoriesTable(this);
   late final $AppsCategoriesTable appsCategories = $AppsCategoriesTable(this);
