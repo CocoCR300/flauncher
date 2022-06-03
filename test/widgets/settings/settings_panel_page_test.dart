@@ -27,7 +27,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:package_info_plus_platform_interface/package_info_data.dart';
 import 'package:package_info_plus_platform_interface/package_info_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -37,11 +36,11 @@ import '../../mocks.mocks.dart';
 
 void main() {
   setUpAll(() async {
-    final binding = TestWidgetsFlutterBinding.ensureInitialized() as TestWidgetsFlutterBinding;
+    final binding = TestWidgetsFlutterBinding.ensureInitialized();
     binding.window.physicalSizeTestValue = Size(1280, 720);
     binding.window.devicePixelRatioTestValue = 1.0;
     // Scale-down the font size because the font 'Ahem' used when running tests is much wider than Roboto
-    binding.window.textScaleFactorTestValue = 0.8;
+    binding.platformDispatcher.textScaleFactorTestValue = 0.8;
   });
 
   testWidgets("'Applications' opens ApplicationsPanelPage", (tester) async {
@@ -192,7 +191,6 @@ void main() {
     when(settingsService.crashReportsEnabled).thenReturn(false);
     when(settingsService.analyticsEnabled).thenReturn(false);
     when(settingsService.use24HourTimeFormat).thenReturn(false);
-    PackageInfo.disablePackageInfoPlatformOverride = true;
     PackageInfoPlatform.instance = _MockPackageInfoPlatform();
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);

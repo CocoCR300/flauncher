@@ -216,7 +216,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
 
   KeyEventResult _onPressed(BuildContext context, LogicalKeyboardKey? key) {
     if (_moving) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) => Scrollable.ensureVisible(context,
+      WidgetsBinding.instance.addPostFrameCallback((_) => Scrollable.ensureVisible(context,
           alignment: 0.1, duration: Duration(milliseconds: 100), curve: Curves.easeInOut));
       if (key == LogicalKeyboardKey.arrowLeft) {
         widget.onMove(AxisDirection.left);

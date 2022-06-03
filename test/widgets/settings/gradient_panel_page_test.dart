@@ -29,11 +29,11 @@ import '../../mocks.mocks.dart';
 
 void main() {
   setUpAll(() async {
-    final binding = TestWidgetsFlutterBinding.ensureInitialized() as TestWidgetsFlutterBinding;
+    final binding = TestWidgetsFlutterBinding.ensureInitialized();
     binding.window.physicalSizeTestValue = Size(1280, 720);
     binding.window.devicePixelRatioTestValue = 1.0;
     // Scale-down the font size because the font 'Ahem' used when running tests is much wider than Roboto
-    binding.window.textScaleFactorTestValue = 0.8;
+    binding.platformDispatcher.textScaleFactorTestValue = 0.8;
   });
 
   testWidgets("Selecting a gradient calls WallpaperService", (tester) async {

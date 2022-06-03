@@ -20,7 +20,6 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:drift_inspector/drift_inspector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -96,14 +95,7 @@ enum CategoryType {
 class FLauncherDatabase extends _$FLauncherDatabase {
   late final bool wasCreated;
 
-  FLauncherDatabase.connect(DatabaseConnection databaseConnection) : super.connect(databaseConnection) {
-    if (kDebugMode && !Platform.environment.containsKey('FLUTTER_TEST')) {
-      DriftInspectorBuilder()
-        ..bundleId = 'me.efesser.flauncher'
-        ..addDatabase('FLauncher', this)
-        ..build().start();
-    }
-  }
+  FLauncherDatabase.connect(DatabaseConnection databaseConnection) : super.connect(databaseConnection);
 
   FLauncherDatabase.inMemory() : super(LazyDatabase(() => NativeDatabase.memory()));
 
