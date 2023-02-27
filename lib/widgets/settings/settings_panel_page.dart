@@ -33,14 +33,14 @@ class SettingsPanelPage extends StatelessWidget {
   Widget build(BuildContext context) => Consumer<SettingsService>(
         builder: (context, settingsService, __) => Column(
           children: [
-            Text("Settings", style: Theme.of(context).textTheme.headline6),
+            Text("Settings", style: Theme.of(context).textTheme.titleLarge),
             Divider(),
             TextButton(
               child: Row(
                 children: [
                   Icon(Icons.apps),
                   Container(width: 8),
-                  Text("Applications", style: Theme.of(context).textTheme.bodyText2),
+                  Text("Applications", style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
               onPressed: () => Navigator.of(context).pushNamed(ApplicationsPanelPage.routeName),
@@ -50,7 +50,7 @@ class SettingsPanelPage extends StatelessWidget {
                 children: [
                   Icon(Icons.category),
                   Container(width: 8),
-                  Text("Categories", style: Theme.of(context).textTheme.bodyText2),
+                  Text("Categories", style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
               onPressed: () => Navigator.of(context).pushNamed(CategoriesPanelPage.routeName),
@@ -60,7 +60,7 @@ class SettingsPanelPage extends StatelessWidget {
                 children: [
                   Icon(Icons.wallpaper_outlined),
                   Container(width: 8),
-                  Text("Wallpaper", style: Theme.of(context).textTheme.bodyText2),
+                  Text("Wallpaper", style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
               onPressed: () => Navigator.of(context).pushNamed(WallpaperPanelPage.routeName),
@@ -71,7 +71,7 @@ class SettingsPanelPage extends StatelessWidget {
                 children: [
                   Icon(Icons.settings_outlined),
                   Container(width: 8),
-                  Text("Android settings", style: Theme.of(context).textTheme.bodyText2),
+                  Text("Android settings", style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
               onPressed: () => context.read<AppsService>().openSettings(),
@@ -108,7 +108,7 @@ class SettingsPanelPage extends StatelessWidget {
                 children: [
                   Icon(Icons.info_outline),
                   Container(width: 8),
-                  Text("About FLauncher", style: Theme.of(context).textTheme.bodyText2),
+                  Text("About FLauncher", style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
               onPressed: () => showDialog(

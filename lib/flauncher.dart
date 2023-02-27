@@ -126,7 +126,7 @@ class FLauncher extends StatelessWidget {
           children: [
             CircularProgressIndicator(),
             SizedBox(height: 16),
-            Text("Loading...", style: Theme.of(context).textTheme.headline6),
+            Text("Loading...", style: Theme.of(context).textTheme.titleLarge),
           ],
         ),
       );

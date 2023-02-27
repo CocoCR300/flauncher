@@ -30,7 +30,7 @@ class CategoriesPanelPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
         children: [
-          Text("Categories", style: Theme.of(context).textTheme.headline6),
+          Text("Categories", style: Theme.of(context).textTheme.titleLarge),
           Divider(),
           Selector<AppsService, List<CategoryWithApps>>(
             selector: (_, appsService) => appsService.categoriesWithApps,
@@ -64,7 +64,7 @@ class CategoriesPanelPage extends StatelessWidget {
             alignment: 0.5,
             child: ListTile(
               dense: true,
-              title: Text(categories[index].category.name, style: Theme.of(context).textTheme.bodyText2),
+              title: Text(categories[index].category.name, style: Theme.of(context).textTheme.bodyMedium),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

@@ -37,7 +37,7 @@ class CategoryPanelPage extends StatelessWidget {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(category.name, style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.center),
+                    Text(category.name, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
                     Divider(),
                     _listTile(
                       context,
@@ -64,11 +64,11 @@ class CategoryPanelPage extends StatelessWidget {
                             items: [
                               DropdownMenuItem(
                                 value: CategorySort.alphabetical,
-                                child: Text("Alphabetical", style: Theme.of(context).textTheme.caption),
+                                child: Text("Alphabetical", style: Theme.of(context).textTheme.bodySmall),
                               ),
                               DropdownMenuItem(
                                 value: CategorySort.manual,
-                                child: Text("Manual", style: Theme.of(context).textTheme.caption),
+                                child: Text("Manual", style: Theme.of(context).textTheme.bodySmall),
                               ),
                             ],
                           ),
@@ -89,11 +89,11 @@ class CategoryPanelPage extends StatelessWidget {
                             items: [
                               DropdownMenuItem(
                                 value: CategoryType.row,
-                                child: Text("Row", style: Theme.of(context).textTheme.caption),
+                                child: Text("Row", style: Theme.of(context).textTheme.bodySmall),
                               ),
                               DropdownMenuItem(
                                 value: CategoryType.grid,
-                                child: Text("Grid", style: Theme.of(context).textTheme.caption),
+                                child: Text("Grid", style: Theme.of(context).textTheme.bodySmall),
                               ),
                             ],
                           ),
@@ -115,7 +115,7 @@ class CategoryPanelPage extends StatelessWidget {
                                   .map(
                                     (value) => DropdownMenuItem(
                                       value: value,
-                                      child: Text(value.toString(), style: Theme.of(context).textTheme.caption),
+                                      child: Text(value.toString(), style: Theme.of(context).textTheme.bodySmall),
                                     ),
                                   )
                                   .toList(),
@@ -140,7 +140,7 @@ class CategoryPanelPage extends StatelessWidget {
                                   .map(
                                     (value) => DropdownMenuItem(
                                       value: value,
-                                      child: Text(value.toString(), style: Theme.of(context).textTheme.caption),
+                                      child: Text(value.toString(), style: Theme.of(context).textTheme.bodySmall),
                                     ),
                                   )
                                   .toList(),
@@ -153,7 +153,7 @@ class CategoryPanelPage extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: Colors.red[400]),
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.red[400]),
                         child: Text("Delete"),
                         onPressed: () async {
                           await context.read<AppsService>().deleteCategory(category);

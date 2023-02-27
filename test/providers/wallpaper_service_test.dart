@@ -16,13 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart';
 import 'package:flauncher/gradients.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/unsplash_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mockito/mockito.dart';
-import 'package:drift/drift.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -186,19 +186,22 @@ void main() {
 
 class _MockImagePicker extends Mock implements ImagePicker {
   @override
-  Future<XFile?> pickImage(
-          {required ImageSource source,
-          double? maxWidth,
-          double? maxHeight,
-          int? imageQuality,
-          CameraDevice preferredCameraDevice = CameraDevice.rear}) =>
+  Future<XFile?> pickImage({
+    required ImageSource source,
+    double? maxWidth,
+    double? maxHeight,
+    int? imageQuality,
+    CameraDevice preferredCameraDevice = CameraDevice.rear,
+    bool requestFullMetadata = true,
+  }) =>
       super.noSuchMethod(
           Invocation.method(#pickImage, [], {
             #source: source,
             #maxWidth: maxWidth,
             #maxHeight: maxHeight,
             #imageQuality: imageQuality,
-            #preferredCameraDevice: preferredCameraDevice
+            #preferredCameraDevice: preferredCameraDevice,
+            #requestFullMetadata: requestFullMetadata,
           }),
           returnValue: Future<XFile?>.value());
 }

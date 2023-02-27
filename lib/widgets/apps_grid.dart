@@ -47,7 +47,7 @@ class AppsGrid extends StatelessWidget {
               category.name,
               style: Theme.of(context)
                   .textTheme
-                  .headline6!
+                  .titleLarge!
                   .copyWith(shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)]),
             ),
           ),

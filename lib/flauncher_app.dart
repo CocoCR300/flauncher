@@ -99,20 +99,20 @@ class FLauncherApp extends StatelessWidget {
           theme: ThemeData(
             brightness: Brightness.dark,
             primarySwatch: _swatch,
-            toggleableActiveColor: _swatch[200],
             // ignore: deprecated_member_use
             accentColor: _swatch[200],
             cardColor: _swatch[300],
             canvasColor: _swatch[300],
             dialogBackgroundColor: _swatch[400],
+            // ignore: deprecated_member_use
             backgroundColor: _swatch[400],
             scaffoldBackgroundColor: _swatch[400],
-            textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(primary: Colors.white)),
+            textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: Colors.white)),
             appBarTheme: AppBarTheme(elevation: 0, backgroundColor: Colors.transparent),
             typography: Typography.material2018(),
             inputDecorationTheme: InputDecorationTheme(
               focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-              labelStyle: Typography.material2018().white.bodyText2,
+              labelStyle: Typography.material2018().white.bodyMedium,
             ),
             textSelectionTheme: TextSelectionThemeData(
               cursorColor: Colors.white,

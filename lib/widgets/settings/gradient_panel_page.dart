@@ -28,7 +28,7 @@ class GradientPanelPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
         children: [
-          Text("Gradient", style: Theme.of(context).textTheme.headline6),
+          Text("Gradient", style: Theme.of(context).textTheme.titleLarge),
           Divider(),
           Expanded(
             child: GridView.count(
@@ -65,7 +65,7 @@ class GradientPanelPage extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4),
                 child: AnimatedDefaultTextStyle(
-                  style: Theme.of(context).textTheme.caption!.copyWith(
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         decoration: TextDecoration.underline,
                         color: Focus.of(context).hasFocus ? Colors.white : null,
                       ),

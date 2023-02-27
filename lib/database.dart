@@ -201,7 +201,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
     return categoriesToApps.entries.map((entry) => CategoryWithApps(entry.key, entry.value)).toList();
   }
 
-  Future<int> nextAppCategoryOrder(int categoryId) async {
+  Future<int?> nextAppCategoryOrder(int categoryId) async {
     final query = selectOnly(appsCategories);
     final maxExpression = coalesce([appsCategories.order.max(), Constant(-1)]) + Constant(1);
     query.addColumns([maxExpression]);
@@ -214,5 +214,5 @@ class FLauncherDatabase extends _$FLauncherDatabase {
 DatabaseConnection connect() => DatabaseConnection.delayed(() async {
       final dbFolder = await getApplicationDocumentsDirectory();
       final file = File(path.join(dbFolder.path, 'db.sqlite'));
-      return DatabaseConnection.fromExecutor(NativeDatabase(file, logStatements: kDebugMode));
+      return DatabaseConnection(NativeDatabase(file, logStatements: kDebugMode));
     }());

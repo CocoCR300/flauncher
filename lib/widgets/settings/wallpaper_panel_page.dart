@@ -32,7 +32,7 @@ class WallpaperPanelPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
         children: [
-          Text("Wallpaper", style: Theme.of(context).textTheme.headline6),
+          Text("Wallpaper", style: Theme.of(context).textTheme.titleLarge),
           Divider(),
           if (context.read<SettingsService>().unsplashEnabled)
             TextButton(
@@ -41,7 +41,7 @@ class WallpaperPanelPage extends StatelessWidget {
                 children: [
                   ImageIcon(AssetImage("assets/unsplash.png")),
                   Container(width: 8),
-                  Text("Unsplash", style: Theme.of(context).textTheme.bodyText2),
+                  Text("Unsplash", style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
               onPressed: () => Navigator.of(context).pushNamed(UnsplashPanelPage.routeName),
@@ -52,7 +52,7 @@ class WallpaperPanelPage extends StatelessWidget {
               children: [
                 Icon(Icons.gradient),
                 Container(width: 8),
-                Text("Gradient", style: Theme.of(context).textTheme.bodyText2),
+                Text("Gradient", style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),
             onPressed: () => Navigator.of(context).pushNamed(GradientPanelPage.routeName),
@@ -62,7 +62,7 @@ class WallpaperPanelPage extends StatelessWidget {
               children: [
                 Icon(Icons.insert_drive_file_outlined),
                 Container(width: 8),
-                Text("Custom", style: Theme.of(context).textTheme.bodyText2),
+                Text("Custom", style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),
             onPressed: () async {
@@ -93,14 +93,14 @@ class WallpaperPanelPage extends StatelessWidget {
                 return TextButton(
                   onPressed: () => Navigator.of(context, rootNavigator: true).push(
                     MaterialPageRoute(
-                      builder: (context) => WebView(
-                        initialUrl: authorInfo["link"],
+                      builder: (context) => WebViewWidget(
+                        controller: WebViewController()..loadRequest(Uri.parse(authorInfo["link"])),
                       ),
                     ),
                   ),
                   child: Text(
                     "Photo by ${authorInfo["username"]} on Unsplash",
-                    style: Theme.of(context).textTheme.caption,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 );
               } else {

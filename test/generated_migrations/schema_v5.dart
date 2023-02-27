@@ -2,6 +2,67 @@
 //@dart=2.12
 import 'package:drift/drift.dart';
 
+class Apps extends Table with TableInfo<Apps, AppsData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  Apps(this.attachedDatabase, [this._alias]);
+  late final GeneratedColumn<String> packageName = GeneratedColumn<String>('package_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> name =
+      GeneratedColumn<String>('name', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> version =
+      GeneratedColumn<String>('version', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<Uint8List> banner =
+      GeneratedColumn<Uint8List>('banner', aliasedName, true, type: DriftSqlType.blob, requiredDuringInsert: false);
+  late final GeneratedColumn<Uint8List> icon =
+      GeneratedColumn<Uint8List>('icon', aliasedName, true, type: DriftSqlType.blob, requiredDuringInsert: false);
+  late final GeneratedColumn<bool> hidden = GeneratedColumn<bool>('hidden', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+        SqlDialect.sqlite: 'CHECK ("hidden" IN (0, 1))',
+        SqlDialect.mysql: '',
+        SqlDialect.postgres: '',
+      }),
+      defaultValue: Constant(false));
+  late final GeneratedColumn<bool> sideloaded = GeneratedColumn<bool>('sideloaded', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+        SqlDialect.sqlite: 'CHECK ("sideloaded" IN (0, 1))',
+        SqlDialect.mysql: '',
+        SqlDialect.postgres: '',
+      }),
+      defaultValue: Constant(false));
+  @override
+  List<GeneratedColumn> get $columns => [packageName, name, version, banner, icon, hidden, sideloaded];
+  @override
+  String get aliasedName => _alias ?? 'apps';
+  @override
+  String get actualTableName => 'apps';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {packageName};
+  @override
+  AppsData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppsData(
+      packageName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}package_name'])!,
+      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      version: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}version'])!,
+      banner: attachedDatabase.typeMapping.read(DriftSqlType.blob, data['${effectivePrefix}banner']),
+      icon: attachedDatabase.typeMapping.read(DriftSqlType.blob, data['${effectivePrefix}icon']),
+      hidden: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}hidden'])!,
+      sideloaded: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}sideloaded'])!,
+    );
+  }
+
+  @override
+  Apps createAlias(String alias) {
+    return Apps(attachedDatabase, alias);
+  }
+}
+
 class AppsData extends DataClass implements Insertable<AppsData> {
   final String packageName;
   final String name;
@@ -10,7 +71,7 @@ class AppsData extends DataClass implements Insertable<AppsData> {
   final Uint8List? icon;
   final bool hidden;
   final bool sideloaded;
-  AppsData(
+  const AppsData(
       {required this.packageName,
       required this.name,
       required this.version,
@@ -18,18 +79,6 @@ class AppsData extends DataClass implements Insertable<AppsData> {
       this.icon,
       required this.hidden,
       required this.sideloaded});
-  factory AppsData.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return AppsData(
-      packageName: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}package_name'])!,
-      name: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
-      version: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}version'])!,
-      banner: const BlobType().mapFromDatabaseResponse(data['${effectivePrefix}banner']),
-      icon: const BlobType().mapFromDatabaseResponse(data['${effectivePrefix}icon']),
-      hidden: const BoolType().mapFromDatabaseResponse(data['${effectivePrefix}hidden'])!,
-      sideloaded: const BoolType().mapFromDatabaseResponse(data['${effectivePrefix}sideloaded'])!,
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -37,10 +86,10 @@ class AppsData extends DataClass implements Insertable<AppsData> {
     map['name'] = Variable<String>(name);
     map['version'] = Variable<String>(version);
     if (!nullToAbsent || banner != null) {
-      map['banner'] = Variable<Uint8List?>(banner);
+      map['banner'] = Variable<Uint8List>(banner);
     }
     if (!nullToAbsent || icon != null) {
-      map['icon'] = Variable<Uint8List?>(icon);
+      map['icon'] = Variable<Uint8List>(icon);
     }
     map['hidden'] = Variable<bool>(hidden);
     map['sideloaded'] = Variable<bool>(sideloaded);
@@ -89,16 +138,16 @@ class AppsData extends DataClass implements Insertable<AppsData> {
           {String? packageName,
           String? name,
           String? version,
-          Uint8List? banner,
-          Uint8List? icon,
+          Value<Uint8List?> banner = const Value.absent(),
+          Value<Uint8List?> icon = const Value.absent(),
           bool? hidden,
           bool? sideloaded}) =>
       AppsData(
         packageName: packageName ?? this.packageName,
         name: name ?? this.name,
         version: version ?? this.version,
-        banner: banner ?? this.banner,
-        icon: icon ?? this.icon,
+        banner: banner.present ? banner.value : this.banner,
+        icon: icon.present ? icon.value : this.icon,
         hidden: hidden ?? this.hidden,
         sideloaded: sideloaded ?? this.sideloaded,
       );
@@ -117,7 +166,8 @@ class AppsData extends DataClass implements Insertable<AppsData> {
   }
 
   @override
-  int get hashCode => Object.hash(packageName, name, version, banner, icon, hidden, sideloaded);
+  int get hashCode => Object.hash(
+      packageName, name, version, $driftBlobEquality.hash(banner), $driftBlobEquality.hash(icon), hidden, sideloaded);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -125,8 +175,8 @@ class AppsData extends DataClass implements Insertable<AppsData> {
           other.packageName == this.packageName &&
           other.name == this.name &&
           other.version == this.version &&
-          other.banner == this.banner &&
-          other.icon == this.icon &&
+          $driftBlobEquality.equals(other.banner, this.banner) &&
+          $driftBlobEquality.equals(other.icon, this.icon) &&
           other.hidden == this.hidden &&
           other.sideloaded == this.sideloaded);
 }
@@ -163,8 +213,8 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
     Expression<String>? packageName,
     Expression<String>? name,
     Expression<String>? version,
-    Expression<Uint8List?>? banner,
-    Expression<Uint8List?>? icon,
+    Expression<Uint8List>? banner,
+    Expression<Uint8List>? icon,
     Expression<bool>? hidden,
     Expression<bool>? sideloaded,
   }) {
@@ -211,10 +261,10 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
       map['version'] = Variable<String>(version.value);
     }
     if (banner.present) {
-      map['banner'] = Variable<Uint8List?>(banner.value);
+      map['banner'] = Variable<Uint8List>(banner.value);
     }
     if (icon.present) {
-      map['icon'] = Variable<Uint8List?>(icon.value);
+      map['icon'] = Variable<Uint8List>(icon.value);
     }
     if (hidden.present) {
       map['hidden'] = Variable<bool>(hidden.value);
@@ -240,51 +290,54 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
   }
 }
 
-class Apps extends Table with TableInfo<Apps, AppsData> {
+class Categories extends Table with TableInfo<Categories, CategoriesData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  Apps(this.attachedDatabase, [this._alias]);
-  late final GeneratedColumn<String?> packageName = GeneratedColumn<String?>('package_name', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
-  late final GeneratedColumn<String?> name =
-      GeneratedColumn<String?>('name', aliasedName, false, type: const StringType(), requiredDuringInsert: true);
-  late final GeneratedColumn<String?> version =
-      GeneratedColumn<String?>('version', aliasedName, false, type: const StringType(), requiredDuringInsert: true);
-  late final GeneratedColumn<Uint8List?> banner =
-      GeneratedColumn<Uint8List?>('banner', aliasedName, true, type: const BlobType(), requiredDuringInsert: false);
-  late final GeneratedColumn<Uint8List?> icon =
-      GeneratedColumn<Uint8List?>('icon', aliasedName, true, type: const BlobType(), requiredDuringInsert: false);
-  late final GeneratedColumn<bool?> hidden = GeneratedColumn<bool?>('hidden', aliasedName, false,
-      type: const BoolType(),
+  Categories(this.attachedDatabase, [this._alias]);
+  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints: 'CHECK (hidden IN (0, 1))',
-      defaultValue: Constant(false));
-  late final GeneratedColumn<bool?> sideloaded = GeneratedColumn<bool?>('sideloaded', aliasedName, false,
-      type: const BoolType(),
-      requiredDuringInsert: false,
-      defaultConstraints: 'CHECK (sideloaded IN (0, 1))',
-      defaultValue: Constant(false));
+      defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  late final GeneratedColumn<String> name =
+      GeneratedColumn<String>('name', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<int> sort = GeneratedColumn<int>('sort', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: Constant(0));
+  late final GeneratedColumn<int> type = GeneratedColumn<int>('type', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: Constant(0));
+  late final GeneratedColumn<int> rowHeight = GeneratedColumn<int>('row_height', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: Constant(110));
+  late final GeneratedColumn<int> columnsCount = GeneratedColumn<int>('columns_count', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: Constant(6));
+  late final GeneratedColumn<int> order =
+      GeneratedColumn<int>('order', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [packageName, name, version, banner, icon, hidden, sideloaded];
+  List<GeneratedColumn> get $columns => [id, name, sort, type, rowHeight, columnsCount, order];
   @override
-  String get aliasedName => _alias ?? 'apps';
+  String get aliasedName => _alias ?? 'categories';
   @override
-  String get actualTableName => 'apps';
+  String get actualTableName => 'categories';
   @override
-  Set<GeneratedColumn> get $primaryKey => {packageName};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  AppsData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return AppsData.fromData(data, prefix: tablePrefix != null ? '$tablePrefix.' : null);
+  CategoriesData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CategoriesData(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      sort: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}sort'])!,
+      type: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}type'])!,
+      rowHeight: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}row_height'])!,
+      columnsCount: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}columns_count'])!,
+      order: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}order'])!,
+    );
   }
 
   @override
-  Apps createAlias(String alias) {
-    return Apps(attachedDatabase, alias);
+  Categories createAlias(String alias) {
+    return Categories(attachedDatabase, alias);
   }
-
-  @override
-  bool get dontWriteConstraints => false;
 }
 
 class CategoriesData extends DataClass implements Insertable<CategoriesData> {
@@ -295,7 +348,7 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
   final int rowHeight;
   final int columnsCount;
   final int order;
-  CategoriesData(
+  const CategoriesData(
       {required this.id,
       required this.name,
       required this.sort,
@@ -303,18 +356,6 @@ class CategoriesData extends DataClass implements Insertable<CategoriesData> {
       required this.rowHeight,
       required this.columnsCount,
       required this.order});
-  factory CategoriesData.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return CategoriesData(
-      id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      name: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
-      sort: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}sort'])!,
-      type: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}type'])!,
-      rowHeight: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}row_height'])!,
-      columnsCount: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}columns_count'])!,
-      order: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}order'])!,
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -514,60 +555,51 @@ class CategoriesCompanion extends UpdateCompanion<CategoriesData> {
   }
 }
 
-class Categories extends Table with TableInfo<Categories, CategoriesData> {
+class AppsCategories extends Table with TableInfo<AppsCategories, AppsCategoriesData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  Categories(this.attachedDatabase, [this._alias]);
-  late final GeneratedColumn<int?> id = GeneratedColumn<int?>('id', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: false, defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
-  late final GeneratedColumn<String?> name =
-      GeneratedColumn<String?>('name', aliasedName, false, type: const StringType(), requiredDuringInsert: true);
-  late final GeneratedColumn<int?> sort = GeneratedColumn<int?>('sort', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: false, defaultValue: Constant(0));
-  late final GeneratedColumn<int?> type = GeneratedColumn<int?>('type', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: false, defaultValue: Constant(0));
-  late final GeneratedColumn<int?> rowHeight = GeneratedColumn<int?>('row_height', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: false, defaultValue: Constant(110));
-  late final GeneratedColumn<int?> columnsCount = GeneratedColumn<int?>('columns_count', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: false, defaultValue: Constant(6));
-  late final GeneratedColumn<int?> order =
-      GeneratedColumn<int?>('order', aliasedName, false, type: const IntType(), requiredDuringInsert: true);
+  AppsCategories(this.attachedDatabase, [this._alias]);
+  late final GeneratedColumn<int> categoryId = GeneratedColumn<int>('category_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'REFERENCES categories(id) ON DELETE CASCADE');
+  late final GeneratedColumn<String> appPackageName = GeneratedColumn<String>('app_package_name', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'REFERENCES apps(package_name) ON DELETE CASCADE');
+  late final GeneratedColumn<int> order =
+      GeneratedColumn<int>('order', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [id, name, sort, type, rowHeight, columnsCount, order];
+  List<GeneratedColumn> get $columns => [categoryId, appPackageName, order];
   @override
-  String get aliasedName => _alias ?? 'categories';
+  String get aliasedName => _alias ?? 'apps_categories';
   @override
-  String get actualTableName => 'categories';
+  String get actualTableName => 'apps_categories';
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {categoryId, appPackageName};
   @override
-  CategoriesData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return CategoriesData.fromData(data, prefix: tablePrefix != null ? '$tablePrefix.' : null);
+  AppsCategoriesData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppsCategoriesData(
+      categoryId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}category_id'])!,
+      appPackageName:
+          attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}app_package_name'])!,
+      order: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}order'])!,
+    );
   }
 
   @override
-  Categories createAlias(String alias) {
-    return Categories(attachedDatabase, alias);
+  AppsCategories createAlias(String alias) {
+    return AppsCategories(attachedDatabase, alias);
   }
-
-  @override
-  bool get dontWriteConstraints => false;
 }
 
 class AppsCategoriesData extends DataClass implements Insertable<AppsCategoriesData> {
   final int categoryId;
   final String appPackageName;
   final int order;
-  AppsCategoriesData({required this.categoryId, required this.appPackageName, required this.order});
-  factory AppsCategoriesData.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return AppsCategoriesData(
-      categoryId: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}category_id'])!,
-      appPackageName: const StringType().mapFromDatabaseResponse(data['${effectivePrefix}app_package_name'])!,
-      order: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}order'])!,
-    );
-  }
+  const AppsCategoriesData({required this.categoryId, required this.appPackageName, required this.order});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -691,50 +723,13 @@ class AppsCategoriesCompanion extends UpdateCompanion<AppsCategoriesData> {
   }
 }
 
-class AppsCategories extends Table with TableInfo<AppsCategories, AppsCategoriesData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  AppsCategories(this.attachedDatabase, [this._alias]);
-  late final GeneratedColumn<int?> categoryId = GeneratedColumn<int?>('category_id', aliasedName, false,
-      type: const IntType(),
-      requiredDuringInsert: true,
-      $customConstraints: 'REFERENCES categories(id) ON DELETE CASCADE');
-  late final GeneratedColumn<String?> appPackageName = GeneratedColumn<String?>('app_package_name', aliasedName, false,
-      type: const StringType(),
-      requiredDuringInsert: true,
-      $customConstraints: 'REFERENCES apps(package_name) ON DELETE CASCADE');
-  late final GeneratedColumn<int?> order =
-      GeneratedColumn<int?>('order', aliasedName, false, type: const IntType(), requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [categoryId, appPackageName, order];
-  @override
-  String get aliasedName => _alias ?? 'apps_categories';
-  @override
-  String get actualTableName => 'apps_categories';
-  @override
-  Set<GeneratedColumn> get $primaryKey => {categoryId, appPackageName};
-  @override
-  AppsCategoriesData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return AppsCategoriesData.fromData(data, prefix: tablePrefix != null ? '$tablePrefix.' : null);
-  }
-
-  @override
-  AppsCategories createAlias(String alias) {
-    return AppsCategories(attachedDatabase, alias);
-  }
-
-  @override
-  bool get dontWriteConstraints => false;
-}
-
 class DatabaseAtV5 extends GeneratedDatabase {
-  DatabaseAtV5(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
+  DatabaseAtV5(QueryExecutor e) : super(e);
   late final Apps apps = Apps(this);
   late final Categories categories = Categories(this);
   late final AppsCategories appsCategories = AppsCategories(this);
   @override
-  Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
+  Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [apps, categories, appsCategories];
   @override

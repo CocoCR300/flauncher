@@ -17,7 +17,6 @@
  */
 
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
@@ -117,6 +116,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                   elevation: Focus.of(context).hasFocus ? 16 : 0,
                   shadowColor: Colors.black,
                   child: Stack(
+                    fit: StackFit.expand,
                     children: [
                       InkWell(
                         autofocus: widget.autofocus,
@@ -131,7 +131,10 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                                   children: [
                                     Expanded(
                                       flex: 2,
-                                      child: Ink.image(image: _cachedMemoryImage(widget.application.icon!)),
+                                      child: Ink.image(
+                                        image: _cachedMemoryImage(widget.application.icon!),
+                                        height: double.infinity,
+                                      ),
                                     ),
                                     Flexible(
                                       flex: 3,
@@ -139,7 +142,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                                         padding: EdgeInsets.only(left: 8),
                                         child: Text(
                                           widget.application.name,
-                                          style: Theme.of(context).textTheme.caption,
+                                          style: Theme.of(context).textTheme.bodySmall,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 3,
                                         ),

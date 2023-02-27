@@ -39,7 +39,7 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
         length: 3,
         child: Column(
           children: [
-            Text(_title, style: Theme.of(context).textTheme.headline6),
+            Text(_title, style: Theme.of(context).textTheme.titleLarge),
             Divider(),
             Material(
               type: MaterialType.transparency,
@@ -115,7 +115,7 @@ Widget _appCard(BuildContext context, App application) => Card(
         contentPadding: EdgeInsets.symmetric(horizontal: 8),
         title: Text(
           application.name,
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.bodyMedium,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),

@@ -156,7 +156,7 @@ class AppsService extends ChangeNotifier {
   Future<void> startAmbientMode() => _fLauncherChannel.startAmbientMode();
 
   Future<void> addToCategory(App app, Category category, {bool shouldNotifyListeners = true}) async {
-    int index = await _database.nextAppCategoryOrder(category.id);
+    int index = await _database.nextAppCategoryOrder(category.id) ?? 0;
     await _database.insertAppsCategories([
       AppsCategoriesCompanion.insert(
         categoryId: category.id,

@@ -32,7 +32,7 @@ class UnsplashPanelPage extends StatelessWidget {
         length: 2,
         child: Column(
           children: [
-            Text("Unsplash", style: Theme.of(context).textTheme.headline6),
+            Text("Unsplash", style: Theme.of(context).textTheme.titleLarge),
             Divider(),
             Material(
               type: MaterialType.transparency,
@@ -82,6 +82,7 @@ class _RandomTabState extends State<_RandomTab> {
         canRequestFocus: false,
         child: Builder(
           builder: (context) => Stack(
+            fit: StackFit.expand,
             children: [
               Card(
                 clipBehavior: Clip.antiAlias,
@@ -102,7 +103,11 @@ class _RandomTabState extends State<_RandomTab> {
                     padding: EdgeInsets.all(8),
                     child: Row(
                       children: [
-                        Ink.image(image: assetImage, width: 32),
+                        Ink.image(
+                          image: assetImage,
+                          height: double.infinity,
+                          width: 32,
+                        ),
                         SizedBox(width: 8),
                         Flexible(child: Text(text, overflow: TextOverflow.ellipsis))
                       ],
@@ -192,6 +197,7 @@ class _SearchTabState extends State<_SearchTab> {
             children: [
               Expanded(
                 child: Stack(
+                  fit: StackFit.expand,
                   children: [
                     Card(
                       clipBehavior: Clip.antiAlias,
@@ -220,7 +226,7 @@ class _SearchTabState extends State<_SearchTab> {
                 padding: EdgeInsets.symmetric(horizontal: 4),
                 child: Text(
                   photo.username,
-                  style: Theme.of(context).textTheme.caption!.copyWith(decoration: TextDecoration.underline),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(decoration: TextDecoration.underline),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

@@ -29,7 +29,7 @@ class FLauncherAboutDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.bodyText2!;
+    final textStyle = Theme.of(context).textTheme.bodyMedium!;
     final underlined = textStyle.copyWith(decoration: TextDecoration.underline);
     return AboutDialog(
       applicationName: packageInfo.appName,
