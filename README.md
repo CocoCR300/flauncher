@@ -1,4 +1,5 @@
-# FLauncher
+# FLauncher (fork)
+This is a fork of the GitLab repository at: https://gitlab.com/flauncher/flauncher
 FLauncher is an open-source alternative launcher for Android TV, built with [Flutter](https://flutter.dev).
 
 The project is still at an early development stage and may be unstable. It currently lacks testing on real devices and has only been tested on Chromecast with Google TV.
