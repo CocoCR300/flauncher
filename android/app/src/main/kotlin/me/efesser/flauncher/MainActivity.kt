@@ -28,7 +28,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.UserHandle
 import android.provider.Settings
-import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
@@ -44,7 +43,7 @@ private const val EVENT_CHANNEL = "me.efesser.flauncher/event"
 class MainActivity : FlutterActivity() {
     val launcherAppsCallbacks = ArrayList<LauncherApps.Callback>()
 
-    override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, METHOD_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
@@ -72,12 +71,12 @@ class MainActivity : FlutterActivity() {
 
                     override fun onPackageAdded(packageName: String, user: UserHandle) {
                         getApplication(packageName)
-                            ?.let { events.success(mapOf("action" to "PACKAGE_ADDED", "activitiyInfo" to it)) }
+                            ?.let { events.success(mapOf("action" to "PACKAGE_ADDED", "activityInfo" to it)) }
                     }
 
                     override fun onPackageChanged(packageName: String, user: UserHandle) {
                         getApplication(packageName)
-                            ?.let { events.success(mapOf("action" to "PACKAGE_CHANGED", "activitiyInfo" to it)) }
+                            ?.let { events.success(mapOf("action" to "PACKAGE_CHANGED", "activityInfo" to it)) }
                     }
 
                     override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle, replacing: Boolean) {

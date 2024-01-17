@@ -16,15 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:convert';
-
-import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
-import 'package:flauncher/widgets/settings/unsplash_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class WallpaperPanelPage extends StatelessWidget {
   static const String routeName = "wallpaper_panel";
@@ -34,20 +29,8 @@ class WallpaperPanelPage extends StatelessWidget {
         children: [
           Text("Wallpaper", style: Theme.of(context).textTheme.titleLarge),
           Divider(),
-          if (context.read<SettingsService>().unsplashEnabled)
-            TextButton(
-              autofocus: true,
-              child: Row(
-                children: [
-                  ImageIcon(AssetImage("assets/unsplash.png")),
-                  Container(width: 8),
-                  Text("Unsplash", style: Theme.of(context).textTheme.bodyMedium),
-                ],
-              ),
-              onPressed: () => Navigator.of(context).pushNamed(UnsplashPanelPage.routeName),
-            ),
           TextButton(
-            autofocus: !context.read<SettingsService>().unsplashEnabled,
+            autofocus: true,
             child: Row(
               children: [
                 Icon(Icons.gradient),
@@ -81,30 +64,6 @@ class WallpaperPanelPage extends StatelessWidget {
                     ),
                   ),
                 );
-              }
-            },
-          ),
-          Spacer(),
-          Selector<SettingsService, String?>(
-            selector: (_, settingsService) => settingsService.unsplashAuthor,
-            builder: (context, json, _) {
-              if (json != null) {
-                final authorInfo = jsonDecode(json);
-                return TextButton(
-                  onPressed: () => Navigator.of(context, rootNavigator: true).push(
-                    MaterialPageRoute(
-                      builder: (context) => WebViewWidget(
-                        controller: WebViewController()..loadRequest(Uri.parse(authorInfo["link"])),
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    "Photo by ${authorInfo["username"]} on Unsplash",
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                );
-              } else {
-                return Container();
               }
             },
           ),

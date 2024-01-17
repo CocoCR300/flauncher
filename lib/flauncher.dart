@@ -84,8 +84,8 @@ class FLauncher extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               Positioned(
-                left: 2.0,
-                top: 18.0,
+                left: 12.0,
+                top: 14.0,
                 child: ImageFiltered(
                   imageFilter: ImageFilter.blur(sigmaX: 2, sigmaY: 2, tileMode: TileMode.decal),
                   child: Icon(Icons.settings_outlined, color: Colors.black54),

@@ -16,13 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/gradients.dart';
 import 'package:flauncher/providers/settings_service.dart';
-import 'package:flauncher/unsplash_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,7 +28,6 @@ import 'package:path_provider/path_provider.dart';
 class WallpaperService extends ChangeNotifier {
   final ImagePicker _imagePicker;
   final FLauncherChannel _fLauncherChannel;
-  final UnsplashService _unsplashService;
   late SettingsService _settingsService;
 
   late final File _wallpaperFile;
@@ -45,7 +42,7 @@ class WallpaperService extends ChangeNotifier {
 
   set settingsService(SettingsService settingsService) => _settingsService = settingsService;
 
-  WallpaperService(this._imagePicker, this._fLauncherChannel, this._unsplashService) {
+  WallpaperService(this._imagePicker, this._fLauncherChannel) {
     _init();
   }
 
@@ -67,30 +64,8 @@ class WallpaperService extends ChangeNotifier {
       final bytes = await pickedFile.readAsBytes();
       await _wallpaperFile.writeAsBytes(bytes);
       _wallpaper = bytes;
-      await _settingsService.setUnsplashAuthor(null);
       notifyListeners();
     }
-  }
-
-  Future<void> randomFromUnsplash(String query) async {
-    final photo = await _unsplashService.randomPhoto(query);
-    final bytes = await _unsplashService.downloadPhoto(photo);
-    await _wallpaperFile.writeAsBytes(bytes);
-    _wallpaper = bytes;
-    await _settingsService
-        .setUnsplashAuthor(jsonEncode({"username": photo.username, "link": photo.userLink.toString()}));
-    notifyListeners();
-  }
-
-  Future<List<Photo>> searchFromUnsplash(String query) => _unsplashService.searchPhotos(query);
-
-  Future<void> setFromUnsplash(Photo photo) async {
-    final bytes = await _unsplashService.downloadPhoto(photo);
-    await _wallpaperFile.writeAsBytes(bytes);
-    _wallpaper = bytes;
-    await _settingsService
-        .setUnsplashAuthor(jsonEncode({"username": photo.username, "link": photo.userLink.toString()}));
-    notifyListeners();
   }
 
   Future<void> setGradient(FLauncherGradient fLauncherGradient) async {
@@ -98,7 +73,6 @@ class WallpaperService extends ChangeNotifier {
       await _wallpaperFile.delete();
     }
     _wallpaper = null;
-    _settingsService.setUnsplashAuthor(null);
     _settingsService.setGradientUuid(fLauncherGradient.uuid);
     notifyListeners();
   }

@@ -39,19 +39,17 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-def secretProperties = new Properties()
-secretProperties.setProperty("signing_keystore_password", "${System.getenv('SIGNING_KEYSTORE_PASSWORD')}")
-secretProperties.setProperty("signing_key_password", "${System.getenv('SIGNING_KEY_PASSWORD')}")
-secretProperties.setProperty("signing_key_alias", "${System.getenv('SIGNING_KEY_ALIAS')}")
+//def secretProperties = new Properties()
+//secretProperties.setProperty("signing_keystore_password", "${System.getenv('SIGNING_KEYSTORE_PASSWORD')}")
+//secretProperties.setProperty("signing_key_password", "${System.getenv('SIGNING_KEY_PASSWORD')}")
+//secretProperties.setProperty("signing_key_alias", "${System.getenv('SIGNING_KEY_ALIAS')}")
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -60,7 +58,7 @@ android {
     defaultConfig {
         applicationId "me.efesser.flauncher"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -68,10 +66,10 @@ android {
     signingConfigs {
         debug {}
         release {
-            storeFile file("upload-keystore.jks")
-            storePassword "${secretProperties['signing_keystore_password']}"
-            keyAlias "${secretProperties['signing_key_alias']}"
-            keyPassword "${secretProperties['signing_key_password']}"
+//            storeFile file("upload-keystore.jks")
+//            storePassword "${secretProperties['signing_keystore_password']}"
+//            keyAlias "${secretProperties['signing_key_alias']}"
+//            keyPassword "${secretProperties['signing_key_password']}"
         }
     }
 
@@ -83,7 +81,8 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
+//            signingConfig signingConfigs.release
         }
     }
 }

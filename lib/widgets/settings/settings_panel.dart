@@ -16,14 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flauncher/widgets/right_panel_dialog.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/categories_panel_page.dart';
 import 'package:flauncher/widgets/settings/category_panel_page.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
-import 'package:flauncher/widgets/settings/unsplash_panel_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -50,15 +48,12 @@ class _SettingsPanelState extends State<SettingsPanel> {
             child: Navigator(
               key: _navigatorKey,
               initialRoute: widget.initialRoute ?? SettingsPanelPage.routeName,
-              observers: [if (kReleaseMode) FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)],
               onGenerateRoute: (settings) {
                 switch (settings.name) {
                   case SettingsPanelPage.routeName:
                     return MaterialPageRoute(builder: (_) => SettingsPanelPage());
                   case WallpaperPanelPage.routeName:
                     return MaterialPageRoute(builder: (_) => WallpaperPanelPage());
-                  case UnsplashPanelPage.routeName:
-                    return MaterialPageRoute(builder: (_) => UnsplashPanelPage());
                   case GradientPanelPage.routeName:
                     return MaterialPageRoute(builder: (_) => GradientPanelPage());
                   case ApplicationsPanelPage.routeName:

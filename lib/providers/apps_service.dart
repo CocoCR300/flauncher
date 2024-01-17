@@ -55,7 +55,7 @@ class AppsService extends ChangeNotifier {
       switch (event["action"]) {
         case "PACKAGE_ADDED":
         case "PACKAGE_CHANGED":
-          await _database.persistApps([_buildAppCompanion(event["activitiyInfo"])]);
+          await _database.persistApps([_buildAppCompanion(event["activityInfo"])]);
           break;
         case "PACKAGES_AVAILABLE":
           await _database.persistApps((event["activitiesInfo"] as List<dynamic>).map(_buildAppCompanion).toList());
