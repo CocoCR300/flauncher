@@ -65,4 +65,5 @@ Because Android's `WallpaperManager` is not available on some Android TV devices
 
 Please note that changing wallpaper requires a file explorer to be installed on the device in order to pick a file.
 
+## Support the original author: [etienn01](https://github.com/etienn01)
 <a href="https://www.buymeacoffee.com/etienn01" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="200"></a>
