@@ -23,11 +23,13 @@ import 'package:flauncher/flauncher_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'flauncher_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  initializeDateFormatting();
 
   final sharedPreferences = await SharedPreferences.getInstance();
   final imagePicker = ImagePicker();

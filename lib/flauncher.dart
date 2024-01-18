@@ -26,7 +26,7 @@ import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
-import 'package:flauncher/widgets/time_widget.dart';
+import 'package:flauncher/widgets/date_time_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,10 +45,14 @@ class FLauncher extends StatelessWidget {
               body: Padding(
                 padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: Consumer<AppsService>(
-                  builder: (context, appsService, _) => appsService.initialized
-                      ? SingleChildScrollView(child: _categories(appsService.categoriesWithApps))
-                      : _emptyState(context),
-                ),
+                  builder: (context, appsService, _) {
+                    if (appsService.initialized) {
+                      return SingleChildScrollView(child: _categories(appsService.categoriesWithApps));
+                    }
+                    else {
+                      return _emptyState(context);
+                    }
+                }),
               ),
             ),
           ],
@@ -104,7 +108,7 @@ class FLauncher extends StatelessWidget {
             padding: EdgeInsets.only(left: 16, right: 32),
             child: Align(
               alignment: Alignment.center,
-              child: TimeWidget(),
+              child: DateTimeWidget(),
             ),
           ),
         ],

@@ -21,27 +21,22 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const _use24HourTimeFormatKey = "use_24_hour_time_format";
 const _appHighlightAnimationEnabledKey = "app_highlight_animation_enabled";
 const _gradientUuidKey = "gradient_uuid";
+const _dateTimeFormat = "date_time_format";
 
 class SettingsService extends ChangeNotifier {
   final SharedPreferences _sharedPreferences;
-
-  bool get use24HourTimeFormat => _sharedPreferences.getBool(_use24HourTimeFormatKey) ?? true;
 
   bool get appHighlightAnimationEnabled => _sharedPreferences.getBool(_appHighlightAnimationEnabledKey) ?? true;
 
   String? get gradientUuid => _sharedPreferences.getString(_gradientUuidKey);
 
+  String? get dateTimeFormat => _sharedPreferences.getString(_dateTimeFormat);
+
   SettingsService(
     this._sharedPreferences
   );
-
-  Future<void> setUse24HourTimeFormat(bool value) async {
-    await _sharedPreferences.setBool(_use24HourTimeFormatKey, value);
-    notifyListeners();
-  }
 
   Future<void> setAppHighlightAnimationEnabled(bool value) async {
     await _sharedPreferences.setBool(_appHighlightAnimationEnabledKey, value);
@@ -50,6 +45,11 @@ class SettingsService extends ChangeNotifier {
 
   Future<void> setGradientUuid(String value) async {
     await _sharedPreferences.setString(_gradientUuidKey, value);
+    notifyListeners();
+  }
+
+  Future<void> setDateTimeFormat(String value) async {
+    await _sharedPreferences.setString(_dateTimeFormat, value);
     notifyListeners();
   }
 }

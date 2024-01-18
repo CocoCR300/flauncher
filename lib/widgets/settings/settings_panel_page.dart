@@ -21,6 +21,7 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/categories_panel_page.dart';
+import 'package:flauncher/widgets/settings/date_format_dialog.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
@@ -82,12 +83,15 @@ class SettingsPanelPage extends StatelessWidget {
                 onPressed: () => context.read<AppsService>().openSettings(),
               ),
               Divider(),
-              SwitchListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                value: settingsService.use24HourTimeFormat,
-                onChanged: (value) => settingsService.setUse24HourTimeFormat(value),
-                title: Text("Use 24-hour time format"),
-                dense: true,
+              TextButton(
+                child: Row(
+                  children: [
+                    Icon(Icons.date_range),
+                    Container(width: 8),
+                    Text("Date and time format", style: Theme.of(context).textTheme.bodyMedium),
+                  ],
+                ),
+                onPressed: () async => await _dateTimeFormatDialog(context),
               ),
               SwitchListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 8),
@@ -119,4 +123,17 @@ class SettingsPanelPage extends StatelessWidget {
           ),
         ),
       );
+
+  Future<void> _dateTimeFormatDialog(BuildContext context) async {
+    SettingsService service = context.read<SettingsService>();
+
+    final newFormat = await showDialog<String>(
+        context: context,
+        builder: (_) => DateFormatDialog(initialValue: service.dateTimeFormat)
+    );
+
+    if (newFormat != null) {
+      await service.setDateTimeFormat(newFormat);
+    }
+  }
 }

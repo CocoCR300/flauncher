@@ -108,9 +108,10 @@ class FLauncherApp extends StatelessWidget {
           home: Builder(
             builder: (context) => WillPopScope(
               onWillPop: () async {
-                final shouldPop = await shouldPopScope(context);
                 // TODO(coco): Option to disable ambient mode, or to, instead, hide
                 //  the interface and leave the background
+
+                final shouldPop = await shouldPopScope(context);
                 // if (!shouldPop) {
                 //   context.read<AppsService>().startAmbientMode();
                 // }
