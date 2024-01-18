@@ -32,7 +32,7 @@ class SettingsService extends ChangeNotifier {
 
   String? get gradientUuid => _sharedPreferences.getString(_gradientUuidKey);
 
-  String? get dateTimeFormat => _sharedPreferences.getString(_dateTimeFormat);
+  String get dateTimeFormat => _sharedPreferences.getString(_dateTimeFormat) ?? "H:MM";
 
   SettingsService(
     this._sharedPreferences

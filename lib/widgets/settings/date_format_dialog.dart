@@ -44,7 +44,7 @@ const List<Tuple2<String, String>> dateFormatSpecifiers = [
 class DateTimeModel extends ChangeNotifier {
   String dateTime;
 
-  DateTimeModel() : dateTime = "";
+  DateTimeModel(String initialDateTime) : dateTime = initialDateTime;
 
   void set(String newDateTime) {
     dateTime = newDateTime;
@@ -53,15 +53,16 @@ class DateTimeModel extends ChangeNotifier {
 }
 
 class DateFormatDialog extends StatelessWidget {
-  final String? initialValue;
+  final String? _initialFormat;
 
   DateFormatDialog({
-    this.initialValue,
-  });
+    String? initialValue,
+  }) : _initialFormat = initialValue;
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController();
+    TextEditingController controller = TextEditingController(
+        text: _initialFormat);
 
     List<DropdownMenuEntry<String>> menuEntries = [];
 
@@ -70,7 +71,9 @@ class DateFormatDialog extends StatelessWidget {
     }
 
     return ChangeNotifierProvider(
-      create: (_) => DateTimeModel(),
+      create: (_) => DateTimeModel(
+          DateFormat(_initialFormat).format(DateTime.now())
+      ),
       builder: (context, _) => SimpleDialog(
         insetPadding: EdgeInsets.only(bottom: 60),
         contentPadding: EdgeInsets.all(24),
@@ -95,7 +98,6 @@ class DateFormatDialog extends StatelessWidget {
             autovalidateMode: AutovalidateMode.always,
             controller: controller,
             decoration: InputDecoration(labelText: "Type in a format"),
-            initialValue: initialValue,
             keyboardType: TextInputType.text,
             onChanged: (value) => dateTimeFormatChanged(context, value),
             onFieldSubmitted: (value) {
