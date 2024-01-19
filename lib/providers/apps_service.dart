@@ -29,11 +29,13 @@ import 'package:flutter/material.dart';
 class AppsService extends ChangeNotifier {
   final FLauncherChannel _fLauncherChannel;
   final FLauncherDatabase _database;
+  bool _uiVisible = true;
   bool _initialized = false;
 
   List<App> _applications = [];
   List<CategoryWithApps> _categoriesWithApps = [];
 
+  bool get uiVisible => _uiVisible;
   bool get initialized => _initialized;
 
   List<App> get applications => UnmodifiableListView(_applications);
@@ -154,6 +156,11 @@ class AppsService extends ChangeNotifier {
   Future<bool> isDefaultLauncher() => _fLauncherChannel.isDefaultLauncher();
 
   Future<void> startAmbientMode() => _fLauncherChannel.startAmbientMode();
+
+  void toggleUIVisibility() {
+    _uiVisible = !_uiVisible;
+    notifyListeners();
+  }
 
   Future<void> addToCategory(App app, Category category, {bool shouldNotifyListeners = true}) async {
     int index = await _database.nextAppCategoryOrder(category.id) ?? 0;

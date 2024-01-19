@@ -52,7 +52,7 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
   }
 
   @override
-  Widget build(BuildContext context) => Selector<SettingsService, String?>(
+  Widget build(BuildContext context) => Selector<SettingsService, String>(
         selector: (_, settingsService) => settingsService.dateTimeFormat,
         builder: (context, dateTimeFormatString, _) {
           DateFormat dateTimeFormat = DateFormat(dateTimeFormatString);

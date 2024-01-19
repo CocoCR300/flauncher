@@ -23,6 +23,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const _appHighlightAnimationEnabledKey = "app_highlight_animation_enabled";
 const _gradientUuidKey = "gradient_uuid";
+const _backButtonAction = "back_button_action";
 const _dateTimeFormat = "date_time_format";
 
 class SettingsService extends ChangeNotifier {
@@ -31,6 +32,8 @@ class SettingsService extends ChangeNotifier {
   bool get appHighlightAnimationEnabled => _sharedPreferences.getBool(_appHighlightAnimationEnabledKey) ?? true;
 
   String? get gradientUuid => _sharedPreferences.getString(_gradientUuidKey);
+
+  String get backButtonAction => _sharedPreferences.getString(_backButtonAction) ?? "";
 
   String get dateTimeFormat => _sharedPreferences.getString(_dateTimeFormat) ?? "H:MM";
 
@@ -45,6 +48,11 @@ class SettingsService extends ChangeNotifier {
 
   Future<void> setGradientUuid(String value) async {
     await _sharedPreferences.setString(_gradientUuidKey, value);
+    notifyListeners();
+  }
+
+  Future<void> setBackButtonAction(String value) async {
+    await _sharedPreferences.setString(_backButtonAction, value);
     notifyListeners();
   }
 

@@ -22,6 +22,7 @@ import 'dart:ui';
 import 'package:flauncher/custom_traversal_policy.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
@@ -33,105 +34,115 @@ import 'package:provider/provider.dart';
 class FLauncher extends StatelessWidget {
   @override
   Widget build(BuildContext context) => FocusTraversalGroup(
-        policy: RowByRowTraversalPolicy(),
-        child: Stack(
-          children: [
-            Consumer<WallpaperService>(
-              builder: (_, wallpaper, __) => _wallpaper(context, wallpaper.wallpaperBytes, wallpaper.gradient.gradient),
+    policy: RowByRowTraversalPolicy(),
+    child: Stack(
+      children: [
+        Consumer<WallpaperService>(
+          builder: (_, wallpaper, __) => _wallpaper(context, wallpaper.wallpaperBytes, wallpaper.gradient.gradient),
+        ),
+        Selector<AppsService, bool>(
+            selector: (context, service) => service.uiVisible,
+            builder: (context, _, child) => Visibility(
+              child: child!,
+              replacement: Center(
+                  child: DateTimeWidget()
+              ),
+              visible: context.read<AppsService>().uiVisible,
             ),
-            Scaffold(
+            child: Scaffold(
               backgroundColor: Colors.transparent,
               appBar: _appBar(context),
               body: Padding(
                 padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: Consumer<AppsService>(
-                  builder: (context, appsService, _) {
-                    if (appsService.initialized) {
-                      return SingleChildScrollView(child: _categories(appsService.categoriesWithApps));
-                    }
-                    else {
-                      return _emptyState(context);
-                    }
-                }),
+                    builder: (context, appsService, _) {
+                      if (appsService.initialized) {
+                        return SingleChildScrollView(child: _categories(appsService.categoriesWithApps));
+                      }
+                      else {
+                        return _emptyState(context);
+                      }
+                    }),
               ),
-            ),
-          ],
+            )
         ),
-      );
+      ],
+    ),
+  );
 
   Widget _categories(List<CategoryWithApps> categoriesWithApps) => Column(
-        children: categoriesWithApps.map((categoryWithApps) {
-          switch (categoryWithApps.category.type) {
-            case CategoryType.row:
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: CategoryRow(
-                    key: Key(categoryWithApps.category.id.toString()),
-                    category: categoryWithApps.category,
-                    applications: categoryWithApps.applications),
-              );
-            case CategoryType.grid:
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: AppsGrid(
-                    key: Key(categoryWithApps.category.id.toString()),
-                    category: categoryWithApps.category,
-                    applications: categoryWithApps.applications),
-              );
-          }
-        }).toList(),
-      );
+    children: categoriesWithApps.map((categoryWithApps) {
+      switch (categoryWithApps.category.type) {
+        case CategoryType.row:
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: CategoryRow(
+                key: Key(categoryWithApps.category.id.toString()),
+                category: categoryWithApps.category,
+                applications: categoryWithApps.applications),
+          );
+        case CategoryType.grid:
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: AppsGrid(
+                key: Key(categoryWithApps.category.id.toString()),
+                category: categoryWithApps.category,
+                applications: categoryWithApps.applications),
+          );
+      }
+    }).toList(),
+  );
 
   AppBar _appBar(BuildContext context) => AppBar(
-        actions: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Positioned(
-                left: 12.0,
-                top: 14.0,
-                child: ImageFiltered(
-                  imageFilter: ImageFilter.blur(sigmaX: 2, sigmaY: 2, tileMode: TileMode.decal),
-                  child: Icon(Icons.settings_outlined, color: Colors.black54),
-                ),
-              ),
-              IconButton(
-                padding: EdgeInsets.all(2),
-                constraints: BoxConstraints(),
-                splashRadius: 20,
-                icon: Icon(Icons.settings_outlined),
-                onPressed: () => showDialog(context: context, builder: (_) => SettingsPanel()),
-              ),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 16, right: 32),
-            child: Align(
-              alignment: Alignment.center,
-              child: DateTimeWidget(),
+    actions: [
+      Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            left: 12.0,
+            top: 14.0,
+            child: ImageFiltered(
+              imageFilter: ImageFilter.blur(sigmaX: 2, sigmaY: 2, tileMode: TileMode.decal),
+              child: Icon(Icons.settings_outlined, color: Colors.black54),
             ),
           ),
+          IconButton(
+            padding: EdgeInsets.all(2),
+            constraints: BoxConstraints(),
+            splashRadius: 20,
+            icon: Icon(Icons.settings_outlined),
+            onPressed: () => showDialog(context: context, builder: (_) => SettingsPanel()),
+          ),
         ],
-      );
+      ),
+      Padding(
+        padding: EdgeInsets.only(left: 16, right: 32),
+        child: Align(
+          alignment: Alignment.center,
+          child: DateTimeWidget(),
+        ),
+      ),
+    ],
+  );
 
   Widget _wallpaper(BuildContext context, Uint8List? wallpaperImage, Gradient gradient) => wallpaperImage != null
       ? Image.memory(
-          wallpaperImage,
-          key: Key("background"),
-          fit: BoxFit.cover,
-          height: window.physicalSize.height,
-          width: window.physicalSize.width,
-        )
+    wallpaperImage,
+    key: Key("background"),
+    fit: BoxFit.cover,
+    height: window.physicalSize.height,
+    width: window.physicalSize.width,
+  )
       : Container(key: Key("background"), decoration: BoxDecoration(gradient: gradient));
 
   Widget _emptyState(BuildContext context) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text("Loading...", style: Theme.of(context).textTheme.titleLarge),
-          ],
-        ),
-      );
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CircularProgressIndicator(),
+        SizedBox(height: 16),
+        Text("Loading...", style: Theme.of(context).textTheme.titleLarge),
+      ],
+    ),
+  );
 }

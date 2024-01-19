@@ -21,6 +21,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/ticker_model.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
+import 'package:flauncher/widgets/settings/back_button_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -107,17 +108,27 @@ class FLauncherApp extends StatelessWidget {
           ),
           home: Builder(
             builder: (context) => WillPopScope(
+              child: Actions(actions: { BackIntent: BackAction(context, systemNavigator: true) }, child: FLauncher()),
               onWillPop: () async {
-                // TODO(coco): Option to disable ambient mode, or to, instead, hide
-                //  the interface and leave the background
+                final bool shouldPop = await shouldPopScope(context);
 
-                final shouldPop = await shouldPopScope(context);
-                // if (!shouldPop) {
-                //   context.read<AppsService>().startAmbientMode();
-                // }
+                if (!shouldPop) {
+                  AppsService appsService = context.read<AppsService>();
+                  SettingsService settingsService = context.read<SettingsService>();
+                  String action = settingsService.backButtonAction;
+
+                  switch (action) {
+                    case BACK_BUTTON_ACTION_HIDE_UI:
+                      appsService.toggleUIVisibility();
+                      break;
+                    case BACK_BUTTON_ACTION_SCREENSAVER:
+                      appsService.startAmbientMode();
+                      break;
+                  }
+                }
+
                 return shouldPop;
               },
-              child: Actions(actions: {BackIntent: BackAction(context, systemNavigator: true)}, child: FLauncher()),
             ),
           ),
         ),

@@ -106,7 +106,7 @@ class DateTimeFormatDialog extends StatelessWidget {
             onChanged: (value) => dateFormatStringChanged(context, value),
             onFieldSubmitted: (value) {
               if (value.trim().isNotEmpty) {
-                Navigator.of(context).pop(value);
+                Navigator.pop(context, value);
               }
             },
             validator: (value) {

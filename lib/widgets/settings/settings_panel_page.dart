@@ -28,6 +28,8 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
+import 'back_button_actions.dart';
+
 class SettingsPanelPage extends StatelessWidget {
   static const String routeName = "settings_panel";
 
@@ -93,6 +95,16 @@ class SettingsPanelPage extends StatelessWidget {
                 ),
                 onPressed: () async => await _dateTimeFormatDialog(context),
               ),
+              TextButton(
+                child: Row(
+                  children: [
+                    Icon(Icons.arrow_back),
+                    Container(width: 8),
+                    Text("Back button action", style: Theme.of(context).textTheme.bodyMedium),
+                  ],
+                ),
+                onPressed: () async => await _backButtonActionDialog(context),
+              ),
               SwitchListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 8),
                 value: settingsService.appHighlightAnimationEnabled,
@@ -123,6 +135,35 @@ class SettingsPanelPage extends StatelessWidget {
           ),
         ),
       );
+
+  Future<void> _backButtonActionDialog(BuildContext context) async {
+    SettingsService service = context.read<SettingsService>();
+
+    final newAction = await showDialog<String>(
+        context: context,
+        builder: (context) => SimpleDialog(
+            title: const Text("Choose the back button action"),
+            children: [
+              SimpleDialogOption(
+                child: const Text("Do nothing"),
+                onPressed: () => Navigator.pop(context, ""),
+              ),
+              SimpleDialogOption(
+                child: const Text("Hide UI"),
+                onPressed: () => Navigator.pop(context, BACK_BUTTON_ACTION_HIDE_UI),
+              ),
+              SimpleDialogOption(
+                child: const Text("Show screensaver"),
+                onPressed: () => Navigator.pop(context, BACK_BUTTON_ACTION_SCREENSAVER),
+              )
+            ]
+        )
+    );
+
+    if (newAction != null) {
+      await service.setBackButtonAction(newAction);
+    }
+  }
 
   Future<void> _dateTimeFormatDialog(BuildContext context) async {
     SettingsService service = context.read<SettingsService>();
