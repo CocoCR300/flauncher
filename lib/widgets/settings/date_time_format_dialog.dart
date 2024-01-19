@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -41,27 +43,29 @@ const List<Tuple2<String, String>> dateFormatSpecifiers = [
   Tuple2("K", "[K] Hour in am/pm (0~11)")
 ];
 
-class DateTimeModel extends ChangeNotifier {
-  String dateTime;
+class FormatModel extends ChangeNotifier {
+  String _formatString;
 
-  DateTimeModel(String initialDateTime) : dateTime = initialDateTime;
+  String get formatString => _formatString;
 
-  void set(String newDateTime) {
-    dateTime = newDateTime;
+  FormatModel(String? formatString) : _formatString = formatString ?? "";
+
+  void set(String newFormatString) {
+    _formatString = newFormatString;
     notifyListeners();
   }
 }
 
-class DateFormatDialog extends StatelessWidget {
+class DateTimeFormatDialog extends StatelessWidget {
   final String? _initialFormat;
 
-  DateFormatDialog({
+  DateTimeFormatDialog({
     String? initialValue,
   }) : _initialFormat = initialValue;
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController(
+    TextEditingController formatFieldController = TextEditingController(
         text: _initialFormat);
 
     List<DropdownMenuEntry<String>> menuEntries = [];
@@ -71,23 +75,23 @@ class DateFormatDialog extends StatelessWidget {
     }
 
     return ChangeNotifierProvider(
-      create: (_) => DateTimeModel(
-          DateFormat(_initialFormat).format(DateTime.now())
-      ),
+      create: (_) => FormatModel(_initialFormat),
       builder: (context, _) => SimpleDialog(
         insetPadding: EdgeInsets.only(bottom: 60),
         contentPadding: EdgeInsets.all(24),
         title: Text("Date and time format"),
         children: [
-          Consumer<DateTimeModel>(
+          Consumer<FormatModel>(
             builder: (_, model, __) {
               String text;
 
-              if (model.dateTime.isEmpty) {
+              if (model.formatString.isEmpty) {
                 text = "Result: No format specified";
               }
               else {
-                text = "Result ${model.dateTime}";
+                DateFormat dateFormat = DateFormat(
+                    model.formatString, Platform.localeName);
+                text = "Result: ${dateFormat.format(DateTime.now())}";
               }
 
               return Text(text);
@@ -96,10 +100,10 @@ class DateFormatDialog extends StatelessWidget {
           SizedBox(height: 24),
           TextFormField(
             autovalidateMode: AutovalidateMode.always,
-            controller: controller,
+            controller: formatFieldController,
             decoration: InputDecoration(labelText: "Type in a format"),
             keyboardType: TextInputType.text,
-            onChanged: (value) => dateTimeFormatChanged(context, value),
+            onChanged: (value) => dateFormatStringChanged(context, value),
             onFieldSubmitted: (value) {
               if (value.trim().isNotEmpty) {
                 Navigator.of(context).pop(value);
@@ -126,8 +130,8 @@ class DateFormatDialog extends StatelessWidget {
               dropdownMenuEntries: menuEntries,
               onSelected: (selectedValue) {
                 if (selectedValue != null) {
-                  controller.text += selectedValue;
-                  dateTimeFormatChanged(context, controller.text);
+                  formatFieldController.text += selectedValue;
+                  dateFormatStringChanged(context, formatFieldController.text);
                 }
               }
           )
@@ -136,15 +140,8 @@ class DateFormatDialog extends StatelessWidget {
     );
   }
 
-  void dateTimeFormatChanged(BuildContext context, String dateFormat) {
-    DateTimeModel model = Provider.of<DateTimeModel>(context, listen: false);
-
-    if (dateFormat.isNotEmpty) {
-      String dateTime = DateFormat(dateFormat).format(DateTime.now());
-      model.set(dateTime);
-    }
-    else {
-      model.set("");
-    }
+  void dateFormatStringChanged(BuildContext context, String dateFormatString) {
+    FormatModel model = Provider.of<FormatModel>(context, listen: false);
+    model.set(dateFormatString);
   }
 }
