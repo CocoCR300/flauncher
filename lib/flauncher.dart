@@ -26,10 +26,12 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
+import 'package:flauncher/widgets/launcher_alternative_view.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/date_time_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class FLauncher extends StatelessWidget {
   @override
@@ -44,8 +46,8 @@ class FLauncher extends StatelessWidget {
             selector: (context, service) => service.uiVisible,
             builder: (context, _, child) => Visibility(
               child: child!,
-              replacement: Center(
-                  child: DateTimeWidget()
+              replacement: const Center(
+                  child: AlternativeLauncherView()
               ),
               visible: context.read<AppsService>().uiVisible,
             ),
@@ -53,7 +55,7 @@ class FLauncher extends StatelessWidget {
               backgroundColor: Colors.transparent,
               appBar: _appBar(context),
               body: Padding(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: Consumer<AppsService>(
                     builder: (context, appsService, _) {
                       if (appsService.initialized) {
@@ -75,7 +77,7 @@ class FLauncher extends StatelessWidget {
       switch (categoryWithApps.category.type) {
         case CategoryType.row:
           return Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: CategoryRow(
                 key: Key(categoryWithApps.category.id.toString()),
                 category: categoryWithApps.category,
@@ -83,7 +85,7 @@ class FLauncher extends StatelessWidget {
           );
         case CategoryType.grid:
           return Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: AppsGrid(
                 key: Key(categoryWithApps.category.id.toString()),
                 category: categoryWithApps.category,
@@ -93,37 +95,63 @@ class FLauncher extends StatelessWidget {
     }).toList(),
   );
 
-  AppBar _appBar(BuildContext context) => AppBar(
-    actions: [
-      Stack(
-        alignment: Alignment.center,
-        children: [
-          Positioned(
-            left: 12.0,
-            top: 14.0,
-            child: ImageFiltered(
-              imageFilter: ImageFilter.blur(sigmaX: 2, sigmaY: 2, tileMode: TileMode.decal),
-              child: Icon(Icons.settings_outlined, color: Colors.black54),
-            ),
-          ),
-          IconButton(
-            padding: EdgeInsets.all(2),
-            constraints: BoxConstraints(),
-            splashRadius: 20,
-            icon: Icon(Icons.settings_outlined),
-            onPressed: () => showDialog(context: context, builder: (_) => SettingsPanel()),
-          ),
-        ],
-      ),
-      Padding(
-        padding: EdgeInsets.only(left: 16, right: 32),
-        child: Align(
+  AppBar _appBar(BuildContext context) {
+    return AppBar(
+      actions: [
+        Stack(
           alignment: Alignment.center,
-          child: DateTimeWidget(),
+          children: [
+            Positioned(
+              left: 12.0,
+              top: 14.0,
+              child: ImageFiltered(
+                imageFilter: ImageFilter.blur(sigmaX: 2, sigmaY: 2, tileMode: TileMode.decal),
+                child: const Icon(Icons.settings_outlined, color: Colors.black54),
+              ),
+            ),
+            IconButton(
+              padding: const EdgeInsets.all(2),
+              constraints: const BoxConstraints(),
+              splashRadius: 20,
+              icon: const Icon(Icons.settings_outlined),
+              onPressed: () => showDialog(context: context, builder: (_) => SettingsPanel()),
+            ),
+          ],
         ),
-      ),
-    ],
-  );
+        Padding(
+          padding: const EdgeInsets.only(left: 16, right: 32),
+          child: Selector<SettingsService, Tuple2<String, String>>(
+            // TODO: This selector is not working
+            selector:  (context, service) => Tuple2(service.dateFormat, service.timeFormat),
+            builder: (context, formatTuple, _) {
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: DateTimeWidget(formatTuple.item1,
+                      updateInterval: Duration(minutes: 1),
+                      textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
+                      ),
+                    )
+                  ),
+                  if (formatTuple.item1.isNotEmpty && formatTuple.item2.isNotEmpty)
+                    SizedBox(width: 16),
+                  Flexible(
+                    child: DateTimeWidget(formatTuple.item2,
+                        textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
+                        )
+                    )
+                  )
+                ]
+            );
+            },
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _wallpaper(BuildContext context, Uint8List? wallpaperImage, Gradient gradient) => wallpaperImage != null
       ? Image.memory(

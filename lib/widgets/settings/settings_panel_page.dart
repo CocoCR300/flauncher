@@ -27,6 +27,7 @@ import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 import 'back_button_actions.dart';
 
@@ -149,8 +150,8 @@ class SettingsPanelPage extends StatelessWidget {
                 onPressed: () => Navigator.pop(context, ""),
               ),
               SimpleDialogOption(
-                child: const Text("Hide UI"),
-                onPressed: () => Navigator.pop(context, BACK_BUTTON_ACTION_HIDE_UI),
+                child: const Text("Show clock"),
+                onPressed: () => Navigator.pop(context, BACK_BUTTON_ACTION_CLOCK),
               ),
               SimpleDialogOption(
                 child: const Text("Show screensaver"),
@@ -168,13 +169,13 @@ class SettingsPanelPage extends StatelessWidget {
   Future<void> _dateTimeFormatDialog(BuildContext context) async {
     SettingsService service = context.read<SettingsService>();
 
-    final newFormat = await showDialog<String>(
+    final formatTuple = await showDialog<Tuple2<String, String>>(
         context: context,
-        builder: (_) => DateTimeFormatDialog(initialValue: service.dateTimeFormat)
+        builder: (_) => DateTimeFormatDialog(service.dateFormat, service.timeFormat)
     );
 
-    if (newFormat != null) {
-      await service.setDateTimeFormat(newFormat);
+    if (formatTuple != null) {
+      await service.setDateTimeFormat(formatTuple.item1, formatTuple.item2);
     }
   }
 }

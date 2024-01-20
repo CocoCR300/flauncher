@@ -18,13 +18,15 @@
 
 import 'dart:async';
 
+import 'package:flauncher/widgets/settings/back_button_actions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _appHighlightAnimationEnabledKey = "app_highlight_animation_enabled";
 const _gradientUuidKey = "gradient_uuid";
 const _backButtonAction = "back_button_action";
-const _dateTimeFormat = "date_time_format";
+const _dateFormat = "date_format";
+const _timeFormat = "time_format";
 
 class SettingsService extends ChangeNotifier {
   final SharedPreferences _sharedPreferences;
@@ -33,9 +35,11 @@ class SettingsService extends ChangeNotifier {
 
   String? get gradientUuid => _sharedPreferences.getString(_gradientUuidKey);
 
-  String get backButtonAction => _sharedPreferences.getString(_backButtonAction) ?? "";
+  String get backButtonAction => _sharedPreferences.getString(_backButtonAction) ?? BACK_BUTTON_ACTION_NOTHING;
 
-  String get dateTimeFormat => _sharedPreferences.getString(_dateTimeFormat) ?? "H:MM";
+  String get dateFormat => _sharedPreferences.getString(_dateFormat) ?? "EEEE d";
+
+  String get timeFormat => _sharedPreferences.getString(_timeFormat) ?? "H:MM";
 
   SettingsService(
     this._sharedPreferences
@@ -56,8 +60,11 @@ class SettingsService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setDateTimeFormat(String value) async {
-    await _sharedPreferences.setString(_dateTimeFormat, value);
+  Future<void> setDateTimeFormat(String dateFormatString, String timeFormatString) async {
+    await Future.wait([
+      _sharedPreferences.setString(_dateFormat, dateFormatString),
+      _sharedPreferences.setString(_timeFormat, timeFormatString)
+    ]);
     notifyListeners();
   }
 }

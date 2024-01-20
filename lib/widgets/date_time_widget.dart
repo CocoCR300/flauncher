@@ -19,30 +19,46 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
-DateFormat dateFormat = DateFormat(
-  "${DateFormat.ABBR_WEEKDAY} ${DateFormat.DAY}, ${DateFormat.MONTH}, ${DateFormat.YEAR}",
-  Platform.localeName
-);
 
 class DateTimeWidget extends StatefulWidget {
+  final Duration    _updateInterval;
+  final String      _dateTimeFormatString;
+  final TextStyle?  _textStyle;
+
+  const DateTimeWidget(String dateTimeFormatString, {
+    Duration? updateInterval,
+    TextStyle? textStyle
+  }) :
+      _dateTimeFormatString = dateTimeFormatString,
+      _updateInterval = updateInterval ?? const Duration(seconds: 1),
+      _textStyle = textStyle;
+
   @override
-  _DateTimeWidgetState createState() => _DateTimeWidgetState();
+  State<DateTimeWidget> createState() => _DateTimeWidgetState(
+      _dateTimeFormatString, _updateInterval, _textStyle);
 }
 
 class _DateTimeWidgetState extends State<DateTimeWidget> {
+  final Duration    _updateInterval;
+  final DateFormat  _dateFormat;
+  final TextStyle?  _textStyle;
+
   late DateTime _now;
   late Timer _timer;
+
+  _DateTimeWidgetState(String dateTimeFormatString, Duration updateInterval, TextStyle? textStyle) :
+      _updateInterval = updateInterval,
+      _dateFormat = DateFormat(dateTimeFormatString, Platform.localeName),
+      _textStyle = textStyle;
 
   @override
   void initState() {
     super.initState();
     _now = DateTime.now();
-    _timer = Timer.periodic(Duration(seconds: 1), (_) => _refreshTime());
+    _timer = Timer.periodic(_updateInterval, (_) => _refreshTime());
   }
 
   @override
@@ -52,19 +68,9 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
   }
 
   @override
-  Widget build(BuildContext context) => Selector<SettingsService, String>(
-        selector: (_, settingsService) => settingsService.dateTimeFormat,
-        builder: (context, dateTimeFormatString, _) {
-          DateFormat dateTimeFormat = DateFormat(dateTimeFormatString);
-
-          return Text(dateTimeFormat.format(_now),
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-              shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
-            ),
-            textAlign: TextAlign.end,
-          );
-        },
-      );
+  Widget build(BuildContext context) => Text(_dateFormat.format(_now),
+      style: _textStyle
+  );
 
   void _refreshTime() {
     setState(() {

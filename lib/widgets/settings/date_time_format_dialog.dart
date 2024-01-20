@@ -1,6 +1,6 @@
 /*
  * FLauncher
- * Copyright (C) 2021  Étienne Fesser
+ * Copyright (C) 2021  Oscar Rojas
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,9 @@ const List<Tuple2<String, String>> dateFormatSpecifiers = [
   Tuple2("MMMM", "[MMMM] Month in year (July)"),
   // Tuple2("L", "Standalone month", "07 or July"),
   Tuple2("y", "[y] Year (1996)"),
+];
+
+const List<Tuple2<String, String>> timeFormatSpecifiers = [
   Tuple2("h", "[h] Hour in am/pm (1~12)"),
   Tuple2("H", "[H] Hour in day (0~23)"),
   Tuple2("m", "[m] Minute in hour (30)"),
@@ -44,38 +47,52 @@ const List<Tuple2<String, String>> dateFormatSpecifiers = [
 ];
 
 class FormatModel extends ChangeNotifier {
-  String _formatString;
+  String _dateFormatString;
+  String _timeFormatString;
 
-  String get formatString => _formatString;
+  String get dateFormatString => _dateFormatString;
+  String get timeFormatString => _timeFormatString;
 
-  FormatModel(String? formatString) : _formatString = formatString ?? "";
+  FormatModel(String dateFormatString, String timeFormatString) :
+        _dateFormatString = dateFormatString,
+        _timeFormatString = timeFormatString;
 
-  void set(String newFormatString) {
-    _formatString = newFormatString;
+  void setDateFormatString(String newFormatString) {
+    _dateFormatString = newFormatString;
+    notifyListeners();
+  }
+
+  void setTimeFormatString(String newFormatString) {
+    _timeFormatString = newFormatString;
     notifyListeners();
   }
 }
 
 class DateTimeFormatDialog extends StatelessWidget {
-  final String? _initialFormat;
+  final String _initialDateFormat;
+  final String _initialTimeFormat;
 
-  DateTimeFormatDialog({
-    String? initialValue,
-  }) : _initialFormat = initialValue;
+  DateTimeFormatDialog(String initialDateFormat, String initialTimeFormat) :
+        _initialDateFormat = initialDateFormat,
+        _initialTimeFormat = initialTimeFormat;
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController formatFieldController = TextEditingController(
-        text: _initialFormat);
+    TextEditingController dateFormatFieldController = TextEditingController(
+        text: _initialDateFormat);
+    TextEditingController timeFormatFieldController = TextEditingController(
+        text: _initialTimeFormat);
 
     List<DropdownMenuEntry<String>> menuEntries = [];
 
-    for (Tuple2<String, String> tuple in dateFormatSpecifiers) {
+    Iterable<Tuple2<String, String>> formatSpecifiers =
+      dateFormatSpecifiers.followedBy(timeFormatSpecifiers);
+    for (Tuple2<String, String> tuple in formatSpecifiers) {
       menuEntries.add(DropdownMenuEntry(value: tuple.item1, label: tuple.item2));
     }
 
     return ChangeNotifierProvider(
-      create: (_) => FormatModel(_initialFormat),
+      create: (_) => FormatModel(_initialDateFormat, _initialTimeFormat),
       builder: (context, _) => SimpleDialog(
         insetPadding: EdgeInsets.only(bottom: 60),
         contentPadding: EdgeInsets.all(24),
@@ -85,13 +102,22 @@ class DateTimeFormatDialog extends StatelessWidget {
             builder: (_, model, __) {
               String text;
 
-              if (model.formatString.isEmpty) {
-                text = "Result: No format specified";
+              if (model.dateFormatString.isEmpty) {
+                text = "Formatted date: No date format specified";
               }
               else {
                 DateFormat dateFormat = DateFormat(
-                    model.formatString, Platform.localeName);
-                text = "Result: ${dateFormat.format(DateTime.now())}";
+                    model.dateFormatString, Platform.localeName);
+                text = "Formatted date: ${dateFormat.format(DateTime.now())}";
+              }
+
+              if (model.timeFormatString.isEmpty) {
+                text += "\nFormatted time: No time format specified";
+              }
+              else {
+                DateFormat dateFormat = DateFormat(
+                    model.timeFormatString, Platform.localeName);
+                text += "\nFormatted time: ${dateFormat.format(DateTime.now())}";
               }
 
               return Text(text);
@@ -100,14 +126,35 @@ class DateTimeFormatDialog extends StatelessWidget {
           SizedBox(height: 24),
           TextFormField(
             autovalidateMode: AutovalidateMode.always,
-            controller: formatFieldController,
-            decoration: InputDecoration(labelText: "Type in a format"),
+            controller: dateFormatFieldController,
+            decoration: InputDecoration(labelText: "Type in the date format"),
             keyboardType: TextInputType.text,
             onChanged: (value) => dateFormatStringChanged(context, value),
             onFieldSubmitted: (value) {
-              if (value.trim().isNotEmpty) {
-                Navigator.pop(context, value);
+              returnFromDialog(context, value, timeFormatFieldController.text);
+            },
+            validator: (value) {
+              String? result;
+
+              if (value != null) {
+                value = value.trim();
+
+                if (value.isEmpty) {
+                  result = "Must not be empty";
+                }
               }
+
+              return result;
+            },
+          ),
+          TextFormField(
+            autovalidateMode: AutovalidateMode.always,
+            controller: timeFormatFieldController,
+            decoration: InputDecoration(labelText: "Type in the hour format"),
+            keyboardType: TextInputType.text,
+            onChanged: (value) => timeFormatStringChanged(context, value),
+            onFieldSubmitted: (value) {
+              returnFromDialog(context, dateFormatFieldController.text, value);
             },
             validator: (value) {
               String? result;
@@ -130,8 +177,23 @@ class DateTimeFormatDialog extends StatelessWidget {
               dropdownMenuEntries: menuEntries,
               onSelected: (selectedValue) {
                 if (selectedValue != null) {
-                  formatFieldController.text += selectedValue;
-                  dateFormatStringChanged(context, formatFieldController.text);
+                  bool isTimeFormat = false;
+
+                  for (Tuple2<String, String> tuple in timeFormatSpecifiers) {
+                    if (tuple.item1 == selectedValue) {
+                      isTimeFormat = true;
+                      break;
+                    }
+                  }
+
+                  if (isTimeFormat) {
+                    timeFormatFieldController.text += selectedValue;
+                    timeFormatStringChanged(context, timeFormatFieldController.text);
+                  }
+                  else {
+                    dateFormatFieldController.text += selectedValue;
+                    dateFormatStringChanged(context, dateFormatFieldController.text);
+                  }
                 }
               }
           )
@@ -140,8 +202,22 @@ class DateTimeFormatDialog extends StatelessWidget {
     );
   }
 
-  void dateFormatStringChanged(BuildContext context, String dateFormatString) {
+  void dateFormatStringChanged(BuildContext context, String formatString) {
     FormatModel model = Provider.of<FormatModel>(context, listen: false);
-    model.set(dateFormatString);
+    model.setDateFormatString(formatString);
+  }
+
+  void timeFormatStringChanged(BuildContext context, String formatString) {
+    FormatModel model = Provider.of<FormatModel>(context, listen: false);
+    model.setTimeFormatString(formatString);
+  }
+
+  void returnFromDialog(BuildContext context, String dateFormatString, String timeFormatString) {
+    dateFormatString = dateFormatString.trim();
+    timeFormatString = timeFormatString.trim();
+
+    if (dateFormatString.isNotEmpty && timeFormatString.isNotEmpty) {
+      Navigator.pop(context, Tuple2(dateFormatString, timeFormatString));
+    }
   }
 }

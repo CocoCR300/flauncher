@@ -22,6 +22,7 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/ticker_model.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/settings/back_button_actions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -110,7 +111,7 @@ class FLauncherApp extends StatelessWidget {
             builder: (context) => WillPopScope(
               child: Actions(actions: { BackIntent: BackAction(context, systemNavigator: true) }, child: FLauncher()),
               onWillPop: () async {
-                final bool shouldPop = await shouldPopScope(context);
+                final bool shouldPop = !kDebugMode && await shouldPopScope(context);
 
                 if (!shouldPop) {
                   AppsService appsService = context.read<AppsService>();
@@ -118,7 +119,7 @@ class FLauncherApp extends StatelessWidget {
                   String action = settingsService.backButtonAction;
 
                   switch (action) {
-                    case BACK_BUTTON_ACTION_HIDE_UI:
+                    case BACK_BUTTON_ACTION_CLOCK:
                       appsService.toggleUIVisibility();
                       break;
                     case BACK_BUTTON_ACTION_SCREENSAVER:
