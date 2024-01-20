@@ -10,6 +10,7 @@ on:
 jobs:
   release-apk:
     name: Release APK
+    environment: production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
