@@ -22,8 +22,16 @@ jobs:
       - run: |
           flutter --no-color build apk
           mv build/app/outputs/flutter-apk/app-release.apk ./flauncher-continuous-release.apk
-      - name: Continuous release
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flauncher-continuous-release
+          path: ./flauncher-continuous-release.apk
+          retention-days: 30
+      - name: Create release
         env:
           GH_TOKEN: ${{ secrets.CI_ACCESS_TOKEN }}
-        run: gh release create continuous --title "Continuous release" ./flauncher-continuous-release.apk
+        run: |
+          gh release delete continuous --yes
+          gh release create continuous --title "Continuous release" ./flauncher-continuous-release.apk
         
