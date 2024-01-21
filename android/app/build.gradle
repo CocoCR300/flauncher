@@ -84,6 +84,14 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
+    splits {
+        abi {
+            // https://stackoverflow.com/a/39950584/21037183
+            enable gradle.startParameter.taskNames.any { it.contains("assembleRelease") }
+            universalApk true
+        }
+    }
 }
 
 flutter {
