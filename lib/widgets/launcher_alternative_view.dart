@@ -30,15 +30,15 @@ class AlternativeLauncherView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           DateTimeWidget(service.timeFormat,
-              textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
-                shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
-              )
+            textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
+              shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
+            )
           ),
           DateTimeWidget(service.dateFormat,
-              updateInterval: Duration(minutes: 1),
-              textStyle: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
-              )
+            updateInterval: Duration(minutes: 1),
+            textStyle: Theme.of(context).textTheme.headlineLarge!.copyWith(
+              shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
+            )
           )
         ],
       ),
