@@ -47,13 +47,13 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
                 onTap: (index) {
                   switch (index) {
                     case 0:
-                      setState(() => {_title = "TV Applications"});
+                      setState(() => _title = "TV Applications");
                       break;
                     case 1:
-                      setState(() => {_title = "Non-TV Applications"});
+                      setState(() => _title = "Non-TV Applications");
                       break;
                     case 2:
-                      setState(() => {_title = "Hidden Applications"});
+                      setState(() => _title = "Hidden Applications");
                       break;
                     default:
                       throw ArgumentError.value(index, "index");

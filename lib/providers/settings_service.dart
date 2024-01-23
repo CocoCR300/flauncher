@@ -39,7 +39,7 @@ class SettingsService extends ChangeNotifier {
 
   String get dateFormat => _sharedPreferences.getString(_dateFormat) ?? "EEEE d";
 
-  String get timeFormat => _sharedPreferences.getString(_timeFormat) ?? "H:MM";
+  String get timeFormat => _sharedPreferences.getString(_timeFormat) ?? "H:mm";
 
   SettingsService(
     this._sharedPreferences

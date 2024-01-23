@@ -16,15 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/date_time_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class AlternativeLauncherView extends StatelessWidget {
   const AlternativeLauncherView();
