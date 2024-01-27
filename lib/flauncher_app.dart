@@ -18,6 +18,7 @@
 
 import 'package:flauncher/actions.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/ticker_model.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
@@ -67,6 +68,7 @@ class FLauncherApp extends StatelessWidget {
                   SettingsService(_sharedPreferences),
               lazy: false),
           ChangeNotifierProvider(create: (_) => AppsService(_fLauncherChannel, _fLauncherDatabase)),
+          ChangeNotifierProvider(create: (_) => NetworkService(_fLauncherChannel)),
           ChangeNotifierProxyProvider<SettingsService, WallpaperService>(
               create: (_) => WallpaperService(_imagePicker, _fLauncherChannel),
               update: (_, settingsService, wallpaperService) => wallpaperService!..settingsService = settingsService),

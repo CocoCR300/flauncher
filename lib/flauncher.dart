@@ -22,6 +22,7 @@ import 'dart:ui';
 import 'package:flauncher/custom_traversal_policy.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
@@ -96,6 +97,7 @@ class FLauncher extends StatelessWidget {
   );
 
   AppBar _appBar(BuildContext context) {
+    Provider.of<NetworkService>(context, listen: false);
     return AppBar(
       actions: [
         Stack(

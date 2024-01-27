@@ -22,9 +22,13 @@ import 'package:flutter/services.dart';
 
 class FLauncherChannel {
   static const _methodChannel = MethodChannel('me.efesser.flauncher/method');
-  static const _eventChannel = EventChannel('me.efesser.flauncher/event');
+  static const _appsEventChannel = EventChannel('me.efesser.flauncher/event_apps');
+  static const _networkEventChannel = EventChannel('me.efesser.flauncher/event_network');
 
-  Future<List<dynamic>> getApplications() async => (await _methodChannel.invokeListMethod('getApplications'))!;
+  Future<List<Map<dynamic, dynamic>>> getApplications() async {
+    List<dynamic>? applications = await _methodChannel.invokeListMethod("getApplications");
+    return applications!.cast<Map<dynamic, dynamic>>();
+  }
 
   Future<bool> applicationExists(String packageName) async =>
       await _methodChannel.invokeMethod('applicationExists', packageName);
@@ -42,8 +46,22 @@ class FLauncherChannel {
   Future<bool> checkForGetContentAvailability() async =>
       await _methodChannel.invokeMethod("checkForGetContentAvailability");
 
+  Future<Map<String, dynamic>> getActiveNetworkInformation() async {
+    Map<dynamic, dynamic> map = await _methodChannel.invokeMethod("getActiveNetworkInformation");
+    return map.cast<String, dynamic>();
+  }
+
   Future<void> startAmbientMode() async => await _methodChannel.invokeMethod("startAmbientMode");
 
   void addAppsChangedListener(void Function(Map<dynamic, dynamic>) listener) =>
-      _eventChannel.receiveBroadcastStream().listen((event) => listener(event));
+      _appsEventChannel.receiveBroadcastStream().listen((event) {
+        Map<dynamic, dynamic> eventMap = event;
+        listener(eventMap.cast<String, dynamic>());
+      });
+
+  void addNetworkChangedListener(void Function(Map<String, dynamic>) listener) =>
+      _networkEventChannel.receiveBroadcastStream().listen((event) {
+        Map<dynamic, dynamic> eventMap = event;
+        listener(eventMap.cast<String, dynamic>());
+      });
 }
