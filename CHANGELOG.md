@@ -2,7 +2,7 @@
 
 ### Features
 * Allow users to customize the date widget format, making it possible to display the [date, time](https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html), and any arbitrary text.
-* Choose what the back button does while being in the launcher (Nothing, Show a fullscreen clock, Show screensaver).
+* Choose what the back button does while being in the launcher: Nothing, Show a fullscreen clock, Show screensaver (a.k.a Ambient Mode).
 
 ### Removals
 * Firebase analytics and crashlytics services.
