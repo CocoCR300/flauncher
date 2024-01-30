@@ -28,6 +28,7 @@ import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
 import 'package:flauncher/widgets/launcher_alternative_view.dart';
+import 'package:flauncher/widgets/network_widget.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/date_time_widget.dart';
 import 'package:flutter/material.dart';
@@ -116,10 +117,11 @@ class FLauncher extends StatelessWidget {
               constraints: const BoxConstraints(),
               splashRadius: 20,
               icon: const Icon(Icons.settings_outlined),
-              onPressed: () => showDialog(context: context, builder: (_) => SettingsPanel()),
+              onPressed: () => showDialog(context: context, builder: (_) => const SettingsPanel()),
             ),
           ],
         ),
+        const NetworkWidget(),
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 32),
           child: Selector<SettingsService, Tuple2<String, String>>(
@@ -131,18 +133,22 @@ class FLauncher extends StatelessWidget {
                 children: [
                   Flexible(
                     child: DateTimeWidget(formatTuple.item1,
-                      updateInterval: Duration(minutes: 1),
+                      updateInterval: const Duration(minutes: 1),
                       textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
+                        shadows: [
+                          const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)
+                        ],
                       ),
                     )
                   ),
                   if (formatTuple.item1.isNotEmpty && formatTuple.item2.isNotEmpty)
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                   Flexible(
                     child: DateTimeWidget(formatTuple.item2,
                         textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
+                          shadows: [
+                            const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)
+                          ],
                         )
                     )
                   )
@@ -158,19 +164,19 @@ class FLauncher extends StatelessWidget {
   Widget _wallpaper(BuildContext context, Uint8List? wallpaperImage, Gradient gradient) => wallpaperImage != null
       ? Image.memory(
     wallpaperImage,
-    key: Key("background"),
+    key: const Key("background"),
     fit: BoxFit.cover,
     height: window.physicalSize.height,
     width: window.physicalSize.width,
   )
-      : Container(key: Key("background"), decoration: BoxDecoration(gradient: gradient));
+      : Container(key: const Key("background"), decoration: BoxDecoration(gradient: gradient));
 
   Widget _emptyState(BuildContext context) => Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        CircularProgressIndicator(),
-        SizedBox(height: 16),
+        const CircularProgressIndicator(),
+        const SizedBox(height: 16),
         Text("Loading...", style: Theme.of(context).textTheme.titleLarge),
       ],
     ),

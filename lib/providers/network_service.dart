@@ -30,11 +30,14 @@ enum NetworkType
 
 class NetworkService extends ChangeNotifier
 {
-  FLauncherChannel  _channel;
+  final FLauncherChannel  _channel;
+
+  bool              _hasInternetAccess;
   NetworkType       _networkType;
   int               _wirelessNetworkSignalLevel;
 
   NetworkService(this._channel) :
+        _hasInternetAccess = false,
         _networkType = NetworkType.Unknown,
         _wirelessNetworkSignalLevel = 0
   {
@@ -44,27 +47,34 @@ class NetworkService extends ChangeNotifier
         .getActiveNetworkInformation()
         .then((map) {
           if (map.isNotEmpty) {
-            // If handle is present, there is a network and all keys should correspond to actual values
-            if (map.containsKey("handle")) {
-              int networkTypeInt = map["networkType"];
-              _networkType = networkTypeInt == -1 ? NetworkType.Unknown : NetworkType.values[networkTypeInt];
-              _wirelessNetworkSignalLevel = map["wirelessNetworkSignalLevel"];
-            }
+            _getNetworkInformation(map);
           }
         });
   }
 
+  bool          get   hasInternetAccess             => _hasInternetAccess;
   NetworkType   get   networkType                   => _networkType;
   int           get   wirelessNetworkSignalLevel    => _wirelessNetworkSignalLevel;
+
+  void _getNetworkInformation(Map<String, dynamic> map)
+  {
+    int networkTypeInt = map["networkType"];
+    _hasInternetAccess = map["internetAccess"];
+    _networkType = NetworkType.values[networkTypeInt];
+  }
 
   void _onNetworkChanged(Map<String, dynamic> event)
   {
     switch (event["name"]) {
       case "NETWORK_AVAILABLE":
+        _getNetworkInformation(event);
+        break;
+      case "NETWORK_UNAVAILABLE":
+        _hasInternetAccess = false;
+        _networkType = NetworkType.Unknown;
         break;
       case "CAPABILITIES_CHANGED":
-        break;
-      default:
+        _getNetworkInformation(event);
         break;
     }
 
