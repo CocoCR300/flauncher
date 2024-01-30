@@ -4,9 +4,11 @@
 FLauncher is an open-source alternative launcher for Android TV, built with [Flutter](https://flutter.dev).
 
 ## Download
-Get the latest build on the [releases](https://github.com/CocoCR300/flauncher/releases) page, you can look for older builds on the [actions](https://github.com/CocoCR300/flauncher/actions) tab, where they are uploaded as artifacts.
+Get the latest build from the [releases](https://github.com/CocoCR300/flauncher/releases) page, you can look for older builds on the [actions](https://github.com/CocoCR300/flauncher/actions) tab, where they are uploaded as artifacts.
 
 ## Features
+For a list of the changes introduced by this fork from the original, see the [CHANGELOG](CHANGELOG.md) file.
+
 - [x] No ads
 - [x] Customizable categories
 - [x] Manually reorder apps within categories
