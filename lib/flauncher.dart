@@ -101,27 +101,21 @@ class FLauncher extends StatelessWidget {
     Provider.of<NetworkService>(context, listen: false);
     return AppBar(
       actions: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned(
-              left: 12.0,
-              top: 14.0,
-              child: ImageFiltered(
-                imageFilter: ImageFilter.blur(sigmaX: 2, sigmaY: 2, tileMode: TileMode.decal),
-                child: const Icon(Icons.settings_outlined, color: Colors.black54),
-              ),
-            ),
-            IconButton(
-              padding: const EdgeInsets.all(2),
-              constraints: const BoxConstraints(),
-              splashRadius: 20,
-              icon: const Icon(Icons.settings_outlined),
-              onPressed: () => showDialog(context: context, builder: (_) => const SettingsPanel()),
-            ),
-          ],
+        IconButton(
+          padding: const EdgeInsets.all(2),
+          constraints: const BoxConstraints(),
+          splashRadius: 20,
+          icon: const Icon(Icons.settings_outlined,
+            shadows: [
+              Shadow(color: Colors.black54, blurRadius: 8, offset: Offset(0, 2))
+            ],
+          ),
+          onPressed: () => showDialog(context: context, builder: (_) => const SettingsPanel()),
         ),
-        const NetworkWidget(),
+        const Padding(
+          padding: EdgeInsets.only(left: 16),
+          child: NetworkWidget(),
+        ),
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 32),
           child: Selector<SettingsService, Tuple2<String, String>>(
@@ -136,7 +130,7 @@ class FLauncher extends StatelessWidget {
                       updateInterval: const Duration(minutes: 1),
                       textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
                         shadows: [
-                          const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)
+                          const Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8)
                         ],
                       ),
                     )
@@ -147,7 +141,7 @@ class FLauncher extends StatelessWidget {
                     child: DateTimeWidget(formatTuple.item2,
                         textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
                           shadows: [
-                            const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)
+                            const Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8)
                           ],
                         )
                     )

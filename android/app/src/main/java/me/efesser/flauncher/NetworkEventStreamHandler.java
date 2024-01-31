@@ -5,13 +5,18 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyCallback;
+import android.telephony.TelephonyManager;
 
 import androidx.annotation.NonNull;
 
 import java.util.Map;
+import java.util.Objects;
 
 import io.flutter.plugin.common.EventChannel;
 
@@ -21,12 +26,15 @@ public class NetworkEventStreamHandler implements EventChannel.StreamHandler
     private final Context _context;
     private final Handler _handler;
 
+    private PhoneStateListenerImpl _phoneStateListener;
+    private TelephonyCallbackImpl _telephonyCallback;
+
     private ConnectivityManager.NetworkCallback _networkCallback;
     private NetworkChangeReceiver _networkChangeReceiver;
 
-    public NetworkEventStreamHandler(Context context, ConnectivityManager connectivityManager)
+    public NetworkEventStreamHandler(Context context)
     {
-        _connectivityManager = connectivityManager;
+        _connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         _context = context;
         _handler = new Handler(Looper.getMainLooper());
     }
@@ -62,7 +70,7 @@ public class NetworkEventStreamHandler implements EventChannel.StreamHandler
         }
     }
 
-    private static class NetworkCallbackImpl extends ConnectivityManager.NetworkCallback
+    private class NetworkCallbackImpl extends ConnectivityManager.NetworkCallback
     {
         private final EventChannel.EventSink    _eventSink;
         private final Handler                   _handler;
@@ -93,11 +101,44 @@ public class NetworkEventStreamHandler implements EventChannel.StreamHandler
 
         @Override
         public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
-            Map<String, Object> map = NetworkUtils.getNetworkCapabilitiesInformation(networkCapabilities);
+            Map<String, Object> map = NetworkUtils.getNetworkCapabilitiesInformation(_context, networkCapabilities);
+
+            if (Objects.equals(map.get(NetworkUtils.KEY_NETWORK_TYPE), NetworkUtils.NETWORK_TYPE_CELLULAR)) {
+                TelephonyManager manager = (TelephonyManager) _context.getSystemService(Context.TELEPHONY_SERVICE);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && _telephonyCallback == null) {
+                    _telephonyCallback = new TelephonyCallbackImpl(_eventSink);
+                    manager.registerTelephonyCallback(_context.getMainExecutor(), _telephonyCallback);
+                }
+                else if (_phoneStateListener == null) {
+                    _phoneStateListener = new PhoneStateListenerImpl(_eventSink);
+                    //noinspection deprecation
+                    manager.listen(_phoneStateListener, PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
+                }
+            }
+
             postEvent(Map.of(
                     "name", "CAPABILITIES_CHANGED",
                     "arguments", map
             ));
+        }
+
+        @Override
+        public void onLost(@NonNull Network network) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && _telephonyCallback != null) {
+                TelephonyManager manager = (TelephonyManager) _context.getSystemService(Context.TELEPHONY_SERVICE);
+                manager.unregisterTelephonyCallback(_telephonyCallback);
+                _telephonyCallback = null;
+            }
+
+            if (_phoneStateListener != null) {
+                TelephonyManager manager = (TelephonyManager) _context.getSystemService(Context.TELEPHONY_SERVICE);
+                //noinspection deprecation
+                manager.listen(_phoneStateListener, PhoneStateListener.LISTEN_NONE);
+                _phoneStateListener = null;
+            }
+
+            postEvent(Map.of("name", "NETWORK_UNAVAILABLE"));
         }
     }
 }

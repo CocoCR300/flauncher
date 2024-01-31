@@ -1,5 +1,6 @@
 package me.efesser.flauncher;
 
+import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.os.UserHandle;
 
@@ -17,10 +18,10 @@ public class LauncherAppsEventStreamHandler implements EventChannel.StreamHandle
 
     private LauncherApps.Callback _launcherAppsCallback;
 
-    public LauncherAppsEventStreamHandler(MainActivity activity, LauncherApps launcherApps)
+    public LauncherAppsEventStreamHandler(MainActivity activity)
     {
         _activity = activity;
-        _launcherApps = launcherApps;
+        _launcherApps = (LauncherApps) _activity.getSystemService(Context.LAUNCHER_APPS_SERVICE);
     }
 
     @Override

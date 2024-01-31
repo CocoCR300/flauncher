@@ -1,12 +1,16 @@
 package me.efesser.flauncher;
 
+import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.net.TelephonyNetworkSpecifier;
+import android.net.TransportInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.telephony.TelephonyManager;
 
 import androidx.annotation.Nullable;
 
@@ -16,16 +20,23 @@ import java.util.Objects;
 
 public class NetworkUtils
 {
+    // Aligned with NetworkType enum value indices, on file lib/providers/network_service.dart
+    public static final short NETWORK_TYPE_CELLULAR = 0;
+    public static final short NETWORK_TYPE_WIFI = 1;
+    public static final short NETWORK_TYPE_VPN = 2;
+    public static final short NETWORK_TYPE_WIRED = 3;
+    public static final short NETWORK_TYPE_UNKNOWN = 4;
+
     public static final String KEY_INTERNET_ACCESS = "internetAccess";
     public static final String KEY_NETWORK_ACCESS = "networkAccess";
     public static final String KEY_NETWORK_TYPE = "networkType";
     public static final String KEY_WIRELESS_SIGNAL_LEVEL = "wirelessSignalLevel";
 
-    public static Map<String, Object> getNetworkCapabilitiesInformation(NetworkCapabilities capabilities)
+    public static Map<String, Object> getNetworkCapabilitiesInformation(Context context, NetworkCapabilities capabilities)
     {
         boolean hasNetworkAccess, hasInternetAccess;
         int wirelessNetworkSignalLevel = 0;
-        short networkType = 4; // Align with NetworkType enum value indices, on file lib/providers/network_service.dart
+        short networkType = NETWORK_TYPE_UNKNOWN;
 
         hasNetworkAccess = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -36,17 +47,28 @@ public class NetworkUtils
         }
 
         if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-            networkType = 0;
-            // TODO: Get signal level
+            networkType = NETWORK_TYPE_CELLULAR;
         }
         else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-            networkType = 1;
+            WifiManager wifiManager = (WifiManager) context
+                    .getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
+                    && capabilities.getTransportInfo() instanceof WifiInfo wifiInfo) {
+                wirelessNetworkSignalLevel = getWifiSignalLevel(wifiManager, wifiInfo);
+            }
+            else {
+                // TODO: Will this give the correct information?
+                wirelessNetworkSignalLevel = getWifiSignalLevel(wifiManager, wifiManager.getConnectionInfo());
+            }
+
+            networkType = NETWORK_TYPE_WIFI;
         }
         else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
-            networkType = 2;
+            networkType = NETWORK_TYPE_VPN;
         }
         else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-            networkType = 3;
+            networkType = NETWORK_TYPE_WIRED;
         }
 
         return Map.of(
@@ -56,18 +78,20 @@ public class NetworkUtils
                 KEY_WIRELESS_SIGNAL_LEVEL, wirelessNetworkSignalLevel);
     }
 
-    public static Map<String, Object> getNetworkInformation(ConnectivityManager connectivityManager, WifiManager wifiManager, Network network)
+    public static Map<String, Object> getNetworkInformation(Context context, Network network)
     {
         Map<String, Object> map = null;
         int wirelessNetworkSignalLevel = 0;
 
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
 
         if (capabilities != null) {
-            map = getNetworkCapabilitiesInformation(capabilities);
+            map = getNetworkCapabilitiesInformation(context, capabilities);
 
-            if (Objects.equals(map.get(KEY_NETWORK_TYPE), 1)) {
-                wirelessNetworkSignalLevel = getWifiSignalLevel(wifiManager);
+            if (Objects.equals(map.get(KEY_NETWORK_TYPE), NETWORK_TYPE_WIFI)) {
+                WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                wirelessNetworkSignalLevel = getWifiSignalLevel(wifiManager, wifiManager.getConnectionInfo());
             }
         }
 
@@ -83,36 +107,42 @@ public class NetworkUtils
         return map;
     }
 
-    public static Map<String, Object> getNetworkInformation(@Nullable NetworkInfo networkInfo)
+    public static Map<String, Object> getNetworkInformation(Context context, @Nullable NetworkInfo networkInfo)
     {
         boolean hasNetworkAccess = false;
-        int networkType = 4, networkInfoType;
+        int networkType = NETWORK_TYPE_UNKNOWN, networkInfoType, wirelessSignalLevel = 0;
 
         if (networkInfo != null) {
             hasNetworkAccess = networkInfo.isConnected();
             networkInfoType = networkInfo.getType();
 
-            // Align with NetworkType enum value indices, on file lib/providers/network_service.dart
-            if (networkInfoType <= ConnectivityManager.TYPE_WIFI) {
+            if (networkInfoType == ConnectivityManager.TYPE_MOBILE) {
+                networkType = NETWORK_TYPE_CELLULAR;
+            }
+            if (networkInfoType == ConnectivityManager.TYPE_WIFI) {
+                WifiManager wifiManager = (WifiManager) context
+                        .getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
                 networkType = networkInfoType;
+                wirelessSignalLevel = getWifiSignalLevel(wifiManager, wifiManager.getConnectionInfo());
             }
             else if (networkInfoType == ConnectivityManager.TYPE_VPN) {
-                networkType = 2;
+                networkType = NETWORK_TYPE_VPN;
             }
             else if (networkInfoType == ConnectivityManager.TYPE_ETHERNET) {
-                networkType = 3;
+                networkType = NETWORK_TYPE_WIRED;
             }
         }
 
         return Map.of(
                 KEY_NETWORK_TYPE, networkType,
                 KEY_NETWORK_ACCESS, hasNetworkAccess,
-                KEY_INTERNET_ACCESS, hasNetworkAccess);
+                KEY_INTERNET_ACCESS, hasNetworkAccess,
+                KEY_WIRELESS_SIGNAL_LEVEL, wirelessSignalLevel);
     }
 
-    public static int getWifiSignalLevel(WifiManager wifiManager)
+    public static int getWifiSignalLevel(WifiManager wifiManager, WifiInfo wifiInfo)
     {
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         int rssi = wifiInfo.getRssi();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

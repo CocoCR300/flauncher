@@ -32,7 +32,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver
             NetworkInfo networkInfo = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
             _eventSink.success(Map.of(
                     "name", "NETWORK_AVAILABLE",
-                    "arguments", NetworkUtils.getNetworkInformation(networkInfo)
+                    "arguments", NetworkUtils.getNetworkInformation(context, networkInfo)
             ));
         }
     }

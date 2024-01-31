@@ -73,10 +73,10 @@ public class MainActivity extends FlutterActivity
         });
 
         new EventChannel(messenger, APPS_EVENT_CHANNEL).setStreamHandler(
-                new LauncherAppsEventStreamHandler(this, (LauncherApps) getSystemService(Context.LAUNCHER_APPS_SERVICE)));
+                new LauncherAppsEventStreamHandler(this));
 
         new EventChannel(messenger, NETWORK_EVENT_CHANNEL).setStreamHandler(
-                new NetworkEventStreamHandler(this, (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)));
+                new NetworkEventStreamHandler(this));
     }
 
     private List<Map<String, Serializable>> getApplications() {
@@ -257,16 +257,14 @@ public class MainActivity extends FlutterActivity
     private Map<String, Object> getActiveNetworkInformation()
     {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return NetworkUtils.getNetworkInformation(connectivityManager, wifiManager, connectivityManager.getActiveNetwork());
+            return NetworkUtils.getNetworkInformation(this, connectivityManager.getActiveNetwork());
         }
         else {
             //noinspection deprecation
-            return NetworkUtils.getNetworkInformation(connectivityManager.getActiveNetworkInfo());
+            return NetworkUtils.getNetworkInformation(this, connectivityManager.getActiveNetworkInfo());
         }
     }
-
 
     private boolean tryStartActivity(Intent intent)
     {
