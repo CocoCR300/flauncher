@@ -28,7 +28,7 @@ jobs:
           FLAUNCHER_SIGNING_KEY_PASSWORD: ${{ secrets.FLAUNCHER_SIGNING_KEY_PASSWORD }}
           KEYSTORE_FILE_BASE64: ${{ secrets.KEYSTORE_FILE_BASE64 }}
         run: |
-          sudo apt install rename -y
+          sudo apt install openjdk-17-jdk-headless rename -y
           echo -n "$KEYSTORE_FILE_BASE64" | base64 -d > android/app/upload-keystore.jks
           flutter --no-color build apk --release
           file-rename 's/app-(.*)-release.apk/flauncher-$1-release.apk/' $OUTPUT_DIR/*.apk
