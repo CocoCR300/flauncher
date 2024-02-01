@@ -37,14 +37,20 @@ class NetworkWidget extends StatelessWidget
             }
             break;
           case NetworkType.Wifi:
-            iconData = Icons.wifi;
+            iconData = Icons.signal_wifi_4_bar;
 
             int signalLevel = networkService.wirelessNetworkSignalLevel;
             if (signalLevel == 0) {
-              iconData = Icons.wifi_1_bar;
+              iconData = Icons.signal_wifi_0_bar;
             }
             else if (signalLevel == 1) {
-              iconData = Icons.wifi_2_bar;
+              iconData = Icons.network_wifi_1_bar;
+            }
+            else if (signalLevel == 2) {
+              iconData = Icons.network_wifi_2_bar;
+            }
+            else if (signalLevel == 3) {
+              iconData = Icons.network_wifi_3_bar;
             }
             break;
           case NetworkType.Vpn: iconData = Icons.vpn_key; break;

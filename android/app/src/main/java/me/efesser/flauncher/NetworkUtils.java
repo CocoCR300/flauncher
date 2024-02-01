@@ -55,11 +55,11 @@ public class NetworkUtils
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
                     && capabilities.getTransportInfo() instanceof WifiInfo wifiInfo) {
-                wirelessNetworkSignalLevel = getWifiSignalLevel(wifiManager, wifiInfo);
+                wirelessNetworkSignalLevel = getWifiSignalLevel(wifiInfo);
             }
             else {
                 // TODO: Will this give the correct information?
-                wirelessNetworkSignalLevel = getWifiSignalLevel(wifiManager, wifiManager.getConnectionInfo());
+                wirelessNetworkSignalLevel = getWifiSignalLevel(wifiManager.getConnectionInfo());
             }
 
             networkType = NETWORK_TYPE_WIFI;
@@ -91,7 +91,7 @@ public class NetworkUtils
 
             if (Objects.equals(map.get(KEY_NETWORK_TYPE), NETWORK_TYPE_WIFI)) {
                 WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                wirelessNetworkSignalLevel = getWifiSignalLevel(wifiManager, wifiManager.getConnectionInfo());
+                wirelessNetworkSignalLevel = getWifiSignalLevel(wifiManager.getConnectionInfo());
             }
         }
 
@@ -124,7 +124,7 @@ public class NetworkUtils
                         .getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
                 networkType = networkInfoType;
-                wirelessSignalLevel = getWifiSignalLevel(wifiManager, wifiManager.getConnectionInfo());
+                wirelessSignalLevel = getWifiSignalLevel(wifiManager.getConnectionInfo());
             }
             else if (networkInfoType == ConnectivityManager.TYPE_VPN) {
                 networkType = NETWORK_TYPE_VPN;
@@ -141,17 +141,26 @@ public class NetworkUtils
                 KEY_WIRELESS_SIGNAL_LEVEL, wirelessSignalLevel);
     }
 
-    public static int getWifiSignalLevel(WifiManager wifiManager, WifiInfo wifiInfo)
+    public static int getWifiSignalLevel(WifiInfo wifiInfo)
     {
+        final int SIGNAL_LEVELS = 4;
         int rssi = wifiInfo.getRssi();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return wifiManager.calculateSignalLevel(rssi);
-        }
-        else {
-            final int SIGNAL_LEVELS = 5; // Not based on anything in particular
-            //noinspection deprecation
-            return WifiManager.calculateSignalLevel(rssi, SIGNAL_LEVELS);
+        return calculateSignalLevel(rssi, SIGNAL_LEVELS);
+    }
+
+    private static final int MIN_RSSI = -90;
+    private static final int MAX_RSSI = -55;
+    public static int calculateSignalLevel(int rssi, int levels)
+    {
+        if (rssi <= MIN_RSSI) {
+            return 0;
+        } else if (rssi >= MAX_RSSI) {
+            return levels - 1;
+        } else {
+            final float inputRange = (MAX_RSSI - MIN_RSSI);
+            final float outputRange = (levels - 1);
+            return (int)((float)(rssi - MIN_RSSI) * outputRange / inputRange);
         }
     }
 }
