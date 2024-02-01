@@ -22,11 +22,13 @@ import 'dart:ui';
 import 'package:flauncher/custom_traversal_policy.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
 import 'package:flauncher/widgets/launcher_alternative_view.dart';
+import 'package:flauncher/widgets/network_widget.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/date_time_widget.dart';
 import 'package:flutter/material.dart';
@@ -96,27 +98,23 @@ class FLauncher extends StatelessWidget {
   );
 
   AppBar _appBar(BuildContext context) {
+    Provider.of<NetworkService>(context, listen: false);
     return AppBar(
       actions: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned(
-              left: 12.0,
-              top: 14.0,
-              child: ImageFiltered(
-                imageFilter: ImageFilter.blur(sigmaX: 2, sigmaY: 2, tileMode: TileMode.decal),
-                child: const Icon(Icons.settings_outlined, color: Colors.black54),
-              ),
-            ),
-            IconButton(
-              padding: const EdgeInsets.all(2),
-              constraints: const BoxConstraints(),
-              splashRadius: 20,
-              icon: const Icon(Icons.settings_outlined),
-              onPressed: () => showDialog(context: context, builder: (_) => SettingsPanel()),
-            ),
-          ],
+        IconButton(
+          padding: const EdgeInsets.all(2),
+          constraints: const BoxConstraints(),
+          splashRadius: 20,
+          icon: const Icon(Icons.settings_outlined,
+            shadows: [
+              Shadow(color: Colors.black54, blurRadius: 8, offset: Offset(0, 2))
+            ],
+          ),
+          onPressed: () => showDialog(context: context, builder: (_) => const SettingsPanel()),
+        ),
+        const Padding(
+          padding: EdgeInsets.only(left: 16),
+          child: NetworkWidget(),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 32),
@@ -129,18 +127,22 @@ class FLauncher extends StatelessWidget {
                 children: [
                   Flexible(
                     child: DateTimeWidget(formatTuple.item1,
-                      updateInterval: Duration(minutes: 1),
+                      updateInterval: const Duration(minutes: 1),
                       textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
+                        shadows: [
+                          const Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8)
+                        ],
                       ),
                     )
                   ),
                   if (formatTuple.item1.isNotEmpty && formatTuple.item2.isNotEmpty)
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                   Flexible(
                     child: DateTimeWidget(formatTuple.item2,
                         textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
+                          shadows: [
+                            const Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8)
+                          ],
                         )
                     )
                   )
@@ -156,19 +158,19 @@ class FLauncher extends StatelessWidget {
   Widget _wallpaper(BuildContext context, Uint8List? wallpaperImage, Gradient gradient) => wallpaperImage != null
       ? Image.memory(
     wallpaperImage,
-    key: Key("background"),
+    key: const Key("background"),
     fit: BoxFit.cover,
     height: window.physicalSize.height,
     width: window.physicalSize.width,
   )
-      : Container(key: Key("background"), decoration: BoxDecoration(gradient: gradient));
+      : Container(key: const Key("background"), decoration: BoxDecoration(gradient: gradient));
 
   Widget _emptyState(BuildContext context) => Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        CircularProgressIndicator(),
-        SizedBox(height: 16),
+        const CircularProgressIndicator(),
+        const SizedBox(height: 16),
         Text("Loading...", style: Theme.of(context).textTheme.titleLarge),
       ],
     ),
