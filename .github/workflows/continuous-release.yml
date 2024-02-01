@@ -16,11 +16,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Download Flutter
+      - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.16.8'
           channel: 'stable'
+      - name: Install Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Verify environment
+        run: |
+          java --version
+          flutter doctor -v
       - name: Build
         env:
           FLAUNCHER_KEYSTORE_PASSWORD: ${{ secrets.FLAUNCHER_KEYSTORE_PASSWORD }}
@@ -28,7 +37,7 @@ jobs:
           FLAUNCHER_SIGNING_KEY_PASSWORD: ${{ secrets.FLAUNCHER_SIGNING_KEY_PASSWORD }}
           KEYSTORE_FILE_BASE64: ${{ secrets.KEYSTORE_FILE_BASE64 }}
         run: |
-          sudo apt install openjdk-17-jdk-headless rename -y
+          sudo apt install rename -y
           echo -n "$KEYSTORE_FILE_BASE64" | base64 -d > android/app/upload-keystore.jks
           flutter --no-color build apk --release
           file-rename 's/app-(.*)-release.apk/flauncher-$1-release.apk/' $OUTPUT_DIR/*.apk
