@@ -101,7 +101,7 @@ public class MainActivity extends FlutterActivity
             }
 
             if (nonDuplicate) {
-                buildAppMap(nonTvActivityInfo.activityInfo, true);
+                applications.add(buildAppMap(nonTvActivityInfo.activityInfo, true));
             }
         }
         return applications;
@@ -112,7 +112,7 @@ public class MainActivity extends FlutterActivity
         PackageManager packageManager = getPackageManager();
         Intent intent = packageManager.getLeanbackLaunchIntentForPackage(packageName);
 
-        if (intent != null) {
+        if (intent == null) {
             intent = packageManager.getLaunchIntentForPackage(packageName);
         }
 
@@ -145,7 +145,6 @@ public class MainActivity extends FlutterActivity
     }
 
     private List<ResolveInfo> queryIntentActivities(boolean sideloaded) {
-        Intent intent;
         String category;
         if (sideloaded) {
             category = Intent.CATEGORY_LAUNCHER;
@@ -157,8 +156,8 @@ public class MainActivity extends FlutterActivity
         // NOTE: Would be nice to query the applications that match *either* of the above categories
         // but from the addCategory function documentation, it says that it will "use activities
         // that provide *all* the requested categories"
-        intent = new Intent(Intent.ACTION_MAIN, null)
-                        .addCategory(category);
+        Intent intent = new Intent(Intent.ACTION_MAIN)
+                .addCategory(category);
 
        List<ResolveInfo> resolveInfoList = getPackageManager()
                .queryIntentActivities(intent, 0);

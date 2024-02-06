@@ -21,7 +21,6 @@ import 'dart:async';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
-import 'package:flauncher/providers/ticker_model.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/color_helpers.dart';
 import 'package:flauncher/widgets/focus_keyboard_listener.dart';
@@ -56,8 +55,8 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   bool _moving = false;
   MemoryImage? _imageProvider;
   late final AnimationController _animation = AnimationController(
-    vsync: Provider.of<TickerModel>(context, listen: false).tickerProvider ?? this,
-    duration: Duration(
+    vsync: this,
+    duration: const Duration(
       milliseconds: 800,
     ),
   );
@@ -102,7 +101,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
         builder: (context) => AspectRatio(
           aspectRatio: 16 / 9,
           child: AnimatedContainer(
-            duration: Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 200),
             curve: Curves.easeInOut,
             transformAlignment: Alignment.center,
             transform: _scaleTransform(context),
@@ -122,7 +121,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                     child: widget.application.banner != null
                         ? Ink.image(image: _cachedMemoryImage(widget.application.banner!), fit: BoxFit.cover)
                         : Padding(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Row(
                               children: [
                                 Expanded(
@@ -135,7 +134,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                                 Flexible(
                                   flex: 3,
                                   child: Padding(
-                                    padding: EdgeInsets.only(left: 8),
+                                    padding: const EdgeInsets.only(left: 8),
                                     child: Text(
                                       widget.application.name,
                                       style: Theme.of(context).textTheme.bodySmall,
@@ -151,7 +150,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                   if (_moving) ..._arrows(),
                   IgnorePointer(
                     child: AnimatedOpacity(
-                      duration: Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 200),
                       curve: Curves.easeInOut,
                       opacity: Focus.of(context).hasFocus ? 0 : 0.10,
                       child: Container(color: Colors.black),
@@ -166,7 +165,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                           animation: _animation,
                           builder: (context, child) => IgnorePointer(
                             child: AnimatedContainer(
-                              duration: Duration(milliseconds: 200),
+                              duration: const Duration(milliseconds: 200),
                               curve: Curves.easeInOut,
                               decoration: BoxDecoration(
                                 border: Focus.of(context).hasFocus
@@ -182,7 +181,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                         );
                       }
                       _animation.stop();
-                      return SizedBox();
+                      return const SizedBox();
                     },
                   ),
                 ],
@@ -211,7 +210,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   Widget _arrow(Alignment alignment, IconData icon) => Align(
         alignment: alignment,
         child: Padding(
-          padding: EdgeInsets.all(4),
+          padding: const EdgeInsets.all(4),
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
@@ -228,7 +227,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   KeyEventResult _onPressed(BuildContext context, LogicalKeyboardKey? key) {
     if (_moving) {
       WidgetsBinding.instance.addPostFrameCallback((_) => Scrollable.ensureVisible(context,
-          alignment: 0.1, duration: Duration(milliseconds: 100), curve: Curves.easeInOut));
+          alignment: 0.1, duration: const Duration(milliseconds: 100), curve: Curves.easeInOut));
       if (key == LogicalKeyboardKey.arrowLeft) {
         widget.onMove(AxisDirection.left);
       } else if (key == LogicalKeyboardKey.arrowUp) {

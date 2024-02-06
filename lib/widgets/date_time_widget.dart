@@ -24,41 +24,33 @@ import 'package:intl/intl.dart';
 
 
 class DateTimeWidget extends StatefulWidget {
-  final Duration    _updateInterval;
+  final Duration?   updateInterval;
   final String      _dateTimeFormatString;
-  final TextStyle?  _textStyle;
+  final TextStyle?  textStyle;
 
   const DateTimeWidget(String dateTimeFormatString, {
-    Duration? updateInterval,
-    TextStyle? textStyle
+    super.key,
+    this.updateInterval,
+    this.textStyle
   }) :
-      _dateTimeFormatString = dateTimeFormatString,
-      _updateInterval = updateInterval ?? const Duration(seconds: 1),
-      _textStyle = textStyle;
+      _dateTimeFormatString = dateTimeFormatString;
 
   @override
-  State<DateTimeWidget> createState() => _DateTimeWidgetState(
-      _dateTimeFormatString, _updateInterval, _textStyle);
+  State<DateTimeWidget> createState() => _DateTimeWidgetState();
 }
 
 class _DateTimeWidgetState extends State<DateTimeWidget> {
-  final Duration    _updateInterval;
-  final DateFormat  _dateFormat;
-  final TextStyle?  _textStyle;
-
-  late DateTime _now;
-  late Timer _timer;
-
-  _DateTimeWidgetState(String dateTimeFormatString, Duration updateInterval, TextStyle? textStyle) :
-      _updateInterval = updateInterval,
-      _dateFormat = DateFormat(dateTimeFormatString, Platform.localeName),
-      _textStyle = textStyle;
+  late DateFormat _dateFormat;
+  late DateTime   _now;
+  late Timer      _timer;
 
   @override
   void initState() {
     super.initState();
+
+    _dateFormat = DateFormat(widget._dateTimeFormatString, Platform.localeName);
     _now = DateTime.now();
-    _timer = Timer.periodic(_updateInterval, (_) => _refreshTime());
+    _timer = Timer.periodic(widget.updateInterval ?? const Duration(seconds: 1), (_) => _refreshTime());
   }
 
   @override
@@ -69,7 +61,7 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
 
   @override
   Widget build(BuildContext context) => Text(_dateFormat.format(_now),
-      style: _textStyle
+      style: widget.textStyle
   );
 
   void _refreshTime() {

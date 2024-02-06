@@ -21,7 +21,6 @@ import 'dart:async';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -32,14 +31,12 @@ Future<void> main() async {
   initializeDateFormatting();
 
   final sharedPreferences = await SharedPreferences.getInstance();
-  final imagePicker = ImagePicker();
   final fLauncherChannel = FLauncherChannel();
   final fLauncherDatabase = FLauncherDatabase(connect());
 
   runApp(
     FLauncherApp(
       sharedPreferences,
-      imagePicker,
       fLauncherChannel,
       fLauncherDatabase
     ),

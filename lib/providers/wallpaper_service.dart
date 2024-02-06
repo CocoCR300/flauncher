@@ -26,9 +26,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 class WallpaperService extends ChangeNotifier {
-  final ImagePicker _imagePicker;
   final FLauncherChannel _fLauncherChannel;
-  late SettingsService _settingsService;
+  final SettingsService _settingsService;
 
   late final File _wallpaperFile;
   Uint8List? _wallpaper;
@@ -40,9 +39,7 @@ class WallpaperService extends ChangeNotifier {
         orElse: () => FLauncherGradients.greatWhale,
       );
 
-  set settingsService(SettingsService settingsService) => _settingsService = settingsService;
-
-  WallpaperService(this._imagePicker, this._fLauncherChannel) {
+  WallpaperService(this._fLauncherChannel, this._settingsService) {
     _init();
   }
 
@@ -59,7 +56,9 @@ class WallpaperService extends ChangeNotifier {
     if (!await _fLauncherChannel.checkForGetContentAvailability()) {
       throw NoFileExplorerException();
     }
-    final pickedFile = await _imagePicker.pickImage(source: ImageSource.gallery);
+
+    final imagePicker = ImagePicker();
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
       await _wallpaperFile.writeAsBytes(bytes);

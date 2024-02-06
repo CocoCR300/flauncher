@@ -22,7 +22,6 @@ import 'dart:ui';
 import 'package:flauncher/custom_traversal_policy.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
@@ -42,7 +41,7 @@ class FLauncher extends StatelessWidget {
     child: Stack(
       children: [
         Consumer<WallpaperService>(
-          builder: (_, wallpaper, __) => _wallpaper(context, wallpaper.wallpaperBytes, wallpaper.gradient.gradient),
+          builder: (_, wallpaperService, __) => _wallpaper(wallpaperService)
         ),
         Selector<AppsService, bool>(
             selector: (context, service) => service.uiVisible,
@@ -98,7 +97,6 @@ class FLauncher extends StatelessWidget {
   );
 
   AppBar _appBar(BuildContext context) {
-    Provider.of<NetworkService>(context, listen: false);
     return AppBar(
       actions: [
         IconButton(
@@ -155,15 +153,22 @@ class FLauncher extends StatelessWidget {
     );
   }
 
-  Widget _wallpaper(BuildContext context, Uint8List? wallpaperImage, Gradient gradient) => wallpaperImage != null
-      ? Image.memory(
-    wallpaperImage,
-    key: const Key("background"),
-    fit: BoxFit.cover,
-    height: window.physicalSize.height,
-    width: window.physicalSize.width,
-  )
-      : Container(key: const Key("background"), decoration: BoxDecoration(gradient: gradient));
+  Widget _wallpaper(WallpaperService wallpaperService) {
+    Uint8List? wallpaperImage = wallpaperService.wallpaperBytes;
+
+    if (wallpaperImage != null) {
+      return Image.memory(
+        wallpaperImage,
+        key: const Key("background"),
+        fit: BoxFit.cover,
+        height: window.physicalSize.height,
+        width: window.physicalSize.width,
+      );
+    }
+    else {
+      return Container(key: const Key("background"), decoration: BoxDecoration(gradient: wallpaperService.gradient.gradient));
+    }
+  }
 
   Widget _emptyState(BuildContext context) => Center(
     child: Column(

@@ -4,13 +4,13 @@ import 'package:provider/provider.dart';
 
 class NetworkWidget extends StatelessWidget
 {
-  const NetworkWidget({Key? key}) : super(key: key);
+  const NetworkWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<NetworkService>(
       builder: (context, networkService, _) {
-        IconData iconData = Icons.mobiledata_off;
+        IconData iconData;
 
         switch (networkService.networkType)
         {
@@ -37,8 +37,6 @@ class NetworkWidget extends StatelessWidget
             }
             break;
           case NetworkType.Wifi:
-            iconData = Icons.signal_wifi_4_bar;
-
             int signalLevel = networkService.wirelessNetworkSignalLevel;
             if (signalLevel == 0) {
               iconData = Icons.signal_wifi_0_bar;
@@ -51,6 +49,9 @@ class NetworkWidget extends StatelessWidget
             }
             else if (signalLevel == 3) {
               iconData = Icons.network_wifi_3_bar;
+            }
+            else {
+              iconData = Icons.signal_wifi_4_bar;
             }
             break;
           case NetworkType.Vpn: iconData = Icons.vpn_key; break;

@@ -20,13 +20,11 @@ import 'package:flauncher/actions.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
-import 'package:flauncher/providers/ticker_model.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/settings/back_button_actions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,7 +34,6 @@ import 'flauncher_channel.dart';
 
 class FLauncherApp extends StatelessWidget {
   final SharedPreferences _sharedPreferences;
-  final ImagePicker _imagePicker;
   final FLauncherChannel _fLauncherChannel;
   final FLauncherDatabase _fLauncherDatabase;
 
@@ -53,9 +50,8 @@ class FLauncherApp extends StatelessWidget {
     900: Color(0xFF000000),
   });
 
-  FLauncherApp(
+  const FLauncherApp(
     this._sharedPreferences,
-    this._imagePicker,
     this._fLauncherChannel,
     this._fLauncherDatabase,
   );
@@ -64,21 +60,24 @@ class FLauncherApp extends StatelessWidget {
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           ChangeNotifierProvider(
-              create: (_) =>
-                  SettingsService(_sharedPreferences),
+              create: (_) => SettingsService(_sharedPreferences),
               lazy: false),
           ChangeNotifierProvider(create: (_) => AppsService(_fLauncherChannel, _fLauncherDatabase)),
           ChangeNotifierProvider(create: (_) => NetworkService(_fLauncherChannel)),
-          ChangeNotifierProxyProvider<SettingsService, WallpaperService>(
-              create: (_) => WallpaperService(_imagePicker, _fLauncherChannel),
-              update: (_, settingsService, wallpaperService) => wallpaperService!..settingsService = settingsService),
-          Provider<TickerModel>(create: (context) => TickerModel(null))
+          ChangeNotifierProvider(
+            create: (context) {
+              // Since the WallpaperService only wraps the gradient setting,
+              // it shouldn't be needed to listen to it here
+              SettingsService settingsService = Provider.of(context, listen: false);
+              return WallpaperService(_fLauncherChannel, settingsService);
+            }
+          ),
         ],
         child: MaterialApp(
           shortcuts: {
             ...WidgetsApp.defaultShortcuts,
-            SingleActivator(LogicalKeyboardKey.select): ActivateIntent(),
-            SingleActivator(LogicalKeyboardKey.gameButtonB): PrioritizedIntents(orderedIntents: [
+            const SingleActivator(LogicalKeyboardKey.select): const ActivateIntent(),
+            const SingleActivator(LogicalKeyboardKey.gameButtonB): const PrioritizedIntents(orderedIntents: [
               DismissIntent(),
               BackIntent(),
             ]),
@@ -97,10 +96,10 @@ class FLauncherApp extends StatelessWidget {
             dialogBackgroundColor: _swatch[400],
             scaffoldBackgroundColor: _swatch[400],
             textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: Colors.white)),
-            appBarTheme: AppBarTheme(elevation: 0, backgroundColor: Colors.transparent),
+            appBarTheme: const AppBarTheme(elevation: 0, backgroundColor: Colors.transparent),
             typography: Typography.material2018(),
             inputDecorationTheme: InputDecorationTheme(
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+              focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
               labelStyle: Typography.material2018().white.bodyMedium,
             ),
             textSelectionTheme: TextSelectionThemeData(
@@ -113,11 +112,11 @@ class FLauncherApp extends StatelessWidget {
             builder: (context) => WillPopScope(
               child: Actions(actions: { BackIntent: BackAction(context, systemNavigator: true) }, child: FLauncher()),
               onWillPop: () async {
-                final bool shouldPop = !kDebugMode && await shouldPopScope(context);
+                AppsService appsService = context.read<AppsService>();
+                SettingsService settingsService = context.read<SettingsService>();
 
+                final bool shouldPop = !kDebugMode && await shouldPopScope(context);
                 if (!shouldPop) {
-                  AppsService appsService = context.read<AppsService>();
-                  SettingsService settingsService = context.read<SettingsService>();
                   String action = settingsService.backButtonAction;
 
                   switch (action) {

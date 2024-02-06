@@ -72,7 +72,7 @@ class DateTimeFormatDialog extends StatelessWidget {
   final String _initialDateFormat;
   final String _initialTimeFormat;
 
-  DateTimeFormatDialog(String initialDateFormat, String initialTimeFormat) :
+  const DateTimeFormatDialog(String initialDateFormat, String initialTimeFormat, {super.key}) :
         _initialDateFormat = initialDateFormat,
         _initialTimeFormat = initialTimeFormat;
 
@@ -94,9 +94,9 @@ class DateTimeFormatDialog extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => FormatModel(_initialDateFormat, _initialTimeFormat),
       builder: (context, _) => SimpleDialog(
-        insetPadding: EdgeInsets.only(bottom: 60),
-        contentPadding: EdgeInsets.all(24),
-        title: Text("Date and time format"),
+        insetPadding: const EdgeInsets.only(bottom: 60),
+        contentPadding: const EdgeInsets.all(24),
+        title: const Text("Date and time format"),
         children: [
           Consumer<FormatModel>(
             builder: (_, model, __) {
@@ -123,11 +123,11 @@ class DateTimeFormatDialog extends StatelessWidget {
               return Text(text);
             }
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           TextFormField(
             autovalidateMode: AutovalidateMode.always,
             controller: dateFormatFieldController,
-            decoration: InputDecoration(labelText: "Type in the date format"),
+            decoration: const InputDecoration(labelText: "Type in the date format"),
             keyboardType: TextInputType.text,
             onChanged: (value) => dateFormatStringChanged(context, value),
             onFieldSubmitted: (value) {
@@ -150,7 +150,7 @@ class DateTimeFormatDialog extends StatelessWidget {
           TextFormField(
             autovalidateMode: AutovalidateMode.always,
             controller: timeFormatFieldController,
-            decoration: InputDecoration(labelText: "Type in the hour format"),
+            decoration: const InputDecoration(labelText: "Type in the hour format"),
             keyboardType: TextInputType.text,
             onChanged: (value) => timeFormatStringChanged(context, value),
             onFieldSubmitted: (value) {
@@ -170,9 +170,9 @@ class DateTimeFormatDialog extends StatelessWidget {
               return result;
             },
           ),
-          SizedBox(height: 24),
-          Text("Or select format specifiers:"),
-          SizedBox(height: 12),
+          const SizedBox(height: 24),
+          const Text("Or select format specifiers:"),
+          const SizedBox(height: 12),
           DropdownMenu<String>(
               dropdownMenuEntries: menuEntries,
               onSelected: (selectedValue) {

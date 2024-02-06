@@ -29,7 +29,7 @@ class GradientPanelPage extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         children: [
           Text("Gradient", style: Theme.of(context).textTheme.titleLarge),
-          Divider(),
+          const Divider(),
           Expanded(
             child: GridView.count(
               crossAxisCount: 2,
@@ -63,13 +63,13 @@ class GradientPanelPage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: AnimatedDefaultTextStyle(
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         decoration: TextDecoration.underline,
                         color: Focus.of(context).hasFocus ? Colors.white : null,
                       ),
-                  duration: Duration(milliseconds: 150),
+                  duration: const Duration(milliseconds: 150),
                   child: Text(fLauncherGradient.name, overflow: TextOverflow.ellipsis),
                 ),
               ),
@@ -79,6 +79,6 @@ class GradientPanelPage extends StatelessWidget {
       );
 
   ShapeBorder? _cardBorder(bool hasFocus) => hasFocus
-      ? RoundedRectangleBorder(side: BorderSide(color: Colors.white, width: 2), borderRadius: BorderRadius.circular(4))
+      ? RoundedRectangleBorder(side: const BorderSide(color: Colors.white, width: 2), borderRadius: BorderRadius.circular(4))
       : null;
 }
