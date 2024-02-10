@@ -25,7 +25,6 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/color_helpers.dart';
 import 'package:flauncher/widgets/focus_keyboard_listener.dart';
-import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -41,13 +40,13 @@ class AppCard extends StatefulWidget {
   final VoidCallback onMoveEnd;
 
   const AppCard({
-    Key? key,
+    super.key,
     required this.category,
     required this.application,
     required this.autofocus,
     required this.onMove,
     required this.onMoveEnd,
-  }) : super(key: key);
+  });
 
   @override
   State<AppCard> createState() => _AppCardState();
@@ -55,10 +54,8 @@ class AppCard extends StatefulWidget {
 
 class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   bool _moving = false;
-  MemoryImage? _imageProvider;
-  AppImageType? _appImageType;
 
-  late Future<Tuple2<AppImageType, ImageProvider<Object>>> _appImageLoadFuture;
+  late Future<Tuple2<AppImageType, ImageProvider>> _appImageLoadFuture;
   late final AnimationController _animation = AnimationController(
     vsync: this,
     duration: const Duration(
@@ -70,24 +67,8 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _appImageLoadFuture = Future.microtask(() async {
-      Uint8List bytes = Uint8List(0);
 
-      if (_appImageType != null && _imageProvider != null) {
-        return Tuple2(_appImageType!, _cachedMemoryImage(bytes));
-      }
-
-      AppsService service = Provider.of(context, listen: false);
-      bytes = await service.getAppBanner(widget.application.packageName);
-      _appImageType = AppImageType.Banner;
-
-      if (bytes.isEmpty) {
-        _appImageType = AppImageType.Icon;
-        bytes = await service.getAppIcon(widget.application.packageName);
-      }
-
-      return Tuple2(_appImageType!, _cachedMemoryImage(bytes));
-    });
+    _appImageLoadFuture = _loadAppBannerOrIcon(Provider.of<AppsService>(context, listen: false));
 
     _animation.addStatusListener((animationStatus) {
       switch (animationStatus) {
@@ -109,15 +90,6 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   void dispose() {
     _animation.dispose();
     super.dispose();
-  }
-
-  ImageProvider _cachedMemoryImage(Uint8List bytes) {
-    // TODO: A null check should be enough here
-    //  if (!listEquals(bytes, _imageProvider?.bytes)) {
-    if (_imageProvider == null) {
-      _imageProvider = MemoryImage(bytes);
-    }
-    return _imageProvider!;
   }
 
   @override
@@ -192,6 +164,20 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
           );
         },
       );
+
+  Future<Tuple2<AppImageType, ImageProvider>> _loadAppBannerOrIcon(AppsService service) async {
+    Uint8List bytes = Uint8List(0);
+
+    bytes = await service.getAppBanner(widget.application.packageName);
+    AppImageType type = AppImageType.Banner;
+
+    if (bytes.isEmpty) {
+      type = AppImageType.Icon;
+      bytes = await service.getAppIcon(widget.application.packageName);
+    }
+
+    return Tuple2(type, MemoryImage(bytes));
+  }
 
   Widget _appImage()
   {

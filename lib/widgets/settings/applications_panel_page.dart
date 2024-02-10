@@ -115,7 +115,7 @@ class _AppListItem extends StatefulWidget
 {
   final App application;
 
-  _AppListItem(this.application);
+  const _AppListItem(this.application);
 
   @override
   State<StatefulWidget> createState() => _AppListItemState();
@@ -129,12 +129,7 @@ class _AppListItemState extends State<_AppListItem>
   void initState() {
     super.initState();
 
-    _iconLoadFuture = Future.microtask(() async {
-      AppsService service = Provider.of(context, listen: false);
-      Uint8List bytes = await service.getAppIcon(widget.application.packageName);
-
-      return MemoryImage(bytes);
-    });
+    _iconLoadFuture = _loadAppIcon(Provider.of<AppsService>(context, listen: false));
   }
 
   @override
@@ -206,4 +201,8 @@ class _AppListItemState extends State<_AppListItem>
     );
   }
 
+  Future<ImageProvider> _loadAppIcon(AppsService service) async {
+    Uint8List bytes = await service.getAppIcon(widget.application.packageName);
+    return MemoryImage(bytes);
+  }
 }

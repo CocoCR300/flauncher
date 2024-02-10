@@ -27,7 +27,7 @@ class ApplicationInfoPanel extends StatelessWidget {
   final App application;
   final ImageProvider? applicationIcon;
 
-  ApplicationInfoPanel({
+  const ApplicationInfoPanel({
     required this.category,
     required this.application,
     this.applicationIcon
