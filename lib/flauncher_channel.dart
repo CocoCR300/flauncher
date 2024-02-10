@@ -26,8 +26,23 @@ class FLauncherChannel {
   static const _networkEventChannel = EventChannel('me.efesser.flauncher/event_network');
 
   Future<List<Map<dynamic, dynamic>>> getApplications() async {
-    List<dynamic>? applications = await _methodChannel.invokeListMethod("getApplications");
-    return applications!.cast<Map<dynamic, dynamic>>();
+    List<Map<dynamic, dynamic>>? applications = await _methodChannel.invokeListMethod("getApplications");
+    return applications!;
+  }
+
+  Future<Uint8List> getApplicationBanner(String packageName) async {
+    Uint8List bytes = await _methodChannel.invokeMethod("getApplicationBanner", packageName);
+    return bytes;
+  }
+
+  Future<Uint8List> getApplicationIcon(String packageName) async {
+    Uint8List bytes = await _methodChannel.invokeMethod("getApplicationIcon", packageName);
+    return bytes;
+  }
+
+  Future<List<Map<dynamic, dynamic>>> getApplicationsBannerOrIcon(List<String> packageNames) async {
+    List<Map<dynamic, dynamic>>? bytes = await _methodChannel.invokeListMethod("getApplicationsBannerOrIcon", packageNames);
+    return bytes!;
   }
 
   Future<bool> applicationExists(String packageName) async =>

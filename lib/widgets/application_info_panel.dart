@@ -25,10 +25,12 @@ import 'package:provider/provider.dart';
 class ApplicationInfoPanel extends StatelessWidget {
   final Category? category;
   final App application;
+  final ImageProvider? applicationIcon;
 
   ApplicationInfoPanel({
     required this.category,
     required this.application,
+    this.applicationIcon
   });
 
   @override
@@ -38,8 +40,11 @@ class ApplicationInfoPanel extends StatelessWidget {
           children: [
             Row(
               children: [
-                Image.memory(application.icon!, width: 50),
-                SizedBox(width: 8),
+                if (applicationIcon != null)
+                  Image(image: applicationIcon!, width: 50)
+                else
+                  const Icon(Icons.warning),
+                const SizedBox(width: 8),
                 Flexible(
                   child: Text(
                     application.name,
@@ -50,7 +55,7 @@ class ApplicationInfoPanel extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               application.packageName,
               style: Theme.of(context).textTheme.bodySmall,
@@ -61,11 +66,11 @@ class ApplicationInfoPanel extends StatelessWidget {
               style: Theme.of(context).textTheme.bodySmall,
               overflow: TextOverflow.ellipsis,
             ),
-            Divider(),
+            const Divider(),
             TextButton(
               child: Row(
                 children: [
-                  Icon(Icons.open_in_new),
+                  const Icon(Icons.open_in_new),
                   Container(width: 8),
                   Text("Open", style: Theme.of(context).textTheme.bodyMedium),
                 ],
@@ -79,7 +84,7 @@ class ApplicationInfoPanel extends StatelessWidget {
               TextButton(
                 child: Row(
                   children: [
-                    Icon(Icons.open_with),
+                    const Icon(Icons.open_with),
                     Container(width: 8),
                     Text("Reorder", style: Theme.of(context).textTheme.bodyMedium),
                   ],
@@ -107,7 +112,7 @@ class ApplicationInfoPanel extends StatelessWidget {
               TextButton(
                 child: Row(
                   children: [
-                    Icon(Icons.delete_sweep_outlined),
+                    const Icon(Icons.delete_sweep_outlined),
                     Container(width: 8),
                     Flexible(
                       child: Text(
@@ -124,11 +129,11 @@ class ApplicationInfoPanel extends StatelessWidget {
                   Navigator.of(context).pop(ApplicationInfoPanelResult.none);
                 },
               ),
-            Divider(),
+            const Divider(),
             TextButton(
               child: Row(
                 children: [
-                  Icon(Icons.info_outlined),
+                  const Icon(Icons.info_outlined),
                   Container(width: 8),
                   Text("App info", style: Theme.of(context).textTheme.bodyMedium),
                 ],
@@ -138,7 +143,7 @@ class ApplicationInfoPanel extends StatelessWidget {
             TextButton(
               child: Row(
                 children: [
-                  Icon(Icons.delete_outlined),
+                  const Icon(Icons.delete_outlined),
                   Container(width: 8),
                   Text("Uninstall", style: Theme.of(context).textTheme.bodyMedium),
                 ],

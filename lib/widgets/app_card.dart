@@ -18,6 +18,7 @@
 
 import 'dart:async';
 
+import 'package:flauncher/app_image_type.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
@@ -28,6 +29,7 @@ import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 const _validationKeys = [LogicalKeyboardKey.select, LogicalKeyboardKey.enter, LogicalKeyboardKey.gameButtonA];
 
@@ -38,7 +40,7 @@ class AppCard extends StatefulWidget {
   final void Function(AxisDirection) onMove;
   final VoidCallback onMoveEnd;
 
-  AppCard({
+  const AppCard({
     Key? key,
     required this.category,
     required this.application,
@@ -48,12 +50,15 @@ class AppCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AppCardState createState() => _AppCardState();
+  State<AppCard> createState() => _AppCardState();
 }
 
 class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   bool _moving = false;
   MemoryImage? _imageProvider;
+  AppImageType? _appImageType;
+
+  late Future<Tuple2<AppImageType, ImageProvider<Object>>> _appImageLoadFuture;
   late final AnimationController _animation = AnimationController(
     vsync: this,
     duration: const Duration(
@@ -65,6 +70,25 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    _appImageLoadFuture = Future.microtask(() async {
+      Uint8List bytes = Uint8List(0);
+
+      if (_appImageType != null && _imageProvider != null) {
+        return Tuple2(_appImageType!, _cachedMemoryImage(bytes));
+      }
+
+      AppsService service = Provider.of(context, listen: false);
+      bytes = await service.getAppBanner(widget.application.packageName);
+      _appImageType = AppImageType.Banner;
+
+      if (bytes.isEmpty) {
+        _appImageType = AppImageType.Icon;
+        bytes = await service.getAppIcon(widget.application.packageName);
+      }
+
+      return Tuple2(_appImageType!, _cachedMemoryImage(bytes));
+    });
+
     _animation.addStatusListener((animationStatus) {
       switch (animationStatus) {
         case AnimationStatus.completed:
@@ -88,7 +112,9 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   }
 
   ImageProvider _cachedMemoryImage(Uint8List bytes) {
-    if (!listEquals(bytes, _imageProvider?.bytes)) {
+    // TODO: A null check should be enough here
+    //  if (!listEquals(bytes, _imageProvider?.bytes)) {
+    if (_imageProvider == null) {
       _imageProvider = MemoryImage(bytes);
     }
     return _imageProvider!;
@@ -98,98 +124,146 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) => FocusKeyboardListener(
         onPressed: (key) => _onPressed(context, key),
         onLongPress: (key) => _onLongPress(context, key),
-        builder: (context) => AspectRatio(
-          aspectRatio: 16 / 9,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            transformAlignment: Alignment.center,
-            transform: _scaleTransform(context),
-            child: Material(
-              borderRadius: BorderRadius.circular(8),
-              clipBehavior: Clip.antiAlias,
-              elevation: Focus.of(context).hasFocus ? 16 : 0,
-              shadowColor: Colors.black,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  InkWell(
-                    autofocus: widget.autofocus,
-                    focusColor: Colors.transparent,
-                    onTap: () => _onPressed(context, null),
-                    onLongPress: () => _onLongPress(context, null),
-                    child: widget.application.banner != null
-                        ? Ink.image(image: _cachedMemoryImage(widget.application.banner!), fit: BoxFit.cover)
-                        : Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Ink.image(
-                                    image: _cachedMemoryImage(widget.application.icon!),
-                                    height: double.infinity,
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: Text(
-                                      widget.application.name,
-                                      style: Theme.of(context).textTheme.bodySmall,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 3,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                  ),
-                  if (_moving) ..._arrows(),
-                  IgnorePointer(
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeInOut,
-                      opacity: Focus.of(context).hasFocus ? 0 : 0.10,
-                      child: Container(color: Colors.black),
+        builder: (context) {
+
+          return AspectRatio(
+            aspectRatio: 16 / 9,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              transformAlignment: Alignment.center,
+              transform: _scaleTransform(context),
+              child: Material(
+                borderRadius: BorderRadius.circular(8),
+                clipBehavior: Clip.antiAlias,
+                elevation: Focus.of(context).hasFocus ? 16 : 0,
+                shadowColor: Colors.black,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    InkWell(
+                      autofocus: widget.autofocus,
+                      focusColor: Colors.transparent,
+                      onTap: () => _onPressed(context, null),
+                      onLongPress: () => _onLongPress(context, null),
+                      child: _appImage()
                     ),
-                  ),
-                  Selector<SettingsService, bool>(
-                    selector: (_, settingsService) => settingsService.appHighlightAnimationEnabled,
-                    builder: (context, appHighlightAnimationEnabled, __) {
-                      if (appHighlightAnimationEnabled) {
-                        _animation.forward();
-                        return AnimatedBuilder(
-                          animation: _animation,
-                          builder: (context, child) => IgnorePointer(
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              curve: Curves.easeInOut,
-                              decoration: BoxDecoration(
-                                border: Focus.of(context).hasFocus
-                                    ? Border.all(
-                                        color: _lastBorderColor =
-                                            computeBorderColor(_animation.value, _lastBorderColor),
-                                        width: 3)
-                                    : null,
-                                borderRadius: BorderRadius.circular(8),
+                    if (_moving) ..._arrows(),
+                    IgnorePointer(
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeInOut,
+                        opacity: Focus.of(context).hasFocus ? 0 : 0.10,
+                        child: Container(color: Colors.black),
+                      ),
+                    ),
+                    Selector<SettingsService, bool>(
+                      selector: (_, settingsService) => settingsService.appHighlightAnimationEnabled,
+                      builder: (context, appHighlightAnimationEnabled, __) {
+                        if (appHighlightAnimationEnabled) {
+                          _animation.forward();
+                          return AnimatedBuilder(
+                            animation: _animation,
+                            builder: (context, child) => IgnorePointer(
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeInOut,
+                                decoration: BoxDecoration(
+                                  border: Focus.of(context).hasFocus
+                                      ? Border.all(
+                                          color: _lastBorderColor =
+                                              computeBorderColor(_animation.value, _lastBorderColor),
+                                          width: 3)
+                                      : null,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      }
-                      _animation.stop();
-                      return const SizedBox();
-                    },
+                          );
+                        }
+                        _animation.stop();
+                        return const SizedBox();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+
+  Widget _appImage()
+  {
+    App app = widget.application;
+
+    return FutureBuilder(
+      future: _appImageLoadFuture,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          Tuple2<AppImageType, ImageProvider> tuple = snapshot.data!;
+
+          if (tuple.item1 == AppImageType.Banner) {
+            return Ink.image(image: tuple.item2, fit: BoxFit.cover);
+          }
+          else {
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Ink.image(
+                      image: tuple.item2,
+                      height: double.maxFinite,
+                    ),
+                  ),
+                  Flexible(
+                    flex: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Text(
+                        app.name,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
+                      ),
+                    ),
                   ),
                 ],
               ),
+            );
+          }
+        }
+        else if (snapshot.hasError) {
+          return Padding(
+            padding: const EdgeInsets.all(8),
+            child: Center(
+              child: Text(
+                app.name,
+                style: Theme.of(context).textTheme.bodySmall,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+              )
             ),
-          ),
-        ),
-      );
+          );
+        }
+        else {
+          return const Padding(
+            padding: EdgeInsets.all(8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 0, width: 16),
+                Text("Loading")
+              ],
+            ),
+          );
+        }
+      }
+    );
+  }
 
   Matrix4 _scaleTransform(BuildContext context) {
     final scale = _moving

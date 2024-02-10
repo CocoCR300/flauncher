@@ -33,13 +33,9 @@ class Apps extends Table {
 
   TextColumn get version => text()();
 
-  BlobColumn get banner => blob().nullable()();
+  BoolColumn get hidden => boolean().withDefault(const Constant(false))();
 
-  BlobColumn get icon => blob().nullable()();
-
-  BoolColumn get hidden => boolean().withDefault(Constant(false))();
-
-  BoolColumn get sideloaded => boolean().withDefault(Constant(false))();
+  BoolColumn get sideloaded => boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column> get primaryKey => {packageName};
@@ -51,13 +47,13 @@ class Categories extends Table {
 
   TextColumn get name => text()();
 
-  IntColumn get sort => intEnum<CategorySort>().withDefault(Constant(0))();
+  IntColumn get sort => intEnum<CategorySort>().withDefault(const Constant(0))();
 
-  IntColumn get type => intEnum<CategoryType>().withDefault(Constant(0))();
+  IntColumn get type => intEnum<CategoryType>().withDefault(const Constant(0))();
 
-  IntColumn get rowHeight => integer().withDefault(Constant(110))();
+  IntColumn get rowHeight => integer().withDefault(const Constant(110))();
 
-  IntColumn get columnsCount => integer().withDefault(Constant(6))();
+  IntColumn get columnsCount => integer().withDefault(const Constant(6))();
 
   IntColumn get order => integer()();
 }
@@ -95,12 +91,12 @@ enum CategoryType {
 class FLauncherDatabase extends _$FLauncherDatabase {
   late final bool wasCreated;
 
-  FLauncherDatabase(DatabaseConnection databaseConnection) : super(databaseConnection);
+  FLauncherDatabase(DatabaseConnection super.databaseConnection);
 
   FLauncherDatabase.inMemory() : super(LazyDatabase(() => NativeDatabase.memory()));
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -120,10 +116,23 @@ class FLauncherDatabase extends _$FLauncherDatabase {
             await migrator.addColumn(categories, categories.rowHeight);
             await migrator.addColumn(categories, categories.columnsCount);
             await (update(categories)..where((tbl) => tbl.name.equals("Applications")))
-                .write(CategoriesCompanion(type: Value(CategoryType.grid)));
+                .write(const CategoriesCompanion(type: Value(CategoryType.grid)));
           }
           if (from <= 4 && from != 1) {
             await migrator.addColumn(apps, apps.sideloaded);
+          }
+          if (from < 6) {
+            await customStatement("ALTER TABLE apps DROP COLUMN banner;");
+            await customStatement("ALTER TABLE apps DROP COLUMN icon;");
+            //await customStatement("""CREATE TEMPORARY TABLE apps_temp(a,b);
+            //DROP TABLE ?;
+            //CREATE TABLE t1(a,b);
+            //INSERT INTO t1 SELECT a,b FROM t1_backup;
+            //DROP TABLE t1_backup;""", apps.actualTableName);
+            //await customStatement("INSERT INTO t1_backup SELECT a,b FROM t1;");
+            //await customStatement("DROP TABLE ?", apps.actualTableName);
+            //await customStatement("CREATE TABLE ?(a,b);", apps.actualTableName);
+            //await customStatement("INSERT INTO t1_backup SELECT a,b FROM t1;");
           }
         },
         beforeOpen: (openingDetails) async {
@@ -183,13 +192,13 @@ class FLauncherDatabase extends _$FLauncherDatabase {
       OrderingTerm.asc(categories.order),
       OrderingTerm.asc(
         categories.sort.caseMatch(
-          when: {Constant(0): appsCategories.order, Constant(1): apps.name.lower()},
+          when: {const Constant(0): appsCategories.order, const Constant(1): apps.name.lower()},
         ),
       ),
     ]);
 
     final result = await query.get();
-    final categoriesToApps = <Category, List<App>>{};
+    final Map<Category, List<App>> categoriesToApps = {};
     for (final row in result) {
       final category = row.readTable(categories);
       final app = row.readTableOrNull(apps);
@@ -203,7 +212,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
 
   Future<int?> nextAppCategoryOrder(int categoryId) async {
     final query = selectOnly(appsCategories);
-    final maxExpression = coalesce([appsCategories.order.max(), Constant(-1)]) + Constant(1);
+    final maxExpression = coalesce([appsCategories.order.max(), const Constant(-1)]) + const Constant(1);
     query.addColumns([maxExpression]);
     query.where(appsCategories.categoryId.equals(categoryId));
     final result = await query.getSingle();

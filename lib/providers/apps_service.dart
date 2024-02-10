@@ -22,9 +22,7 @@ import 'dart:collection';
 import 'package:drift/drift.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' hide Category;
-import 'package:flutter/material.dart';
 
 class AppsService extends ChangeNotifier {
   final FLauncherChannel _fLauncherChannel;
@@ -68,6 +66,7 @@ class AppsService extends ChangeNotifier {
       }
       _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
       _applications = await _database.listApplications();
+
       notifyListeners();
     });
     _initialized = true;
@@ -78,9 +77,7 @@ class AppsService extends ChangeNotifier {
         packageName: Value(data["packageName"]),
         name: Value(data["name"]),
         version: Value(data["version"] ?? "(unknown)"),
-        banner: Value(data["banner"]),
-        icon: Value(data["icon"]),
-        hidden: Value.absent(),
+        hidden: const Value.absent(),
         sideloaded: Value(data["sideloaded"]),
       );
 
@@ -119,9 +116,9 @@ class AppsService extends ChangeNotifier {
       });
 
   Future<void> _refreshState({bool shouldNotifyListeners = true}) async {
-    await _database.transaction(() async {
-      final appsFromSystem = (await _fLauncherChannel.getApplications()).map(_buildAppCompanion).toList();
+    final appsFromSystem = (await _fLauncherChannel.getApplications()).map(_buildAppCompanion).toList();
 
+    await _database.transaction(() async {
       final appsRemovedFromSystem = (await _database.listApplications())
           .where((app) => !appsFromSystem.any((systemApp) => systemApp.packageName.value == app.packageName))
           .map((app) => app.packageName)
@@ -140,9 +137,18 @@ class AppsService extends ChangeNotifier {
       _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
       _applications = await _database.listApplications();
     });
+
     if (shouldNotifyListeners) {
       notifyListeners();
     }
+  }
+
+  Future<Uint8List> getAppBanner(String packageName) async {
+    return _fLauncherChannel.getApplicationBanner(packageName);
+  }
+
+  Future<Uint8List> getAppIcon(String packageName) async {
+    return _fLauncherChannel.getApplicationIcon(packageName);
   }
 
   Future<void> launchApp(App app) => _fLauncherChannel.launchApp(app.packageName);
@@ -245,14 +251,14 @@ class AppsService extends ChangeNotifier {
   }
 
   Future<void> hideApplication(App application) async {
-    await _database.updateApp(application.packageName, AppsCompanion(hidden: Value(true)));
+    await _database.updateApp(application.packageName, const AppsCompanion(hidden: Value(true)));
     _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     _applications = await _database.listApplications();
     notifyListeners();
   }
 
   Future<void> unHideApplication(App application) async {
-    await _database.updateApp(application.packageName, AppsCompanion(hidden: Value(false)));
+    await _database.updateApp(application.packageName, const AppsCompanion(hidden: Value(false)));
     _categoriesWithApps = await _database.listCategoriesWithVisibleApps();
     _applications = await _database.listApplications();
     notifyListeners();

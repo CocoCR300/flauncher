@@ -40,25 +40,25 @@ class CategoryRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 16, bottom: 8),
+            padding: const EdgeInsets.only(left: 16, bottom: 8),
             child: Text(category.name,
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!
-                    .copyWith(shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])),
+                    .copyWith(shadows: [const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])),
           ),
           applications.isNotEmpty
               ? SizedBox(
                   height: category.rowHeight.toDouble(),
                   child: ListView.custom(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     scrollDirection: Axis.horizontal,
                     childrenDelegate: SliverChildBuilderDelegate(
                       (context, index) => EnsureVisible(
                         key: Key("${category.id}-${applications[index].packageName}"),
                         alignment: 0.1,
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: AppCard(
                             category: category,
                             application: applications[index],
@@ -85,7 +85,7 @@ class CategoryRow extends StatelessWidget {
         child: EnsureVisible(
           alignment: 0.1,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Align(
               alignment: Alignment.centerLeft,
               child: AspectRatio(
@@ -96,9 +96,9 @@ class CategoryRow extends StatelessWidget {
                   child: InkWell(
                     onTap: () => showDialog(
                       context: context,
-                      builder: (_) => SettingsPanel(initialRoute: CategoriesPanelPage.routeName),
+                      builder: (_) => const SettingsPanel(initialRoute: CategoriesPanelPage.routeName),
                     ),
-                    child: Padding(
+                    child: const Padding(
                       padding: EdgeInsets.all(8),
                       child: Center(
                         child: Text(

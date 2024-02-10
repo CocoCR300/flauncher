@@ -1,0 +1,4 @@
+enum AppImageType {
+  Banner,
+  Icon
+}

@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.pm.*;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -59,11 +60,13 @@ public class MainActivity extends FlutterActivity
             switch (call.method)
             {
                 case "getApplications" -> result.success(getApplications());
-                case "applicationExists" -> result.success(applicationExists((String) call.arguments));
-                case "launchApp" -> result.success(launchApp((String) call.arguments));
+                case "getApplicationBanner" -> result.success(getApplicationBanner(call.arguments()));
+                case "getApplicationIcon" -> result.success(getApplicationIcon(call.arguments()));
+                case "applicationExists" -> result.success(applicationExists(call.arguments()));
+                case "launchApp" -> result.success(launchApp(call.arguments()));
                 case "openSettings" -> result.success(openSettings());
-                case "openAppInfo" -> result.success(openAppInfo((String) call.arguments));
-                case "uninstallApp" -> result.success(uninstallApp((String) call.arguments));
+                case "openAppInfo" -> result.success(openAppInfo(call.arguments()));
+                case "uninstallApp" -> result.success(uninstallApp(call.arguments()));
                 case "isDefaultLauncher" -> result.success(isDefaultLauncher());
                 case "checkForGetContentAvailability" -> result.success(checkForGetContentAvailability());
                 case "startAmbientMode" -> result.success(startAmbientMode());
@@ -127,6 +130,38 @@ public class MainActivity extends FlutterActivity
         return map;
     }
 
+    private byte[] getApplicationBanner(String packageName) {
+        byte[] imageBytes = new byte[0];
+
+        PackageManager packageManager = getPackageManager();
+        try {
+            ApplicationInfo info = packageManager.getApplicationInfo(packageName, 0);
+            Drawable drawable = info.loadBanner(packageManager);
+
+            if (drawable != null) {
+                imageBytes = drawableToByteArray(drawable);
+            }
+        } catch (PackageManager.NameNotFoundException ignored) { }
+
+        return imageBytes;
+    }
+
+    private byte[] getApplicationIcon(String packageName) {
+        byte[] imageBytes = new byte[0];
+
+        PackageManager packageManager = getPackageManager();
+        try {
+            ApplicationInfo info = packageManager.getApplicationInfo(packageName, 0);
+            Drawable drawable = info.loadIcon(packageManager);
+
+            if (drawable != null) {
+                imageBytes = drawableToByteArray(drawable);
+            }
+        } catch (PackageManager.NameNotFoundException ignored) { }
+
+        return imageBytes;
+    }
+
     private boolean applicationExists(String packageName) {
         int flags;
 
@@ -169,27 +204,16 @@ public class MainActivity extends FlutterActivity
         PackageManager packageManager = getPackageManager();
 
         byte[] bannerBytes = new byte[0], iconBytes = new byte[0];
-        Drawable banner = activityInfo.loadBanner(packageManager);
-        Drawable icon = activityInfo.loadIcon(packageManager);
         String applicationVersionName = "";
-
-        if (banner != null) {
-            bannerBytes = drawableToByteArray(banner);
-        }
-
-        if (icon != null) {
-            iconBytes = drawableToByteArray(icon);
-        }
 
         try {
             applicationVersionName = packageManager.getPackageInfo(activityInfo.packageName, 0).versionName;
         }
         catch (PackageManager.NameNotFoundException ignored) { }
+
         Map<String, Serializable> appMap = Map.of(
                 "name", activityInfo.loadLabel(packageManager).toString(),
                 "packageName", activityInfo.packageName,
-                "banner", bannerBytes,
-                "icon", iconBytes,
                 "version", applicationVersionName,
                 "sideloaded", sideloaded
         );
@@ -284,7 +308,13 @@ public class MainActivity extends FlutterActivity
             return new byte[0];
         }
 
-        Bitmap bitmap = drawableToBitmap(drawable);
+        Bitmap bitmap;
+        if (drawable instanceof BitmapDrawable bitmapDrawable) {
+            bitmap = bitmapDrawable.getBitmap();
+        }
+        else {
+            bitmap = drawableToBitmap(drawable);
+        }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();

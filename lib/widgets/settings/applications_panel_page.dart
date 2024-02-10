@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:typed_data';
+
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/add_to_category_dialog.dart';
@@ -40,7 +42,7 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
         child: Column(
           children: [
             Text(_title, style: Theme.of(context).textTheme.titleLarge),
-            Divider(),
+            const Divider(),
             Material(
               type: MaterialType.transparency,
               child: TabBar(
@@ -59,14 +61,14 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
                       throw ArgumentError.value(index, "index");
                   }
                 },
-                tabs: [
+                tabs: const [
                   Tab(icon: Icon(Icons.tv)),
                   Tab(icon: Icon(Icons.android)),
                   Tab(icon: Icon(Icons.visibility_off_outlined)),
                 ],
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Expanded(child: TabBarView(children: [_TVTab(), _SideloadedTab(), _HiddenTab()])),
           ],
         ),
@@ -79,7 +81,7 @@ class _TVTab extends StatelessWidget {
         selector: (_, appsService) => appsService.applications.where((app) => !app.sideloaded && !app.hidden).toList(),
         builder: (context, applications, _) => ListView(
           children: applications
-              .map((application) => EnsureVisible(alignment: 0.5, child: _appCard(context, application)))
+              .map((application) => EnsureVisible(alignment: 0.5, child: _AppListItem(application)))
               .toList(),
         ),
       );
@@ -91,7 +93,7 @@ class _SideloadedTab extends StatelessWidget {
         selector: (_, appsService) => appsService.applications.where((app) => app.sideloaded && !app.hidden).toList(),
         builder: (context, applications, _) => ListView(
           children: applications
-              .map((application) => EnsureVisible(alignment: 0.5, child: _appCard(context, application)))
+              .map((application) => EnsureVisible(alignment: 0.5, child: _AppListItem(application)))
               .toList(),
         ),
       );
@@ -103,49 +105,105 @@ class _HiddenTab extends StatelessWidget {
         selector: (_, appsService) => appsService.applications.where((app) => app.hidden).toList(),
         builder: (context, applications, _) => ListView(
           children: applications
-              .map((application) => EnsureVisible(alignment: 0.5, child: _appCard(context, application)))
+              .map((application) => EnsureVisible(alignment: 0.5, child: _AppListItem(application)))
               .toList(),
         ),
       );
 }
 
-Widget _appCard(BuildContext context, App application) => Card(
+class _AppListItem extends StatefulWidget
+{
+  final App application;
+
+  _AppListItem(this.application);
+
+  @override
+  State<StatefulWidget> createState() => _AppListItemState();
+}
+
+class _AppListItemState extends State<_AppListItem>
+{
+  late Future<ImageProvider> _iconLoadFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _iconLoadFuture = Future.microtask(() async {
+      AppsService service = Provider.of(context, listen: false);
+      Uint8List bytes = await service.getAppIcon(widget.application.packageName);
+
+      return MemoryImage(bytes);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
       clipBehavior: Clip.antiAlias,
-      child: ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 8),
-        title: Text(
-          application.name,
-          style: Theme.of(context).textTheme.bodyMedium,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        leading: Image.memory(application.icon!, height: 48),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (!application.hidden)
-              IconButton(
-                constraints: BoxConstraints(),
-                splashRadius: 20,
-                icon: Icon(Icons.add_box_outlined),
-                onPressed: () => showDialog<Category>(
-                  context: context,
-                  builder: (_) => AddToCategoryDialog(application),
-                ),
-              ),
-            IconButton(
-              constraints: BoxConstraints(),
-              splashRadius: 20,
-              icon: Icon(Icons.info_outline),
-              onPressed: () => showDialog(
-                context: context,
-                builder: (context) => ApplicationInfoPanel(
-                  category: null,
-                  application: application,
-                ),
-              ),
+      child: FutureBuilder(
+        future: _iconLoadFuture,
+        builder: (context, snapshot) {
+          Widget appIcon;
+
+          if (snapshot.hasData) {
+            appIcon = Image(image: snapshot.data!, height: 48);
+          }
+          else if (snapshot.hasError) {
+            appIcon = const Icon(Icons.warning);
+          }
+          else {
+            appIcon = const SizedBox(
+              height: 48,
+              width: 48,
+              child: Padding(
+                padding: EdgeInsets.all(8),
+                child: CircularProgressIndicator(),
+              )
+            );
+          }
+
+          return ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+            title: Text(
+              widget.application.name,
+              style: Theme.of(context).textTheme.bodyMedium,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-          ],
-        ),
-      ),
+            leading: appIcon,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (!widget.application.hidden)
+                  IconButton(
+                    constraints: const BoxConstraints(),
+                    splashRadius: 20,
+                    icon: const Icon(Icons.add_box_outlined),
+                    onPressed: () => showDialog<Category>(
+                      context: context,
+                      builder: (_) => AddToCategoryDialog(widget.application),
+                    ),
+                  ),
+                IconButton(
+                  constraints: const BoxConstraints(),
+                  splashRadius: 20,
+                  icon: const Icon(Icons.info_outline),
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => ApplicationInfoPanel(
+                      category: null,
+                      application: widget.application,
+                      applicationIcon: snapshot.data,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      )
     );
+  }
+
+}

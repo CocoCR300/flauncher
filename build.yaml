@@ -7,6 +7,8 @@ targets:
         enabled: true
       mockito|mockBuilder:
         enabled: false
+      build_resolvers|transitive_digests:
+        enabled: false
 
   run_built_value:
     dependencies: [ 'flauncher' ]
