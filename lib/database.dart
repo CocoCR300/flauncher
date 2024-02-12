@@ -124,15 +124,6 @@ class FLauncherDatabase extends _$FLauncherDatabase {
           if (from < 6) {
             await customStatement("ALTER TABLE apps DROP COLUMN banner;");
             await customStatement("ALTER TABLE apps DROP COLUMN icon;");
-            //await customStatement("""CREATE TEMPORARY TABLE apps_temp(a,b);
-            //DROP TABLE ?;
-            //CREATE TABLE t1(a,b);
-            //INSERT INTO t1 SELECT a,b FROM t1_backup;
-            //DROP TABLE t1_backup;""", apps.actualTableName);
-            //await customStatement("INSERT INTO t1_backup SELECT a,b FROM t1;");
-            //await customStatement("DROP TABLE ?", apps.actualTableName);
-            //await customStatement("CREATE TABLE ?(a,b);", apps.actualTableName);
-            //await customStatement("INSERT INTO t1_backup SELECT a,b FROM t1;");
           }
         },
         beforeOpen: (openingDetails) async {

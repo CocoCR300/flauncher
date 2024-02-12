@@ -27,13 +27,11 @@ import 'package:flutter/foundation.dart' hide Category;
 class AppsService extends ChangeNotifier {
   final FLauncherChannel _fLauncherChannel;
   final FLauncherDatabase _database;
-  bool _uiVisible = true;
   bool _initialized = false;
 
   List<App> _applications = [];
   List<CategoryWithApps> _categoriesWithApps = [];
 
-  bool get uiVisible => _uiVisible;
   bool get initialized => _initialized;
 
   List<App> get applications => UnmodifiableListView(_applications);
@@ -119,17 +117,19 @@ class AppsService extends ChangeNotifier {
     final appsFromSystem = (await _fLauncherChannel.getApplications()).map(_buildAppCompanion).toList();
 
     await _database.transaction(() async {
-      final appsRemovedFromSystem = (await _database.listApplications())
+      final appsFromDatabase = await _database.listApplications();
+      final appsRemovedFromSystem = appsFromDatabase
           .where((app) => !appsFromSystem.any((systemApp) => systemApp.packageName.value == app.packageName))
           .map((app) => app.packageName)
           .toList();
 
       final List<String> uninstalledApplications = [];
-      await Future.forEach(appsRemovedFromSystem, (String packageName) async {
-        if (!(await _fLauncherChannel.applicationExists(packageName))) {
+      for (String packageName in appsRemovedFromSystem) {
+        bool appExists = await _fLauncherChannel.applicationExists(packageName);
+        if (!appExists) {
           uninstalledApplications.add(packageName);
         }
-      });
+      }
 
       await _database.persistApps(appsFromSystem);
       await _database.deleteApps(uninstalledApplications);
@@ -143,11 +143,11 @@ class AppsService extends ChangeNotifier {
     }
   }
 
-  Future<Uint8List> getAppBanner(String packageName) async {
+  Future<Uint8List> getAppBanner(String packageName) {
     return _fLauncherChannel.getApplicationBanner(packageName);
   }
 
-  Future<Uint8List> getAppIcon(String packageName) async {
+  Future<Uint8List> getAppIcon(String packageName) {
     return _fLauncherChannel.getApplicationIcon(packageName);
   }
 
@@ -162,11 +162,6 @@ class AppsService extends ChangeNotifier {
   Future<bool> isDefaultLauncher() => _fLauncherChannel.isDefaultLauncher();
 
   Future<void> startAmbientMode() => _fLauncherChannel.startAmbientMode();
-
-  void toggleUIVisibility() {
-    _uiVisible = !_uiVisible;
-    notifyListeners();
-  }
 
   Future<void> addToCategory(App app, Category category, {bool shouldNotifyListeners = true}) async {
     int index = await _database.nextAppCategoryOrder(category.id) ?? 0;

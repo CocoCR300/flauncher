@@ -18,6 +18,7 @@
 
 import 'package:flauncher/actions.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
@@ -63,6 +64,7 @@ class FLauncherApp extends StatelessWidget {
               create: (_) => SettingsService(_sharedPreferences),
               lazy: false),
           ChangeNotifierProvider(create: (_) => AppsService(_fLauncherChannel, _fLauncherDatabase)),
+          ChangeNotifierProvider(create: (_) => LauncherState()),
           ChangeNotifierProvider(create: (_) => NetworkService(_fLauncherChannel)),
           ChangeNotifierProvider(
             create: (context) {
@@ -113,6 +115,7 @@ class FLauncherApp extends StatelessWidget {
               child: Actions(actions: { BackIntent: BackAction(context, systemNavigator: true) }, child: FLauncher()),
               onWillPop: () async {
                 AppsService appsService = context.read<AppsService>();
+                LauncherState launcherState = context.read<LauncherState>();
                 SettingsService settingsService = context.read<SettingsService>();
 
                 final bool shouldPop = !kDebugMode && await shouldPopScope(context);
@@ -121,7 +124,7 @@ class FLauncherApp extends StatelessWidget {
 
                   switch (action) {
                     case BACK_BUTTON_ACTION_CLOCK:
-                      appsService.toggleUIVisibility();
+                      launcherState.toggleLauncherVisibility();
                       break;
                     case BACK_BUTTON_ACTION_SCREENSAVER:
                       appsService.startAmbientMode();

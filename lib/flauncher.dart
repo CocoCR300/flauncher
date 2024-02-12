@@ -16,12 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flauncher/custom_traversal_policy.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
@@ -43,14 +43,13 @@ class FLauncher extends StatelessWidget {
         Consumer<WallpaperService>(
           builder: (_, wallpaperService, __) => _wallpaper(wallpaperService)
         ),
-        Selector<AppsService, bool>(
-            selector: (context, service) => service.uiVisible,
-            builder: (context, _, child) => Visibility(
+        Consumer<LauncherState>(
+            builder: (_, state, child) => Visibility(
               child: child!,
               replacement: const Center(
                   child: AlternativeLauncherView()
               ),
-              visible: context.read<AppsService>().uiVisible,
+              visible: state.launcherVisible
             ),
             child: Scaffold(
               backgroundColor: Colors.transparent,
@@ -154,16 +153,13 @@ class FLauncher extends StatelessWidget {
   }
 
   Widget _wallpaper(WallpaperService wallpaperService) {
-    Uint8List? wallpaperImage = wallpaperService.wallpaperBytes;
-
-    if (wallpaperImage != null) {
-      return Image.memory(
-        wallpaperImage,
-        key: const Key("background"),
-        fit: BoxFit.cover,
-        height: window.physicalSize.height,
-        width: window.physicalSize.width,
-      );
+    if (wallpaperService.wallpaper != null) {
+      return Image(
+          image: wallpaperService.wallpaper!,
+          key: const Key("background"),
+          fit: BoxFit.cover,
+          height: window.physicalSize.height,
+          width: window.physicalSize.width);
     }
     else {
       return Container(key: const Key("background"), decoration: BoxDecoration(gradient: wallpaperService.gradient.gradient));
@@ -176,7 +172,7 @@ class FLauncher extends StatelessWidget {
       children: [
         const CircularProgressIndicator(),
         const SizedBox(height: 16),
-        Text("Loading...", style: Theme.of(context).textTheme.titleLarge),
+        Text("Loading", style: Theme.of(context).textTheme.titleLarge),
       ],
     ),
   );

@@ -21,6 +21,7 @@ import 'dart:io';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/gradients.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,17 +30,20 @@ class WallpaperService extends ChangeNotifier {
   final FLauncherChannel _fLauncherChannel;
   final SettingsService _settingsService;
 
-  late final File _wallpaperFile;
-  Uint8List? _wallpaper;
+  late File _wallpaperFile;
 
-  Uint8List? get wallpaperBytes => _wallpaper;
+  ImageProvider? _wallpaper;
+
+  ImageProvider?  get wallpaper     => _wallpaper;
 
   FLauncherGradient get gradient => FLauncherGradients.all.firstWhere(
         (gradient) => gradient.uuid == _settingsService.gradientUuid,
         orElse: () => FLauncherGradients.greatWhale,
       );
 
-  WallpaperService(this._fLauncherChannel, this._settingsService) {
+  WallpaperService(this._fLauncherChannel, this._settingsService) :
+    _wallpaper = null
+  {
     _init();
   }
 
@@ -47,7 +51,7 @@ class WallpaperService extends ChangeNotifier {
     final directory = await getApplicationDocumentsDirectory();
     _wallpaperFile = File("${directory.path}/wallpaper");
     if (await _wallpaperFile.exists()) {
-      _wallpaper = await _wallpaperFile.readAsBytes();
+      _wallpaper = FileImage(_wallpaperFile);
       notifyListeners();
     }
   }
@@ -60,9 +64,10 @@ class WallpaperService extends ChangeNotifier {
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      final bytes = await pickedFile.readAsBytes();
+      Uint8List bytes = await pickedFile.readAsBytes();
       await _wallpaperFile.writeAsBytes(bytes);
-      _wallpaper = bytes;
+
+      _wallpaper = MemoryImage(bytes);
       notifyListeners();
     }
   }
@@ -71,7 +76,7 @@ class WallpaperService extends ChangeNotifier {
     if (await _wallpaperFile.exists()) {
       await _wallpaperFile.delete();
     }
-    _wallpaper = null;
+
     _settingsService.setGradientUuid(fLauncherGradient.uuid);
     notifyListeners();
   }

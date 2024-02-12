@@ -27,9 +27,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings;
+
+import androidx.annotation.NonNull;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -50,7 +51,7 @@ public class MainActivity extends FlutterActivity
     private final String NETWORK_EVENT_CHANNEL = "me.efesser.flauncher/event_network";
 
     @Override
-    public void configureFlutterEngine(FlutterEngine flutterEngine)
+    public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine)
     {
         super.configureFlutterEngine(flutterEngine);
 
@@ -194,31 +195,26 @@ public class MainActivity extends FlutterActivity
         Intent intent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(category);
 
-       List<ResolveInfo> resolveInfoList = getPackageManager()
-               .queryIntentActivities(intent, 0);
-
-       return resolveInfoList;
+        return getPackageManager()
+                .queryIntentActivities(intent, 0);
     }
 
     private Map<String, Serializable> buildAppMap(ActivityInfo activityInfo, boolean sideloaded) {
         PackageManager packageManager = getPackageManager();
 
-        byte[] bannerBytes = new byte[0], iconBytes = new byte[0];
-        String applicationVersionName = "";
-
+        String  applicationName = activityInfo.loadLabel(packageManager).toString(),
+                applicationVersionName = "";
         try {
             applicationVersionName = packageManager.getPackageInfo(activityInfo.packageName, 0).versionName;
         }
         catch (PackageManager.NameNotFoundException ignored) { }
 
-        Map<String, Serializable> appMap = Map.of(
-                "name", activityInfo.loadLabel(packageManager).toString(),
+        return Map.of(
+                "name", applicationName,
                 "packageName", activityInfo.packageName,
                 "version", applicationVersionName,
                 "sideloaded", sideloaded
         );
-
-        return appMap;
     }
 
     private boolean launchApp(String packageName) {

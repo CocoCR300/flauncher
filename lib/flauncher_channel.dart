@@ -40,11 +40,6 @@ class FLauncherChannel {
     return bytes;
   }
 
-  Future<List<Map<dynamic, dynamic>>> getApplicationsBannerOrIcon(List<String> packageNames) async {
-    List<Map<dynamic, dynamic>>? bytes = await _methodChannel.invokeListMethod("getApplicationsBannerOrIcon", packageNames);
-    return bytes!;
-  }
-
   Future<bool> applicationExists(String packageName) async =>
       await _methodChannel.invokeMethod('applicationExists', packageName);
 
