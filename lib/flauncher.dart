@@ -35,13 +35,15 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class FLauncher extends StatelessWidget {
+  const FLauncher();
+
   @override
   Widget build(BuildContext context) => FocusTraversalGroup(
     policy: RowByRowTraversalPolicy(),
     child: Stack(
       children: [
         Consumer<WallpaperService>(
-          builder: (_, wallpaperService, __) => _wallpaper(wallpaperService)
+          builder: (_, wallpaperService, __) => _wallpaper(context, wallpaperService)
         ),
         Consumer<LauncherState>(
             builder: (_, state, child) => Visibility(
@@ -57,14 +59,15 @@ class FLauncher extends StatelessWidget {
               body: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: Consumer<AppsService>(
-                    builder: (context, appsService, _) {
-                      if (appsService.initialized) {
-                        return SingleChildScrollView(child: _categories(appsService.categoriesWithApps));
-                      }
-                      else {
-                        return _emptyState(context);
-                      }
-                    }),
+                  builder: (context, appsService, _) {
+                    if (appsService.initialized) {
+                      return SingleChildScrollView(child: _categories(appsService.categoriesWithApps));
+                    }
+                    else {
+                      return _emptyState(context);
+                    }
+                  }
+                ),
               ),
             )
         ),
@@ -152,14 +155,15 @@ class FLauncher extends StatelessWidget {
     );
   }
 
-  Widget _wallpaper(WallpaperService wallpaperService) {
+  Widget _wallpaper(BuildContext context, WallpaperService wallpaperService) {
     if (wallpaperService.wallpaper != null) {
+      final physicalSize = MediaQuery.sizeOf(context);
       return Image(
           image: wallpaperService.wallpaper!,
           key: const Key("background"),
           fit: BoxFit.cover,
-          height: window.physicalSize.height,
-          width: window.physicalSize.width);
+          height: physicalSize.height,
+          width: physicalSize.width);
     }
     else {
       return Container(key: const Key("background"), decoration: BoxDecoration(gradient: wallpaperService.gradient.gradient));

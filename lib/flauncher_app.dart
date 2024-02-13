@@ -68,8 +68,6 @@ class FLauncherApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => NetworkService(_fLauncherChannel)),
           ChangeNotifierProvider(
             create: (context) {
-              // Since the WallpaperService only wraps the gradient setting,
-              // it shouldn't be needed to listen to it here
               SettingsService settingsService = Provider.of(context, listen: false);
               return WallpaperService(_fLauncherChannel, settingsService);
             }
@@ -112,7 +110,10 @@ class FLauncherApp extends StatelessWidget {
           ),
           home: Builder(
             builder: (context) => WillPopScope(
-              child: Actions(actions: { BackIntent: BackAction(context, systemNavigator: true) }, child: FLauncher()),
+              child: Actions(
+                  actions: { BackIntent: BackAction(context, systemNavigator: true) },
+                  child: const FLauncher()
+              ),
               onWillPop: () async {
                 AppsService appsService = context.read<AppsService>();
                 LauncherState launcherState = context.read<LauncherState>();
