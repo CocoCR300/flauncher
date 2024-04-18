@@ -113,6 +113,13 @@ class SettingsPanelPage extends StatelessWidget {
                 title: Text("App card highlight animation"),
                 dense: true,
               ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                value: settingsService.appKeyClickEnabled,
+                onChanged: (value) => settingsService.setAppKeyClickEnabled(value),
+                title: Text("Click sound on key press"),
+                dense: true,
+              ),
               Divider(),
               TextButton(
                 child: Row(

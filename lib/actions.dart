@@ -31,8 +31,7 @@ class SoundFeedbackDirectionalFocusAction extends DirectionalFocusAction {
   @override
   void invoke(DirectionalFocusIntent intent) {
     super.invoke(intent);
-    // TODO: make a separate setting
-    if (context.read<SettingsService>().appHighlightAnimationEnabled) {
+    if (context.read<SettingsService>().appKeyClickEnabled) {
       Feedback.forTap(context);
     } else {
       silentForTap(context);

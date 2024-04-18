@@ -23,6 +23,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _appHighlightAnimationEnabledKey = "app_highlight_animation_enabled";
+const _appKeyClickEnabledKey = "app_key_click_enabled";
 const _gradientUuidKey = "gradient_uuid";
 const _backButtonAction = "back_button_action";
 const _dateFormat = "date_format";
@@ -32,6 +33,8 @@ class SettingsService extends ChangeNotifier {
   final SharedPreferences _sharedPreferences;
 
   bool get appHighlightAnimationEnabled => _sharedPreferences.getBool(_appHighlightAnimationEnabledKey) ?? true;
+
+  bool get appKeyClickEnabled => _sharedPreferences.getBool(_appKeyClickEnabledKey) ?? true;
 
   String? get gradientUuid => _sharedPreferences.getString(_gradientUuidKey);
 
@@ -45,9 +48,21 @@ class SettingsService extends ChangeNotifier {
     this._sharedPreferences
   );
 
-  Future<void> setAppHighlightAnimationEnabled(bool value) async {
-    await _sharedPreferences.setBool(_appHighlightAnimationEnabledKey, value);
+  Future<void> set(String key, bool value) async {
+    await _sharedPreferences.setBool(key, value);
     notifyListeners();
+  }
+
+  Future<void> setAppHighlightAnimationEnabled(bool value) async {
+    //await _sharedPreferences.setBool(_appHighlightAnimationEnabledKey, value);
+    //notifyListeners();
+    set(_appHighlightAnimationEnabledKey, value);
+  }
+
+  Future<void> setAppKeyClickEnabled(bool value) async {
+    //await _sharedPreferences.setBool(_appKeyClickEnabledKey, value);
+    //notifyListeners();
+    set(_appKeyClickEnabledKey, value);
   }
 
   Future<void> setGradientUuid(String value) async {
