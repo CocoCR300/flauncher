@@ -83,7 +83,7 @@ class FLauncherApp extends StatelessWidget {
               }
           ),*/
         ],
-        child: MaterialApp(
+        builder: (context, child) => MaterialApp(
           shortcuts: {
             ...WidgetsApp.defaultShortcuts,
             const SingleActivator(LogicalKeyboardKey.select): const ActivateIntent(),
@@ -94,7 +94,7 @@ class FLauncherApp extends StatelessWidget {
           },
           actions: {
             ...WidgetsApp.defaultActions,
-            DirectionalFocusIntent: SoundFeedbackDirectionalFocusAction(context, SettingsService(_sharedPreferences)),
+            DirectionalFocusIntent: SoundFeedbackDirectionalFocusAction(context),
           },
           title: 'FLauncher',
           theme: ThemeData(

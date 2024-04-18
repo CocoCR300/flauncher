@@ -25,15 +25,14 @@ import 'package:provider/provider.dart';
 
 class SoundFeedbackDirectionalFocusAction extends DirectionalFocusAction {
   final BuildContext context;
-  final SettingsService settingsService;
 
-  SoundFeedbackDirectionalFocusAction(this.context, this.settingsService);
+  SoundFeedbackDirectionalFocusAction(this.context);
 
   @override
   void invoke(DirectionalFocusIntent intent) {
     super.invoke(intent);
     // TODO: make a separate setting
-    if (settingsService.appHighlightAnimationEnabled) {
+    if (context.read<SettingsService>().appHighlightAnimationEnabled) {
       Feedback.forTap(context);
     } else {
       silentForTap(context);
