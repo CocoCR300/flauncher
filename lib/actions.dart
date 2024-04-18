@@ -17,19 +17,32 @@
  */
 
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class SoundFeedbackDirectionalFocusAction extends DirectionalFocusAction {
   final BuildContext context;
+  final SettingsService settingsService;
 
-  SoundFeedbackDirectionalFocusAction(this.context);
+  SoundFeedbackDirectionalFocusAction(this.context, this.settingsService);
 
   @override
   void invoke(DirectionalFocusIntent intent) {
     super.invoke(intent);
-    Feedback.forTap(context);
+    // TODO: make a separate setting
+    if (settingsService.appHighlightAnimationEnabled) {
+      Feedback.forTap(context);
+    } else {
+      silentForTap(context);
+    }
+  }
+
+  /// copied from Feedback.forTap, omitting playing a sound
+  static void silentForTap(BuildContext context) async {
+    context.findRenderObject()!.sendSemanticsEvent(const TapSemanticEvent());
   }
 }
 
