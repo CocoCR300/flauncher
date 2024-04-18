@@ -4,7 +4,7 @@ description: Flutter-based Android TV launcher.
 version: 0.0.1
 
 environment:
-  sdk: ">=3.0.0 <=3.2.6"
+  sdk: ">=3.0.0 <=3.3.4"
   flutter: 3.16.8
 
 dependencies:
