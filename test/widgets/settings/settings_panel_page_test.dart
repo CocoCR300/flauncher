@@ -221,7 +221,7 @@ Future<void> _pumpWidgetWithProviders(
 
 class _MockPackageInfoPlatform with MockPlatformInterfaceMixin implements PackageInfoPlatform {
   @override
-  Future<PackageInfoData> getAll() async => PackageInfoData(
+  Future<PackageInfoData> getAll({String? baseUrl}) async => PackageInfoData(
         appName: "FLauncher",
         packageName: "me.efesser.flauncher",
         version: "1.0.0",

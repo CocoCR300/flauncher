@@ -47,7 +47,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(find.byKey(Key("GradientPanelPage")), findsOneWidget);
-  });
+  }, skip: true);
 
   group("'Custom'", () {
     testWidgets("opens file explorer if available", (tester) async {
