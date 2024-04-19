@@ -4,20 +4,22 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i7;
-import 'dart:typed_data' as _i9;
-import 'dart:ui' as _i11;
+import 'dart:typed_data' as _i11;
+import 'dart:ui' as _i13;
 
 import 'package:drift/drift.dart' as _i4;
 import 'package:drift/src/runtime/executor/stream_queries.dart' as _i6;
 import 'package:flauncher/database.dart' as _i5;
-import 'package:flauncher/flauncher_channel.dart' as _i8;
+import 'package:flauncher/flauncher_channel.dart' as _i10;
 import 'package:flauncher/gradients.dart' as _i2;
-import 'package:flauncher/providers/apps_service.dart' as _i12;
-import 'package:flauncher/providers/settings_service.dart' as _i13;
-import 'package:flauncher/providers/wallpaper_service.dart' as _i10;
+import 'package:flauncher/providers/apps_service.dart' as _i14;
+import 'package:flauncher/providers/settings_service.dart' as _i15;
+import 'package:flauncher/providers/wallpaper_service.dart' as _i12;
+import 'package:flutter/cupertino.dart' as _i8;
+import 'package:flutter/services.dart' as _i9;
 import 'package:image_picker/image_picker.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i14;
+import 'package:mockito/src/dummies.dart' as _i16;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -269,10 +271,39 @@ class _FakeGenerationContext_21 extends _i1.SmartFake
         );
 }
 
+class _FakeImageStream_22 extends _i1.SmartFake implements _i8.ImageStream {
+  _FakeImageStream_22(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+
+  @override
+  String toString({_i9.DiagnosticLevel? minLevel = _i9.DiagnosticLevel.info}) =>
+      super.toString();
+}
+
+class _FakeImageStreamCompleter_23 extends _i1.SmartFake
+    implements _i8.ImageStreamCompleter {
+  _FakeImageStreamCompleter_23(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+
+  @override
+  String toString({_i9.DiagnosticLevel? minLevel = _i9.DiagnosticLevel.info}) =>
+      super.toString();
+}
+
 /// A class which mocks [FLauncherChannel].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockFLauncherChannel extends _i1.Mock implements _i8.FLauncherChannel {
+class MockFLauncherChannel extends _i1.Mock implements _i10.FLauncherChannel {
   MockFLauncherChannel() {
     _i1.throwOnMissingStub(this);
   }
@@ -289,24 +320,24 @@ class MockFLauncherChannel extends _i1.Mock implements _i8.FLauncherChannel {
       ) as _i7.Future<List<Map<dynamic, dynamic>>>);
 
   @override
-  _i7.Future<_i9.Uint8List> getApplicationBanner(String? packageName) =>
+  _i7.Future<_i11.Uint8List> getApplicationBanner(String? packageName) =>
       (super.noSuchMethod(
         Invocation.method(
           #getApplicationBanner,
           [packageName],
         ),
-        returnValue: _i7.Future<_i9.Uint8List>.value(_i9.Uint8List(0)),
-      ) as _i7.Future<_i9.Uint8List>);
+        returnValue: _i7.Future<_i11.Uint8List>.value(_i11.Uint8List(0)),
+      ) as _i7.Future<_i11.Uint8List>);
 
   @override
-  _i7.Future<_i9.Uint8List> getApplicationIcon(String? packageName) =>
+  _i7.Future<_i11.Uint8List> getApplicationIcon(String? packageName) =>
       (super.noSuchMethod(
         Invocation.method(
           #getApplicationIcon,
           [packageName],
         ),
-        returnValue: _i7.Future<_i9.Uint8List>.value(_i9.Uint8List(0)),
-      ) as _i7.Future<_i9.Uint8List>);
+        returnValue: _i7.Future<_i11.Uint8List>.value(_i11.Uint8List(0)),
+      ) as _i7.Future<_i11.Uint8List>);
 
   @override
   _i7.Future<bool> applicationExists(String? packageName) =>
@@ -422,7 +453,7 @@ class MockFLauncherChannel extends _i1.Mock implements _i8.FLauncherChannel {
 /// A class which mocks [WallpaperService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWallpaperService extends _i1.Mock implements _i10.WallpaperService {
+class MockWallpaperService extends _i1.Mock implements _i12.WallpaperService {
   MockWallpaperService() {
     _i1.throwOnMissingStub(this);
   }
@@ -464,7 +495,7 @@ class MockWallpaperService extends _i1.Mock implements _i10.WallpaperService {
       ) as _i7.Future<void>);
 
   @override
-  void addListener(_i11.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i13.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -473,7 +504,7 @@ class MockWallpaperService extends _i1.Mock implements _i10.WallpaperService {
       );
 
   @override
-  void removeListener(_i11.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i13.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],
@@ -503,7 +534,7 @@ class MockWallpaperService extends _i1.Mock implements _i10.WallpaperService {
 /// A class which mocks [AppsService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAppsService extends _i1.Mock implements _i12.AppsService {
+class MockAppsService extends _i1.Mock implements _i14.AppsService {
   MockAppsService() {
     _i1.throwOnMissingStub(this);
   }
@@ -533,24 +564,24 @@ class MockAppsService extends _i1.Mock implements _i12.AppsService {
       ) as bool);
 
   @override
-  _i7.Future<_i9.Uint8List> getAppBanner(String? packageName) =>
+  _i7.Future<_i11.Uint8List> getAppBanner(String? packageName) =>
       (super.noSuchMethod(
         Invocation.method(
           #getAppBanner,
           [packageName],
         ),
-        returnValue: _i7.Future<_i9.Uint8List>.value(_i9.Uint8List(0)),
-      ) as _i7.Future<_i9.Uint8List>);
+        returnValue: _i7.Future<_i11.Uint8List>.value(_i11.Uint8List(0)),
+      ) as _i7.Future<_i11.Uint8List>);
 
   @override
-  _i7.Future<_i9.Uint8List> getAppIcon(String? packageName) =>
+  _i7.Future<_i11.Uint8List> getAppIcon(String? packageName) =>
       (super.noSuchMethod(
         Invocation.method(
           #getAppIcon,
           [packageName],
         ),
-        returnValue: _i7.Future<_i9.Uint8List>.value(_i9.Uint8List(0)),
-      ) as _i7.Future<_i9.Uint8List>);
+        returnValue: _i7.Future<_i11.Uint8List>.value(_i11.Uint8List(0)),
+      ) as _i7.Future<_i11.Uint8List>);
 
   @override
   _i7.Future<void> launchApp(_i5.App? app) => (super.noSuchMethod(
@@ -828,7 +859,7 @@ class MockAppsService extends _i1.Mock implements _i12.AppsService {
       ) as _i7.Future<void>);
 
   @override
-  void addListener(_i11.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i13.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -837,7 +868,7 @@ class MockAppsService extends _i1.Mock implements _i12.AppsService {
       );
 
   @override
-  void removeListener(_i11.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i13.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],
@@ -867,7 +898,7 @@ class MockAppsService extends _i1.Mock implements _i12.AppsService {
 /// A class which mocks [SettingsService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSettingsService extends _i1.Mock implements _i13.SettingsService {
+class MockSettingsService extends _i1.Mock implements _i15.SettingsService {
   MockSettingsService() {
     _i1.throwOnMissingStub(this);
   }
@@ -881,7 +912,7 @@ class MockSettingsService extends _i1.Mock implements _i13.SettingsService {
   @override
   String get backButtonAction => (super.noSuchMethod(
         Invocation.getter(#backButtonAction),
-        returnValue: _i14.dummyValue<String>(
+        returnValue: _i16.dummyValue<String>(
           this,
           Invocation.getter(#backButtonAction),
         ),
@@ -890,7 +921,7 @@ class MockSettingsService extends _i1.Mock implements _i13.SettingsService {
   @override
   String get dateFormat => (super.noSuchMethod(
         Invocation.getter(#dateFormat),
-        returnValue: _i14.dummyValue<String>(
+        returnValue: _i16.dummyValue<String>(
           this,
           Invocation.getter(#dateFormat),
         ),
@@ -899,7 +930,7 @@ class MockSettingsService extends _i1.Mock implements _i13.SettingsService {
   @override
   String get timeFormat => (super.noSuchMethod(
         Invocation.getter(#timeFormat),
-        returnValue: _i14.dummyValue<String>(
+        returnValue: _i16.dummyValue<String>(
           this,
           Invocation.getter(#timeFormat),
         ),
@@ -960,7 +991,7 @@ class MockSettingsService extends _i1.Mock implements _i13.SettingsService {
       ) as _i7.Future<void>);
 
   @override
-  void addListener(_i11.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i13.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -969,7 +1000,7 @@ class MockSettingsService extends _i1.Mock implements _i13.SettingsService {
       );
 
   @override
-  void removeListener(_i11.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i13.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],
@@ -1035,7 +1066,7 @@ class MockImagePicker extends _i1.Mock implements _i3.ImagePicker {
     double? maxHeight,
     int? imageQuality,
     int? limit,
-    bool requestFullMetadata = true,
+    bool? requestFullMetadata = true,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -1258,7 +1289,7 @@ class MockFLauncherDatabase extends _i1.Mock implements _i5.FLauncherDatabase {
   @override
   _i4.SqlTypes get typeMapping => (super.noSuchMethod(
         Invocation.getter(#typeMapping),
-        returnValue: _i14.dummyValue<_i4.SqlTypes>(
+        returnValue: _i16.dummyValue<_i4.SqlTypes>(
           this,
           Invocation.getter(#typeMapping),
         ),
@@ -1515,7 +1546,7 @@ class MockFLauncherDatabase extends _i1.Mock implements _i5.FLauncherDatabase {
             alias,
           ],
         ),
-        returnValue: _i14.dummyValue<T>(
+        returnValue: _i16.dummyValue<T>(
           this,
           Invocation.method(
             #alias,
@@ -1565,8 +1596,8 @@ class MockFLauncherDatabase extends _i1.Mock implements _i5.FLauncherDatabase {
           #doWhenOpened,
           [fn],
         ),
-        returnValue: _i14.ifNotNull(
-              _i14.dummyValueOrNull<T>(
+        returnValue: _i16.ifNotNull(
+              _i16.dummyValueOrNull<T>(
                 this,
                 Invocation.method(
                   #doWhenOpened,
@@ -1819,8 +1850,8 @@ class MockFLauncherDatabase extends _i1.Mock implements _i5.FLauncherDatabase {
           [action],
           {#requireNew: requireNew},
         ),
-        returnValue: _i14.ifNotNull(
-              _i14.dummyValueOrNull<T>(
+        returnValue: _i16.ifNotNull(
+              _i16.dummyValueOrNull<T>(
                 this,
                 Invocation.method(
                   #transaction,
@@ -1920,7 +1951,7 @@ class MockFLauncherDatabase extends _i1.Mock implements _i5.FLauncherDatabase {
             amount,
           ],
         ),
-        returnValue: _i14.dummyValue<String>(
+        returnValue: _i16.dummyValue<String>(
           this,
           Invocation.method(
             #$expandVar,
@@ -1931,4 +1962,176 @@ class MockFLauncherDatabase extends _i1.Mock implements _i5.FLauncherDatabase {
           ),
         ),
       ) as String);
+}
+
+/// A class which mocks [ImageProvider].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockImageProvider<T extends Object> extends _i1.Mock
+    implements _i8.ImageProvider<T> {
+  MockImageProvider() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i8.ImageStream resolve(_i8.ImageConfiguration? configuration) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #resolve,
+          [configuration],
+        ),
+        returnValue: _FakeImageStream_22(
+          this,
+          Invocation.method(
+            #resolve,
+            [configuration],
+          ),
+        ),
+      ) as _i8.ImageStream);
+
+  @override
+  _i8.ImageStream createStream(_i8.ImageConfiguration? configuration) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #createStream,
+          [configuration],
+        ),
+        returnValue: _FakeImageStream_22(
+          this,
+          Invocation.method(
+            #createStream,
+            [configuration],
+          ),
+        ),
+      ) as _i8.ImageStream);
+
+  @override
+  _i7.Future<_i8.ImageCacheStatus?> obtainCacheStatus({
+    required _i8.ImageConfiguration? configuration,
+    _i8.ImageErrorListener? handleError,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #obtainCacheStatus,
+          [],
+          {
+            #configuration: configuration,
+            #handleError: handleError,
+          },
+        ),
+        returnValue: _i7.Future<_i8.ImageCacheStatus?>.value(),
+      ) as _i7.Future<_i8.ImageCacheStatus?>);
+
+  @override
+  void resolveStreamForKey(
+    _i8.ImageConfiguration? configuration,
+    _i8.ImageStream? stream,
+    T? key,
+    _i8.ImageErrorListener? handleError,
+  ) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #resolveStreamForKey,
+          [
+            configuration,
+            stream,
+            key,
+            handleError,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i7.Future<bool> evict({
+    _i8.ImageCache? cache,
+    _i8.ImageConfiguration? configuration = _i8.ImageConfiguration.empty,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #evict,
+          [],
+          {
+            #cache: cache,
+            #configuration: configuration,
+          },
+        ),
+        returnValue: _i7.Future<bool>.value(false),
+      ) as _i7.Future<bool>);
+
+  @override
+  _i7.Future<T> obtainKey(_i8.ImageConfiguration? configuration) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #obtainKey,
+          [configuration],
+        ),
+        returnValue: _i16.ifNotNull(
+              _i16.dummyValueOrNull<T>(
+                this,
+                Invocation.method(
+                  #obtainKey,
+                  [configuration],
+                ),
+              ),
+              (T v) => _i7.Future<T>.value(v),
+            ) ??
+            _FakeFuture_14<T>(
+              this,
+              Invocation.method(
+                #obtainKey,
+                [configuration],
+              ),
+            ),
+      ) as _i7.Future<T>);
+
+  @override
+  _i8.ImageStreamCompleter loadBuffer(
+    T? key,
+    _i8.DecoderBufferCallback? decode,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #loadBuffer,
+          [
+            key,
+            decode,
+          ],
+        ),
+        returnValue: _FakeImageStreamCompleter_23(
+          this,
+          Invocation.method(
+            #loadBuffer,
+            [
+              key,
+              decode,
+            ],
+          ),
+        ),
+      ) as _i8.ImageStreamCompleter);
+
+  @override
+  _i8.ImageStreamCompleter loadImage(
+    T? key,
+    _i8.ImageDecoderCallback? decode,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #loadImage,
+          [
+            key,
+            decode,
+          ],
+        ),
+        returnValue: _FakeImageStreamCompleter_23(
+          this,
+          Invocation.method(
+            #loadImage,
+            [
+              key,
+              decode,
+            ],
+          ),
+        ),
+      ) as _i8.ImageStreamCompleter);
 }
