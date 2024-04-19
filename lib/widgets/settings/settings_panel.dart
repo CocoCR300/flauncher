@@ -23,7 +23,6 @@ import 'package:flauncher/widgets/settings/category_panel_page.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPanel extends StatefulWidget {

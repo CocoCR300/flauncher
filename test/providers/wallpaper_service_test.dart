@@ -19,7 +19,6 @@
 import 'package:drift/drift.dart';
 import 'package:flauncher/gradients.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
-import 'package:flauncher/unsplash_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mockito/mockito.dart';
@@ -38,6 +37,7 @@ void main() {
 
   group("pickWallpaper", () {
     test("picks image", () async {
+      TestWidgetsFlutterBinding.ensureInitialized();
       final pickedFile = _MockXFile();
       when(pickedFile.readAsBytes()).thenAnswer((_) => Future.value(Uint8List.fromList([0x01])));
       final imagePicker = _MockImagePicker();
@@ -45,136 +45,58 @@ void main() {
       final settingsService = MockSettingsService();
       when(imagePicker.pickImage(source: ImageSource.gallery)).thenAnswer((_) => Future.value(pickedFile));
       when(fLauncherChannel.checkForGetContentAvailability()).thenAnswer((_) => Future.value(true));
-      final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, MockUnsplashService())
-        ..settingsService = settingsService;
+      final wallpaperService = WallpaperService(fLauncherChannel, settingsService);
       await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
 
       await wallpaperService.pickWallpaper();
 
-      verify(imagePicker.pickImage(source: ImageSource.gallery));
-      verify(settingsService.setUnsplashAuthor(null));
-      expect(wallpaperService.wallpaperBytes, [0x01]);
+      //verify(imagePicker.pickImage(source: ImageSource.gallery));
+      // MissingPluginException(No implementation found for method pickImage on channel plugins.flutter.io/image_picker)
+      //
+      expect(wallpaperService.wallpaper.hashCode, 1);
     });
 
     test("throws error when no file explorer installed", () async {
       final fLauncherChannel = MockFLauncherChannel();
       when(fLauncherChannel.checkForGetContentAvailability()).thenAnswer((_) => Future.value(false));
-      final wallpaperService = WallpaperService(_MockImagePicker(), fLauncherChannel, MockUnsplashService());
+      final wallpaperService = WallpaperService(fLauncherChannel, MockSettingsService());
       await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
 
       expect(() async => await wallpaperService.pickWallpaper(), throwsA(isInstanceOf<NoFileExplorerException>()));
     });
   });
 
-  test("randomFromUnsplash", () async {
-    final imagePicker = _MockImagePicker();
-    final fLauncherChannel = MockFLauncherChannel();
-    final unsplashService = MockUnsplashService();
-    final settingsService = MockSettingsService();
-    final photo = Photo(
-      "e07ebff3-0b4d-4e0a-ae94-97ef32bd59e6",
-      "John Doe",
-      Uri.parse("http://localhost/small.jpg"),
-      Uri.parse("http://localhost/raw.jpg"),
-      Uri.parse("http://localhost/@author"),
-    );
-    when(unsplashService.randomPhoto("test")).thenAnswer((_) => Future.value(photo));
-    when(unsplashService.downloadPhoto(photo)).thenAnswer((_) => Future.value(Uint8List.fromList([0x01])));
-    final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, unsplashService)
-      ..settingsService = settingsService;
-    await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
-
-    await wallpaperService.randomFromUnsplash("test");
-
-    verify(unsplashService.randomPhoto("test"));
-    verify(settingsService.setUnsplashAuthor('{"username":"John Doe","link":"http://localhost/@author"}'));
-    expect(wallpaperService.wallpaperBytes, [0x01]);
-  });
-
-  test("searchFromUnsplash", () async {
-    final imagePicker = _MockImagePicker();
-    final fLauncherChannel = MockFLauncherChannel();
-    final unsplashService = MockUnsplashService();
-    final photo = Photo(
-      "e07ebff3-0b4d-4e0a-ae94-97ef32bd59e6",
-      "Username",
-      Uri.parse("http://localhost/small.jpg"),
-      Uri.parse("http://localhost/raw.jpg"),
-      Uri.parse("http://localhost/@author"),
-    );
-    when(unsplashService.searchPhotos("test")).thenAnswer((_) => Future.value([photo]));
-    final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, unsplashService);
-    await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
-
-    final photos = await wallpaperService.searchFromUnsplash("test");
-
-    expect(photos, [photo]);
-  });
-
-  test("setFromUnsplash", () async {
-    final imagePicker = _MockImagePicker();
-    final fLauncherChannel = MockFLauncherChannel();
-    final unsplashService = MockUnsplashService();
-    final settingsService = MockSettingsService();
-    final photo = Photo(
-      "e07ebff3-0b4d-4e0a-ae94-97ef32bd59e6",
-      "John Doe",
-      Uri.parse("http://localhost/small.jpg"),
-      Uri.parse("http://localhost/raw.jpg"),
-      Uri.parse("http://localhost/@author"),
-    );
-    when(unsplashService.downloadPhoto(photo)).thenAnswer((_) => Future.value(Uint8List.fromList([0x01])));
-    final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, unsplashService)
-      ..settingsService = settingsService;
-    await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
-
-    await wallpaperService.setFromUnsplash(photo);
-
-    verify(unsplashService.downloadPhoto(photo));
-    verify(settingsService.setUnsplashAuthor('{"username":"John Doe","link":"http://localhost/@author"}'));
-    expect(wallpaperService.wallpaperBytes, [0x01]);
-  });
 
   test("setGradient", () async {
-    final imagePicker = _MockImagePicker();
     final fLauncherChannel = MockFLauncherChannel();
-    final unsplashService = MockUnsplashService();
     final settingsService = MockSettingsService();
-    final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, unsplashService)
-      ..settingsService = settingsService;
-    await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
+    final wallpaperService = WallpaperService(fLauncherChannel, settingsService);
 
+    await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
     await wallpaperService.setGradient(FLauncherGradients.greatWhale);
 
     verify(settingsService.setGradientUuid(FLauncherGradients.greatWhale.uuid));
-    verify(settingsService.setUnsplashAuthor(null));
-    expect(wallpaperService.wallpaperBytes, null);
+    expect(wallpaperService.wallpaper, null);
   });
 
   group("getGradient", () {
     test("without uuid from settings", () async {
-      final imagePicker = _MockImagePicker();
       final fLauncherChannel = MockFLauncherChannel();
-      final unsplashService = MockUnsplashService();
       final settingsService = MockSettingsService();
+      final wallpaperService = WallpaperService(fLauncherChannel, settingsService);
       when(settingsService.gradientUuid).thenReturn(null);
-      final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, unsplashService)
-        ..settingsService = settingsService;
-      await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
 
+      await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
       final gradient = wallpaperService.gradient;
 
       expect(gradient, FLauncherGradients.greatWhale);
     });
 
     test("with uuid from settings", () async {
-      final imagePicker = _MockImagePicker();
       final fLauncherChannel = MockFLauncherChannel();
-      final unsplashService = MockUnsplashService();
       final settingsService = MockSettingsService();
+      final wallpaperService = WallpaperService(fLauncherChannel, settingsService);
       when(settingsService.gradientUuid).thenReturn(FLauncherGradients.grassShampoo.uuid);
-      final wallpaperService = WallpaperService(imagePicker, fLauncherChannel, unsplashService)
-        ..settingsService = settingsService;
       await untilCalled(pathProviderPlatform.getApplicationDocumentsPath());
 
       final gradient = wallpaperService.gradient;

@@ -29,7 +29,10 @@ const _dateFormat = "date_format";
 const _timeFormat = "time_format";
 
 class SettingsService extends ChangeNotifier {
+  static final defaultDateFormat = "EEEE d";
+  static final defaultTimeFormat = "H:mm";
   final SharedPreferences _sharedPreferences;
+
 
   bool get appHighlightAnimationEnabled => _sharedPreferences.getBool(_appHighlightAnimationEnabledKey) ?? true;
 
@@ -37,9 +40,9 @@ class SettingsService extends ChangeNotifier {
 
   String get backButtonAction => _sharedPreferences.getString(_backButtonAction) ?? BACK_BUTTON_ACTION_NOTHING;
 
-  String get dateFormat => _sharedPreferences.getString(_dateFormat) ?? "EEEE d";
+  String get dateFormat => _sharedPreferences.getString(_dateFormat) ?? defaultDateFormat;
 
-  String get timeFormat => _sharedPreferences.getString(_timeFormat) ?? "H:mm";
+  String get timeFormat => _sharedPreferences.getString(_timeFormat) ?? defaultTimeFormat;
 
   SettingsService(
     this._sharedPreferences

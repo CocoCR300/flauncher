@@ -31,7 +31,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 import 'helpers.dart';
 import 'mocks.dart';
@@ -51,7 +50,6 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(appsService.initialized).thenReturn(true);
-    when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     final favoritesCategory = fakeCategory(name: "Favorites", order: 0, type: CategoryType.row);
     final applicationsCategory = fakeCategory(name: "Applications", order: 1);
@@ -61,8 +59,6 @@ void main() {
           packageName: "me.efesser.flauncher.1",
           name: "FLauncher 1",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: null,
         )
       ]),
       CategoryWithApps(applicationsCategory, [
@@ -70,12 +66,9 @@ void main() {
           packageName: "me.efesser.flauncher.2",
           name: "FLauncher 2",
           version: "2.0.0",
-          banner: kTransparentImage,
-          icon: null,
         )
       ]),
     ]);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
@@ -94,7 +87,6 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(appsService.initialized).thenReturn(true);
-    when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     final applicationsCategory = fakeCategory(name: "Applications", order: 0, type: CategoryType.grid);
     final favoritesCategory = fakeCategory(name: "Favorites", order: 1, type: CategoryType.row);
@@ -102,7 +94,6 @@ void main() {
       CategoryWithApps(applicationsCategory, []),
       CategoryWithApps(favoritesCategory, []),
     ]);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
@@ -119,9 +110,7 @@ void main() {
     final settingsService = MockSettingsService();
     when(appsService.initialized).thenReturn(true);
     when(appsService.categoriesWithApps).thenReturn([]);
-    when(wallpaperService.wallpaperBytes).thenReturn(kTransparentImage);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
@@ -134,9 +123,7 @@ void main() {
     final settingsService = MockSettingsService();
     when(appsService.initialized).thenReturn(true);
     when(appsService.categoriesWithApps).thenReturn([]);
-    when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
 
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
@@ -148,15 +135,11 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(appsService.initialized).thenReturn(true);
-    when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
       CategoryWithApps(fakeCategory(name: "Applications", order: 1), []),
     ]);
-    when(settingsService.crashReportsEnabled).thenReturn(false);
-    when(settingsService.analyticsEnabled).thenReturn(false);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     await _pumpWidgetWithProviders(tester, wallpaperService, appsService, settingsService);
 
@@ -174,16 +157,12 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(appsService.initialized).thenReturn(true);
-    when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     final app = fakeApp(
       packageName: "me.efesser.flauncher",
       name: "FLauncher",
       version: "1.0.0",
-      banner: kTransparentImage,
-      icon: kTransparentImage,
     );
     when(appsService.categoriesWithApps).thenReturn([
       CategoryWithApps(fakeCategory(name: "Favorites", order: 0), []),
@@ -202,9 +181,7 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(appsService.initialized).thenReturn(true);
-    when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     final applicationsCategory = fakeCategory(name: "Applications", order: 1);
     when(appsService.categoriesWithApps).thenReturn([
@@ -214,8 +191,6 @@ void main() {
           packageName: "me.efesser.flauncher",
           name: "FLauncher",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         )
       ]),
     ]);
@@ -232,9 +207,7 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(appsService.initialized).thenReturn(true);
-    when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     final applicationsCategory = fakeCategory(name: "Applications", order: 1, type: CategoryType.grid);
     when(appsService.categoriesWithApps).thenReturn([
@@ -244,15 +217,11 @@ void main() {
           packageName: "me.efesser.flauncher",
           name: "FLauncher",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.flauncher.2",
           name: "FLauncher 2",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         )
       ]),
     ]);
@@ -277,9 +246,7 @@ void main() {
     final appsService = MockAppsService();
     final settingsService = MockSettingsService();
     when(appsService.initialized).thenReturn(true);
-    when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     final applicationsCategory = fakeCategory(name: "Applications", order: 1, type: CategoryType.row);
     when(appsService.categoriesWithApps).thenReturn([
@@ -289,15 +256,11 @@ void main() {
           packageName: "me.efesser.flauncher",
           name: "FLauncher",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.flauncher.2",
           name: "FLauncher 2",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         )
       ]),
     ]);
@@ -324,9 +287,7 @@ void main() {
     final settingsService = MockSettingsService();
 
     when(appsService.initialized).thenReturn(true);
-    when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     /*
@@ -341,22 +302,16 @@ void main() {
           packageName: "me.efesser.tv1",
           name: "tv 1",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.tv2",
           name: "tv 2",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.tv3",
           name: "tv 3",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         )
       ]),
       CategoryWithApps(fakeCategory(name: "music", order: 1), [
@@ -364,15 +319,11 @@ void main() {
           packageName: "me.efesser.music1",
           name: "music 1",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.music2",
           name: "music 2",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         )
       ]),
       CategoryWithApps(fakeCategory(name: "games", order: 2), [
@@ -380,22 +331,16 @@ void main() {
           packageName: "me.efesser.game1",
           name: "game 1",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.game2",
           name: "game 2",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.game3",
           name: "game 3",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         )
       ]),
     ]);
@@ -436,9 +381,7 @@ void main() {
     final settingsService = MockSettingsService();
 
     when(appsService.initialized).thenReturn(true);
-    when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     /*
@@ -452,15 +395,11 @@ void main() {
           packageName: "me.efesser.tv1",
           name: "tv 1",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.tv2",
           name: "tv 2",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
       ]),
       CategoryWithApps(fakeCategory(name: "music", order: 1, columnsCount: 5), [
@@ -468,36 +407,26 @@ void main() {
           packageName: "me.efesser.music1",
           name: "music 1",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.music2",
           name: "music 2",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.music3",
           name: "music 3",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.music4",
           name: "music 4",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.music5",
           name: "music 5",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
       ]),
     ]);
@@ -560,9 +489,7 @@ void main() {
     final settingsService = MockSettingsService();
 
     when(appsService.initialized).thenReturn(true);
-    when(wallpaperService.wallpaperBytes).thenReturn(null);
     when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
-    when(settingsService.use24HourTimeFormat).thenReturn(false);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
     /*
@@ -576,15 +503,11 @@ void main() {
           packageName: "me.efesser.tv1",
           name: "tv 1",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.tv2",
           name: "tv 2",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
       ]),
       CategoryWithApps(fakeCategory(name: "music", order: 1), [
@@ -592,22 +515,16 @@ void main() {
           packageName: "me.efesser.music1",
           name: "music 1",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.music2",
           name: "music 2",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
         fakeApp(
           packageName: "me.efesser.music3",
           name: "music 3",
           version: "1.0.0",
-          banner: kTransparentImage,
-          icon: kTransparentImage,
         ),
       ]),
     ]);

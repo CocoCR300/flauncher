@@ -40,8 +40,6 @@ void main() {
     expect(apps[0].packageName, "me.efesser.flauncher");
     expect(apps[0].name, "FLauncher");
     expect(apps[0].version, "1.0.0");
-    expect(apps[0].banner, null);
-    expect(apps[0].icon, null);
   });
 
   test("persistApps", () async {
