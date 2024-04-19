@@ -15,12 +15,8 @@ class Apps extends Table with TableInfo<Apps, AppsData> {
       GeneratedColumn<String>('class_name', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
   late final GeneratedColumn<String> version =
       GeneratedColumn<String>('version', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  late final GeneratedColumn<Uint8List> banner =
-      GeneratedColumn<Uint8List>('banner', aliasedName, true, type: DriftSqlType.blob, requiredDuringInsert: false);
-  late final GeneratedColumn<Uint8List> icon =
-      GeneratedColumn<Uint8List>('icon', aliasedName, true, type: DriftSqlType.blob, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [packageName, name, className, version, banner, icon];
+  List<GeneratedColumn> get $columns => [packageName, name, className, version,];
   @override
   String get aliasedName => _alias ?? 'apps';
   @override
@@ -35,8 +31,6 @@ class Apps extends Table with TableInfo<Apps, AppsData> {
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       className: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}class_name'])!,
       version: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}version'])!,
-      banner: attachedDatabase.typeMapping.read(DriftSqlType.blob, data['${effectivePrefix}banner']),
-      icon: attachedDatabase.typeMapping.read(DriftSqlType.blob, data['${effectivePrefix}icon']),
     );
   }
 
@@ -51,15 +45,11 @@ class AppsData extends DataClass implements Insertable<AppsData> {
   final String name;
   final String className;
   final String version;
-  final Uint8List? banner;
-  final Uint8List? icon;
   const AppsData(
       {required this.packageName,
       required this.name,
       required this.className,
-      required this.version,
-      this.banner,
-      this.icon});
+      required this.version});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -67,12 +57,6 @@ class AppsData extends DataClass implements Insertable<AppsData> {
     map['name'] = Variable<String>(name);
     map['class_name'] = Variable<String>(className);
     map['version'] = Variable<String>(version);
-    if (!nullToAbsent || banner != null) {
-      map['banner'] = Variable<Uint8List>(banner);
-    }
-    if (!nullToAbsent || icon != null) {
-      map['icon'] = Variable<Uint8List>(icon);
-    }
     return map;
   }
 
@@ -82,8 +66,6 @@ class AppsData extends DataClass implements Insertable<AppsData> {
       name: Value(name),
       className: Value(className),
       version: Value(version),
-      banner: banner == null && nullToAbsent ? const Value.absent() : Value(banner),
-      icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
     );
   }
 
@@ -94,8 +76,6 @@ class AppsData extends DataClass implements Insertable<AppsData> {
       name: serializer.fromJson<String>(json['name']),
       className: serializer.fromJson<String>(json['className']),
       version: serializer.fromJson<String>(json['version']),
-      banner: serializer.fromJson<Uint8List?>(json['banner']),
-      icon: serializer.fromJson<Uint8List?>(json['icon']),
     );
   }
   @override
@@ -106,8 +86,6 @@ class AppsData extends DataClass implements Insertable<AppsData> {
       'name': serializer.toJson<String>(name),
       'className': serializer.toJson<String>(className),
       'version': serializer.toJson<String>(version),
-      'banner': serializer.toJson<Uint8List?>(banner),
-      'icon': serializer.toJson<Uint8List?>(icon),
     };
   }
 
@@ -115,16 +93,12 @@ class AppsData extends DataClass implements Insertable<AppsData> {
           {String? packageName,
           String? name,
           String? className,
-          String? version,
-          Value<Uint8List?> banner = const Value.absent(),
-          Value<Uint8List?> icon = const Value.absent()}) =>
+          String? version}) =>
       AppsData(
         packageName: packageName ?? this.packageName,
         name: name ?? this.name,
         className: className ?? this.className,
         version: version ?? this.version,
-        banner: banner.present ? banner.value : this.banner,
-        icon: icon.present ? icon.value : this.icon,
       );
   @override
   String toString() {
@@ -133,15 +107,13 @@ class AppsData extends DataClass implements Insertable<AppsData> {
           ..write('name: $name, ')
           ..write('className: $className, ')
           ..write('version: $version, ')
-          ..write('banner: $banner, ')
-          ..write('icon: $icon')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(
-      packageName, name, className, version, $driftBlobEquality.hash(banner), $driftBlobEquality.hash(icon));
+      packageName, name, className, version);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -149,9 +121,7 @@ class AppsData extends DataClass implements Insertable<AppsData> {
           other.packageName == packageName &&
           other.name == name &&
           other.className == className &&
-          other.version == version &&
-          $driftBlobEquality.equals(other.banner, banner) &&
-          $driftBlobEquality.equals(other.icon, icon));
+          other.version == version);
 }
 
 class AppsCompanion extends UpdateCompanion<AppsData> {
@@ -159,23 +129,17 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
   final Value<String> name;
   final Value<String> className;
   final Value<String> version;
-  final Value<Uint8List?> banner;
-  final Value<Uint8List?> icon;
   const AppsCompanion({
     this.packageName = const Value.absent(),
     this.name = const Value.absent(),
     this.className = const Value.absent(),
     this.version = const Value.absent(),
-    this.banner = const Value.absent(),
-    this.icon = const Value.absent(),
   });
   AppsCompanion.insert({
     required String packageName,
     required String name,
     required String className,
     required String version,
-    this.banner = const Value.absent(),
-    this.icon = const Value.absent(),
   })  : packageName = Value(packageName),
         name = Value(name),
         className = Value(className),
@@ -185,16 +149,12 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
     Expression<String>? name,
     Expression<String>? className,
     Expression<String>? version,
-    Expression<Uint8List>? banner,
-    Expression<Uint8List>? icon,
   }) {
     return RawValuesInsertable({
       if (packageName != null) 'package_name': packageName,
       if (name != null) 'name': name,
       if (className != null) 'class_name': className,
       if (version != null) 'version': version,
-      if (banner != null) 'banner': banner,
-      if (icon != null) 'icon': icon,
     });
   }
 
@@ -202,16 +162,12 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
       {Value<String>? packageName,
       Value<String>? name,
       Value<String>? className,
-      Value<String>? version,
-      Value<Uint8List?>? banner,
-      Value<Uint8List?>? icon}) {
+      Value<String>? version}) {
     return AppsCompanion(
       packageName: packageName ?? this.packageName,
       name: name ?? this.name,
       className: className ?? this.className,
       version: version ?? this.version,
-      banner: banner ?? this.banner,
-      icon: icon ?? this.icon,
     );
   }
 
@@ -230,12 +186,6 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
     if (version.present) {
       map['version'] = Variable<String>(version.value);
     }
-    if (banner.present) {
-      map['banner'] = Variable<Uint8List>(banner.value);
-    }
-    if (icon.present) {
-      map['icon'] = Variable<Uint8List>(icon.value);
-    }
     return map;
   }
 
@@ -246,8 +196,6 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
           ..write('name: $name, ')
           ..write('className: $className, ')
           ..write('version: $version, ')
-          ..write('banner: $banner, ')
-          ..write('icon: $icon')
           ..write(')'))
         .toString();
   }
