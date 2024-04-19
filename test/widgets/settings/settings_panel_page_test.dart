@@ -32,6 +32,7 @@ import 'package:package_info_plus_platform_interface/package_info_platform_inter
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:provider/provider.dart';
 
+import '../../flauncher_test.dart';
 import '../../mocks.mocks.dart';
 
 void main() {
@@ -111,13 +112,11 @@ void main() {
 
 
   testWidgets("'Use 24-hour time format' toggle calls SettingsService", (tester) async {
-    final settingsService = MockSettingsService();
     final appsService = MockAppsService();
     when(appsService.categoriesWithApps).thenReturn([]);
     when(appsService.applications).thenReturn([]);
-    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
 
-    await _pumpWidgetWithProviders(tester, settingsService, appsService);
+    await _pumpWidgetWithProviders(tester, mkSettingsService(), appsService);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
