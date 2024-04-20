@@ -29,6 +29,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
+import '../rounded_switch_list_tile.dart';
 import 'back_button_actions.dart';
 
 class SettingsPanelPage extends StatelessWidget {
@@ -106,19 +107,31 @@ class SettingsPanelPage extends StatelessWidget {
                 ),
                 onPressed: () async => await _backButtonActionDialog(context),
               ),
-              SwitchListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                value: settingsService.appHighlightAnimationEnabled,
-                onChanged: (value) => settingsService.setAppHighlightAnimationEnabled(value),
-                title: Text("App card highlight animation"),
-                dense: true,
-              ),
-              SwitchListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 8),
+              TextButton( // all of this crap is to style the SwitchListTile like a TextButton
+                onPressed: () => settingsService.setAppHighlightAnimationEnabled(!settingsService.appHighlightAnimationEnabled),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.account_box_outlined),
+                        Container(width: 8),
+                        Text("App card highlight animation", style: Theme.of(context).textTheme.bodyMedium),
+                      ]
+                    ),
+          Container(
+            constraints: BoxConstraints(maxHeight: 16), child:  Switch(
+                      value: settingsService.appHighlightAnimationEnabled,
+                      onChanged: (value) => settingsService.setAppHighlightAnimationEnabled(value),
+                    )),
+                  ],
+                ),
+               ),
+              RoundedSwitchListTile(
                 value: settingsService.appKeyClickEnabled,
                 onChanged: (value) => settingsService.setAppKeyClickEnabled(value),
-                title: Text("Click sound on key press"),
-                dense: true,
+                title: Text("Click sound on key press", style: Theme.of(context).textTheme.bodyMedium),
+                secondary: Icon(Icons.add_alert_sharp),
               ),
               Divider(),
               TextButton(

@@ -30,15 +30,15 @@ class RightPanelDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.zero,
+        backgroundColor: Colors.blue,
+        insetPadding: EdgeInsets.only(left:550),
         child: Align(
           alignment: Alignment.centerRight,
           child: Container(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(8),
             // ignore: deprecated_member_use
-            color: Theme.of(context).backgroundColor,
-            width: width,
+            //color: Theme.of(context).backgroundColor,
+            //width: width,
             child: Actions(actions: {BackIntent: BackAction(context)}, child: child),
           ),
         ),
