@@ -35,16 +35,12 @@ void main() {
               'packageName': 'me.efesser.flauncher',
               'name': 'FLauncher',
               'version': null,
-              'banner': null,
-              'icon': null,
               'sideloaded': false
             },
             {
               'packageName': 'me.efesser.flauncher.2',
               'name': 'FLauncher 2',
               'version': '2.0.0',
-              'banner': null,
-              'icon': null,
               'sideloaded': true
             }
           ]));
@@ -53,16 +49,12 @@ void main() {
               packageName: "me.efesser.flauncher",
               name: "FLauncher",
               version: "1.0.0",
-              banner: null,
-              icon: null,
               sideloaded: false,
             ),
             fakeApp(
               packageName: "me.efesser.flauncher.2",
               name: "FLauncher 2",
               version: "2.0.0",
-              banner: null,
-              icon: null,
               sideloaded: true,
             ),
           ]));
@@ -85,16 +77,12 @@ void main() {
             packageName: "me.efesser.flauncher",
             name: "FLauncher",
             version: "(unknown)",
-            banner: Value(null),
-            icon: Value(null),
             sideloaded: Value(false),
           ),
           AppsCompanion.insert(
             packageName: "me.efesser.flauncher.2",
             name: "FLauncher 2",
             version: "2.0.0",
-            banner: Value(null),
-            icon: Value(null),
             sideloaded: Value(true),
           ),
         ]),
@@ -137,16 +125,12 @@ void main() {
               'packageName': 'me.efesser.flauncher',
               'name': 'FLauncher',
               'version': '2.0.0',
-              'banner': null,
-              'icon': null,
               'sideloaded': false,
             },
             {
               'packageName': 'me.efesser.flauncher.2',
               'name': 'FLauncher 2',
               'version': '1.0.0',
-              'banner': null,
-              'icon': null,
               'sideloaded': false,
             }
           ]));
@@ -170,16 +154,12 @@ void main() {
             packageName: "me.efesser.flauncher",
             name: "FLauncher",
             version: "2.0.0",
-            banner: Value(null),
-            icon: Value(null),
             sideloaded: Value(false),
           ),
           AppsCompanion.insert(
             packageName: "me.efesser.flauncher.2",
             name: "FLauncher 2",
             version: "1.0.0",
-            banner: Value(null),
-            icon: Value(null),
             sideloaded: Value(false),
           )
         ]),

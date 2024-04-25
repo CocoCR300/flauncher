@@ -26,7 +26,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 import '../../mocks.dart';
 import '../../mocks.mocks.dart';
@@ -46,7 +45,6 @@ void main() {
       fakeApp(
         packageName: "me.efesser.flauncher",
         name: "FLauncher",
-        icon: kTransparentImage,
         sideloaded: false,
         hidden: false,
       )
@@ -64,7 +62,6 @@ void main() {
       fakeApp(
         packageName: "me.efesser.flauncher",
         name: "FLauncher",
-        icon: kTransparentImage,
         sideloaded: true,
         hidden: false,
       )
@@ -87,7 +84,6 @@ void main() {
       fakeApp(
         packageName: "me.efesser.flauncher",
         name: "FLauncher",
-        icon: kTransparentImage,
         sideloaded: false,
         hidden: true,
       )
@@ -111,8 +107,6 @@ void main() {
       packageName: "me.efesser.flauncher",
       name: "FLauncher",
       version: "1.0.0",
-      banner: kTransparentImage,
-      icon: kTransparentImage,
     );
     when(appsService.applications).thenReturn([application]);
     when(appsService.categoriesWithApps).thenReturn([CategoryWithApps(fakeCategory(), [])]);
@@ -132,8 +126,6 @@ void main() {
       packageName: "me.efesser.flauncher",
       name: "FLauncher",
       version: "1.0.0",
-      banner: kTransparentImage,
-      icon: kTransparentImage,
     );
     when(appsService.applications).thenReturn([application]);
     when(appsService.categoriesWithApps).thenReturn([CategoryWithApps(fakeCategory(), [])]);

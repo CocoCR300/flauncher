@@ -13,10 +13,6 @@ class Apps extends Table with TableInfo<Apps, AppsData> {
       GeneratedColumn<String>('name', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
   late final GeneratedColumn<String> version =
       GeneratedColumn<String>('version', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  late final GeneratedColumn<Uint8List> banner =
-      GeneratedColumn<Uint8List>('banner', aliasedName, true, type: DriftSqlType.blob, requiredDuringInsert: false);
-  late final GeneratedColumn<Uint8List> icon =
-      GeneratedColumn<Uint8List>('icon', aliasedName, true, type: DriftSqlType.blob, requiredDuringInsert: false);
   late final GeneratedColumn<bool> hidden = GeneratedColumn<bool>('hidden', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
@@ -27,7 +23,7 @@ class Apps extends Table with TableInfo<Apps, AppsData> {
       }),
       defaultValue: Constant(false));
   @override
-  List<GeneratedColumn> get $columns => [packageName, name, version, banner, icon, hidden];
+  List<GeneratedColumn> get $columns => [packageName, name, version, hidden];
   @override
   String get aliasedName => _alias ?? 'apps';
   @override
@@ -41,8 +37,6 @@ class Apps extends Table with TableInfo<Apps, AppsData> {
       packageName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}package_name'])!,
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       version: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}version'])!,
-      banner: attachedDatabase.typeMapping.read(DriftSqlType.blob, data['${effectivePrefix}banner']),
-      icon: attachedDatabase.typeMapping.read(DriftSqlType.blob, data['${effectivePrefix}icon']),
       hidden: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}hidden'])!,
     );
   }
@@ -57,15 +51,11 @@ class AppsData extends DataClass implements Insertable<AppsData> {
   final String packageName;
   final String name;
   final String version;
-  final Uint8List? banner;
-  final Uint8List? icon;
   final bool hidden;
   const AppsData(
       {required this.packageName,
       required this.name,
       required this.version,
-      this.banner,
-      this.icon,
       required this.hidden});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -73,12 +63,6 @@ class AppsData extends DataClass implements Insertable<AppsData> {
     map['package_name'] = Variable<String>(packageName);
     map['name'] = Variable<String>(name);
     map['version'] = Variable<String>(version);
-    if (!nullToAbsent || banner != null) {
-      map['banner'] = Variable<Uint8List>(banner);
-    }
-    if (!nullToAbsent || icon != null) {
-      map['icon'] = Variable<Uint8List>(icon);
-    }
     map['hidden'] = Variable<bool>(hidden);
     return map;
   }
@@ -88,8 +72,6 @@ class AppsData extends DataClass implements Insertable<AppsData> {
       packageName: Value(packageName),
       name: Value(name),
       version: Value(version),
-      banner: banner == null && nullToAbsent ? const Value.absent() : Value(banner),
-      icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
       hidden: Value(hidden),
     );
   }
@@ -100,8 +82,6 @@ class AppsData extends DataClass implements Insertable<AppsData> {
       packageName: serializer.fromJson<String>(json['packageName']),
       name: serializer.fromJson<String>(json['name']),
       version: serializer.fromJson<String>(json['version']),
-      banner: serializer.fromJson<Uint8List?>(json['banner']),
-      icon: serializer.fromJson<Uint8List?>(json['icon']),
       hidden: serializer.fromJson<bool>(json['hidden']),
     );
   }
@@ -112,8 +92,6 @@ class AppsData extends DataClass implements Insertable<AppsData> {
       'packageName': serializer.toJson<String>(packageName),
       'name': serializer.toJson<String>(name),
       'version': serializer.toJson<String>(version),
-      'banner': serializer.toJson<Uint8List?>(banner),
-      'icon': serializer.toJson<Uint8List?>(icon),
       'hidden': serializer.toJson<bool>(hidden),
     };
   }
@@ -122,15 +100,11 @@ class AppsData extends DataClass implements Insertable<AppsData> {
           {String? packageName,
           String? name,
           String? version,
-          Value<Uint8List?> banner = const Value.absent(),
-          Value<Uint8List?> icon = const Value.absent(),
           bool? hidden}) =>
       AppsData(
         packageName: packageName ?? this.packageName,
         name: name ?? this.name,
         version: version ?? this.version,
-        banner: banner.present ? banner.value : this.banner,
-        icon: icon.present ? icon.value : this.icon,
         hidden: hidden ?? this.hidden,
       );
   @override
@@ -139,8 +113,6 @@ class AppsData extends DataClass implements Insertable<AppsData> {
           ..write('packageName: $packageName, ')
           ..write('name: $name, ')
           ..write('version: $version, ')
-          ..write('banner: $banner, ')
-          ..write('icon: $icon, ')
           ..write('hidden: $hidden')
           ..write(')'))
         .toString();
@@ -148,7 +120,7 @@ class AppsData extends DataClass implements Insertable<AppsData> {
 
   @override
   int get hashCode =>
-      Object.hash(packageName, name, version, $driftBlobEquality.hash(banner), $driftBlobEquality.hash(icon), hidden);
+      Object.hash(packageName, name, version, hidden);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -156,8 +128,6 @@ class AppsData extends DataClass implements Insertable<AppsData> {
           other.packageName == this.packageName &&
           other.name == this.name &&
           other.version == this.version &&
-          $driftBlobEquality.equals(other.banner, this.banner) &&
-          $driftBlobEquality.equals(other.icon, this.icon) &&
           other.hidden == this.hidden);
 }
 
@@ -165,23 +135,17 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
   final Value<String> packageName;
   final Value<String> name;
   final Value<String> version;
-  final Value<Uint8List?> banner;
-  final Value<Uint8List?> icon;
   final Value<bool> hidden;
   const AppsCompanion({
     this.packageName = const Value.absent(),
     this.name = const Value.absent(),
     this.version = const Value.absent(),
-    this.banner = const Value.absent(),
-    this.icon = const Value.absent(),
     this.hidden = const Value.absent(),
   });
   AppsCompanion.insert({
     required String packageName,
     required String name,
     required String version,
-    this.banner = const Value.absent(),
-    this.icon = const Value.absent(),
     this.hidden = const Value.absent(),
   })  : packageName = Value(packageName),
         name = Value(name),
@@ -190,16 +154,12 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
     Expression<String>? packageName,
     Expression<String>? name,
     Expression<String>? version,
-    Expression<Uint8List>? banner,
-    Expression<Uint8List>? icon,
     Expression<bool>? hidden,
   }) {
     return RawValuesInsertable({
       if (packageName != null) 'package_name': packageName,
       if (name != null) 'name': name,
       if (version != null) 'version': version,
-      if (banner != null) 'banner': banner,
-      if (icon != null) 'icon': icon,
       if (hidden != null) 'hidden': hidden,
     });
   }
@@ -208,15 +168,11 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
       {Value<String>? packageName,
       Value<String>? name,
       Value<String>? version,
-      Value<Uint8List?>? banner,
-      Value<Uint8List?>? icon,
       Value<bool>? hidden}) {
     return AppsCompanion(
       packageName: packageName ?? this.packageName,
       name: name ?? this.name,
       version: version ?? this.version,
-      banner: banner ?? this.banner,
-      icon: icon ?? this.icon,
       hidden: hidden ?? this.hidden,
     );
   }
@@ -233,12 +189,6 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
     if (version.present) {
       map['version'] = Variable<String>(version.value);
     }
-    if (banner.present) {
-      map['banner'] = Variable<Uint8List>(banner.value);
-    }
-    if (icon.present) {
-      map['icon'] = Variable<Uint8List>(icon.value);
-    }
     if (hidden.present) {
       map['hidden'] = Variable<bool>(hidden.value);
     }
@@ -251,8 +201,6 @@ class AppsCompanion extends UpdateCompanion<AppsData> {
           ..write('packageName: $packageName, ')
           ..write('name: $name, ')
           ..write('version: $version, ')
-          ..write('banner: $banner, ')
-          ..write('icon: $icon, ')
           ..write('hidden: $hidden')
           ..write(')'))
         .toString();

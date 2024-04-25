@@ -18,29 +18,25 @@
 
 import 'dart:math';
 
-import 'package:drift/drift.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
-import 'package:flauncher/unsplash_service.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mockito/annotations.dart';
+
 
 @GenerateMocks([
   FLauncherChannel,
   WallpaperService,
   AppsService,
   SettingsService,
-  FirebaseCrashlytics,
-  FirebaseAnalytics,
-  FirebaseRemoteConfig,
-  UnsplashService,
+  ImagePicker,
 ], customMocks: [
   MockSpec<FLauncherDatabase>(unsupportedMembers: {#alias}),
+  MockSpec<ImageProvider>(unsupportedMembers: {#alias}),
 ])
 void main() {}
 
@@ -48,8 +44,6 @@ App fakeApp({
   String packageName = "me.efesser.flauncher",
   String name = "FLauncher",
   String version = "1.0.0",
-  Uint8List? banner,
-  Uint8List? icon,
   bool hidden = false,
   bool sideloaded = false,
 }) =>
@@ -57,8 +51,6 @@ App fakeApp({
       packageName: packageName,
       name: name,
       version: version,
-      banner: banner,
-      icon: icon,
       hidden: hidden,
       sideloaded: sideloaded,
     );
