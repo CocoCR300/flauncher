@@ -107,26 +107,12 @@ class SettingsPanelPage extends StatelessWidget {
                 ),
                 onPressed: () async => await _backButtonActionDialog(context),
               ),
-              TextButton( // all of this crap is to style the SwitchListTile like a TextButton
-                onPressed: () => settingsService.setAppHighlightAnimationEnabled(!settingsService.appHighlightAnimationEnabled),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.account_box_outlined),
-                        Container(width: 8),
-                        Text("App card highlight animation", style: Theme.of(context).textTheme.bodyMedium),
-                      ]
-                    ),
-          Container(
-            constraints: BoxConstraints(maxHeight: 16), child:  Switch(
-                      value: settingsService.appHighlightAnimationEnabled,
-                      onChanged: (value) => settingsService.setAppHighlightAnimationEnabled(value),
-                    )),
-                  ],
-                ),
-               ),
+              RoundedSwitchListTile( // all of this is to style the SwitchListTile like a TextButton
+                value: settingsService.appHighlightAnimationEnabled,
+                onChanged: (value) => settingsService.setAppHighlightAnimationEnabled(value),
+                title: Text("App card highlight animation", style: Theme.of(context).textTheme.bodyMedium),
+                secondary: Icon(Icons.account_box_outlined),
+              ),
               RoundedSwitchListTile(
                 value: settingsService.appKeyClickEnabled,
                 onChanged: (value) => settingsService.setAppKeyClickEnabled(value),
