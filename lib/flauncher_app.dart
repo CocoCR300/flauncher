@@ -74,8 +74,16 @@ class FLauncherApp extends StatelessWidget {
               return WallpaperService(_fLauncherChannel, settingsService);
             }
           ),
+          /*Provider(
+              create: (context) {
+                // Since the WallpaperService only wraps the gradient setting,
+                // it shouldn't be needed to listen to it here
+                SettingsService settingsService = Provider.of(context, listen: false);
+                return SoundFeedbackDirectionalFocusAction(context, settingsService);
+              }
+          ),*/
         ],
-        child: MaterialApp(
+        builder: (context, child) => MaterialApp(
           shortcuts: {
             ...WidgetsApp.defaultShortcuts,
             const SingleActivator(LogicalKeyboardKey.select): const ActivateIntent(),
