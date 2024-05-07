@@ -26,6 +26,8 @@ const _appHighlightAnimationEnabledKey = "app_highlight_animation_enabled";
 const _gradientUuidKey = "gradient_uuid";
 const _backButtonAction = "back_button_action";
 const _dateFormat = "date_format";
+const _showDateInStatusBar = "show_date_in_status_bar";
+const _showTimeInStatusBar = "show_time_in_status_bar";
 const _timeFormat = "time_format";
 
 class SettingsService extends ChangeNotifier {
@@ -35,6 +37,10 @@ class SettingsService extends ChangeNotifier {
 
 
   bool get appHighlightAnimationEnabled => _sharedPreferences.getBool(_appHighlightAnimationEnabledKey) ?? true;
+
+  bool get showDateInStatusBar => _sharedPreferences.getBool(_showDateInStatusBar) ?? true;
+
+  bool get showTimeInStatusBar => _sharedPreferences.getBool(_showTimeInStatusBar) ?? true;
 
   String? get gradientUuid => _sharedPreferences.getString(_gradientUuidKey);
 
@@ -67,6 +73,20 @@ class SettingsService extends ChangeNotifier {
     await Future.wait([
       _sharedPreferences.setString(_dateFormat, dateFormatString),
       _sharedPreferences.setString(_timeFormat, timeFormatString)
+    ]);
+    notifyListeners();
+  }
+
+  Future<void> setShowDateInStatusBar(bool show) async {
+    await Future.wait([
+      _sharedPreferences.setBool(_showDateInStatusBar, show),
+    ]);
+    notifyListeners();
+  }
+
+  Future<void> setShowTimeInStatusBar(bool show) async {
+    await Future.wait([
+      _sharedPreferences.setBool(_showTimeInStatusBar, show),
     ]);
     notifyListeners();
   }

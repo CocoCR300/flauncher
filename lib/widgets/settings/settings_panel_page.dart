@@ -23,6 +23,7 @@ import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/categories_panel_page.dart';
 import 'package:flauncher/widgets/settings/date_time_format_dialog.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
+import 'package:flauncher/widgets/settings/status_bar_panel_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -40,13 +41,13 @@ class SettingsPanelPage extends StatelessWidget {
           child: Column(
             children: [
               Text("Settings", style: Theme.of(context).textTheme.titleLarge),
-              Divider(),
+              const Divider(),
               EnsureVisible(
                 alignment: 0.5,
                 child: TextButton(
                   child: Row(
                     children: [
-                      Icon(Icons.apps),
+                      const Icon(Icons.apps),
                       Container(width: 8),
                       Text("Applications", style: Theme.of(context).textTheme.bodyMedium),
                     ],
@@ -57,7 +58,7 @@ class SettingsPanelPage extends StatelessWidget {
               TextButton(
                 child: Row(
                   children: [
-                    Icon(Icons.category),
+                    const Icon(Icons.category),
                     Container(width: 8),
                     Text("Categories", style: Theme.of(context).textTheme.bodyMedium),
                   ],
@@ -67,29 +68,39 @@ class SettingsPanelPage extends StatelessWidget {
               TextButton(
                 child: Row(
                   children: [
-                    Icon(Icons.wallpaper_outlined),
+                    const Icon(Icons.wallpaper_outlined),
                     Container(width: 8),
                     Text("Wallpaper", style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
                 onPressed: () => Navigator.of(context).pushNamed(WallpaperPanelPage.routeName),
               ),
-              Divider(),
               TextButton(
                 child: Row(
                   children: [
-                    Icon(Icons.settings_outlined),
+                    const Icon(Icons.tips_and_updates),
+                    Container(width: 8),
+                    Text("Status bar", style: Theme.of(context).textTheme.bodyMedium),
+                  ],
+                ),
+                onPressed: () => Navigator.of(context).pushNamed(StatusBarPanelPage.routeName),
+              ),
+              const Divider(),
+              TextButton(
+                child: Row(
+                  children: [
+                    const Icon(Icons.settings_outlined),
                     Container(width: 8),
                     Text("Android settings", style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
                 onPressed: () => context.read<AppsService>().openSettings(),
               ),
-              Divider(),
+              const Divider(),
               TextButton(
                 child: Row(
                   children: [
-                    Icon(Icons.date_range),
+                    const Icon(Icons.date_range),
                     Container(width: 8),
                     Text("Date and time format", style: Theme.of(context).textTheme.bodyMedium),
                   ],
@@ -99,7 +110,7 @@ class SettingsPanelPage extends StatelessWidget {
               TextButton(
                 child: Row(
                   children: [
-                    Icon(Icons.arrow_back),
+                    const Icon(Icons.arrow_back),
                     Container(width: 8),
                     Text("Back button action", style: Theme.of(context).textTheme.bodyMedium),
                   ],
@@ -107,17 +118,17 @@ class SettingsPanelPage extends StatelessWidget {
                 onPressed: () async => await _backButtonActionDialog(context),
               ),
               SwitchListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                 value: settingsService.appHighlightAnimationEnabled,
                 onChanged: (value) => settingsService.setAppHighlightAnimationEnabled(value),
-                title: Text("App card highlight animation"),
+                title: const Text("App card highlight animation"),
                 dense: true,
               ),
-              Divider(),
+              const Divider(),
               TextButton(
                 child: Row(
                   children: [
-                    Icon(Icons.info_outline),
+                    const Icon(Icons.info_outline),
                     Container(width: 8),
                     Text("About FLauncher", style: Theme.of(context).textTheme.bodyMedium),
                   ],

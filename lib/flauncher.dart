@@ -32,7 +32,6 @@ import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/date_time_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class FLauncher extends StatelessWidget {
   const FLauncher();
@@ -118,36 +117,48 @@ class FLauncher extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 32),
-          child: Selector<SettingsService, Tuple2<String, String>>(
-            // TODO: This selector is not working
-            selector:  (context, service) => Tuple2(service.dateFormat, service.timeFormat),
-            builder: (context, formatTuple, _) {
+          child: Selector<SettingsService, ({
+            bool showDateInStatusBar,
+            bool showTimeInStatusBar,
+            String dateFormat,
+            String timeFormat })>(
+            selector: (context, service) => (
+                showDateInStatusBar: service.showDateInStatusBar,
+                showTimeInStatusBar: service.showTimeInStatusBar,
+                dateFormat: service.dateFormat,
+                timeFormat: service.timeFormat),
+            builder: (context, dateTimeSettings, _) {
+              // TODO: Disabling the "show date" option while both are enabled causes the *time* to disappear,
+              // then re-enabling that same option causes the time to appear twice.
+              // A restart (or just changing to the full screen clock) fixes the issue, but why does this happen?
               return Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Flexible(
-                    child: DateTimeWidget(formatTuple.item1,
-                      updateInterval: const Duration(minutes: 1),
-                      textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        shadows: [
-                          const Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8)
-                        ],
-                      ),
-                    )
-                  ),
-                  if (formatTuple.item1.isNotEmpty && formatTuple.item2.isNotEmpty)
-                    const SizedBox(width: 16),
-                  Flexible(
-                    child: DateTimeWidget(formatTuple.item2,
+                  if (dateTimeSettings.showDateInStatusBar)
+                    Flexible(
+                      child: DateTimeWidget(dateTimeSettings.dateFormat,
+                        updateInterval: const Duration(minutes: 1),
                         textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
                           shadows: [
                             const Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8)
                           ],
-                        )
+                        ),
+                      )
+                    ),
+                  if (dateTimeSettings.showDateInStatusBar && dateTimeSettings.showTimeInStatusBar)
+                    const SizedBox(width: 16),
+                  if (dateTimeSettings.showTimeInStatusBar)
+                    Flexible(
+                      child: DateTimeWidget(dateTimeSettings.timeFormat,
+                          textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            shadows: [
+                              const Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8)
+                            ],
+                          )
+                      )
                     )
-                  )
                 ]
-            );
+              );
             },
           ),
         ),

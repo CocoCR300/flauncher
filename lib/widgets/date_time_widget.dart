@@ -22,7 +22,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
 class DateTimeWidget extends StatefulWidget {
   final Duration?   updateInterval;
   final String      _dateTimeFormatString;
