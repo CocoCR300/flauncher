@@ -94,76 +94,77 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => FocusKeyboardListener(
-        onPressed: (key) => _onPressed(context, key),
-        onLongPress: (key) => _onLongPress(context, key),
-        builder: (context) {
+      onPressed: (key) => _onPressed(context, key),
+      onLongPress: (key) => _onLongPress(context, key),
+      builder: (context) {
 
-          return AspectRatio(
-            aspectRatio: 16 / 9,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeInOut,
-              transformAlignment: Alignment.center,
-              transform: _scaleTransform(context),
-              child: Material(
-                borderRadius: BorderRadius.circular(8),
-                clipBehavior: Clip.antiAlias,
-                elevation: Focus.of(context).hasFocus ? 16 : 0,
-                shadowColor: Colors.black,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    InkWell(
-                      autofocus: widget.autofocus,
-                      focusColor: Colors.transparent,
-                      onTap: () => _onPressed(context, null),
-                      onLongPress: () => _onLongPress(context, null),
-                      child: _appImage()
+        return AspectRatio(
+          aspectRatio: 16 / 9,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            transformAlignment: Alignment.center,
+            transform: _scaleTransform(context),
+            child: Material(
+              borderRadius: BorderRadius.circular(8),
+              clipBehavior: Clip.antiAlias,
+              elevation: Focus.of(context).hasFocus ? 16 : 0,
+              shadowColor: Colors.black,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  InkWell(
+                    autofocus: widget.autofocus,
+                    focusColor: Colors.transparent,
+                    onTap: () => _onPressed(context, LogicalKeyboardKey.enter),
+                    onLongPress: () => _onLongPress(context, LogicalKeyboardKey.enter),
+                    child: _appImage()
+                  ),
+                  if (_moving) ..._arrows(),
+                  IgnorePointer(
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeInOut,
+                      opacity: Focus.of(context).hasFocus ? 0 : 0.10,
+                      child: Container(color: Colors.black),
                     ),
-                    if (_moving) ..._arrows(),
-                    IgnorePointer(
-                      child: AnimatedOpacity(
-                        duration: const Duration(milliseconds: 200),
-                        curve: Curves.easeInOut,
-                        opacity: Focus.of(context).hasFocus ? 0 : 0.10,
-                        child: Container(color: Colors.black),
-                      ),
-                    ),
-                    Selector<SettingsService, bool>(
-                      selector: (_, settingsService) => settingsService.appHighlightAnimationEnabled,
-                      builder: (context, appHighlightAnimationEnabled, __) {
-                        if (appHighlightAnimationEnabled) {
-                          _animation.forward();
-                          return AnimatedBuilder(
-                            animation: _animation,
-                            builder: (context, child) => IgnorePointer(
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeInOut,
-                                decoration: BoxDecoration(
-                                  border: Focus.of(context).hasFocus
-                                      ? Border.all(
-                                          color: _lastBorderColor =
-                                              computeBorderColor(_animation.value, _lastBorderColor),
-                                          width: 3)
-                                      : null,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                  ),
+                  Selector<SettingsService, bool>(
+                    selector: (_, settingsService) => settingsService.appHighlightAnimationEnabled,
+                    builder: (context, appHighlightAnimationEnabled, __) {
+                      if (appHighlightAnimationEnabled) {
+                        _animation.forward();
+                        return AnimatedBuilder(
+                          animation: _animation,
+                          builder: (context, child) => IgnorePointer(
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.easeInOut,
+                              decoration: BoxDecoration(
+                                border: Focus.of(context).hasFocus
+                                    ? Border.all(
+                                        color: _lastBorderColor =
+                                            computeBorderColor(_animation.value, _lastBorderColor),
+                                        width: 3)
+                                    : null,
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                          );
-                        }
-                        _animation.stop();
-                        return const SizedBox();
-                      },
-                    ),
-                  ],
-                ),
+                          ),
+                        );
+                      }
+
+                      _animation.stop();
+                      return const SizedBox();
+                    },
+                  ),
+                ],
               ),
             ),
-          );
-        },
-      );
+          ),
+        );
+      },
+  );
 
   Future<Tuple2<AppImageType, ImageProvider>> _loadAppBannerOrIcon(AppsService service) async {
     Uint8List bytes = Uint8List(0);
@@ -299,7 +300,10 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
       } else if (_validationKeys.contains(key)) {
         setState(() => _moving = false);
         widget.onMoveEnd();
+      } else {
+        return KeyEventResult.ignored;
       }
+
       return KeyEventResult.handled;
     } else if (_validationKeys.contains(key)) {
       context.read<AppsService>().launchApp(widget.application);
