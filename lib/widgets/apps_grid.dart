@@ -27,6 +27,8 @@ import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/settings_service.dart';
+
 class AppsGrid extends StatelessWidget {
   final Category category;
   final List<App> applications;
@@ -41,15 +43,22 @@ class AppsGrid extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: Text(
-              category.name,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(shadows: [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)]),
-            ),
+          Selector<SettingsService, bool>(
+              selector: (context, service) => service.showCategoryTitles,
+              builder: (context, showCategoriesTitle, _) {
+                if (showCategoriesTitle) {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 16, bottom: 8),
+                    child: Text(category.name,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(shadows: [const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])),
+                  );
+                }
+
+                return SizedBox.shrink();
+              }
           ),
           applications.isNotEmpty
               ? GridView.custom(

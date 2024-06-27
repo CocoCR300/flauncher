@@ -124,6 +124,13 @@ class SettingsPanelPage extends StatelessWidget {
                 title: const Text("App card highlight animation"),
                 dense: true,
               ),
+              SwitchListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                value: settingsService.showCategoryTitles,
+                onChanged: (value) => settingsService.setShowCategoryTitles(value),
+                title: const Text("Show category titles"),
+                dense: true,
+              ),
               const Divider(),
               TextButton(
                 child: Row(
