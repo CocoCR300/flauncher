@@ -31,7 +31,7 @@ class ApplicationInfoPanel extends StatelessWidget {
   const ApplicationInfoPanel({
     required this.category,
     required this.application,
-    required this.applicationIcon
+    this.applicationIcon
   });
 
   @override
