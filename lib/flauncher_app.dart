@@ -26,8 +26,10 @@ import 'package:flauncher/widgets/settings/back_button_actions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'database.dart';
 import 'flauncher.dart';
@@ -86,6 +88,12 @@ class FLauncherApp extends StatelessWidget {
             ...WidgetsApp.defaultActions,
             DirectionalFocusIntent: SoundFeedbackDirectionalFocusAction(context),
           },
+          localizationsDelegates: [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
           title: 'FLauncher',
           theme: ThemeData(
             useMaterial3: true,

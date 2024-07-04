@@ -1,0 +1,79 @@
+{
+    "aboutFlauncher": "Acerca de FLauncher",
+    "addCategory": "Agregar categoría",
+    "alphabetical": "Alfabético",
+    "appCardHighlightAnimation": "Resaltar aplicaciones",
+    "appInfo": "Datos de la aplicación",
+    "applications": "Aplicaciones",
+    "backButtonAction": "Acción del botón 'Atrás'",
+    "categories": "Categorías",
+    "columnCount": "Cantidad de columnas",
+    "date": "Fecha",
+    "dateAndTimeFormat": "Formato de fecha y hora",
+    "dialogOptionBackButtonActionDoNothing": "Nada",
+    "dialogOptionBackButtonActionShowScreensaver": "Mostrar salvapantallas",
+    "dialogOptionBackButtonActionShowClock": "Mostrar reloj",
+    "dialogTextNoFileExplorer": "Por favor, instale un gestor de archivos para seleccionar una imagen.",
+    "dialogTitleBackButtonAction": "Elegir la acción del botón 'Atrás'",
+    "delete": "Eliminar",
+    "formattedDate": "Fecha con formato: {dateString}",
+    "@formattedDate": {
+        "placeholders": {
+            "dateString": {
+                "type": {
+                    "type": "String"
+                }
+            }
+        }
+    },
+    "formattedTime": "Hora con formato: {timeString}",
+    "@formattedTime": {
+        "placeholders": {
+            "timeString": {
+                "type": {
+                    "type": "String"
+                }
+            }
+        }
+    },
+    "gradient": "Gradiente",
+    "grid": "Cuadrícula",
+    "hide": "Ocultar",
+    "hiddenApplications": "Aplicaciones ocultas",
+    "loading": "Cargando",
+    "manual": "Manual",
+    "mustNotBeEmpty": "No debe estar vacío",
+    "name": "Nombre",
+    "noDateFormatSpecified": "Sin formato de fecha",
+    "noTimeFormatSpecified": "Sin formato de hora",
+    "nonTvApplications": "Otras aplicaciones",
+    "open": "Abrir",
+    "orSelectFormatSpecifiers": "O seleccione especificadores de formato",
+    "picture": "Imagen",
+    "removeFrom": "Remover de {name}",
+    "@removeFrom": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "renameCategory": "Renombrar categoría",
+    "reorder": "Reordenar",
+    "row": "Row",
+    "rowHeight": "Row height",
+    "statusBar": "Barra de estado",
+    "settings": "Ajustes",
+    "show": "Mostrar",
+    "showCategoryTitles": "Mostrar títulos de categorías",
+    "sort": "Orden",
+    "systemSettings": "Ajustes del sistema",
+    "textEmptyCategory": "Esta categoría está vacía.",
+    "time": "Hora",
+    "titleStatusBarSettingsPage": "Choose what to display in the status bar",
+    "tvApplications": "Aplicaciones del televisor",
+    "type": "Tipo",
+    "typeInTheDateFormat": "Escriba el formato de fecha",
+    "typeInTheHourFormat": "Escriba el formato de hora",
+    "uninstall": "Desinstalar",
+    "wallpaper": "Fondo de pantalla",
+    "withEllipsisAddTo": "Añadir a..."
+}

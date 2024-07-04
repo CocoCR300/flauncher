@@ -20,6 +20,7 @@ import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddToCategoryDialog extends StatelessWidget {
   final App application;
@@ -32,8 +33,11 @@ class AddToCategoryDialog extends StatelessWidget {
             .where((element) => !element.applications.any((app) => app.packageName == application.packageName))
             .map((categoryWithApps) => categoryWithApps.category)
             .toList(),
-        builder: (context, categories, _) => SimpleDialog(
-          title: Text("Add to..."),
+        builder: (context, categories, _) {
+          AppLocalizations localizations = AppLocalizations.of(context)!;
+
+          return SimpleDialog(
+          title: Text(localizations.withEllipsisAddTo),
           contentPadding: EdgeInsets.all(16),
           children: categories
               .map(
@@ -49,6 +53,7 @@ class AddToCategoryDialog extends StatelessWidget {
                 ),
               )
               .toList(),
-        ),
+        );
+        },
       );
 }

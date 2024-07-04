@@ -32,6 +32,7 @@ import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/date_time_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FLauncher extends StatelessWidget {
   const FLauncher();
@@ -181,14 +182,18 @@ class FLauncher extends StatelessWidget {
     }
   }
 
-  Widget _emptyState(BuildContext context) => Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const CircularProgressIndicator(),
-        const SizedBox(height: 16),
-        Text("Loading", style: Theme.of(context).textTheme.titleLarge),
-      ],
-    ),
-  );
+  Widget _emptyState(BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(),
+          const SizedBox(height: 16),
+          Text(localizations.loading, style: Theme.of(context).textTheme.titleLarge),
+        ],
+      ),
+    );
+  }
 }

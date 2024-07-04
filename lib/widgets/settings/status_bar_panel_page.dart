@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../providers/settings_service.dart';
 
@@ -26,27 +27,28 @@ class StatusBarPanelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
     SettingsService settingsService = Provider.of(context);
 
     return Column(
         children: [
-          Text("Status bar", style: Theme.of(context).textTheme.titleLarge),
+          Text(localizations.statusBar, style: Theme.of(context).textTheme.titleLarge),
           Divider(),
-          Text("Choose what to display in the status bar",
+          Text(localizations.titleStatusBarSettingsPage,
             textAlign: TextAlign.start), // TODO: Setting the alignment doesn't work
           SizedBox(height: 8, width: 0),
           SwitchListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 8),
             value: settingsService.showDateInStatusBar,
             onChanged: (value) => settingsService.setShowDateInStatusBar(value),
-            title: const Text("Date"),
+            title: Text(localizations.date),
             dense: true,
           ),
           SwitchListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 8),
             value: settingsService.showTimeInStatusBar,
             onChanged: (value) => settingsService.setShowTimeInStatusBar(value),
-            title: const Text("Time"),
+            title: Text(localizations.time),
             dense: true,
           ),
         ],

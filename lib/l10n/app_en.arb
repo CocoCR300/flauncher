@@ -1,0 +1,75 @@
+{
+    "aboutFlauncher": "About FLauncher",
+    "addCategory": "Add category",
+    "alphabetical": "Alphabetical",
+    "appCardHighlightAnimation": "App card highlight animation",
+    "appInfo": "Application info",
+    "applications": "Applications",
+    "backButtonAction": "Back button action",
+    "categories": "Categories",
+    "columnCount": "Column count",
+    "date": "Date",
+    "dateAndTimeFormat": "Date and time format",
+    "dialogOptionBackButtonActionDoNothing": "Do nothing",
+    "dialogOptionBackButtonActionShowScreensaver": "Show screensaver",
+    "dialogOptionBackButtonActionShowClock": "Show clock",
+    "dialogTextNoFileExplorer": "Please install a file explorer in order to pick a picture.",
+    "dialogTitleBackButtonAction": "Choose the back button action",
+    "delete": "Delete",
+    "formattedDate": "Formatted date: {dateString}",
+    "@formattedDate": {
+        "placeholders": {
+            "dateString": {
+                "type": "String"
+            }
+        }
+    },
+    "formattedTime": "Formatted time: {timeString}",
+    "@formattedTime": {
+        "placeholders": {
+            "timeString": {
+                "type": "String"
+            }
+        }
+    },
+    "gradient": "Gradient",
+    "grid": "Grid",
+    "hide": "Hide",
+    "hiddenApplications": "Hidden applications",
+    "loading": "Loading",
+    "manual": "Manual",
+    "mustNotBeEmpty": "Must not be empty",
+    "name": "Name",
+    "noDateFormatSpecified": "No date format specified",
+    "noTimeFormatSpecified": "No time format specified",
+    "nonTvApplications": "Non-TV applications",
+    "open": "Open",
+    "orSelectFormatSpecifiers": "Or select format specifiers",
+    "picture": "Picture",
+    "removeFrom": "Remove from {name}",
+    "@removeFrom": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "renameCategory": "Rename category",
+    "reorder": "Reorder",
+    "row": "Row",
+    "rowHeight": "Row height",
+    "statusBar": "Status bar",
+    "settings": "Settings",
+    "show": "Show",
+    "showCategoryTitles": "Show category titles",
+    "sort": "Sort",
+    "systemSettings": "System settings",
+    "textEmptyCategory": "This category is empty.",
+    "time": "Time",
+    "titleStatusBarSettingsPage": "Choose what to display in the status bar",
+    "tvApplications": "TV applications",
+    "type": "Type",
+    "typeInTheDateFormat": "Type in the date format",
+    "typeInTheHourFormat": "Type in the hour format",
+    "uninstall": "Uninstall",
+    "wallpaper": "Wallpaper",
+    "withEllipsisAddTo": "Add to..."
+}

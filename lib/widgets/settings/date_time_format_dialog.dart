@@ -19,10 +19,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:format/format.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// TODO: Translate these
 const List<Tuple2<String, String>> dateFormatSpecifiers = [
   Tuple2("d", "[d] Day in month (10)"),
   Tuple2("E", "[E] Abbreviated day of week (Tue)"),
@@ -78,6 +81,8 @@ class DateTimeFormatDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
+
     TextEditingController dateFormatFieldController = TextEditingController(
         text: _initialDateFormat);
     TextEditingController timeFormatFieldController = TextEditingController(
@@ -96,28 +101,28 @@ class DateTimeFormatDialog extends StatelessWidget {
       builder: (context, _) => SimpleDialog(
         insetPadding: const EdgeInsets.only(bottom: 60),
         contentPadding: const EdgeInsets.all(24),
-        title: const Text("Date and time format"),
+        title: Text(localizations.dateAndTimeFormat),
         children: [
           Consumer<FormatModel>(
             builder: (_, model, __) {
               String text;
 
               if (model.dateFormatString.isEmpty) {
-                text = "Formatted date: No date format specified";
+                text = localizations.noDateFormatSpecified;
               }
               else {
                 DateFormat dateFormat = DateFormat(
                     model.dateFormatString, Platform.localeName);
-                text = "Formatted date: ${dateFormat.format(DateTime.now())}";
+                text = localizations.formattedDate(dateFormat.format(DateTime.now()));
               }
 
               if (model.timeFormatString.isEmpty) {
-                text += "\nFormatted time: No time format specified";
+                text += "\n${localizations.noTimeFormatSpecified}";
               }
               else {
                 DateFormat dateFormat = DateFormat(
                     model.timeFormatString, Platform.localeName);
-                text += "\nFormatted time: ${dateFormat.format(DateTime.now())}";
+                text += "\n${localizations.formattedTime(dateFormat.format(DateTime.now()))}";
               }
 
               return Text(text);
@@ -127,7 +132,7 @@ class DateTimeFormatDialog extends StatelessWidget {
           TextFormField(
             autovalidateMode: AutovalidateMode.always,
             controller: dateFormatFieldController,
-            decoration: const InputDecoration(labelText: "Type in the date format"),
+            decoration: InputDecoration(labelText: localizations.typeInTheDateFormat),
             keyboardType: TextInputType.text,
             onChanged: (value) => dateFormatStringChanged(context, value),
             onFieldSubmitted: (value) {
@@ -140,7 +145,7 @@ class DateTimeFormatDialog extends StatelessWidget {
                 value = value.trim();
 
                 if (value.isEmpty) {
-                  result = "Must not be empty";
+                  result = localizations.mustNotBeEmpty;
                 }
               }
 
@@ -150,7 +155,7 @@ class DateTimeFormatDialog extends StatelessWidget {
           TextFormField(
             autovalidateMode: AutovalidateMode.always,
             controller: timeFormatFieldController,
-            decoration: const InputDecoration(labelText: "Type in the hour format"),
+            decoration: InputDecoration(labelText: localizations.typeInTheHourFormat),
             keyboardType: TextInputType.text,
             onChanged: (value) => timeFormatStringChanged(context, value),
             onFieldSubmitted: (value) {
@@ -163,7 +168,7 @@ class DateTimeFormatDialog extends StatelessWidget {
                 value = value.trim();
 
                 if (value.isEmpty) {
-                  result = "Must not be empty";
+                  result = localizations.mustNotBeEmpty;
                 }
               }
 
@@ -171,7 +176,7 @@ class DateTimeFormatDialog extends StatelessWidget {
             },
           ),
           const SizedBox(height: 24),
-          const Text("Or select format specifiers:"),
+          Text(localizations.orSelectFormatSpecifiers),
           const SizedBox(height: 12),
           DropdownMenu<String>(
               dropdownMenuEntries: menuEntries,

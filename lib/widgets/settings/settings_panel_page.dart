@@ -29,6 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'back_button_actions.dart';
 
@@ -36,11 +37,14 @@ class SettingsPanelPage extends StatelessWidget {
   static const String routeName = "settings_panel";
 
   @override
-  Widget build(BuildContext context) => Consumer<SettingsService>(
+  Widget build(BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
+
+    return Consumer<SettingsService>(
         builder: (context, settingsService, __) => SingleChildScrollView(
           child: Column(
             children: [
-              Text("Settings", style: Theme.of(context).textTheme.titleLarge),
+              Text(localizations.settings, style: Theme.of(context).textTheme.titleLarge),
               const Divider(),
               EnsureVisible(
                 alignment: 0.5,
@@ -49,7 +53,7 @@ class SettingsPanelPage extends StatelessWidget {
                     children: [
                       const Icon(Icons.apps),
                       Container(width: 8),
-                      Text("Applications", style: Theme.of(context).textTheme.bodyMedium),
+                      Text(localizations.applications, style: Theme.of(context).textTheme.bodyMedium),
                     ],
                   ),
                   onPressed: () => Navigator.of(context).pushNamed(ApplicationsPanelPage.routeName),
@@ -60,7 +64,7 @@ class SettingsPanelPage extends StatelessWidget {
                   children: [
                     const Icon(Icons.category),
                     Container(width: 8),
-                    Text("Categories", style: Theme.of(context).textTheme.bodyMedium),
+                    Text(localizations.categories, style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
                 onPressed: () => Navigator.of(context).pushNamed(CategoriesPanelPage.routeName),
@@ -70,7 +74,7 @@ class SettingsPanelPage extends StatelessWidget {
                   children: [
                     const Icon(Icons.wallpaper_outlined),
                     Container(width: 8),
-                    Text("Wallpaper", style: Theme.of(context).textTheme.bodyMedium),
+                    Text(localizations.wallpaper, style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
                 onPressed: () => Navigator.of(context).pushNamed(WallpaperPanelPage.routeName),
@@ -80,7 +84,7 @@ class SettingsPanelPage extends StatelessWidget {
                   children: [
                     const Icon(Icons.tips_and_updates),
                     Container(width: 8),
-                    Text("Status bar", style: Theme.of(context).textTheme.bodyMedium),
+                    Text(localizations.statusBar, style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
                 onPressed: () => Navigator.of(context).pushNamed(StatusBarPanelPage.routeName),
@@ -91,7 +95,7 @@ class SettingsPanelPage extends StatelessWidget {
                   children: [
                     const Icon(Icons.settings_outlined),
                     Container(width: 8),
-                    Text("Android settings", style: Theme.of(context).textTheme.bodyMedium),
+                    Text(localizations.systemSettings, style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
                 onPressed: () => context.read<AppsService>().openSettings(),
@@ -102,7 +106,7 @@ class SettingsPanelPage extends StatelessWidget {
                   children: [
                     const Icon(Icons.date_range),
                     Container(width: 8),
-                    Text("Date and time format", style: Theme.of(context).textTheme.bodyMedium),
+                    Text(localizations.dateAndTimeFormat, style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
                 onPressed: () async => await _dateTimeFormatDialog(context),
@@ -112,7 +116,7 @@ class SettingsPanelPage extends StatelessWidget {
                   children: [
                     const Icon(Icons.arrow_back),
                     Container(width: 8),
-                    Text("Back button action", style: Theme.of(context).textTheme.bodyMedium),
+                    Text(localizations.backButtonAction, style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
                 onPressed: () async => await _backButtonActionDialog(context),
@@ -121,14 +125,14 @@ class SettingsPanelPage extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                 value: settingsService.appHighlightAnimationEnabled,
                 onChanged: (value) => settingsService.setAppHighlightAnimationEnabled(value),
-                title: const Text("App card highlight animation"),
+                title: Text(localizations.appCardHighlightAnimation),
                 dense: true,
               ),
               SwitchListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                 value: settingsService.showCategoryTitles,
                 onChanged: (value) => settingsService.setShowCategoryTitles(value),
-                title: const Text("Show category titles"),
+                title: Text(localizations.showCategoryTitles),
                 dense: true,
               ),
               const Divider(),
@@ -137,7 +141,7 @@ class SettingsPanelPage extends StatelessWidget {
                   children: [
                     const Icon(Icons.info_outline),
                     Container(width: 8),
-                    Text("About FLauncher", style: Theme.of(context).textTheme.bodyMedium),
+                    Text(localizations.aboutFlauncher, style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
                 onPressed: () => showDialog(
@@ -154,25 +158,27 @@ class SettingsPanelPage extends StatelessWidget {
           ),
         ),
       );
+  }
 
   Future<void> _backButtonActionDialog(BuildContext context) async {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
     SettingsService service = context.read<SettingsService>();
 
     final newAction = await showDialog<String>(
         context: context,
         builder: (context) => SimpleDialog(
-            title: const Text("Choose the back button action"),
+            title: Text(localizations.dialogTitleBackButtonAction),
             children: [
               SimpleDialogOption(
-                child: const Text("Do nothing"),
+                child: Text(localizations.dialogOptionBackButtonActionDoNothing),
                 onPressed: () => Navigator.pop(context, ""),
               ),
               SimpleDialogOption(
-                child: const Text("Show clock"),
+                child: Text(localizations.dialogOptionBackButtonActionShowClock),
                 onPressed: () => Navigator.pop(context, BACK_BUTTON_ACTION_CLOCK),
               ),
               SimpleDialogOption(
-                child: const Text("Show screensaver"),
+                child: Text(localizations.dialogOptionBackButtonActionShowScreensaver),
                 onPressed: () => Navigator.pop(context, BACK_BUTTON_ACTION_SCREENSAVER),
               )
             ]

@@ -25,6 +25,7 @@ import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ApplicationsPanelPage extends StatefulWidget {
   static const String routeName = "applications_panel";
@@ -37,7 +38,10 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
   String _title = "TV Applications";
 
   @override
-  Widget build(BuildContext context) => DefaultTabController(
+  Widget build(BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
+
+    return DefaultTabController(
         length: 3,
         child: Column(
           children: [
@@ -49,13 +53,13 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
                 onTap: (index) {
                   switch (index) {
                     case 0:
-                      setState(() => _title = "TV Applications");
+                      setState(() => _title = localizations.tvApplications);
                       break;
                     case 1:
-                      setState(() => _title = "Non-TV Applications");
+                      setState(() => _title = localizations.nonTvApplications);
                       break;
                     case 2:
-                      setState(() => _title = "Hidden Applications");
+                      setState(() => _title = localizations.hiddenApplications);
                       break;
                     default:
                       throw ArgumentError.value(index, "index");
@@ -73,6 +77,7 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
           ],
         ),
       );
+  }
 }
 
 class _TVTab extends StatelessWidget {

@@ -24,6 +24,7 @@ import 'package:flauncher/widgets/settings/categories_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/settings_service.dart';
 
@@ -93,7 +94,10 @@ class CategoryRow extends StatelessWidget {
   int _findChildIndex(Key key) =>
       applications.indexWhere((app) => "${category.id}-${app.packageName}" == (key as ValueKey<String>).value);
 
-  Widget _emptyState(BuildContext context) => SizedBox(
+  Widget _emptyState(BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
+
+    return SizedBox(
         height: 110,
         child: EnsureVisible(
           alignment: 0.1,
@@ -111,11 +115,11 @@ class CategoryRow extends StatelessWidget {
                       context: context,
                       builder: (_) => const SettingsPanel(initialRoute: CategoriesPanelPage.routeName),
                     ),
-                    child: const Padding(
+                    child: Padding(
                       padding: EdgeInsets.all(8),
                       child: Center(
                         child: Text(
-                          "This category is empty.",
+                          localizations.textEmptyCategory,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -127,6 +131,7 @@ class CategoryRow extends StatelessWidget {
           ),
         ),
       );
+  }
 
   void _onMove(BuildContext context, AxisDirection direction, int index) {
     int? newIndex;

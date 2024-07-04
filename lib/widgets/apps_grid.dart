@@ -26,6 +26,7 @@ import 'package:flauncher/widgets/settings/categories_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/settings_service.dart';
 
@@ -134,7 +135,10 @@ class AppsGrid extends StatelessWidget {
         crossAxisSpacing: 16,
       );
 
-  Widget _emptyState(BuildContext context) => Padding(
+  Widget _emptyState(BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
+
+    return Padding(
         padding: EdgeInsets.only(top: 8),
         child: SizedBox(
           height: 110,
@@ -158,7 +162,7 @@ class AppsGrid extends StatelessWidget {
                         padding: EdgeInsets.all(8),
                         child: Center(
                           child: Text(
-                            "This category is empty.",
+                            localizations.textEmptyCategory,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -171,4 +175,5 @@ class AppsGrid extends StatelessWidget {
           ),
         ),
       );
+  }
 }

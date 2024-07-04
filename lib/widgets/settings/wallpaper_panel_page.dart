@@ -20,14 +20,18 @@ import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WallpaperPanelPage extends StatelessWidget {
   static const String routeName = "wallpaper_panel";
 
   @override
-  Widget build(BuildContext context) => Column(
+  Widget build(BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
+
+    return Column(
         children: [
-          Text("Wallpaper", style: Theme.of(context).textTheme.titleLarge),
+          Text(localizations.wallpaper, style: Theme.of(context).textTheme.titleLarge),
           Divider(),
           TextButton(
             autofocus: true,
@@ -35,7 +39,7 @@ class WallpaperPanelPage extends StatelessWidget {
               children: [
                 Icon(Icons.gradient),
                 Container(width: 8),
-                Text("Gradient", style: Theme.of(context).textTheme.bodyMedium),
+                Text(localizations.gradient, style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),
             onPressed: () => Navigator.of(context).pushNamed(GradientPanelPage.routeName),
@@ -45,7 +49,7 @@ class WallpaperPanelPage extends StatelessWidget {
               children: [
                 Icon(Icons.insert_drive_file_outlined),
                 Container(width: 8),
-                Text("Custom", style: Theme.of(context).textTheme.bodyMedium),
+                Text(localizations.picture, style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),
             onPressed: () async {
@@ -59,7 +63,7 @@ class WallpaperPanelPage extends StatelessWidget {
                       children: [
                         Icon(Icons.error_outline, color: Colors.red),
                         SizedBox(width: 8),
-                        Text("Please install a file explorer in order to pick an image.")
+                        Text(localizations.dialogTextNoFileExplorer)
                       ],
                     ),
                   ),
@@ -69,4 +73,5 @@ class WallpaperPanelPage extends StatelessWidget {
           ),
         ],
       );
+  }
 }
