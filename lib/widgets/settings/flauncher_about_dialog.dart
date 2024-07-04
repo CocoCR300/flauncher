@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FLauncherAboutDialog extends StatelessWidget {
   final PackageInfo packageInfo;
@@ -29,34 +30,16 @@ class FLauncherAboutDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.bodyMedium!;
-    final underlined = textStyle.copyWith(decoration: TextDecoration.underline);
+    AppLocalizations localizations = AppLocalizations.of(context)!;
+
     return AboutDialog(
       applicationName: packageInfo.appName,
       applicationVersion: "${packageInfo.version} (${packageInfo.buildNumber})",
       applicationIcon: Image.asset("assets/logo.png", height: 72),
-      applicationLegalese: "© 2021 Étienne Fesser",
+      applicationLegalese: "© 2024 Oscar Rojas",
       children: [
         SizedBox(height: 24),
-        RichText(
-          text: TextSpan(
-            style: textStyle,
-            children: [
-              TextSpan(
-                text: "FLauncher is an open-source alternative launcher for Android TV.\n"
-                    "Source code available at ",
-              ),
-              TextSpan(text: "https://github.com/CocoCR300/flauncher", style: underlined),
-              TextSpan(text: ".\n\n"),
-              TextSpan(text: "Logo by Katie "),
-              TextSpan(text: "@fureturoe", style: underlined),
-              TextSpan(text: ", "),
-              TextSpan(text: "design by "),
-              TextSpan(text: "@FXCostanzo", style: underlined),
-              TextSpan(text: "."),
-            ],
-          ),
-        )
+        Text(localizations.textAboutDialog("https://github.com/CocoCR300/flauncher"))
       ],
     );
   }

@@ -62,6 +62,14 @@
     "showCategoryTitles": "Show category titles",
     "sort": "Sort",
     "systemSettings": "System settings",
+    "textAboutDialog": "FLauncher is an open-source alternative launcher for Android TV.\nSource code available at {repoUrl}.\n\nLogo by Katie (@fureturoe), design by @FXCostanzo.",
+    "@textAboutDialog": {
+        "placeholders": {
+            "repoUrl": {
+                "type": "String"
+            }
+        }
+    },
     "textEmptyCategory": "This category is empty.",
     "time": "Time",
     "titleStatusBarSettingsPage": "Choose what to display in the status bar",
