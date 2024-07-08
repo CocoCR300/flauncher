@@ -20,7 +20,13 @@ import 'dart:async';
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
+import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/launcher_state.dart';
+import 'package:flauncher/providers/network_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -34,11 +40,22 @@ Future<void> main() async {
   final fLauncherChannel = FLauncherChannel();
   final fLauncherDatabase = FLauncherDatabase(connect());
 
-  runApp(
-    FLauncherApp(
-      sharedPreferences,
-      fLauncherChannel,
-      fLauncherDatabase
-    ),
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+            create: (_) => SettingsService(sharedPreferences),
+            lazy: false),
+        ChangeNotifierProvider(create: (_) => AppsService(fLauncherChannel, fLauncherDatabase)),
+        ChangeNotifierProvider(create: (_) => LauncherState()),
+        ChangeNotifierProvider(create: (_) => NetworkService(fLauncherChannel)),
+        ChangeNotifierProvider(
+            create: (context) {
+              SettingsService settingsService = Provider.of(context, listen: false);
+              return WallpaperService(fLauncherChannel, settingsService);
+            }
+        ),
+      ],
+      child: FLauncherApp()
+    )
   );
 }
