@@ -23,6 +23,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _appHighlightAnimationEnabledKey = "app_highlight_animation_enabled";
+const _appKeyClickEnabledKey = "app_key_click_enabled";
 const _gradientUuidKey = "gradient_uuid";
 const _backButtonAction = "back_button_action";
 const _dateFormat = "date_format";
@@ -45,6 +46,8 @@ class SettingsService extends ChangeNotifier {
 
   bool get showTimeInStatusBar => _sharedPreferences.getBool(_showTimeInStatusBar) ?? true;
 
+  bool get appKeyClickEnabled => _sharedPreferences.getBool(_appKeyClickEnabledKey) ?? true;
+
   String? get gradientUuid => _sharedPreferences.getString(_gradientUuidKey);
 
   String get backButtonAction => _sharedPreferences.getString(_backButtonAction) ?? BACK_BUTTON_ACTION_NOTHING;
@@ -57,9 +60,17 @@ class SettingsService extends ChangeNotifier {
     this._sharedPreferences
   );
 
-  Future<void> setAppHighlightAnimationEnabled(bool value) async {
-    await _sharedPreferences.setBool(_appHighlightAnimationEnabledKey, value);
+  Future<void> set(String key, bool value) async {
+    await _sharedPreferences.setBool(key, value);
     notifyListeners();
+  }
+
+  Future<void> setAppHighlightAnimationEnabled(bool value) async {
+    return set(_appHighlightAnimationEnabledKey, value);
+  }
+
+  Future<void> setAppKeyClickEnabled(bool value) async {
+    return set(_appKeyClickEnabledKey, value);
   }
 
   Future<void> setGradientUuid(String value) async {
@@ -81,17 +92,14 @@ class SettingsService extends ChangeNotifier {
   }
 
   Future<void> setShowCategoryTitles(bool show) async {
-    await _sharedPreferences.setBool(_showCategoryTitles, show);
-    notifyListeners();
+    return set(_showCategoryTitles, show);
   }
 
   Future<void> setShowDateInStatusBar(bool show) async {
-    await _sharedPreferences.setBool(_showDateInStatusBar, show);
-    notifyListeners();
+    return set(_showDateInStatusBar, show);
   }
 
   Future<void> setShowTimeInStatusBar(bool show) async {
-    await _sharedPreferences.setBool(_showTimeInStatusBar, show);
-    notifyListeners();
+    return set(_showTimeInStatusBar, show);
   }
 }

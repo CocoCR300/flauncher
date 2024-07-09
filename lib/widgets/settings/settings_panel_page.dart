@@ -31,6 +31,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../rounded_switch_list_tile.dart';
 import 'back_button_actions.dart';
 
 class SettingsPanelPage extends StatelessWidget {
@@ -121,19 +122,23 @@ class SettingsPanelPage extends StatelessWidget {
                 ),
                 onPressed: () async => await _backButtonActionDialog(context),
               ),
-              SwitchListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+              RoundedSwitchListTile(
                 value: settingsService.appHighlightAnimationEnabled,
                 onChanged: (value) => settingsService.setAppHighlightAnimationEnabled(value),
-                title: Text(localizations.appCardHighlightAnimation),
-                dense: true,
+                title: Text(localizations.appCardHighlightAnimation, style: Theme.of(context).textTheme.bodyMedium),
+                secondary: Icon(Icons.account_box_outlined),
               ),
-              SwitchListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+              RoundedSwitchListTile(
+                value: settingsService.appKeyClickEnabled,
+                onChanged: (value) => settingsService.setAppKeyClickEnabled(value),
+                title: Text("Click sound on key press", style: Theme.of(context).textTheme.bodyMedium),
+                secondary: Icon(Icons.add_alert_sharp),
+              ),
+              RoundedSwitchListTile(
                 value: settingsService.showCategoryTitles,
                 onChanged: (value) => settingsService.setShowCategoryTitles(value),
-                title: Text(localizations.showCategoryTitles),
-                dense: true,
+                title: Text(localizations.showCategoryTitles, style: Theme.of(context).textTheme.bodyMedium),
+                secondary: Icon(Icons.abc)
               ),
               const Divider(),
               TextButton(

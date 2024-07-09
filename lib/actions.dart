@@ -22,6 +22,7 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/back_button_actions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +34,18 @@ class SoundFeedbackDirectionalFocusAction extends DirectionalFocusAction {
   @override
   void invoke(DirectionalFocusIntent intent) {
     super.invoke(intent);
-    Feedback.forTap(context);
+
+    SettingsService settingsService = context.read<SettingsService>();
+    if (settingsService.appKeyClickEnabled) {
+      Feedback.forTap(context);
+    } else {
+      silentForTap(context);
+    }
+  }
+
+  /// copied from Feedback.forTap, omitting playing a sound
+  static void silentForTap(BuildContext context) async {
+    context.findRenderObject()!.sendSemanticsEvent(const TapSemanticEvent());
   }
 }
 
