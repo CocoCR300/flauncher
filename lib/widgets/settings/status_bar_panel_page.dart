@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -37,19 +38,17 @@ class StatusBarPanelPage extends StatelessWidget {
           Text(localizations.titleStatusBarSettingsPage,
             textAlign: TextAlign.start), // TODO: Setting the alignment doesn't work
           SizedBox(height: 8, width: 0),
-          SwitchListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+          RoundedSwitchListTile(
             value: settingsService.showDateInStatusBar,
             onChanged: (value) => settingsService.setShowDateInStatusBar(value),
             title: Text(localizations.date),
-            dense: true,
+            secondary: Icon(Icons.calendar_today_outlined)
           ),
-          SwitchListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+          RoundedSwitchListTile(
             value: settingsService.showTimeInStatusBar,
             onChanged: (value) => settingsService.setShowTimeInStatusBar(value),
             title: Text(localizations.time),
-            dense: true,
+            secondary: Icon(Icons.watch_later_outlined)
           ),
         ],
       );
