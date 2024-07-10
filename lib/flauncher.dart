@@ -35,50 +35,45 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'actions.dart';
-
 class FLauncher extends StatelessWidget {
   const FLauncher();
 
   @override
   Widget build(BuildContext context) => FocusTraversalGroup(
     policy: RowByRowTraversalPolicy(),
-    child: Actions(
-        actions: { BackIntent: BackAction(context) },
-        child: Stack(
-          children: [
-            Consumer<WallpaperService>(
-              builder: (_, wallpaperService, __) => _wallpaper(context, wallpaperService)
+    child: Stack(
+      children: [
+        Consumer<WallpaperService>(
+          builder: (_, wallpaperService, __) => _wallpaper(context, wallpaperService)
+        ),
+        Consumer<LauncherState>(
+          builder: (_, state, child) => Visibility(
+            child: child!,
+            replacement: const Center(
+              child: AlternativeLauncherView()
             ),
-            Consumer<LauncherState>(
-              builder: (_, state, child) => Visibility(
-                child: child!,
-                replacement: const Center(
-                    child: AlternativeLauncherView()
-                ),
-                visible: state.launcherVisible
-              ),
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                appBar: _appBar(context),
-                body: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: Consumer<AppsService>(
-                    builder: (context, appsService, _) {
-                      if (appsService.initialized) {
-                        return SingleChildScrollView(child: _categories(appsService.categoriesWithApps));
-                      }
-                      else {
-                        return _emptyState(context);
-                      }
-                    }
-                  ),
-                ),
+            visible: state.launcherVisible
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: _appBar(context),
+            body: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: Consumer<AppsService>(
+                builder: (context, appsService, _) {
+                  if (appsService.initialized) {
+                    return SingleChildScrollView(child: _categories(appsService.categoriesWithApps));
+                  }
+                  else {
+                    return _emptyState(context);
+                  }
+                }
               )
-            ),
-          ],
+            )
+          )
         )
-    ),
+      ]
+    )
   );
 
   Widget _categories(List<CategoryWithApps> categoriesWithApps) => Column(

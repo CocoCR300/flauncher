@@ -19,11 +19,8 @@
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/settings_service.dart';
-import 'package:flauncher/widgets/settings/back_button_actions.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class SoundFeedbackDirectionalFocusAction extends DirectionalFocusAction {
@@ -56,30 +53,14 @@ class BackAction extends Action<BackIntent> {
 
   @override
   Future<void> invoke(BackIntent intent) async {
-    AppsService appsService = context.read<AppsService>();
-    LauncherState launcherState = context.read<LauncherState>();
-    SettingsService settingsService = context.read<SettingsService>();
     NavigatorState? navigator = Navigator.maybeOf(context);
 
-    if (navigator != null && navigator.canPop()) {
-      navigator.pop();
-      return;
-    }
-
-    if (kDebugMode || await isDefaultLauncher(context)) {
-      String action = settingsService.backButtonAction;
-
-      switch (action) {
-        case BACK_BUTTON_ACTION_CLOCK:
-          launcherState.toggleLauncherVisibility();
-          break;
-        case BACK_BUTTON_ACTION_SCREENSAVER:
-          appsService.startAmbientMode();
-          break;
-      }
+    if (navigator != null) {
+      navigator.maybePop();
     }
     else {
-      SystemNavigator.pop();
+      LauncherState state = context.read<LauncherState>();
+      state.handleBackNavigation(context);
     }
   }
 }

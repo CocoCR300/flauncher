@@ -16,18 +16,55 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+
+import '../widgets/settings/back_button_actions.dart';
+import 'apps_service.dart';
 
 class LauncherState extends ChangeNotifier
 {
+  bool _isDefaultLauncher;
   bool _launcherVisible;
 
+  bool  get isDefaultLauncher => _isDefaultLauncher;
   bool  get launcherVisible => _launcherVisible;
 
-  LauncherState() : _launcherVisible = true;
+  LauncherState() : _isDefaultLauncher = false, _launcherVisible = true;
 
   void toggleLauncherVisibility() {
     _launcherVisible = !_launcherVisible;
     notifyListeners();
+  }
+
+  Future<void> refresh(AppsService appsService) async {
+    _isDefaultLauncher = await appsService.isDefaultLauncher();
+    notifyListeners();
+  }
+
+  void handleBackNavigation(BuildContext context) {
+    AppsService appsService = context.read<AppsService>();
+    LauncherState launcherState = context.read<LauncherState>();
+    SettingsService settingsService = context.read<SettingsService>();
+
+    if (kDebugMode || launcherState.isDefaultLauncher) {
+      launcherState.refresh(appsService);
+      String action = settingsService.backButtonAction;
+
+      switch (action) {
+        case BACK_BUTTON_ACTION_CLOCK:
+          launcherState.toggleLauncherVisibility();
+          break;
+        case BACK_BUTTON_ACTION_SCREENSAVER:
+          appsService.startAmbientMode();
+          break;
+      }
+    }
+    else {
+      SystemNavigator.pop();
+    }
   }
 }

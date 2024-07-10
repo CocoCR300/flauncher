@@ -17,11 +17,14 @@
  */
 
 import 'package:flauncher/actions.dart';
+import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 import 'flauncher.dart';
 
@@ -48,49 +51,61 @@ class FLauncherApp extends StatelessWidget
   const FLauncherApp();
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-          shortcuts: {
-            ...WidgetsApp.defaultShortcuts,
-            const SingleActivator(LogicalKeyboardKey.escape): _backIntents,
-            const SingleActivator(LogicalKeyboardKey.gameButtonB): _backIntents,
-            const SingleActivator(LogicalKeyboardKey.select): const ActivateIntent(),
-          },
-          actions: {
-            ...WidgetsApp.defaultActions,
-            DirectionalFocusIntent: SoundFeedbackDirectionalFocusAction(context)
-          },
-          localizationsDelegates: [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          title: 'FLauncher',
-          theme: ThemeData(
-            useMaterial3: true,
-            brightness: Brightness.dark,
-            primarySwatch: _swatch,
-            cardColor: _swatch[300],
-            canvasColor: _swatch[300],
-            dialogBackgroundColor: _swatch[400],
-            scaffoldBackgroundColor: _swatch[400],
-            textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: Colors.white)),
-            appBarTheme: const AppBarTheme(elevation: 0, backgroundColor: Colors.transparent),
-            typography: Typography.material2018(),
-            inputDecorationTheme: InputDecorationTheme(
-              focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-              labelStyle: Typography.material2018().white.bodyMedium,
-            ),
-            textSelectionTheme: TextSelectionThemeData(
-              cursorColor: Colors.white,
-              selectionColor: _swatch[200],
-              selectionHandleColor: _swatch[200],
-            ),
-          ),
-          home: Builder(
-            builder: (context) => PopScope(
-              child: FLauncher()
-            ),
-          ),
-      );
+  Widget build(BuildContext context) {
+    AppsService appsService = context.read<AppsService>();
+    LauncherState launcherState = context.read<LauncherState>();
+    launcherState.refresh(appsService);
+
+    return MaterialApp(
+      shortcuts: {
+        ...WidgetsApp.defaultShortcuts,
+        const SingleActivator(LogicalKeyboardKey.escape): _backIntents,
+        const SingleActivator(LogicalKeyboardKey.gameButtonB): _backIntents,
+        const SingleActivator(LogicalKeyboardKey.select): const ActivateIntent(),
+      },
+      actions: {
+        ...WidgetsApp.defaultActions,
+        BackIntent: BackAction(context),
+        DirectionalFocusIntent: SoundFeedbackDirectionalFocusAction(context)
+      },
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      title: 'FLauncher',
+      theme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        primarySwatch: _swatch,
+        cardColor: _swatch[300],
+        canvasColor: _swatch[300],
+        dialogBackgroundColor: _swatch[400],
+        scaffoldBackgroundColor: _swatch[400],
+        textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: Colors.white)),
+        appBarTheme: const AppBarTheme(elevation: 0, backgroundColor: Colors.transparent),
+        typography: Typography.material2018(),
+        inputDecorationTheme: InputDecorationTheme(
+          focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+          labelStyle: Typography.material2018().white.bodyMedium,
+        ),
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: Colors.white,
+          selectionColor: _swatch[200],
+          selectionHandleColor: _swatch[200],
+        ),
+      ),
+      home: Builder(
+        builder: (context) => PopScope(
+          canPop: false,
+          child: FLauncher(),
+          onPopInvoked: (didPop) {
+            LauncherState launcherState = context.read<LauncherState>();
+            launcherState.handleBackNavigation(context);
+          }
+        )
+      ),
+    );
+  }
 }
