@@ -29,6 +29,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
@@ -41,8 +42,15 @@ import io.flutter.plugin.common.MethodChannel;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MainActivity extends FlutterActivity
 {
@@ -84,18 +92,55 @@ public class MainActivity extends FlutterActivity
     }
 
     private List<Map<String, Serializable>> getApplications() {
-        List<ResolveInfo> tvActivitiesInfo = queryIntentActivities(false);
-        List<ResolveInfo> nonTvActivitiesInfo = queryIntentActivities(true);
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        CompletionService<Pair<Boolean, List<ResolveInfo>>> queryIntentActivitiesCompletionService =
+                new ExecutorCompletionService<>(executor);
+        queryIntentActivitiesCompletionService.submit(() ->
+                Pair.create(false, queryIntentActivities(false)));
+        queryIntentActivitiesCompletionService.submit(() ->
+                Pair.create(true, queryIntentActivities(true)));
+        List<ResolveInfo> tvActivitiesInfo = null;
+        List<ResolveInfo> nonTvActivitiesInfo = null;
+
+        int completed = 0;
+        while (completed < 2) {
+            try {
+                var activitiesInfo = queryIntentActivitiesCompletionService.take().get();
+
+                if (!activitiesInfo.first) {
+                    tvActivitiesInfo = activitiesInfo.second;
+                }
+                else {
+                    nonTvActivitiesInfo = activitiesInfo.second;
+                }
+            } catch (InterruptedException | ExecutionException ignored) { }
+            finally {
+                completed += 1;
+            }
+        }
+
+        CompletionService<Map<String, Serializable>> completionService = new ExecutorCompletionService<>(executor);
 
         List<Map<String, Serializable>> applications = new ArrayList<>(
                 tvActivitiesInfo.size() + nonTvActivitiesInfo.size());
 
+        boolean settingsPresent = false;
+        int appCount = 0;
         for (ResolveInfo tvActivityInfo : tvActivitiesInfo) {
-            applications.add(buildAppMap(tvActivityInfo.activityInfo, false));
+            if (!settingsPresent) {
+                settingsPresent = tvActivityInfo.activityInfo.packageName.equals("com.android.tv.settings");
+            }
+
+            completionService.submit(() -> buildAppMap(tvActivityInfo.activityInfo, false, null));
+            appCount += 1;
         }
 
         for (ResolveInfo nonTvActivityInfo : nonTvActivitiesInfo) {
             boolean nonDuplicate = true;
+
+            if (!settingsPresent) {
+                settingsPresent = nonTvActivityInfo.activityInfo.packageName.equals("com.android.settings");
+            }
 
             for (ResolveInfo tvActivityInfo : tvActivitiesInfo) {
                 if (tvActivityInfo.activityInfo.packageName.equals(nonTvActivityInfo.activityInfo.packageName)) {
@@ -105,9 +150,33 @@ public class MainActivity extends FlutterActivity
             }
 
             if (nonDuplicate) {
-                applications.add(buildAppMap(nonTvActivityInfo.activityInfo, true));
+                appCount += 1;
+                completionService.submit(() -> buildAppMap(nonTvActivityInfo.activityInfo, true, null));
             }
         }
+
+        while (appCount > 0) {
+            try {
+                Future<Map<String, Serializable>> appMap = completionService.take();
+                applications.add(appMap.get());
+            } catch (InterruptedException | ExecutionException ignored) {
+            } finally {
+                appCount -= 1;
+            }
+        }
+
+        executor.shutdown();
+
+        if (!settingsPresent) {
+            PackageManager packageManager = getPackageManager();
+            Intent settingsIntent = new Intent(Settings.ACTION_SETTINGS);
+            ActivityInfo activityInfo = settingsIntent.resolveActivityInfo(packageManager, 0);
+
+            if (activityInfo != null) {
+                applications.add(buildAppMap(activityInfo, false, Settings.ACTION_SETTINGS));
+            }
+        }
+
         return applications;
     }
 
@@ -124,7 +193,7 @@ public class MainActivity extends FlutterActivity
             ActivityInfo activityInfo = intent.resolveActivityInfo(getPackageManager(), 0);
 
             if (activityInfo != null) {
-                map = buildAppMap(activityInfo, false);
+                map = buildAppMap(activityInfo, false, null);
             }
         }
 
@@ -199,7 +268,7 @@ public class MainActivity extends FlutterActivity
                 .queryIntentActivities(intent, 0);
     }
 
-    private Map<String, Serializable> buildAppMap(ActivityInfo activityInfo, boolean sideloaded) {
+    private Map<String, Serializable> buildAppMap(ActivityInfo activityInfo, boolean sideloaded, String action) {
         PackageManager packageManager = getPackageManager();
 
         String  applicationName = activityInfo.loadLabel(packageManager).toString(),
@@ -209,12 +278,16 @@ public class MainActivity extends FlutterActivity
         }
         catch (PackageManager.NameNotFoundException ignored) { }
 
-        return Map.of(
-                "name", applicationName,
-                "packageName", activityInfo.packageName,
-                "version", applicationVersionName,
-                "sideloaded", sideloaded
-        );
+        Map<String, Serializable> appMap = new HashMap<>();
+        appMap.put("name", applicationName);
+        appMap.put("packageName", activityInfo.packageName);
+        appMap.put("version", applicationVersionName);
+        appMap.put("sideloaded", sideloaded);
+
+        if (action != null) {
+            appMap.put("action", action);
+        }
+        return appMap;
     }
 
     private boolean launchApp(String packageName) {
