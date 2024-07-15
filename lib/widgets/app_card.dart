@@ -30,9 +30,13 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
+import '../models/app.dart';
+import '../models/category.dart';
+
 const _validationKeys = [LogicalKeyboardKey.select, LogicalKeyboardKey.enter, LogicalKeyboardKey.gameButtonA];
 
-class AppCard extends StatefulWidget {
+class AppCard extends StatefulWidget
+{
   final Category category;
   final App application;
   final bool autofocus;
@@ -94,7 +98,6 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => FocusKeyboardListener(
-      onPressed: (key) => _onPressed(context, key),
       onLongPress: (key) => _onLongPress(context, key),
       builder: (context) {
 
