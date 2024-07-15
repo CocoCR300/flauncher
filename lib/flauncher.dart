@@ -35,6 +35,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'models/category.dart';
+
 class FLauncher extends StatelessWidget {
   const FLauncher();
 
@@ -62,7 +64,7 @@ class FLauncher extends StatelessWidget {
               child: Consumer<AppsService>(
                 builder: (context, appsService, _) {
                   if (appsService.initialized) {
-                    return SingleChildScrollView(child: _categories(appsService.categoriesWithApps));
+                    return SingleChildScrollView(child: _categories(appsService.categories));
                   }
                   else {
                     return _emptyState(context);
@@ -76,24 +78,24 @@ class FLauncher extends StatelessWidget {
     )
   );
 
-  Widget _categories(List<CategoryWithApps> categoriesWithApps) => Column(
-    children: categoriesWithApps.map((categoryWithApps) {
-      switch (categoryWithApps.category.type) {
+  Widget _categories(List<Category> categories) => Column(
+    children: categories.map((category) {
+      switch (category.type) {
         case CategoryType.row:
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: CategoryRow(
-                key: Key(categoryWithApps.category.id.toString()),
-                category: categoryWithApps.category,
-                applications: categoryWithApps.applications),
+                key: Key(category.id.toString()),
+                category: category,
+                applications: category.applications),
           );
         case CategoryType.grid:
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: AppsGrid(
-                key: Key(categoryWithApps.category.id.toString()),
-                category: categoryWithApps.category,
-                applications: categoryWithApps.applications),
+                key: Key(category.id.toString()),
+                category: category,
+                applications: category.applications),
           );
       }
     }).toList(),

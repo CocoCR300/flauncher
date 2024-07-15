@@ -18,7 +18,6 @@
 
 import 'dart:typed_data';
 
-import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/add_to_category_dialog.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
@@ -26,6 +25,9 @@ import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../models/app.dart';
+import '../../models/category.dart';
 
 class ApplicationsPanelPage extends StatefulWidget
 {

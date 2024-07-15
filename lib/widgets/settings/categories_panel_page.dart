@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/add_category_dialog.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
@@ -24,6 +23,8 @@ import 'package:flauncher/widgets/settings/category_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../models/category.dart';
 
 class CategoriesPanelPage extends StatelessWidget {
   static const String routeName = "categories_panel";
@@ -35,8 +36,8 @@ class CategoriesPanelPage extends StatelessWidget {
         children: [
           Text(localizations.categories, style: Theme.of(context).textTheme.titleLarge),
           Divider(),
-          Selector<AppsService, List<CategoryWithApps>>(
-            selector: (_, appsService) => appsService.categoriesWithApps,
+          Selector<AppsService, List<Category>>(
+            selector: (_, appsService) => appsService.categories,
             builder: (_, categories, __) => Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -59,8 +60,8 @@ class CategoriesPanelPage extends StatelessWidget {
       );
   }
 
-  Widget _category(BuildContext context, List<CategoryWithApps> categories, int index) => Padding(
-        key: Key(categories[index].category.id.toString()),
+  Widget _category(BuildContext context, List<Category> categories, int index) => Padding(
+        key: Key(categories[index].id.toString()),
         padding: EdgeInsets.only(bottom: 8),
         child: Card(
           margin: EdgeInsets.zero,
@@ -68,7 +69,7 @@ class CategoriesPanelPage extends StatelessWidget {
             alignment: 0.5,
             child: ListTile(
               dense: true,
-              title: Text(categories[index].category.name, style: Theme.of(context).textTheme.bodyMedium),
+              title: Text(categories[index].name, style: Theme.of(context).textTheme.bodyMedium),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -90,7 +91,7 @@ class CategoriesPanelPage extends StatelessWidget {
                     icon: Icon(Icons.settings),
                     onPressed: () => Navigator.of(context).pushNamed(
                       CategoryPanelPage.routeName,
-                      arguments: categories[index].category.id,
+                      arguments: categories[index].id,
                     ),
                   ),
                 ],

@@ -20,13 +20,18 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
+import 'package:flauncher/models/app.dart';
+import 'package:flauncher/models/category.dart';
+
 part 'database.drift.dart';
 
-class Apps extends Table {
+@UseRowClass(App)
+class Apps extends Table
+{
   TextColumn get packageName => text()();
 
   TextColumn get name => text()();
@@ -41,19 +46,19 @@ class Apps extends Table {
   Set<Column> get primaryKey => {packageName};
 }
 
-@DataClassName("Category")
+@UseRowClass(Category)
 class Categories extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   TextColumn get name => text()();
 
-  IntColumn get sort => intEnum<CategorySort>().withDefault(const Constant(0))();
+  IntColumn get sort => intEnum<CategorySort>().withDefault(Constant(Category.Sort.index))();
 
-  IntColumn get type => intEnum<CategoryType>().withDefault(const Constant(0))();
+  IntColumn get type => intEnum<CategoryType>().withDefault(Constant(Category.Type.index))();
 
-  IntColumn get rowHeight => integer().withDefault(const Constant(110))();
+  IntColumn get rowHeight => integer().withDefault(const Constant(Category.RowHeight))();
 
-  IntColumn get columnsCount => integer().withDefault(const Constant(6))();
+  IntColumn get columnsCount => integer().withDefault(const Constant(Category.ColumnsCount))();
 
   IntColumn get order => integer()();
 }
@@ -68,13 +73,6 @@ class AppsCategories extends Table {
 
   @override
   Set<Column> get primaryKey => {categoryId, appPackageName};
-}
-
-class CategoryWithApps {
-  final Category category;
-  final List<App> applications;
-
-  CategoryWithApps(this.category, this.applications);
 }
 
 enum CategorySort {
@@ -136,7 +134,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
   Future<List<App>> listApplications() =>
       (select(apps)..orderBy([(expr) => OrderingTerm.asc(expr.name.lower())])).get();
 
-  Future<void> persistApps(List<AppsCompanion> applications) =>
+  Future<void> persistApps(Iterable<AppsCompanion> applications) =>
       batch((batch) => batch.insertAllOnConflictUpdate(apps, applications));
 
   Future<void> updateApp(String packageName, AppsCompanion value) =>
@@ -145,7 +143,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
   Future<void> deleteApps(List<String> packageNames) =>
       (delete(apps)..where((tbl) => tbl.packageName.isIn(packageNames))).go();
 
-  Future<void> insertCategory(CategoriesCompanion category) => into(categories).insert(category);
+  Future<int> insertCategory(Insertable<Category> category) => into(categories).insert(category);
 
   Future<void> deleteCategory(int id) => (delete(categories)..where((tbl) => tbl.id.equals(id))).go();
 
@@ -173,6 +171,27 @@ class FLauncherDatabase extends _$FLauncherDatabase {
 
   Future<void> replaceAppsCategories(List<AppsCategoriesCompanion> value) =>
       batch((batch) => batch.replaceAll(appsCategories, value));
+
+  Future<List<Category>> getCategories() {
+    final query = select(categories);
+    query.orderBy([ (c) => OrderingTerm.asc(c.id) ]);
+
+    return query.get();
+  }
+
+  Future<List<AppCategory>> getAppsCategories() {
+    final query = select(appsCategories);
+    query.orderBy([ (c) => OrderingTerm.asc(c.appPackageName) ]);
+
+    return query.get();
+  }
+
+  Future<List<App>> getApplications() {
+    final query = select(apps);
+    query.orderBy([ (a) => OrderingTerm.asc(a.name.upper()) ]);
+
+    return query.get();
+  }
 
   Future<List<CategoryWithApps>> listCategoriesWithVisibleApps() async {
     final query = select(categories).join([
@@ -214,5 +233,5 @@ class FLauncherDatabase extends _$FLauncherDatabase {
 DatabaseConnection connect() => DatabaseConnection.delayed(() async {
       final dbFolder = await getApplicationDocumentsDirectory();
       final file = File(path.join(dbFolder.path, 'db.sqlite'));
-      return DatabaseConnection(NativeDatabase(file, logStatements: kDebugMode));
+      return DatabaseConnection(NativeDatabase(file, logStatements: foundation.kDebugMode));
     }());

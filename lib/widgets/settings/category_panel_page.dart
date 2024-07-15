@@ -23,6 +23,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../models/category.dart';
+
 class CategoryPanelPage extends StatelessWidget {
   static const String routeName = "category_panel";
 
@@ -173,8 +175,16 @@ class CategoryPanelPage extends StatelessWidget {
   }
 
   Category? _categorySelector(AppsService appsService) {
-    final index = appsService.categoriesWithApps.indexWhere((element) => element.category.id == categoryId);
-    return index == -1 ? null : appsService.categoriesWithApps[index].category;
+    Category? category;
+    int index = appsService.categories.indexWhere((category) => category.id == categoryId);
+
+    if (index == -1) {
+      category = null;
+    } else {
+      category = appsService.categories[index];
+    }
+
+    return category;
   }
 
   Widget _listTile(BuildContext context, Widget title, Widget subtitle, {Widget? trailing}) => Material(

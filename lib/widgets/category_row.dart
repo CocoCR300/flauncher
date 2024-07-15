@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
@@ -26,9 +25,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../models/app.dart';
+import '../models/category.dart';
 import '../providers/settings_service.dart';
 
-class CategoryRow extends StatelessWidget {
+class CategoryRow extends StatelessWidget
+{
   final Category category;
   final List<App> applications;
 

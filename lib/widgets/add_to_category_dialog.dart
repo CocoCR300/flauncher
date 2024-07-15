@@ -16,22 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class AddToCategoryDialog extends StatelessWidget {
-  final App application;
+import '../models/app.dart';
+import '../models/category.dart';
 
-  AddToCategoryDialog(this.application);
+class AddToCategoryDialog extends StatelessWidget {
+  final App selectedApplication;
+
+  AddToCategoryDialog(this.selectedApplication);
 
   @override
   Widget build(BuildContext context) => Selector<AppsService, List<Category>>(
-        selector: (_, appsService) => appsService.categoriesWithApps
-            .where((element) => !element.applications.any((app) => app.packageName == application.packageName))
-            .map((categoryWithApps) => categoryWithApps.category)
+        selector: (_, appsService) => appsService.categories
+            .where((category) => !category.applications.any((application) => application.packageName == selectedApplication.packageName))
             .toList(),
         builder: (context, categories, _) {
           AppLocalizations localizations = AppLocalizations.of(context)!;
@@ -45,7 +46,7 @@ class AddToCategoryDialog extends StatelessWidget {
                   clipBehavior: Clip.antiAlias,
                   child: ListTile(
                     onTap: () async {
-                      await context.read<AppsService>().addToCategory(application, category);
+                      await context.read<AppsService>().addToCategory(selectedApplication, category);
                       Navigator.of(context).pop();
                     },
                     title: Text(category.name),

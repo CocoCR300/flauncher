@@ -18,7 +18,6 @@
 
 import 'dart:math';
 
-import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
@@ -28,9 +27,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../models/app.dart';
+import '../models/category.dart';
 import '../providers/settings_service.dart';
 
-class AppsGrid extends StatelessWidget {
+class AppsGrid extends StatelessWidget
+{
   final Category category;
   final List<App> applications;
 

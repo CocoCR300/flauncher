@@ -23,7 +23,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class ApplicationInfoPanel extends StatelessWidget {
+import '../models/app.dart';
+import '../models/category.dart';
+
+class ApplicationInfoPanel extends StatelessWidget
+{
   final Category? category;
   final App application;
   final ImageProvider? applicationIcon;
@@ -105,7 +109,7 @@ class ApplicationInfoPanel extends StatelessWidget {
               ),
               onPressed: () async {
                 if (application.hidden) {
-                  await context.read<AppsService>().unHideApplication(application);
+                  await context.read<AppsService>().showApplication(application);
                 } else {
                   await context.read<AppsService>().hideApplication(application);
                 }

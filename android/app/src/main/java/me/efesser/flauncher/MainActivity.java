@@ -72,6 +72,7 @@ public class MainActivity extends FlutterActivity
                 case "getApplicationBanner" -> result.success(getApplicationBanner(call.arguments()));
                 case "getApplicationIcon" -> result.success(getApplicationIcon(call.arguments()));
                 case "applicationExists" -> result.success(applicationExists(call.arguments()));
+                case "launchActivityFromAction" -> result.success(launchActivityFromAction(call.arguments()));
                 case "launchApp" -> result.success(launchApp(call.arguments()));
                 case "openSettings" -> result.success(openSettings());
                 case "openAppInfo" -> result.success(openAppInfo(call.arguments()));
@@ -290,6 +291,10 @@ public class MainActivity extends FlutterActivity
         return appMap;
     }
 
+    private boolean launchActivityFromAction(String action) {
+        return tryStartActivity(new Intent(action));
+    }
+
     private boolean launchApp(String packageName) {
         PackageManager packageManager = getPackageManager();
         Intent intent = packageManager.getLeanbackLaunchIntentForPackage(packageName);
@@ -302,7 +307,7 @@ public class MainActivity extends FlutterActivity
     }
 
     private boolean openSettings() {
-        return tryStartActivity(new Intent(Settings.ACTION_SETTINGS));
+        return launchActivityFromAction(Settings.ACTION_SETTINGS);
     }
 
     private boolean openAppInfo(String packageName) {
