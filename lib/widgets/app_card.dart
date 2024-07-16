@@ -98,9 +98,9 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => FocusKeyboardListener(
+      onPressed: (key) => _onPressed(context, key),
       onLongPress: (key) => _onLongPress(context, key),
       builder: (context) {
-
         return AspectRatio(
           aspectRatio: 16 / 9,
           child: AnimatedContainer(
@@ -116,12 +116,14 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  InkWell(
-                    autofocus: widget.autofocus,
-                    focusColor: Colors.transparent,
+                  GestureDetector(
                     onTap: () => _onPressed(context, LogicalKeyboardKey.enter),
-                    onLongPress: () => _onLongPress(context, LogicalKeyboardKey.enter),
-                    child: _appImage()
+                    child: InkWell(
+                      autofocus: widget.autofocus,
+                      focusColor: Colors.transparent,
+                      onLongPress: () => _onLongPress(context, LogicalKeyboardKey.enter),
+                      child: _appImage()
+                    )
                   ),
                   if (_moving) ..._arrows(),
                   IgnorePointer(
@@ -300,7 +302,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
         widget.onMove(AxisDirection.right);
       } else if (key == LogicalKeyboardKey.arrowDown) {
         widget.onMove(AxisDirection.down);
-      } else if (_validationKeys.contains(key)) {
+      } else if (_validationKeys.contains(key) || key == LogicalKeyboardKey.escape) {
         setState(() => _moving = false);
         widget.onMoveEnd();
       } else {
