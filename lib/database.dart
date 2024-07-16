@@ -131,9 +131,6 @@ class FLauncherDatabase extends _$FLauncherDatabase {
         },
       );
 
-  Future<List<App>> listApplications() =>
-      (select(apps)..orderBy([(expr) => OrderingTerm.asc(expr.name.lower())])).get();
-
   Future<void> persistApps(Iterable<AppsCompanion> applications) =>
       batch((batch) => batch.insertAllOnConflictUpdate(apps, applications));
 
@@ -174,7 +171,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
 
   Future<List<Category>> getCategories() {
     final query = select(categories);
-    query.orderBy([ (c) => OrderingTerm.asc(c.id) ]);
+    query.orderBy([ (c) => OrderingTerm.asc(c.order) ]);
 
     return query.get();
   }
@@ -187,37 +184,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
   }
 
   Future<List<App>> getApplications() {
-    final query = select(apps);
-    query.orderBy([ (a) => OrderingTerm.asc(a.name.upper()) ]);
-
-    return query.get();
-  }
-
-  Future<List<CategoryWithApps>> listCategoriesWithVisibleApps() async {
-    final query = select(categories).join([
-      leftOuterJoin(appsCategories, appsCategories.categoryId.equalsExp(categories.id)),
-      leftOuterJoin(apps, apps.packageName.equalsExp(appsCategories.appPackageName) & apps.hidden.equals(false)),
-    ]);
-    query.orderBy([
-      OrderingTerm.asc(categories.order),
-      OrderingTerm.asc(
-        categories.sort.caseMatch(
-          when: {const Constant(0): appsCategories.order, const Constant(1): apps.name.lower()},
-        ),
-      ),
-    ]);
-
-    final result = await query.get();
-    final Map<Category, List<App>> categoriesToApps = {};
-    for (final row in result) {
-      final category = row.readTable(categories);
-      final app = row.readTableOrNull(apps);
-      final categoryToApps = categoriesToApps.putIfAbsent(category, () => []);
-      if (app != null) {
-        categoryToApps.add(app);
-      }
-    }
-    return categoriesToApps.entries.map((entry) => CategoryWithApps(entry.key, entry.value)).toList();
+    return select(apps).get();
   }
 
   Future<int?> nextAppCategoryOrder(int categoryId) async {

@@ -28,16 +28,20 @@ class App
 
   bool hidden;
 
+  Map<int, int> categoryOrders;
+
   String? action;
 
-  App({required this.packageName, required this.name, required this.version, required this.hidden, required this.sideloaded, this.action = null});
+  App({required this.packageName, required this.name, required this.version, required this.hidden, required this.sideloaded, this.action = null}):
+    categoryOrders = Map();
 
   App.fromSystem(Map<dynamic, dynamic> data):
     packageName = data['packageName'],
     name = data['name'],
     version = data['version'],
     hidden = false,
-    sideloaded = data['sideloaded'] {
+    sideloaded = data['sideloaded'],
+    categoryOrders = Map() {
 
     if (data.containsKey('action')) {
       action = data['action'];

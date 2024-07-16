@@ -30,17 +30,17 @@ class Category
 
   final int id;
 
-  final int columnsCount;
+  int columnsCount;
 
   int order;
 
-  final int rowHeight;
+  int rowHeight;
 
-  final String name;
+  String name;
 
-  final CategorySort  sort;
+  CategorySort  sort;
 
-  final CategoryType  type;
+  CategoryType  type;
 
   final List<App>     applications;
 
