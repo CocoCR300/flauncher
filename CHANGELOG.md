@@ -6,6 +6,8 @@
 * Show the active network status next to the date widget.
 * Allow users to hide the application category titles.
 * Clicking or tapping on an application card now opens it.
+* Ability to disable the navigation keys sound.
+* Map "Escape" key to the "Back" action.
 * Translate to Spanish.
 
 ### Removals
@@ -13,6 +15,6 @@
 * Unsplash integration.
 
 ### Misc
-* Upgrade Flutter version from 3.7.5 to 3.19.6.
+* Upgrade Flutter version from 3.7.5 to 3.22.2.
 * Replace Kotlin code with Java.
-* Set new language versions: Java (17), Dart (between 3.0.0 and 3.3.4, both inclusive).
+* Set new language versions: Java (17), Dart (greater than or equal to 3.4.3).
