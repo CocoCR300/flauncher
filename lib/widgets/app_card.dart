@@ -97,22 +97,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => FocusKeyboardListener(
-      onPressed: (key) {
-        // A duplicate press occurs on "app cards" if both the
-        // FocusKeyboardListener and another widget
-        // (InkWell or GestureDetector, see below) handle the onPress and onTap,
-        // respectively, causing an attempt to open applications twice,
-        // though this is only visible when opening the settings side panel on TVs.
-        // Still, both handlers are needed to open applications using a touch
-        // screen, TV remote, and keyboards, as well as being able to drag the
-        // card in the "dragging mode", this is why only the Enter key is ignored
-        // here.
-        if (key == LogicalKeyboardKey.enter) {
-          return KeyEventResult.ignored;
-        }
-
-        return _onPressed(context, key);
-      },
+      onPressed: (key) => _onPressed(context, key),
       onLongPress: (key) => _onLongPress(context, key),
       builder: (context) {
         return AspectRatio(

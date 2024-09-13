@@ -43,6 +43,8 @@ class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
   @override
   Widget build(BuildContext context) => Focus(
         canRequestFocus: false,
+        // Using "onKeyEvent", in favor of the deprecated "onKey"
+        // seems to break the fix for issue #21 so, keep using the old property
         onKey: (_, rawKeyEvent) => _handleKey(context, rawKeyEvent),
         child: Builder(builder: widget.builder),
       );
@@ -50,20 +52,20 @@ class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
   KeyEventResult _handleKey(BuildContext context, RawKeyEvent rawKeyEvent) {
     switch (rawKeyEvent.runtimeType) {
       case RawKeyDownEvent:
-        return _keyDownEvent(context, rawKeyEvent.logicalKey, (rawKeyEvent.data as RawKeyEventDataAndroid));
+        return _keyDownEvent(context, rawKeyEvent.logicalKey);
       case RawKeyUpEvent:
         return _keyUpEvent(context, rawKeyEvent.logicalKey);
     }
     return KeyEventResult.handled;
   }
 
-  KeyEventResult _keyDownEvent(BuildContext context, LogicalKeyboardKey key, RawKeyEventDataAndroid data) {
+  KeyEventResult _keyDownEvent(BuildContext context, LogicalKeyboardKey key) {
     if (!longPressableKeys.contains(key)) {
       return widget.onPressed?.call(key) ?? KeyEventResult.ignored;
     }
-    if (data.repeatCount == 0) {
+    if (_keyDownAt == null) {
       _keyDownAt = DateTime.now().millisecondsSinceEpoch;
-      return KeyEventResult.ignored;
+      return KeyEventResult.handled;
     } else if (_longPress()) {
       _keyDownAt = null;
       return widget.onLongPress?.call(key) ?? KeyEventResult.ignored;
