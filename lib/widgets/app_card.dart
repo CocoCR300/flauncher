@@ -264,24 +264,36 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   }
 
   List<Widget> _arrows() => [
-        _arrow(Alignment.centerLeft, Icons.keyboard_arrow_left),
-        _arrow(Alignment.topCenter, Icons.keyboard_arrow_up),
-        _arrow(Alignment.bottomCenter, Icons.keyboard_arrow_down),
-        _arrow(Alignment.centerRight, Icons.keyboard_arrow_right),
+      _arrow(Alignment.centerLeft, Icons.keyboard_arrow_left, () {
+        widget.onMove(AxisDirection.left);
+      }),
+      _arrow(Alignment.topCenter, Icons.keyboard_arrow_up, () {
+        widget.onMove(AxisDirection.up);
+      }),
+      _arrow(Alignment.bottomCenter, Icons.keyboard_arrow_down, () {
+        widget.onMove(AxisDirection.down);
+      }),
+      _arrow(Alignment.centerRight, Icons.keyboard_arrow_right, () {
+        widget.onMove(AxisDirection.right);
+      }),
       ];
 
-  Widget _arrow(Alignment alignment, IconData icon) => Align(
+  Widget _arrow(Alignment alignment, IconData icon, VoidCallback onTap) =>
+      Align(
         alignment: alignment,
-        child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Theme.of(context).primaryColor.withOpacity(0.8),
-            ),
-            child: Icon(
-              icon,
-              size: 16,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: EdgeInsets.all(4),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).primaryColor.withOpacity(0.8),
+              ),
+              child: Icon(
+                icon,
+                size: 16,
+              ),
             ),
           ),
         ),
