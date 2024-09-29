@@ -275,28 +275,27 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
       }),
       _arrow(Alignment.centerRight, Icons.keyboard_arrow_right, () {
         widget.onMove(AxisDirection.right);
-      }),
-      ];
+      })
+  ];
 
   Widget _arrow(Alignment alignment, IconData icon, VoidCallback onTap) =>
       Align(
         alignment: alignment,
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: EdgeInsets.all(4),
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).primaryColor.withOpacity(0.8),
-              ),
-              child: Icon(
-                icon,
-                size: 16,
-              ),
-            ),
+        child: Ink(
+          decoration: ShapeDecoration(
+            color: Theme.of(context).primaryColor.withOpacity(0.8),
+            shape: CircleBorder()
           ),
-        ),
+          child: SizedBox(
+            height: 36,
+            width: 36,
+            child: IconButton(
+              icon: Icon(icon, size: 24),
+              onPressed: onTap,
+              padding: EdgeInsets.all(0)
+            )
+          )
+        )
       );
 
   KeyEventResult _onPressed(BuildContext context, LogicalKeyboardKey? key) {
