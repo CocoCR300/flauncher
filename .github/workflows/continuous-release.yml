@@ -33,8 +33,8 @@ jobs:
       - name: Set version variables
         id: set_version_variables
         run: |
-          cat version_numbers >> $GITHUB_OUTPUT
-          export (cat version_numbers | xargs)
+          cat ./version_numbers >> $GITHUB_OUTPUT
+          export (cat ./version_numbers | xargs)
           echo "FULL_VERSION_NUMBER=$(date '+%Y.%m').$(printf '%03d' $MONTH_VERSION_NUMBER)" >> $GITHUB_OUTPUT
       - name: Build
         env:
@@ -63,4 +63,4 @@ jobs:
           FULL_VERSION_NUMBER: ${{ steps.set_version_variables.outputs.FULL_VERSION_NUMBER }}
         run: |
           export TAG_NAME=v$FULL_VERSION_NUMBER
-          gh release create $TAG_NAME --latest --title "Release #$MONTH_VERSION_NUMBER ($FULL_VERSION_NUMBER)" --notes "" $OUTPUT_DIR/flauncher-*.apk
+          gh release create $TAG_NAME --latest --title "Release #$MONTH_VERSION_NUMBER $(date '+%B %Y') ($FULL_VERSION_NUMBER)" --notes "" $OUTPUT_DIR/flauncher-*.apk
