@@ -33,8 +33,8 @@ jobs:
       - name: Set version variables
         id: set_version_variables
         run: |
-          cat ./version_numbers >> $GITHUB_OUTPUT
-          export (cat ./version_numbers | xargs)
+          cat version_numbers >> $GITHUB_OUTPUT
+          export $(cat version_numbers | xargs)
           echo "FULL_VERSION_NUMBER=$(date '+%Y.%m').$(printf '%03d' $MONTH_VERSION_NUMBER)" >> $GITHUB_OUTPUT
       - name: Build
         env:
