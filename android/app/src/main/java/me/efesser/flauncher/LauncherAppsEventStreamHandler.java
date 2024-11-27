@@ -51,7 +51,7 @@ public class LauncherAppsEventStreamHandler implements EventChannel.StreamHandle
         public void onPackageRemoved(String packageName, UserHandle user) {
             _eventSink.success(Map.of(
                     "action", "PACKAGE_REMOVED",
-                    "activityInfo", packageName));
+                    "packageName", packageName));
         }
 
         @Override
