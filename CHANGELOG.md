@@ -15,6 +15,7 @@
 * Unsplash integration.
 
 ### Misc
-* Upgrade Flutter version from 3.7.5 to 3.22.2.
+* Upgrade Flutter version from 3.7.5 to 3.24.5.
 * Replace Kotlin code with Java.
 * Set new language versions: Java (17), Dart (greater than or equal to 3.4.3).
+* Change versioning scheme to \<year>.\<month>.\<monthly release number>

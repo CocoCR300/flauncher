@@ -22,7 +22,6 @@ import 'package:flauncher/app_image_type.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
-import 'package:flauncher/widgets/color_helpers.dart';
 import 'package:flauncher/widgets/focus_keyboard_listener.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,32 +60,18 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   late Future<Tuple2<AppImageType, ImageProvider>> _appImageLoadFuture;
   late final AnimationController _animation = AnimationController(
     vsync: this,
+    lowerBound: 0,
+    upperBound: 255,
     duration: const Duration(
       milliseconds: 800,
     ),
   );
-  Color _lastBorderColor = Colors.white;
 
   @override
   void initState() {
     super.initState();
 
     _appImageLoadFuture = _loadAppBannerOrIcon(Provider.of<AppsService>(context, listen: false));
-
-    _animation.addStatusListener((animationStatus) {
-      switch (animationStatus) {
-        case AnimationStatus.completed:
-          _animation.reverse();
-          break;
-        case AnimationStatus.dismissed:
-          _animation.forward();
-          break;
-        case AnimationStatus.forward:
-        case AnimationStatus.reverse:
-          // nothing to do
-          break;
-      }
-    });
   }
 
   @override
@@ -133,23 +118,19 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                   ),
                   Selector<SettingsService, bool>(
                     selector: (_, settingsService) => settingsService.appHighlightAnimationEnabled,
-                    builder: (context, appHighlightAnimationEnabled, __) {
-                      if (appHighlightAnimationEnabled) {
-                        _animation.forward();
+                    builder: (context, appHighlightAnimationEnabled, _) {
+                      if (appHighlightAnimationEnabled && Focus.of(context).hasFocus) {
+                        _animation.repeat(reverse: true);
                         return AnimatedBuilder(
                           animation: _animation,
                           builder: (context, child) => IgnorePointer(
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              curve: Curves.easeInOut,
+                            child: Container(
                               decoration: BoxDecoration(
-                                border: Focus.of(context).hasFocus
-                                    ? Border.all(
-                                        color: _lastBorderColor =
-                                            computeBorderColor(_animation.value, _lastBorderColor),
-                                        width: 3)
-                                    : null,
                                 borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Colors.white.withAlpha(_animation.value.round()),
+                                  width: 3
+                                ),
                               ),
                             ),
                           ),
