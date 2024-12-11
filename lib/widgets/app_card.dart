@@ -117,9 +117,9 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                     ),
                   ),
                   Selector<SettingsService, bool>(
-                    selector: (_, settingsService) => settingsService.appHighlightAnimationEnabled,
-                    builder: (context, appHighlightAnimationEnabled, _) {
-                      if (appHighlightAnimationEnabled && Focus.of(context).hasFocus) {
+                    selector: (_, settingsService) => settingsService.appHighlightAnimationEnabled && Focus.of(context).hasFocus,
+                    builder: (context, highlight, _) {
+                      if (highlight) {
                         _animation.repeat(reverse: true);
                         return AnimatedBuilder(
                           animation: _animation,
