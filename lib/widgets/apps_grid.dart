@@ -21,15 +21,13 @@ import 'dart:math';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
-import 'package:flauncher/widgets/settings/categories_panel_page.dart';
-import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../models/app.dart';
 import '../models/category.dart';
 import '../providers/settings_service.dart';
+import 'category_container_common.dart';
 
 class AppsGrid extends StatelessWidget
 {
@@ -43,51 +41,59 @@ class AppsGrid extends StatelessWidget
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Selector<SettingsService, bool>(
-              selector: (context, service) => service.showCategoryTitles,
-              builder: (context, showCategoriesTitle, _) {
-                if (showCategoriesTitle) {
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 16, bottom: 8),
-                    child: Text(category.name,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(shadows: [const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])),
-                  );
-                }
-
-                return SizedBox.shrink();
-              }
+  Widget build(BuildContext context) {
+    Widget categoryContent;
+    if (applications.isEmpty) {
+      categoryContent = categoryContainerEmptyState(context);
+    }
+    else {
+      categoryContent = GridView.custom(
+        shrinkWrap: true,
+        primary: false,
+        gridDelegate: _buildSliverGridDelegate(),
+        padding: EdgeInsets.all(16),
+        childrenDelegate: SliverChildBuilderDelegate(
+          childCount: applications.length,
+          findChildIndexCallback: _findChildIndex,
+          (context, index) => EnsureVisible(
+            key: Key("${category.id}-${applications[index].packageName}"),
+            alignment: 0.5,
+            child: AppCard(
+              category: category,
+              application: applications[index],
+              autofocus: index == 0,
+              onMove: (direction) => _onMove(context, direction, index),
+              onMoveEnd: () => _saveOrder(context),
+            ),
           ),
-          applications.isNotEmpty
-              ? GridView.custom(
-                  shrinkWrap: true,
-                  primary: false,
-                  gridDelegate: _buildSliverGridDelegate(),
-                  padding: EdgeInsets.all(16),
-                  childrenDelegate: SliverChildBuilderDelegate(
-                    (context, index) => EnsureVisible(
-                      key: Key("${category.id}-${applications[index].packageName}"),
-                      alignment: 0.5,
-                      child: AppCard(
-                        category: category,
-                        application: applications[index],
-                        autofocus: index == 0,
-                        onMove: (direction) => _onMove(context, direction, index),
-                        onMoveEnd: () => _saveOrder(context),
-                      ),
-                    ),
-                    childCount: applications.length,
-                    findChildIndexCallback: _findChildIndex,
-                  ),
-                )
-              : _emptyState(context),
-        ],
+        ),
       );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Selector<SettingsService, bool>(
+          selector: (context, service) => service.showCategoryTitles,
+          builder: (context, showCategoriesTitle, _) {
+            if (showCategoriesTitle) {
+              return Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 8),
+                child: Text(category.name,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(shadows: [const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])),
+              );
+            }
+
+            return SizedBox.shrink();
+          }
+        ),
+        categoryContent
+      ],
+    );
+  }
 
   int _findChildIndex(Key key) =>
       applications.indexWhere((app) => "${category.id}-${app.packageName}" == (key as ValueKey<String>).value);
@@ -137,45 +143,4 @@ class AppsGrid extends StatelessWidget
         crossAxisSpacing: 16,
       );
 
-  Widget _emptyState(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
-    return Padding(
-        padding: EdgeInsets.only(top: 8),
-        child: SizedBox(
-          height: 110,
-          child: EnsureVisible(
-            alignment: 0.1,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Card(
-                    clipBehavior: Clip.antiAlias,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    child: InkWell(
-                      onTap: () => showDialog(
-                        context: context,
-                        builder: (_) => SettingsPanel(initialRoute: CategoriesPanelPage.routeName),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Center(
-                          child: Text(
-                            localizations.textEmptyCategory,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-  }
 }
