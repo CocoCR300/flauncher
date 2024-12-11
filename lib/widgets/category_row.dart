@@ -42,55 +42,62 @@ class CategoryRow extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Selector<SettingsService, bool>(
-            selector: (context, service) => service.showCategoryTitles,
-            builder: (context, showCategoriesTitle, _) {
-              if (showCategoriesTitle) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 16, bottom: 8),
-                  child: Text(category.name,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(shadows: [const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])),
-                );
-              }
-
-              return SizedBox.shrink();
-            }
+    Widget categoryContent;
+    if (applications.isEmpty) {
+      categoryContent = _emptyState(context);
+    }
+    else {
+      categoryContent = SizedBox(
+        height: category.rowHeight.toDouble(),
+        child: ListView.custom(
+          padding: const EdgeInsets.all(8),
+          scrollDirection: Axis.horizontal,
+          childrenDelegate: SliverChildBuilderDelegate(
+            childCount: applications.length,
+            findChildIndexCallback: _findChildIndex,
+            (context, index) => EnsureVisible(
+              key: Key("${category.id}-${applications[index].packageName}"),
+              alignment: 0.5,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: AppCard(
+                  category: category,
+                  application: applications[index],
+                  autofocus: index == 0,
+                  onMove: (direction) => _onMove(context, direction, index),
+                  onMoveEnd: () => _onMoveEnd(context),
+                ),
+              ),
+            ),
           ),
-          applications.isNotEmpty
-              ? SizedBox(
-                  height: category.rowHeight.toDouble(),
-                  child: ListView.custom(
-                    padding: const EdgeInsets.all(8),
-                    scrollDirection: Axis.horizontal,
-                    childrenDelegate: SliverChildBuilderDelegate(
-                      (context, index) => EnsureVisible(
-                        key: Key("${category.id}-${applications[index].packageName}"),
-                        alignment: 0.1,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: AppCard(
-                            category: category,
-                            application: applications[index],
-                            autofocus: index == 0,
-                            onMove: (direction) => _onMove(context, direction, index),
-                            onMoveEnd: () => _onMoveEnd(context),
-                          ),
-                        ),
-                      ),
-                      childCount: applications.length,
-                      findChildIndexCallback: _findChildIndex,
-                    ),
-                  ),
-                )
-              : _emptyState(context),
-        ],
+        ),
       );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Selector<SettingsService, bool>(
+          selector: (context, service) => service.showCategoryTitles,
+          builder: (context, showCategoriesTitle, _) {
+            if (showCategoriesTitle) {
+              return Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 8),
+                child: Text(category.name,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(shadows: [const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])
+                ),
+              );
+            }
+
+            return SizedBox.shrink();
+          }
+        ),
+        categoryContent
+      ],
+    );
   }
 
   int _findChildIndex(Key key) =>
