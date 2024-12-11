@@ -131,7 +131,7 @@ class SettingsPanelPage extends StatelessWidget {
               RoundedSwitchListTile(
                 value: settingsService.appKeyClickEnabled,
                 onChanged: (value) => settingsService.setAppKeyClickEnabled(value),
-                title: Text("Click sound on key press", style: Theme.of(context).textTheme.bodyMedium),
+                title: Text(localizations.appKeyClick, style: Theme.of(context).textTheme.bodyMedium),
                 secondary: Icon(Icons.add_alert_sharp),
               ),
               RoundedSwitchListTile(
@@ -139,6 +139,12 @@ class SettingsPanelPage extends StatelessWidget {
                 onChanged: (value) => settingsService.setShowCategoryTitles(value),
                 title: Text(localizations.showCategoryTitles, style: Theme.of(context).textTheme.bodyMedium),
                 secondary: Icon(Icons.abc)
+              ),
+              RoundedSwitchListTile(
+                value: settingsService.autoHideAppBarEnabled,
+                onChanged: (value) => settingsService.setAutoHideAppBarEnabled(value),
+                title: Text(localizations.autoHideAppBar, style: Theme.of(context).textTheme.bodyMedium),
+                secondary: Icon(Icons.add_alert_sharp),
               ),
               const Divider(),
               TextButton(
