@@ -7,6 +7,7 @@
 * Allow users to hide the application category titles.
 * Clicking or tapping on an application card now opens it.
 * Ability to disable the navigation keys sound.
+* The app bar can now hide automatically while not focused.
 * Map "Escape" key to the "Back" action.
 * Translate to Spanish.
 
