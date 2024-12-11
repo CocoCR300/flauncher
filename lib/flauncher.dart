@@ -16,22 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:ui';
 
 import 'package:flauncher/custom_traversal_policy.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/launcher_state.dart';
-import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
 import 'package:flauncher/widgets/launcher_alternative_view.dart';
-import 'package:flauncher/widgets/network_widget.dart';
-import 'package:flauncher/widgets/settings/settings_panel.dart';
-import 'package:flauncher/widgets/date_time_widget.dart';
+import 'package:flauncher/widgets/settings/focus_aware_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -58,7 +53,7 @@ class FLauncher extends StatelessWidget {
           ),
           child: Scaffold(
             backgroundColor: Colors.transparent,
-            appBar: _appBar(context),
+            appBar: FocusAwareAppBar(),
             body: Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: Consumer<AppsService>(
@@ -80,107 +75,41 @@ class FLauncher extends StatelessWidget {
 
   Widget _categories(List<Category> categories) => Column(
     children: categories.map((category) {
+      final Key categoryKey = Key(category.id.toString());
+      final Widget categoryWidget;
+
       switch (category.type) {
         case CategoryType.row:
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: CategoryRow(
-                key: Key(category.id.toString()),
-                category: category,
-                applications: category.applications),
+          categoryWidget =  CategoryRow(
+            key: categoryKey,
+            category: category,
+            applications: category.applications
           );
         case CategoryType.grid:
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: AppsGrid(
-                key: Key(category.id.toString()),
-                category: category,
-                applications: category.applications),
+          categoryWidget = AppsGrid(
+            key: categoryKey,
+            category: category,
+            applications: category.applications
           );
       }
+
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: categoryWidget
+      );
     }).toList(),
   );
-
-  AppBar _appBar(BuildContext context) {
-    return AppBar(
-      actions: [
-        IconButton(
-          padding: const EdgeInsets.all(2),
-          constraints: const BoxConstraints(),
-          splashRadius: 20,
-          icon: const Icon(Icons.settings_outlined,
-            shadows: [
-              Shadow(color: Colors.black54, blurRadius: 8, offset: Offset(0, 2))
-            ],
-          ),
-          onPressed: () => showDialog(context: context, builder: (_) => const SettingsPanel()),
-          // sometime after Flutter 3.7.5, no later than 3.16.8, the focus highlight went away
-          focusColor: Theme.of(context).primaryColorLight,
-        ),
-        const Padding(
-          padding: EdgeInsets.only(left: 16),
-          child: NetworkWidget(),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 16, right: 32),
-          child: Selector<SettingsService, ({
-            bool showDateInStatusBar,
-            bool showTimeInStatusBar,
-            String dateFormat,
-            String timeFormat })>(
-            selector: (context, service) => (
-                showDateInStatusBar: service.showDateInStatusBar,
-                showTimeInStatusBar: service.showTimeInStatusBar,
-                dateFormat: service.dateFormat,
-                timeFormat: service.timeFormat),
-            builder: (context, dateTimeSettings, _) {
-              // TODO: Disabling the "show date" option while both are enabled causes the *time* to disappear,
-              // then re-enabling that same option causes the time to appear twice.
-              // A restart (or just changing to the full screen clock) fixes the issue, but why does this happen?
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (dateTimeSettings.showDateInStatusBar)
-                    Flexible(
-                      child: DateTimeWidget(dateTimeSettings.dateFormat,
-                        updateInterval: const Duration(minutes: 1),
-                        textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          shadows: [
-                            const Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8)
-                          ],
-                        ),
-                      )
-                    ),
-                  if (dateTimeSettings.showDateInStatusBar && dateTimeSettings.showTimeInStatusBar)
-                    const SizedBox(width: 16),
-                  if (dateTimeSettings.showTimeInStatusBar)
-                    Flexible(
-                      child: DateTimeWidget(dateTimeSettings.timeFormat,
-                          textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            shadows: [
-                              const Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8)
-                            ],
-                          )
-                      )
-                    )
-                ]
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _wallpaper(BuildContext context, WallpaperService wallpaperService) {
     if (wallpaperService.wallpaper != null) {
       final physicalSize = MediaQuery.sizeOf(context);
       return Image(
-          image: wallpaperService.wallpaper!,
-          key: const Key("background"),
-          fit: BoxFit.cover,
-          height: physicalSize.height,
-          width: physicalSize.width);
+        image: wallpaperService.wallpaper!,
+        key: const Key("background"),
+        fit: BoxFit.cover,
+        height: physicalSize.height,
+        width: physicalSize.width
+      );
     }
     else {
       return Container(key: const Key("background"), decoration: BoxDecoration(gradient: wallpaperService.gradient.gradient));
