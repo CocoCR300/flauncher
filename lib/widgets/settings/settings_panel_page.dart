@@ -144,7 +144,7 @@ class SettingsPanelPage extends StatelessWidget {
                 value: settingsService.autoHideAppBarEnabled,
                 onChanged: (value) => settingsService.setAutoHideAppBarEnabled(value),
                 title: Text(localizations.autoHideAppBar, style: Theme.of(context).textTheme.bodyMedium),
-                secondary: Icon(Icons.add_alert_sharp),
+                secondary: Icon(Icons.visibility_off_outlined),
               ),
               const Divider(),
               TextButton(
