@@ -35,8 +35,17 @@ class StatusBarPanelPage extends StatelessWidget {
         children: [
           Text(localizations.statusBar, style: Theme.of(context).textTheme.titleLarge),
           Divider(),
-          Text(localizations.titleStatusBarSettingsPage,
-            textAlign: TextAlign.start), // TODO: Setting the alignment doesn't work
+          RoundedSwitchListTile(
+            value: settingsService.autoHideAppBarEnabled,
+            onChanged: (value) => settingsService.setAutoHideAppBarEnabled(value),
+            title: Text(localizations.autoHideAppBar, style: Theme.of(context).textTheme.bodyMedium),
+            secondary: Icon(Icons.visibility_off_outlined),
+          ),
+          Divider(),
+          Text(
+            localizations.titleStatusBarSettingsPage,
+            textAlign: TextAlign.start
+          ),
           SizedBox(height: 8, width: 0),
           RoundedSwitchListTile(
             value: settingsService.showDateInStatusBar,
