@@ -51,7 +51,7 @@ class ApplicationInfoPanel extends StatelessWidget
                 if (applicationIcon != null)
                   Image(image: applicationIcon!, width: 50)
                 else
-                  const Icon(Icons.warning),
+                  const Icon(Icons.image_not_supported_outlined),
                 const SizedBox(width: 8),
                 Flexible(
                   child: Text(
@@ -75,94 +75,102 @@ class ApplicationInfoPanel extends StatelessWidget
               overflow: TextOverflow.ellipsis,
             ),
             const Divider(),
-            TextButton(
-              child: Row(
-                children: [
-                  const Icon(Icons.open_in_new),
-                  Container(width: 8),
-                  Text(localizations.open, style: Theme.of(context).textTheme.bodyMedium),
-                ],
-              ),
-              onPressed: () async {
-                await context.read<AppsService>().launchApp(application);
-                Navigator.of(context).pop(ApplicationInfoPanelResult.none);
-              },
-            ),
-            if (category?.sort == CategorySort.manual)
-              TextButton(
-                child: Row(
-                  children: [
-                    const Icon(Icons.open_with),
-                    Container(width: 8),
-                    Text(localizations.reorder, style: Theme.of(context).textTheme.bodyMedium),
-                  ],
-                ),
-                onPressed: () => Navigator.of(context).pop(ApplicationInfoPanelResult.reorderApp),
-              ),
-            TextButton(
-              child: Row(
-                children: [
-                  Icon(application.hidden ? Icons.visibility : Icons.visibility_off_outlined),
-                  Container(width: 8),
-                  Text(application.hidden ? localizations.show : localizations.hide, style: Theme.of(context).textTheme.bodyMedium),
-                ],
-              ),
-              onPressed: () async {
-                if (application.hidden) {
-                  await context.read<AppsService>().showApplication(application);
-                } else {
-                  await context.read<AppsService>().hideApplication(application);
-                }
-                Navigator.of(context).pop(ApplicationInfoPanelResult.none);
-              },
-            ),
-            if (category != null)
-              TextButton(
-                child: Row(
-                  children: [
-                    const Icon(Icons.delete_sweep_outlined),
-                    Container(width: 8),
-                    Flexible(
-                      child: Text(
-                        localizations.removeFrom(category!.name),
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                onPressed: () async {
-                  await context.read<AppsService>().removeFromCategory(application, category!);
-                  Navigator.of(context).pop(ApplicationInfoPanelResult.none);
-                },
-              ),
-            const Divider(),
-            TextButton(
-              child: Row(
-                children: [
-                  const Icon(Icons.info_outlined),
-                  Container(width: 8),
-                  Text(localizations.appInfo, style: Theme.of(context).textTheme.bodyMedium),
-                ],
-              ),
-              onPressed: () => context.read<AppsService>().openAppInfo(application),
-            ),
-            TextButton(
-              child: Row(
-                children: [
-                  const Icon(Icons.delete_outlined),
-                  Container(width: 8),
-                  Text(localizations.uninstall, style: Theme.of(context).textTheme.bodyMedium),
-                ],
-              ),
-              onPressed: () async {
-                await context.read<AppsService>().uninstallApp(application);
-                Navigator.of(context).pop(ApplicationInfoPanelResult.none);
-              },
-            ),
-          ],
-        ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                 children: [
+                   TextButton(
+                     child: Row(
+                       children: [
+                         const Icon(Icons.open_in_new),
+                         Container(width: 8),
+                         Text(localizations.open, style: Theme.of(context).textTheme.bodyMedium),
+                       ],
+                     ),
+                     onPressed: () async {
+                       await context.read<AppsService>().launchApp(application);
+                       Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+                     },
+                   ),
+                   if (category?.sort == CategorySort.manual)
+                     TextButton(
+                       child: Row(
+                         children: [
+                           const Icon(Icons.open_with),
+                           Container(width: 8),
+                           Text(localizations.reorder, style: Theme.of(context).textTheme.bodyMedium),
+                         ],
+                       ),
+                       onPressed: () => Navigator.of(context).pop(ApplicationInfoPanelResult.reorderApp),
+                     ),
+                   TextButton(
+                     child: Row(
+                       children: [
+                         Icon(application.hidden ? Icons.visibility : Icons.visibility_off_outlined),
+                         Container(width: 8),
+                         Text(application.hidden ? localizations.show : localizations.hide, style: Theme.of(context).textTheme.bodyMedium),
+                       ],
+                     ),
+                     onPressed: () async {
+                       if (application.hidden) {
+                         await context.read<AppsService>().showApplication(application);
+                       } else {
+                         await context.read<AppsService>().hideApplication(application);
+                       }
+                       Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+                     },
+                   ),
+                   if (category != null)
+                     TextButton(
+                       child: Row(
+                         children: [
+                           const Icon(Icons.delete_sweep_outlined),
+                           Container(width: 8),
+                           Flexible(
+                             child: Text(
+                               localizations.removeFrom(category!.name),
+                               style: Theme.of(context).textTheme.bodyMedium,
+                               maxLines: 2,
+                               overflow: TextOverflow.ellipsis,
+                             ),
+                           ),
+                         ],
+                       ),
+                       onPressed: () async {
+                         await context.read<AppsService>().removeFromCategory(application, category!);
+                         Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+                       },
+                     ),
+                   const Divider(),
+                   TextButton(
+                     child: Row(
+                       children: [
+                         const Icon(Icons.info_outlined),
+                         Container(width: 8),
+                         Text(localizations.appInfo, style: Theme.of(context).textTheme.bodyMedium),
+                       ],
+                     ),
+                     onPressed: () => context.read<AppsService>().openAppInfo(application),
+                   ),
+                   TextButton(
+                     child: Row(
+                       children: [
+                         const Icon(Icons.delete_outlined),
+                         Container(width: 8),
+                         Text(localizations.uninstall, style: Theme.of(context).textTheme.bodyMedium),
+                       ],
+                     ),
+                     onPressed: () async {
+                       await context.read<AppsService>().uninstallApp(application);
+                       Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+                     },
+                   )
+                 ]
+                )
+              )
+            )
+          ]
+        )
       );
   }
 }
