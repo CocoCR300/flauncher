@@ -19,7 +19,6 @@
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/category_container_common.dart';
-import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,28 +52,19 @@ class CategoryRow extends StatelessWidget
           childrenDelegate: SliverChildBuilderDelegate(
             childCount: applications.length,
             findChildIndexCallback: _findChildIndex,
-            (context, index) => EnsureVisible(
-              key: Key("${category.id}-${applications[index].packageName}"),
-              // This specific alignment value is not only
-              // to center the focused card in the row while
-              // scrolling, but to prevent the topmost category
-              // title to be hidden by the content above it when
-              // scrolling from the app bar. How it relates to this,
-              // I don't know
-              alignment: 0.5,
-              child: Padding(
+            (context, index) => Padding(
+                key: Key("${category.id}-${applications[index].packageName}"),
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: AppCard(
                   category: category,
                   application: applications[index],
                   autofocus: index == 0,
                   onMove: (direction) => _onMove(context, direction, index),
-                  onMoveEnd: () => _onMoveEnd(context),
-                ),
-              ),
-            ),
-          ),
-        ),
+                  onMoveEnd: () => _onMoveEnd(context)
+                )
+            )
+          )
+        )
       );
     }
 

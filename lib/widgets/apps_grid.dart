@@ -20,7 +20,6 @@ import 'dart:math';
 
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
-import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -55,18 +54,14 @@ class AppsGrid extends StatelessWidget
         childrenDelegate: SliverChildBuilderDelegate(
           childCount: applications.length,
           findChildIndexCallback: _findChildIndex,
-          (context, index) => EnsureVisible(
-            key: Key("${category.id}-${applications[index].packageName}"),
-            alignment: 0.5,
-            child: AppCard(
+          (context, index) => AppCard(
               category: category,
               application: applications[index],
               autofocus: index == 0,
               onMove: (direction) => _onMove(context, direction, index),
-              onMoveEnd: () => _saveOrder(context),
-            ),
-          ),
-        ),
+              onMoveEnd: () => _saveOrder(context)
+          )
+        )
       );
     }
 

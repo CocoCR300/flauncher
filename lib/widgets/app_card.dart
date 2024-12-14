@@ -110,7 +110,22 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                     focusColor: Colors.transparent,
                     child: _appImage(),
                     onTap: () => _onPressed(context, LogicalKeyboardKey.enter),
-                    onLongPress: () => _onLongPress(context, LogicalKeyboardKey.enter)
+                    onLongPress: () => _onLongPress(context, LogicalKeyboardKey.enter),
+                    onFocusChange: (focused) {
+                      Scrollable.ensureVisible(
+                        context,
+                        // This specific alignment value is not only
+                        // to center the focused card in the row while
+                        // scrolling, but to prevent the topmost category
+                        // title to be hidden by the content above it when
+                        // scrolling from the app bar. How it relates to this,
+                        // I don't know
+                        alignment: 0.5,
+                        curve: Curves.easeInOut,
+                        duration: Duration(milliseconds: 100)
+                      );
+                    },
+
                   ),
                   if (_moving) ..._arrows(),
                   IgnorePointer(
