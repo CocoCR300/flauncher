@@ -71,12 +71,15 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
 
+    FocusManager.instance.addHighlightModeListener(_focusHighlightModeChanged);
     _appImageLoadFuture = _loadAppBannerOrIcon(Provider.of<AppsService>(context, listen: false));
   }
 
   @override
   void dispose() {
+    FocusManager.instance.removeHighlightModeListener(_focusHighlightModeChanged);
     _animation.dispose();
+
     super.dispose();
   }
 
@@ -85,6 +88,8 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
       onPressed: (key) => _onPressed(context, key),
       onLongPress: (key) => _onLongPress(context, key),
       builder: (context) {
+        final bool shouldHighlight = _shouldHighlight(context);
+
         return AspectRatio(
           aspectRatio: 16 / 9,
           child: AnimatedContainer(
@@ -95,7 +100,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
             child: Material(
               borderRadius: BorderRadius.circular(8),
               clipBehavior: Clip.antiAlias,
-              elevation: Focus.of(context).hasFocus ? 16 : 0,
+              elevation: shouldHighlight ? 16 : 0,
               shadowColor: Colors.black,
               child: Stack(
                 fit: StackFit.expand,
@@ -112,12 +117,12 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                     child: AnimatedOpacity(
                       duration: const Duration(milliseconds: 200),
                       curve: Curves.easeInOut,
-                      opacity: Focus.of(context).hasFocus ? 0 : 0.10,
+                      opacity: shouldHighlight ? 0 : 0.10,
                       child: Container(color: Colors.black),
                     ),
                   ),
                   Selector<SettingsService, bool>(
-                    selector: (_, settingsService) => settingsService.appHighlightAnimationEnabled && Focus.of(context).hasFocus,
+                    selector: (_, settingsService) => settingsService.appHighlightAnimationEnabled && shouldHighlight,
                     builder: (context, highlight, _) {
                       if (highlight) {
                         _animation.repeat(reverse: true);
@@ -235,12 +240,21 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
     );
   }
 
+  void _focusHighlightModeChanged(FocusHighlightMode mode)
+  {
+    setState(() { });
+  }
+
+  bool _shouldHighlight(BuildContext context)
+  {
+    return FocusManager.instance.highlightMode == FocusHighlightMode.traditional && Focus.of(context).hasFocus;
+  }
+
   Matrix4 _scaleTransform(BuildContext context) {
-    final scale = _moving
-        ? 1.0
-        : Focus.of(context).hasFocus
-            ? 1.1
-            : 1.0;
+    double scale = 1.0;
+    if (!_moving && _shouldHighlight(context)) {
+      scale = 1.1;
+    }
     return Matrix4.diagonal3Values(scale, scale, 1.0);
   }
 
