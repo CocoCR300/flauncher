@@ -48,7 +48,6 @@ class AppsGrid extends StatelessWidget
     else {
       categoryContent = GridView.custom(
         shrinkWrap: true,
-        primary: false,
         gridDelegate: _buildSliverGridDelegate(),
         padding: EdgeInsets.all(16),
         childrenDelegate: SliverChildBuilderDelegate(
@@ -128,7 +127,7 @@ class AppsGrid extends StatelessWidget
 
   void _saveOrder(BuildContext context) {
     final appsService = context.read<AppsService>();
-    appsService.saveOrderInCategory(category);
+    appsService.saveApplicationOrderInCategory(category);
   }
 
   SliverGridDelegate _buildSliverGridDelegate() => SliverGridDelegateWithFixedCrossAxisCount(

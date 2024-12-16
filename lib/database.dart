@@ -40,14 +40,13 @@ class Apps extends Table
 
   BoolColumn get hidden => boolean().withDefault(const Constant(false))();
 
-  BoolColumn get sideloaded => boolean().withDefault(const Constant(false))();
-
   @override
   Set<Column> get primaryKey => {packageName};
 }
 
 @UseRowClass(Category)
-class Categories extends Table {
+class Categories extends Table
+{
   IntColumn get id => integer().autoIncrement()();
 
   TextColumn get name => text()();
@@ -63,8 +62,19 @@ class Categories extends Table {
   IntColumn get order => integer()();
 }
 
+@UseRowClass(LauncherSpacer)
+class LauncherSpacers extends Table
+{
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get height => integer()();
+
+  IntColumn get order => integer()();
+}
+
 @DataClassName("AppCategory")
-class AppsCategories extends Table {
+class AppsCategories extends Table
+{
   IntColumn get categoryId => integer().customConstraint("REFERENCES categories(id) ON DELETE CASCADE")();
 
   TextColumn get appPackageName => text().customConstraint("REFERENCES apps(package_name) ON DELETE CASCADE")();
@@ -75,18 +85,9 @@ class AppsCategories extends Table {
   Set<Column> get primaryKey => {categoryId, appPackageName};
 }
 
-enum CategorySort {
-  manual,
-  alphabetical,
-}
-
-enum CategoryType {
-  row,
-  grid,
-}
-
-@DriftDatabase(tables: [Apps, Categories, AppsCategories])
-class FLauncherDatabase extends _$FLauncherDatabase {
+@DriftDatabase(tables: [Apps, Categories, AppsCategories, LauncherSpacers])
+class FLauncherDatabase extends _$FLauncherDatabase
+{
   late final bool wasCreated;
 
   FLauncherDatabase(DatabaseConnection super.databaseConnection);
@@ -94,7 +95,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
   FLauncherDatabase.inMemory() : super(LazyDatabase(() => NativeDatabase.memory()));
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -103,7 +104,7 @@ class FLauncherDatabase extends _$FLauncherDatabase {
         },
         onUpgrade: (migrator, from, to) async {
           if (from <= 1) {
-            await migrator.alterTable(TableMigration(apps, newColumns: [apps.hidden, apps.sideloaded]));
+            await migrator.alterTable(TableMigration(apps, newColumns: [apps.hidden]));
           }
           if (from <= 2 && from != 1) {
             await migrator.addColumn(apps, apps.hidden);
@@ -116,12 +117,13 @@ class FLauncherDatabase extends _$FLauncherDatabase {
             await (update(categories)..where((tbl) => tbl.name.equals("Applications")))
                 .write(const CategoriesCompanion(type: Value(CategoryType.grid)));
           }
-          if (from <= 4 && from != 1) {
-            await migrator.addColumn(apps, apps.sideloaded);
-          }
           if (from < 6) {
             await customStatement("ALTER TABLE apps DROP COLUMN banner;");
             await customStatement("ALTER TABLE apps DROP COLUMN icon;");
+          }
+          if (from < 7) {
+            await migrator.createTable(launcherSpacers);
+            await migrator.dropColumn(apps, "sideloaded");
           }
         },
         beforeOpen: (openingDetails) async {
@@ -169,9 +171,38 @@ class FLauncherDatabase extends _$FLauncherDatabase {
   Future<void> replaceAppsCategories(List<AppsCategoriesCompanion> value) =>
       batch((batch) => batch.replaceAll(appsCategories, value));
 
-  Future<List<Category>> getCategories() {
+  Future<int> insertSpacer(Insertable<LauncherSpacer> spacer) => into(launcherSpacers).insert(spacer);
+
+  Future<int> deleteSpacer(int spacerId) => (delete(launcherSpacers)..where(
+          (spacer) => spacer.id.equals(spacerId))).go();
+
+  Future<int> updateSpacer(int spacerId, Insertable<LauncherSpacer> insertable) => (update(launcherSpacers)..where(
+          (spacer) => spacer.id.equals(spacerId))).write(insertable);
+
+  Future<void> updateSpacers(Iterable<LauncherSpacersCompanion> values) => batch(
+        (batch) {
+          for (final value in values) {
+            batch.update<$LauncherSpacersTable, LauncherSpacer>(
+              launcherSpacers,
+              value,
+              where: (table) => (table.id.equals(value.id.value)),
+            );
+          }
+        }
+      );
+
+  Future<List<Category>> getCategories()
+  {
     final query = select(categories);
     query.orderBy([ (c) => OrderingTerm.asc(c.order) ]);
+
+    return query.get();
+  }
+
+  Future<List<LauncherSpacer>> getLauncherSpacers()
+  {
+    final query = select(launcherSpacers);
+    query.orderBy([ (s) => OrderingTerm.asc(s.order) ]);
 
     return query.get();
   }

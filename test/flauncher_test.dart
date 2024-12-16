@@ -209,7 +209,7 @@ void main() {
     verify(appsService.reorderApplication(applicationsCategory, 0, 1));
     await tester.sendKeyEvent(LogicalKeyboardKey.select);
     await tester.pump();
-    verify(appsService.saveOrderInCategory(applicationsCategory));
+    verify(appsService.saveApplicationOrderInCategory(applicationsCategory));
   });
 
   testWidgets("AppCard moves in row", (tester) async {
@@ -243,7 +243,7 @@ void main() {
     verify(appsService.reorderApplication(applicationsCategory, 0, 1));
     await tester.sendKeyEvent(LogicalKeyboardKey.select);
     await tester.pump();
-    verify(appsService.saveOrderInCategory(applicationsCategory));
+    verify(appsService.saveApplicationOrderInCategory(applicationsCategory));
   });
 
   testWidgets("Moving down does not skip row", (tester) async {

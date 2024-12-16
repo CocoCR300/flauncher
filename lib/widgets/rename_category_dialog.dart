@@ -20,10 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddCategoryDialog extends StatelessWidget {
-  final String? initialValue;
+  final String initialValue;
 
   AddCategoryDialog({
-    this.initialValue,
+    required this.initialValue,
   });
 
   @override
@@ -31,25 +31,25 @@ class AddCategoryDialog extends StatelessWidget {
     AppLocalizations localizations = AppLocalizations.of(context)!;
 
     return SimpleDialog(
-        insetPadding: EdgeInsets.only(bottom: 120),
-        contentPadding: EdgeInsets.all(24),
-        title: Text(initialValue != null ? localizations.renameCategory : localizations.addCategory),
-        children: [
-          TextFormField(
-            autofocus: true,
-            initialValue: initialValue,
-            decoration: InputDecoration(labelText: localizations.name),
-            validator: (value) => value!.trim().isEmpty ? localizations.mustNotBeEmpty : null,
-            autovalidateMode: AutovalidateMode.always,
-            keyboardType: TextInputType.text,
-            textCapitalization: TextCapitalization.sentences,
-            onFieldSubmitted: (value) {
-              if (value.trim().isNotEmpty) {
-                Navigator.of(context).pop(value);
-              }
-            },
-          )
-        ],
-      );
+      insetPadding: EdgeInsets.only(bottom: 120),
+      contentPadding: EdgeInsets.all(24),
+      title: Text(localizations.renameCategory),
+      children: [
+        TextFormField(
+          autofocus: true,
+          initialValue: initialValue,
+          decoration: InputDecoration(labelText: localizations.name),
+          validator: (value) => value!.trim().isEmpty ? localizations.mustNotBeEmpty : null,
+          autovalidateMode: AutovalidateMode.always,
+          keyboardType: TextInputType.text,
+          textCapitalization: TextCapitalization.sentences,
+          onFieldSubmitted: (value) {
+            if (value.trim().isNotEmpty) {
+              Navigator.of(context).pop(value);
+            }
+          },
+        )
+      ],
+    );
   }
 }

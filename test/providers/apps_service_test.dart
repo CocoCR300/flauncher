@@ -268,7 +268,7 @@ void main() {
       CategoryWithApps(category, [fakeApp(packageName: "app.1"), fakeApp(packageName: "app.2")])
     ]);
 
-    await appsService.saveOrderInCategory(category);
+    await appsService.saveApplicationOrderInCategory(category);
 
     verify(database.replaceAppsCategories([
       AppsCategoriesCompanion.insert(categoryId: category.id, appPackageName: "app.1", order: 0),
@@ -341,7 +341,7 @@ void main() {
       ],
     );
 
-    await appsService.deleteCategory(categoryToDelete);
+    await appsService.deleteSection(categoryToDelete);
 
     verify(database.deleteCategory(categoryToDelete.id));
     verify(database.listCategoriesWithVisibleApps());

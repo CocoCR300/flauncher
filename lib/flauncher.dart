@@ -18,7 +18,6 @@
 
 
 import 'package:flauncher/custom_traversal_policy.dart';
-import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
@@ -59,7 +58,7 @@ class FLauncher extends StatelessWidget {
               child: Consumer<AppsService>(
                 builder: (context, appsService, _) {
                   if (appsService.initialized) {
-                    return SingleChildScrollView(child: _categories(appsService.categories));
+                    return SingleChildScrollView(child: _sections(appsService.launcherSections));
                   }
                   else {
                     return _emptyState(context);
@@ -73,23 +72,28 @@ class FLauncher extends StatelessWidget {
     )
   );
 
-  Widget _categories(List<Category> categories) => Column(
-    children: categories.map((category) {
-      final Key categoryKey = Key(category.id.toString());
+  Widget _sections(List<LauncherSection> sections) => Column(
+    children: sections.map((section) {
+      final Key sectionKey = Key(section.id.toString());
       final Widget categoryWidget;
 
+      if (section is LauncherSpacer) {
+        return SizedBox(key: sectionKey, height: section.height.toDouble());
+      }
+
+      Category category = section as Category;
       switch (category.type) {
         case CategoryType.row:
-          categoryWidget =  CategoryRow(
-            key: categoryKey,
-            category: category,
-            applications: category.applications
+          categoryWidget = CategoryRow(
+              key: sectionKey,
+              category: category,
+              applications: category.applications
           );
         case CategoryType.grid:
           categoryWidget = AppsGrid(
-            key: categoryKey,
-            category: category,
-            applications: category.applications
+              key: sectionKey,
+              category: category,
+              applications: category.applications
           );
       }
 

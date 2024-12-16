@@ -16,9 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/widgets/add_category_dialog.dart';
+import 'package:flauncher/widgets/rename_category_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -162,7 +161,7 @@ class CategoryPanelPage extends StatelessWidget {
                         style: ElevatedButton.styleFrom(backgroundColor: Colors.red[400]),
                         child: Text(localizations.delete),
                         onPressed: () async {
-                          await context.read<AppsService>().deleteCategory(category);
+                          await context.read<AppsService>().deleteSection(category);
                           Navigator.of(context).pop();
                         },
                       ),

@@ -32,19 +32,8 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("hidden" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _sideloadedMeta =
-      const VerificationMeta('sideloaded');
   @override
-  late final GeneratedColumn<bool> sideloaded = GeneratedColumn<bool>(
-      'sideloaded', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("sideloaded" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  @override
-  List<GeneratedColumn> get $columns =>
-      [packageName, name, version, hidden, sideloaded];
+  List<GeneratedColumn> get $columns => [packageName, name, version, hidden];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -79,12 +68,6 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
       context.handle(_hiddenMeta,
           hidden.isAcceptableOrUnknown(data['hidden']!, _hiddenMeta));
     }
-    if (data.containsKey('sideloaded')) {
-      context.handle(
-          _sideloadedMeta,
-          sideloaded.isAcceptableOrUnknown(
-              data['sideloaded']!, _sideloadedMeta));
-    }
     return context;
   }
 
@@ -102,8 +85,6 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
           .read(DriftSqlType.string, data['${effectivePrefix}version'])!,
       hidden: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}hidden'])!,
-      sideloaded: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}sideloaded'])!,
     );
   }
 
@@ -118,14 +99,12 @@ class AppsCompanion extends UpdateCompanion<App> {
   final Value<String> name;
   final Value<String> version;
   final Value<bool> hidden;
-  final Value<bool> sideloaded;
   final Value<int> rowid;
   const AppsCompanion({
     this.packageName = const Value.absent(),
     this.name = const Value.absent(),
     this.version = const Value.absent(),
     this.hidden = const Value.absent(),
-    this.sideloaded = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AppsCompanion.insert({
@@ -133,7 +112,6 @@ class AppsCompanion extends UpdateCompanion<App> {
     required String name,
     required String version,
     this.hidden = const Value.absent(),
-    this.sideloaded = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : packageName = Value(packageName),
         name = Value(name),
@@ -143,7 +121,6 @@ class AppsCompanion extends UpdateCompanion<App> {
     Expression<String>? name,
     Expression<String>? version,
     Expression<bool>? hidden,
-    Expression<bool>? sideloaded,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -151,7 +128,6 @@ class AppsCompanion extends UpdateCompanion<App> {
       if (name != null) 'name': name,
       if (version != null) 'version': version,
       if (hidden != null) 'hidden': hidden,
-      if (sideloaded != null) 'sideloaded': sideloaded,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -161,14 +137,12 @@ class AppsCompanion extends UpdateCompanion<App> {
       Value<String>? name,
       Value<String>? version,
       Value<bool>? hidden,
-      Value<bool>? sideloaded,
       Value<int>? rowid}) {
     return AppsCompanion(
       packageName: packageName ?? this.packageName,
       name: name ?? this.name,
       version: version ?? this.version,
       hidden: hidden ?? this.hidden,
-      sideloaded: sideloaded ?? this.sideloaded,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -188,9 +162,6 @@ class AppsCompanion extends UpdateCompanion<App> {
     if (hidden.present) {
       map['hidden'] = Variable<bool>(hidden.value);
     }
-    if (sideloaded.present) {
-      map['sideloaded'] = Variable<bool>(sideloaded.value);
-    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -204,7 +175,6 @@ class AppsCompanion extends UpdateCompanion<App> {
           ..write('name: $name, ')
           ..write('version: $version, ')
           ..write('hidden: $hidden, ')
-          ..write('sideloaded: $sideloaded, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -319,10 +289,10 @@ class $CategoriesTable extends Categories
     return Category(
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      order: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}order'])!,
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      order: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}order'])!,
       columnsCount: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}columns_count'])!,
       rowHeight: attachedDatabase.typeMapping
@@ -698,18 +668,158 @@ class AppsCategoriesCompanion extends UpdateCompanion<AppCategory> {
   }
 }
 
+class $LauncherSpacersTable extends LauncherSpacers
+    with TableInfo<$LauncherSpacersTable, LauncherSpacer> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LauncherSpacersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+      'height', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _orderMeta = const VerificationMeta('order');
+  @override
+  late final GeneratedColumn<int> order = GeneratedColumn<int>(
+      'order', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, height, order];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'launcher_spacers';
+  @override
+  VerificationContext validateIntegrity(Insertable<LauncherSpacer> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('height')) {
+      context.handle(_heightMeta,
+          height.isAcceptableOrUnknown(data['height']!, _heightMeta));
+    } else if (isInserting) {
+      context.missing(_heightMeta);
+    }
+    if (data.containsKey('order')) {
+      context.handle(
+          _orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
+    } else if (isInserting) {
+      context.missing(_orderMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LauncherSpacer map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LauncherSpacer(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      order: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}order'])!,
+      height: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}height'])!,
+    );
+  }
+
+  @override
+  $LauncherSpacersTable createAlias(String alias) {
+    return $LauncherSpacersTable(attachedDatabase, alias);
+  }
+}
+
+class LauncherSpacersCompanion extends UpdateCompanion<LauncherSpacer> {
+  final Value<int> id;
+  final Value<int> height;
+  final Value<int> order;
+  const LauncherSpacersCompanion({
+    this.id = const Value.absent(),
+    this.height = const Value.absent(),
+    this.order = const Value.absent(),
+  });
+  LauncherSpacersCompanion.insert({
+    this.id = const Value.absent(),
+    required int height,
+    required int order,
+  })  : height = Value(height),
+        order = Value(order);
+  static Insertable<LauncherSpacer> custom({
+    Expression<int>? id,
+    Expression<int>? height,
+    Expression<int>? order,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (height != null) 'height': height,
+      if (order != null) 'order': order,
+    });
+  }
+
+  LauncherSpacersCompanion copyWith(
+      {Value<int>? id, Value<int>? height, Value<int>? order}) {
+    return LauncherSpacersCompanion(
+      id: id ?? this.id,
+      height: height ?? this.height,
+      order: order ?? this.order,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (order.present) {
+      map['order'] = Variable<int>(order.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LauncherSpacersCompanion(')
+          ..write('id: $id, ')
+          ..write('height: $height, ')
+          ..write('order: $order')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$FLauncherDatabase extends GeneratedDatabase {
   _$FLauncherDatabase(QueryExecutor e) : super(e);
   $FLauncherDatabaseManager get managers => $FLauncherDatabaseManager(this);
   late final $AppsTable apps = $AppsTable(this);
   late final $CategoriesTable categories = $CategoriesTable(this);
   late final $AppsCategoriesTable appsCategories = $AppsCategoriesTable(this);
+  late final $LauncherSpacersTable launcherSpacers =
+      $LauncherSpacersTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [apps, categories, appsCategories];
+      [apps, categories, appsCategories, launcherSpacers];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
@@ -736,7 +846,6 @@ typedef $$AppsTableCreateCompanionBuilder = AppsCompanion Function({
   required String name,
   required String version,
   Value<bool> hidden,
-  Value<bool> sideloaded,
   Value<int> rowid,
 });
 typedef $$AppsTableUpdateCompanionBuilder = AppsCompanion Function({
@@ -744,7 +853,6 @@ typedef $$AppsTableUpdateCompanionBuilder = AppsCompanion Function({
   Value<String> name,
   Value<String> version,
   Value<bool> hidden,
-  Value<bool> sideloaded,
   Value<int> rowid,
 });
 
@@ -769,7 +877,6 @@ class $$AppsTableTableManager extends RootTableManager<
             Value<String> name = const Value.absent(),
             Value<String> version = const Value.absent(),
             Value<bool> hidden = const Value.absent(),
-            Value<bool> sideloaded = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppsCompanion(
@@ -777,7 +884,6 @@ class $$AppsTableTableManager extends RootTableManager<
             name: name,
             version: version,
             hidden: hidden,
-            sideloaded: sideloaded,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -785,7 +891,6 @@ class $$AppsTableTableManager extends RootTableManager<
             required String name,
             required String version,
             Value<bool> hidden = const Value.absent(),
-            Value<bool> sideloaded = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppsCompanion.insert(
@@ -793,7 +898,6 @@ class $$AppsTableTableManager extends RootTableManager<
             name: name,
             version: version,
             hidden: hidden,
-            sideloaded: sideloaded,
             rowid: rowid,
           ),
         ));
@@ -819,11 +923,6 @@ class $$AppsTableFilterComposer
 
   ColumnFilters<bool> get hidden => $state.composableBuilder(
       column: $state.table.hidden,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get sideloaded => $state.composableBuilder(
-      column: $state.table.sideloaded,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -861,11 +960,6 @@ class $$AppsTableOrderingComposer
 
   ColumnOrderings<bool> get hidden => $state.composableBuilder(
       column: $state.table.hidden,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get sideloaded => $state.composableBuilder(
-      column: $state.table.sideloaded,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
@@ -1164,6 +1258,97 @@ class $$AppsCategoriesTableOrderingComposer
   }
 }
 
+typedef $$LauncherSpacersTableCreateCompanionBuilder = LauncherSpacersCompanion
+    Function({
+  Value<int> id,
+  required int height,
+  required int order,
+});
+typedef $$LauncherSpacersTableUpdateCompanionBuilder = LauncherSpacersCompanion
+    Function({
+  Value<int> id,
+  Value<int> height,
+  Value<int> order,
+});
+
+class $$LauncherSpacersTableTableManager extends RootTableManager<
+    _$FLauncherDatabase,
+    $LauncherSpacersTable,
+    LauncherSpacer,
+    $$LauncherSpacersTableFilterComposer,
+    $$LauncherSpacersTableOrderingComposer,
+    $$LauncherSpacersTableCreateCompanionBuilder,
+    $$LauncherSpacersTableUpdateCompanionBuilder> {
+  $$LauncherSpacersTableTableManager(
+      _$FLauncherDatabase db, $LauncherSpacersTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$LauncherSpacersTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$LauncherSpacersTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> height = const Value.absent(),
+            Value<int> order = const Value.absent(),
+          }) =>
+              LauncherSpacersCompanion(
+            id: id,
+            height: height,
+            order: order,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int height,
+            required int order,
+          }) =>
+              LauncherSpacersCompanion.insert(
+            id: id,
+            height: height,
+            order: order,
+          ),
+        ));
+}
+
+class $$LauncherSpacersTableFilterComposer
+    extends FilterComposer<_$FLauncherDatabase, $LauncherSpacersTable> {
+  $$LauncherSpacersTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get height => $state.composableBuilder(
+      column: $state.table.height,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get order => $state.composableBuilder(
+      column: $state.table.order,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$LauncherSpacersTableOrderingComposer
+    extends OrderingComposer<_$FLauncherDatabase, $LauncherSpacersTable> {
+  $$LauncherSpacersTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get height => $state.composableBuilder(
+      column: $state.table.height,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get order => $state.composableBuilder(
+      column: $state.table.order,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 class $FLauncherDatabaseManager {
   final _$FLauncherDatabase _db;
   $FLauncherDatabaseManager(this._db);
@@ -1172,4 +1357,6 @@ class $FLauncherDatabaseManager {
       $$CategoriesTableTableManager(_db, _db.categories);
   $$AppsCategoriesTableTableManager get appsCategories =>
       $$AppsCategoriesTableTableManager(_db, _db.appsCategories);
+  $$LauncherSpacersTableTableManager get launcherSpacers =>
+      $$LauncherSpacersTableTableManager(_db, _db.launcherSpacers);
 }

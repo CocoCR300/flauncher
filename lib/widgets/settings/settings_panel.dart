@@ -26,6 +26,8 @@ import 'package:flauncher/widgets/settings/status_bar_panel_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
 
+import 'launcher_spacer_panel_page.dart';
+
 class SettingsPanel extends StatefulWidget {
   final String? initialRoute;
 
@@ -40,38 +42,42 @@ class _SettingsPanelState extends State<SettingsPanel> {
 
   @override
   Widget build(BuildContext context) => WillPopScope(
-        onWillPop: () async => !await _navigatorKey.currentState!.maybePop(),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: RightPanelDialog(
-            width: 350,
-            child: Navigator(
-              key: _navigatorKey,
-              initialRoute: widget.initialRoute ?? SettingsPanelPage.routeName,
-              onGenerateRoute: (settings) {
-                switch (settings.name) {
-                  case SettingsPanelPage.routeName:
-                    return MaterialPageRoute(builder: (_) => SettingsPanelPage());
-                  case WallpaperPanelPage.routeName:
-                    return MaterialPageRoute(builder: (_) => WallpaperPanelPage());
-                  case StatusBarPanelPage.routeName:
-                    return MaterialPageRoute(builder: (_) => StatusBarPanelPage());
-                  case GradientPanelPage.routeName:
-                    return MaterialPageRoute(builder: (_) => GradientPanelPage());
-                  case ApplicationsPanelPage.routeName:
-                    return MaterialPageRoute(builder: (_) => ApplicationsPanelPage());
-                  case CategoriesPanelPage.routeName:
-                    return MaterialPageRoute(builder: (_) => CategoriesPanelPage());
-                  case CategoryPanelPage.routeName:
-                    return MaterialPageRoute(
-                      builder: (_) => CategoryPanelPage(categoryId: settings.arguments! as int),
-                    );
-                  default:
-                    throw ArgumentError.value(settings.name, "settings.name", "Route not supported.");
-                }
-              },
-            ),
-          ),
+    onWillPop: () async => !await _navigatorKey.currentState!.maybePop(),
+    child: Scaffold(
+      backgroundColor: Colors.transparent,
+      body: RightPanelDialog(
+        width: 350,
+        child: Navigator(
+          key: _navigatorKey,
+          initialRoute: widget.initialRoute ?? SettingsPanelPage.routeName,
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case SettingsPanelPage.routeName:
+                return MaterialPageRoute(builder: (_) => SettingsPanelPage());
+              case WallpaperPanelPage.routeName:
+                return MaterialPageRoute(builder: (_) => WallpaperPanelPage());
+              case StatusBarPanelPage.routeName:
+                return MaterialPageRoute(builder: (_) => StatusBarPanelPage());
+              case GradientPanelPage.routeName:
+                return MaterialPageRoute(builder: (_) => GradientPanelPage());
+              case ApplicationsPanelPage.routeName:
+                return MaterialPageRoute(builder: (_) => ApplicationsPanelPage());
+              case CategoriesPanelPage.routeName:
+                return MaterialPageRoute(builder: (_) => CategoriesPanelPage());
+              case CategoryPanelPage.routeName:
+                return MaterialPageRoute(
+                  builder: (_) => CategoryPanelPage(categoryId: settings.arguments! as int),
+                );
+              case LauncherSpacerPanelPage.routeName:
+                return MaterialPageRoute(
+                  builder: (_) => LauncherSpacerPanelPage(spacerId: settings.arguments! as int),
+                );
+              default:
+                throw ArgumentError.value(settings.name, "settings.name", "Route not supported.");
+            }
+          },
         ),
-      );
+      ),
+    ),
+  );
 }

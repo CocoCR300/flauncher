@@ -12,12 +12,20 @@
     "columnCount": "Cantidad de columnas",
     "date": "Fecha",
     "dateAndTimeFormat": "Formato de fecha y hora",
+    "delete": "Eliminar",
     "dialogOptionBackButtonActionDoNothing": "Nada",
     "dialogOptionBackButtonActionShowScreensaver": "Mostrar salvapantallas",
     "dialogOptionBackButtonActionShowClock": "Mostrar reloj",
     "dialogTextNoFileExplorer": "Por favor, instale un gestor de archivos para seleccionar una imagen.",
     "dialogTitleBackButtonAction": "Elegir la acción del botón 'Atrás'",
-    "delete": "Eliminar",
+    "disambiguateCategoryTitle": "{title} (Categoría)",
+    "@disambiguateCategoryTitle": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
     "formattedDate": "Fecha con formato: {dateString}",
     "@formattedDate": {
         "placeholders": {
@@ -40,10 +48,12 @@
     },
     "gradient": "Gradiente",
     "grid": "Cuadrícula",
+    "height": "Altura",
     "hide": "Ocultar",
     "hiddenApplications": "Aplicaciones ocultas",
     "loading": "Cargando",
     "manual": "Manual",
+    "modifySpacer": "Modificar espaciador",
     "mustNotBeEmpty": "No debe estar vacío",
     "name": "Nombre",
     "noDateFormatSpecified": "Sin formato de fecha",
@@ -62,6 +72,9 @@
     "reorder": "Reordenar",
     "row": "Row",
     "rowHeight": "Row height",
+    "save": "Guardar",
+    "spacer": "Espaciador",
+    "spacerMaxHeightRequirement": "Debe ser mayor a cero y menor o igual a 500",
     "statusBar": "Barra de estado",
     "settings": "Ajustes",
     "show": "Mostrar",

@@ -35,6 +35,7 @@ class AppsService extends ChangeNotifier {
 
   bool _initialized = false;
 
+  List<LauncherSection> _launcherSections = List.empty(growable: true);
   Map<String, App> _applications = Map();
   Map<int, Category> _categoriesById = Map();
 
@@ -42,6 +43,7 @@ class AppsService extends ChangeNotifier {
 
   List<App> get applications => UnmodifiableListView(_applications.values.sortedBy((application) => application.name));
 
+  List<LauncherSection> get launcherSections => List.unmodifiable(_launcherSections);
   List<Category> get categories => _categoriesById.values
       .map((category) => category.unmodifiable())
       .toList(growable: false);
@@ -103,8 +105,7 @@ class AppsService extends ChangeNotifier {
         packageName: Value(data["packageName"]),
         name: Value(data["name"]),
         version: Value(data["version"] ?? "(unknown)"),
-        hidden: const Value.absent(),
-        sideloaded: Value(data["sideloaded"]),
+        hidden: const Value.absent()
       );
 
   Future<void> _initDefaultCategories() => _database.transaction(() async {
@@ -139,6 +140,7 @@ class AppsService extends ChangeNotifier {
     Future<List<App>> appsFromDatabaseFuture = _database.getApplications();
     Future<List<AppCategory>> appsCategoriesFuture = _database.getAppsCategories();
     Future<List<Category>> categoriesFuture = _database.getCategories();
+    Future<List<LauncherSpacer>> spacersFuture = _database.getLauncherSpacers();
     List<Map<dynamic, dynamic>> appsFromSystem = await _fLauncherChannel.getApplications();
     Iterable<MapEntry<String, Tuple2<Map, AppsCompanion>>> appEntries = appsFromSystem.map(
             (appFromSystem) => new MapEntry(appFromSystem['packageName'], Tuple2(appFromSystem, _buildAppCompanion(appFromSystem))));
@@ -164,22 +166,37 @@ class AppsService extends ChangeNotifier {
       await _database.deleteApps(uninstalledApplications);
     });
 
+    appsFromDatabaseFuture = _database.getApplications();
+
+    await Future.wait([appsFromDatabaseFuture, appsCategoriesFuture, categoriesFuture, spacersFuture]);
+
+    appsFromDatabase = await appsFromDatabase;
     List<AppCategory> appsCategories = await appsCategoriesFuture;
     List<Category> categories = await categoriesFuture;
-    _categoriesById = Map.fromEntries(categories.map((category) => MapEntry(category.id, category)));
-    List<App> applications = await _database.getApplications();
-    _applications = Map.fromEntries(applications.map((application) => MapEntry(application.packageName, application)));
+    List<LauncherSpacer> spacers = await spacersFuture;
 
-    for (App application in applications) {
-      var applicationFromSystem = appsFromSystemByPackageName[application.packageName];
-      if (applicationFromSystem!.item1.containsKey('action')) {
-        application.action = applicationFromSystem.item1['action'];
+    _categoriesById = Map.fromEntries(categories.map((category) => MapEntry(category.id, category)));
+    _applications = Map.fromEntries(appsFromDatabase.map((application) => MapEntry(application.packageName, application)));
+
+    _launcherSections.addAll(categories);
+    _launcherSections.addAll(spacers);
+    _launcherSections.sort((ls0, ls1) => ls0.order.compareTo(ls1.order));
+
+    for (App application in _applications.values) {
+      Map? applicationFromSystem = appsFromSystemByPackageName[application.packageName]?.item1;
+
+      if (applicationFromSystem != null) {
+        if (applicationFromSystem.containsKey('action')) {
+          application.action = applicationFromSystem['action'];
+        }
+        if (applicationFromSystem.containsKey('sideloaded')) {
+          application.sideloaded = applicationFromSystem['sideloaded'];
+        }
       }
 
       if (appsCategories.isNotEmpty && !application.hidden) {
         Iterable<AppCategory> currentApplicationCategories = appsCategories
             .where((appCategory) => appCategory.appPackageName == application.packageName);
-
 
         for (AppCategory appCategory in currentApplicationCategories) {
           if (_categoriesById.containsKey(appCategory.categoryId)) {
@@ -274,22 +291,24 @@ class AppsService extends ChangeNotifier {
     }
   }
 
-  Future<void> saveOrderInCategory(Category category) async {
-    if (_categoriesById.containsKey(category.id)) {
-      Category categoryFound = _categoriesById[category.id]!;
-      List<App> applications = categoryFound.applications;
-      List<AppsCategoriesCompanion> orderedAppCategories = [];
-
-      for (int i = 0; i < applications.length; ++i) {
-        orderedAppCategories.add(AppsCategoriesCompanion(
-          categoryId: Value(categoryFound.id),
-          appPackageName: Value(applications[i].packageName),
-          order: Value(i),
-        ));
-      }
-      await _database.replaceAppsCategories(orderedAppCategories);
-      notifyListeners();
+  Future<void> saveApplicationOrderInCategory(Category category) async {
+    if (!_categoriesById.containsKey(category.id)) {
+      return;
     }
+    
+    Category categoryFound = _categoriesById[category.id]!;
+    List<App> applications = categoryFound.applications;
+    List<AppsCategoriesCompanion> orderedAppCategories = [];
+
+    for (int i = 0; i < applications.length; ++i) {
+      orderedAppCategories.add(AppsCategoriesCompanion(
+        categoryId: Value(categoryFound.id),
+        appPackageName: Value(applications[i].packageName),
+        order: Value(i),
+      ));
+    }
+    await _database.replaceAppsCategories(orderedAppCategories);
+    notifyListeners();
   }
 
   void reorderApplication(Category category, int oldIndex, int newIndex) {
@@ -329,6 +348,7 @@ class AppsService extends ChangeNotifier {
       }
 
       _categoriesById = newCategories;
+      _launcherSections.add(newCategory);
 
       if (shouldNotifyListeners) {
         notifyListeners();
@@ -338,6 +358,32 @@ class AppsService extends ChangeNotifier {
     catch (ex) { }
 
     return newCategoryId;
+  }
+
+  Future<void> addSpacer(int height) async
+  {
+    int order = launcherSections.length - 1;
+    int spacerId = await _database.insertSpacer(
+        LauncherSpacersCompanion.insert( height: height, order: order)
+    );
+
+    _launcherSections.add(LauncherSpacer(
+      id: spacerId,
+      height: height,
+      order: order
+    ));
+
+    notifyListeners();
+  }
+
+  Future<void> updateSpacerHeight(LauncherSpacer spacer, int height) async
+  {
+    await _database.updateSpacer(spacer.id, LauncherSpacersCompanion(
+      height: Value(height)
+    ));
+
+    spacer.height = height;
+    notifyListeners();
   }
 
   Future<void> renameCategory(Category category, String categoryName) async {
@@ -350,27 +396,43 @@ class AppsService extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteCategory(Category category) async {
-    await _database.deleteCategory(category.id);
-    _categoriesById.remove(category.id);
+  Future<void> deleteSection(LauncherSection section) async {
+    if (section is Category) {
+      await _database.deleteCategory(section.id);
+      _categoriesById.remove(section.id);
+    }
+    else {
+      await _database.deleteSpacer(section.id);
+    }
+    
+    _launcherSections.removeWhere((s) => s.id == section.id);
     notifyListeners();
   }
 
-  Future<void> moveCategory(int oldIndex, int newIndex) async {
-    List<Category> newCategories = List.of(_categoriesById.values);
-    Category categoryToMove = newCategories.removeAt(oldIndex);
-    newCategories.insert(newIndex, categoryToMove);
+  Future<void> moveSection(int oldIndex, int newIndex) async {
+    List<LauncherSection> newSectionsList = List.of(_launcherSections);
+    LauncherSection sectionToMove = newSectionsList.removeAt(oldIndex);
+    newSectionsList.insert(newIndex, sectionToMove);
 
-    Map<int, Category> newCategoriesMap = Map();
     List<CategoriesCompanion> orderedCategories = [];
-    for (int i = 0; i < newCategories.length; ++i) {
-      Category category = newCategories[i];
-      newCategoriesMap[category.id] = category;
-      orderedCategories.add(CategoriesCompanion(id: Value(category.id), order: Value(i)));
+    List<LauncherSpacersCompanion> orderedSpacers = [];
+    for (int i = newIndex; i < newSectionsList.length; ++i) {
+      LauncherSection section = newSectionsList[i];
+
+      if (section is Category) {
+        orderedCategories.add(CategoriesCompanion(id: Value(section.id), order: Value(i)));
+      }
+      else {
+        orderedSpacers.add(LauncherSpacersCompanion(id: Value(section.id), order: Value(i)));
+      }
     }
 
-    _categoriesById = newCategoriesMap;
-    await _database.updateCategories(orderedCategories);
+    await Future.wait([
+      _database.updateCategories(orderedCategories),
+      _database.updateSpacers(orderedSpacers)
+    ]);
+
+    _launcherSections = newSectionsList;
     notifyListeners();
   }
 

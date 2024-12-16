@@ -12,12 +12,20 @@
     "columnCount": "Column count",
     "date": "Date",
     "dateAndTimeFormat": "Date and time format",
+    "delete": "Delete",
     "dialogOptionBackButtonActionDoNothing": "Do nothing",
     "dialogOptionBackButtonActionShowScreensaver": "Show screensaver",
     "dialogOptionBackButtonActionShowClock": "Show clock",
     "dialogTextNoFileExplorer": "Please install a file explorer in order to pick a picture.",
     "dialogTitleBackButtonAction": "Choose the back button action",
-    "delete": "Delete",
+    "disambiguateCategoryTitle": "{title} (Category)",
+    "@disambiguateCategoryTitle": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
     "formattedDate": "Formatted date: {dateString}",
     "@formattedDate": {
         "placeholders": {
@@ -36,10 +44,12 @@
     },
     "gradient": "Gradient",
     "grid": "Grid",
+    "height": "Height",
     "hide": "Hide",
     "hiddenApplications": "Hidden applications",
     "loading": "Loading",
     "manual": "Manual",
+    "modifySpacer": "Modify spacer",
     "mustNotBeEmpty": "Must not be empty",
     "name": "Name",
     "noDateFormatSpecified": "No date format specified",
@@ -58,6 +68,9 @@
     "reorder": "Reorder",
     "row": "Row",
     "rowHeight": "Row height",
+    "save": "Save",
+    "spacer": "Spacer",
+    "spacerMaxHeightRequirement": "Must be greater than 0 and less than or equal to 500",
     "statusBar": "Status bar",
     "settings": "Settings",
     "show": "Show",
