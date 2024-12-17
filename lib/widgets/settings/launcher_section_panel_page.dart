@@ -123,7 +123,6 @@ class _LauncherSectionPanelPageState extends State<LauncherSectionPanelPage>
           children: [
             Text(title, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
             Divider(),
-
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -288,121 +287,111 @@ class _CategorySettingsState extends State<_CategorySettings>
           _listTile(
             context,
             Text(localizations.sort),
-            Column(
-              children: [
-                SizedBox(height: 4),
-                DropdownButton<CategorySort>(
-                  value: _categorySort,
-                  onChanged: (value) {
-                    setState(() {
-                      _categorySort = value!;
-                    });
-                    _notifyChange();
-                  },
-                  isDense: true,
-                  isExpanded: true,
-                  items: [
-                    DropdownMenuItem(
-                      value: CategorySort.alphabetical,
-                      child: Text(localizations.alphabetical, style: Theme.of(context).textTheme.bodySmall),
-                    ),
-                    DropdownMenuItem(
-                      value: CategorySort.manual,
-                      child: Text(localizations.manual, style: Theme.of(context).textTheme.bodySmall),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            Padding(
+              padding: EdgeInsets.only(top: 4),
+              child: DropdownButton<CategorySort>(
+                isDense: true,
+                isExpanded: true,
+                value: _categorySort,
+                onChanged: (value) {
+                  setState(() {
+                    _categorySort = value!;
+                  });
+                  _notifyChange();
+                },
+                items: [
+                  DropdownMenuItem(
+                    value: CategorySort.alphabetical,
+                    child: Text(localizations.alphabetical, style: Theme.of(context).textTheme.bodySmall),
+                  ),
+                  DropdownMenuItem(
+                    value: CategorySort.manual,
+                    child: Text(localizations.manual, style: Theme.of(context).textTheme.bodySmall),
+                  )
+                ]
+              )
+            )
           ),
           _listTile(
             context,
             Text(localizations.layout),
-            Column(
-              children: [
-                SizedBox(height: 4),
-                DropdownButton<CategoryType>(
-                  value: _categoryType,
-                  onChanged: (value) {
-                    setState(() {
-                      _categoryType = value!;
-                    });
-                    _notifyChange();
-                  },
-                  isDense: true,
-                  isExpanded: true,
-                  items: [
-                    DropdownMenuItem(
-                      value: CategoryType.row,
-                      child: Text(localizations.row, style: Theme.of(context).textTheme.bodySmall),
-                    ),
-                    DropdownMenuItem(
-                      value: CategoryType.grid,
-                      child: Text(localizations.grid, style: Theme.of(context).textTheme.bodySmall),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            Padding(
+              padding: EdgeInsets.only(top: 4),
+              child: DropdownButton<CategoryType>(
+                value: _categoryType,
+                onChanged: (value) {
+                  setState(() {
+                    _categoryType = value!;
+                  });
+                  _notifyChange();
+                },
+                isDense: true,
+                isExpanded: true,
+                items: [
+                  DropdownMenuItem(
+                    value: CategoryType.row,
+                    child: Text(localizations.row, style: Theme.of(context).textTheme.bodySmall)
+                  ),
+                  DropdownMenuItem(
+                    value: CategoryType.grid,
+                    child: Text(localizations.grid, style: Theme.of(context).textTheme.bodySmall)
+                  )
+                ]
+              )
+            )
           ),
           if (_categoryType == CategoryType.grid)
             _listTile(
               context,
               Text(localizations.columnCount),
-              Column(
-                children: [
-                  SizedBox(height: 4),
-                  DropdownButton<int>(
-                    value: _columnsCount,
-                    isDense: true,
-                    isExpanded: true,
-                    items: [for (int i = 5; i <= 10; i++) i]
-                        .map(
-                          (value) => DropdownMenuItem(
-                        value: value,
-                        child: Text(value.toString(), style: Theme.of(context).textTheme.bodySmall),
-                      ),
-                    )
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _columnsCount = value!;
-                      });
-                      _notifyChange();
-                    },
-                  ),
-                ],
-              ),
+              Padding(
+                padding: EdgeInsets.only(top: 4),
+                child: DropdownButton<int>(
+                  value: _columnsCount,
+                  isDense: true,
+                  isExpanded: true,
+                  items: [for (int i = 5; i <= 10; i++) i]
+                      .map(
+                        (value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(value.toString(), style: Theme.of(context).textTheme.bodySmall),
+                    ),
+                  ).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _columnsCount = value!;
+                    });
+                    _notifyChange();
+                  }
+                )
+              )
             ),
           if (_categoryType == CategoryType.row)
             _listTile(
               context,
               Text(localizations.rowHeight),
-              Column(
-                children: [
-                  SizedBox(height: 4),
-                  DropdownButton<int>(
-                    value: _rowHeight,
-                    isDense: true,
-                    isExpanded: true,
-                    items: [for (int i = 80; i <= 150; i += 10) i]
-                        .map(
-                          (value) => DropdownMenuItem(
-                        value: value,
-                        child: Text(value.toString(), style: Theme.of(context).textTheme.bodySmall),
-                      ),
-                    )
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _rowHeight = value!;
-                      });
-                      _notifyChange();
-                    },
-                  ),
-                ],
-              ),
-            ),
+              Padding(
+                padding: EdgeInsets.only(top: 4),
+                child: DropdownButton<int>(
+                  value: _rowHeight,
+                  isDense: true,
+                  isExpanded: true,
+                  items: [for (int i = 80; i <= 150; i += 10) i]
+                      .map(
+                        (value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(value.toString(), style: Theme.of(context).textTheme.bodySmall),
+                    ),
+                  ).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _rowHeight = value!;
+                    });
+                    _notifyChange();
+                  }
+                )
+              )
+            )
         ]
     );
   }
@@ -510,34 +499,33 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
     return _listTile(
       context,
       Text(localizations.height),
-      Column(
-        children: [
-          TextFormField(
-            autovalidateMode: AutovalidateMode.always,
-            controller: _valueController,
-            keyboardType: TextInputType.numberWithOptions(),
-            textCapitalization: TextCapitalization.sentences,
-            onChanged: (value) {
-              setState(() {
-                _numberValue = int.tryParse(value);
-                _valid = _numberValue != null && _numberValue! > 0 && _numberValue! < 500;
+      Padding(
+        padding: EdgeInsets.only(top: 4),
+        child: TextFormField(
+          autovalidateMode: AutovalidateMode.always,
+          controller: _valueController,
+          keyboardType: TextInputType.numberWithOptions(),
+          textCapitalization: TextCapitalization.sentences,
+          onChanged: (value) {
+            setState(() {
+              _numberValue = int.tryParse(value);
+              _valid = _numberValue != null && _numberValue! > 0 && _numberValue! < 500;
 
-                _notifyChange();
-              });
-            },
-            validator: (value) {
-              if (value!.isEmpty) {
-                return localizations.mustNotBeEmpty;
-              }
-
-              if (!_valid) {
-                return localizations.spacerMaxHeightRequirement;
-              }
-
-              return null;
+              _notifyChange();
+            });
+          },
+          validator: (value) {
+            if (value!.isEmpty) {
+              return localizations.mustNotBeEmpty;
             }
-          )
-        ]
+
+            if (!_valid) {
+              return localizations.spacerMaxHeightRequirement;
+            }
+
+            return null;
+          }
+        )
       )
     );
   }
