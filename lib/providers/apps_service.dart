@@ -376,6 +376,7 @@ class AppsService extends ChangeNotifier {
 
   Future<void> updateCategory(
     int categoryId,
+    String name,
     CategorySort sort,
     CategoryType type,
     int columnsCount,
@@ -387,12 +388,14 @@ class AppsService extends ChangeNotifier {
     assert(category != null);
 
     await _database.updateCategory(categoryId, CategoriesCompanion(
+      name: Value(name),
       sort: Value(sort),
       type: Value(type),
       columnsCount: Value(columnsCount),
       rowHeight: Value(rowHeight)
     ));
 
+    category!.name = name;
     category!.sort = sort;
     category.type = type;
     category.columnsCount = columnsCount;

@@ -25,7 +25,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../models/category.dart';
 
-class LauncherSectionsPanelPage extends StatelessWidget {
+class LauncherSectionsPanelPage extends StatelessWidget
+{
   static const String routeName = "launcher_sections_panel";
 
   @override

@@ -439,10 +439,12 @@ class _CategorySettingsState extends State<_CategorySettings>
       );
     }
     else {
-      await service.updateCategory(_category!.id, _categorySort, _categoryType,
-        _columnsCount, _rowHeight
+      await service.updateCategory(_category!.id, _name, _categorySort,
+          _categoryType, _columnsCount, _rowHeight
       );
     }
+
+    _notifyChange();
   }
 }
 
@@ -520,9 +522,7 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
                 _numberValue = int.tryParse(value);
                 _valid = _numberValue != null && _numberValue! > 0 && _numberValue! < 500;
 
-                if (_onChanged != null) {
-                  _onChanged!(_valid, _numberValue != _spacer?.height, _numberValue);
-                }
+                _notifyChange();
               });
             },
             validator: (value) {
@@ -542,6 +542,13 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
     );
   }
 
+  void _notifyChange()
+  {
+    if (_onChanged != null) {
+      _onChanged!(_valid, _numberValue != _spacer?.height, _numberValue);
+    }
+  }
+
   Future<void> _save() async
   {
     AppsService service = context.read();
@@ -553,6 +560,8 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
       assert(_spacer != null);
       await service.updateSpacerHeight(_spacer!, _numberValue!);
     }
+
+    _notifyChange();
   }
 }
 

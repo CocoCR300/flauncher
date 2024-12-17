@@ -1,6 +1,6 @@
 /*
  * FLauncher
- * Copyright (C) 2021  Oscar Rojas
+ * Copyright (C) 2024 Oscar Rojas
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

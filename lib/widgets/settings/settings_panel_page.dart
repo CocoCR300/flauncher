@@ -129,13 +129,13 @@ class SettingsPanelPage extends StatelessWidget {
                     value: settingsService.appHighlightAnimationEnabled,
                     onChanged: (value) => settingsService.setAppHighlightAnimationEnabled(value),
                     title: Text(localizations.appCardHighlightAnimation, style: Theme.of(context).textTheme.bodyMedium),
-                    secondary: Icon(Icons.account_box_outlined),
+                    secondary: Icon(Icons.filter_center_focus),
                   ),
                   RoundedSwitchListTile(
                     value: settingsService.appKeyClickEnabled,
                     onChanged: (value) => settingsService.setAppKeyClickEnabled(value),
                     title: Text(localizations.appKeyClick, style: Theme.of(context).textTheme.bodyMedium),
-                    secondary: Icon(Icons.add_alert_sharp),
+                    secondary: Icon(Icons.notifications_active),
                   ),
                   RoundedSwitchListTile(
                       value: settingsService.showCategoryTitles,
