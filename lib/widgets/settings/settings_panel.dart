@@ -18,15 +18,13 @@
 
 import 'package:flauncher/widgets/right_panel_dialog.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
-import 'package:flauncher/widgets/settings/categories_panel_page.dart';
-import 'package:flauncher/widgets/settings/category_panel_page.dart';
+import 'package:flauncher/widgets/settings/launcher_sections_panel_page.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
+import 'package:flauncher/widgets/settings/launcher_section_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
 import 'package:flauncher/widgets/settings/status_bar_panel_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
-
-import 'launcher_spacer_panel_page.dart';
 
 class SettingsPanel extends StatefulWidget {
   final String? initialRoute;
@@ -62,16 +60,11 @@ class _SettingsPanelState extends State<SettingsPanel> {
                 return MaterialPageRoute(builder: (_) => GradientPanelPage());
               case ApplicationsPanelPage.routeName:
                 return MaterialPageRoute(builder: (_) => ApplicationsPanelPage());
-              case CategoriesPanelPage.routeName:
-                return MaterialPageRoute(builder: (_) => CategoriesPanelPage());
-              case CategoryPanelPage.routeName:
+              case LauncherSectionsPanelPage.routeName:
+                return MaterialPageRoute(builder: (_) => LauncherSectionsPanelPage());
+              case LauncherSectionPanelPage.routeName:
                 return MaterialPageRoute(
-                  builder: (_) => CategoryPanelPage(categoryId: settings.arguments! as int),
-                );
-              case LauncherSpacerPanelPage.routeName:
-                return MaterialPageRoute(
-                  builder: (_) => LauncherSpacerPanelPage(spacerId: settings.arguments! as int),
-                );
+                    builder: (_) => LauncherSectionPanelPage(sectionId: settings.arguments as int?));
               default:
                 throw ArgumentError.value(settings.name, "settings.name", "Route not supported.");
             }

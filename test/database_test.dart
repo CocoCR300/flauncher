@@ -196,7 +196,7 @@ void main() {
     final categoriesWithApps = await database.listCategoriesWithVisibleApps();
 
     expect(categoriesWithApps.length, 1);
-    expect(categoriesWithApps[0].category.name, "Test");
+    expect(categoriesWithApps[0]._category.name, "Test");
     expect(categoriesWithApps[0].applications.length, 3);
     expect(categoriesWithApps[0].applications[0].packageName, "me.efesser.flauncher.2");
     expect(categoriesWithApps[0].applications[0].name, "FLauncher 2");

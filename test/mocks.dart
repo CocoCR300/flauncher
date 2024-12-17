@@ -67,8 +67,8 @@ Category fakeCategory({
       id: Random().nextInt(1 << 32),
       name: name,
       sort: sort,
-      type: type,
-      rowHeight: rowHeight,
+      _sectionType: type,
+      _rowHeight: rowHeight,
       columnsCount: columnsCount,
       order: order,
     );

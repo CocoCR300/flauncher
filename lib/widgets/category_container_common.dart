@@ -1,4 +1,4 @@
-import 'package:flauncher/widgets/settings/categories_panel_page.dart';
+import 'package:flauncher/widgets/settings/launcher_sections_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,7 +30,7 @@ Widget categoryContainerEmptyState(BuildContext context) {
               child: InkWell(
                 onTap: () => showDialog(
                   context: context,
-                  builder: (_) => SettingsPanel(initialRoute: CategoriesPanelPage.routeName),
+                  builder: (_) => SettingsPanel(initialRoute: LauncherSectionsPanelPage.routeName),
                 ),
                 child: Padding(
                   padding: EdgeInsets.all(8),

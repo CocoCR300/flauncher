@@ -27,9 +27,9 @@ class LauncherSpacerPanelPage extends StatefulWidget
 {
   static const String routeName = "spacer_panel";
 
-  final int spacerId;
+  final int? spacerId;
 
-  LauncherSpacerPanelPage({Key? key, required this.spacerId}):
+  LauncherSpacerPanelPage({Key? key, this.spacerId}):
         super(key: key);
 
   @override
@@ -40,23 +40,23 @@ class _LauncherSpacerPanelPageState extends State<LauncherSpacerPanelPage>
 {
   bool valid;
   
-  int height;
+  int? numberValue;
 
   late TextEditingController valueController;
 
-  _LauncherSpacerPanelPageState(): valid = false, height = 10
-  {
-  }
+  _LauncherSpacerPanelPageState(): valid = true;
 
   @override
   void initState() {
     super.initState();
 
+    int height = 10;
     LauncherSection? launcherSection = _launcherSectionSelector(context.read<AppsService>());
     if (launcherSection is LauncherSpacer) {
       height = launcherSection.height;
     }
 
+    numberValue = height;
     valueController = TextEditingController(text: height.toString());
   }
 
@@ -74,10 +74,6 @@ class _LauncherSpacerPanelPageState extends State<LauncherSpacerPanelPage>
     return Selector<AppsService, LauncherSpacer?>(
       selector: (_, appsService) => _launcherSectionSelector(appsService),
       builder: (_, spacer, __) {
-        if (spacer == null) {
-          return Container();
-        }
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -89,15 +85,19 @@ class _LauncherSpacerPanelPageState extends State<LauncherSpacerPanelPage>
               Column(
                 children: [
                   TextFormField(
-                    autofocus: true,
                     controller: valueController,
+                    onChanged: (value) {
+                      setState(() {
+                        numberValue = int.tryParse(value);
+                        valid = numberValue != null && numberValue! > 0 && numberValue! < 500;
+                      });
+                    },
                     validator: (value) {
                       if (value!.isEmpty) {
                         return localizations.mustNotBeEmpty;
                       }
 
-                      int? numberValue = int.tryParse(value);
-                      if (numberValue == null || numberValue == 0 || numberValue > 500) {
+                      if (!valid) {
                         return localizations.spacerMaxHeightRequirement;
                       }
 
@@ -117,18 +117,20 @@ class _LauncherSpacerPanelPageState extends State<LauncherSpacerPanelPage>
               child: ValueListenableBuilder<TextEditingValue>(
                 valueListenable: valueController,
                 builder: (context, value, _) {
-                  String text = value.text;
-                  int? numberValue = int.tryParse(text);
-                  bool valid = text.isNotEmpty && numberValue != null && numberValue != 0 && numberValue <= 500;
-
                   void Function()? onSavePressed = null;
-                  if (valid && spacer.height != numberValue) {
+                  if (valid && spacer?.height != numberValue) {
                     onSavePressed = () async {
-                      await context.read<AppsService>().updateSpacerHeight(
-                          spacer, numberValue
-                      );
+                      AppsService service = context.read<AppsService>();
+                      if (spacer != null) {
+                        await service.updateSpacerHeight(
+                            spacer, numberValue!
+                        );
+                      }
+                      else {
+                        await service.addSpacer(numberValue!);
+                      }
                       // Force a refresh
-                      valueController.text = text;
+                      valueController.text = value.text;
                     };
                   }
 
@@ -140,34 +142,34 @@ class _LauncherSpacerPanelPageState extends State<LauncherSpacerPanelPage>
                 }
               )
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red[400]),
-                child: Text(localizations.delete),
-                onPressed: () async {
-                  await context.read<AppsService>().deleteSection(spacer);
-                  Navigator.of(context).pop();
-                }
+
+            if (spacer != null)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red[400]),
+                  child: Text(localizations.delete),
+                  onPressed: () async {
+                    await context.read<AppsService>().deleteSection(spacer);
+                    Navigator.of(context).pop();
+                  }
+                )
               )
-            )
           ]
         );
       }
     );
   }
   
-  LauncherSpacer? _launcherSectionSelector(AppsService appsService) {
+  LauncherSpacer _launcherSectionSelector(AppsService appsService) {
     LauncherSpacer? spacer;
     int index = appsService.launcherSections.indexWhere((s) => s.id == widget.spacerId);
 
-    if (index == -1) {
-      spacer = null;
-    } else {
+    if (index != -1) {
       spacer = appsService.launcherSections[index] as LauncherSpacer;
     }
 
-    return spacer;
+    return spacer!;
   }
 
   Widget _listTile(BuildContext context, Widget title, Widget subtitle, {Widget? trailing}) => Material(
@@ -178,6 +180,6 @@ class _LauncherSpacerPanelPageState extends State<LauncherSpacerPanelPage>
       title: title,
       subtitle: subtitle,
       trailing: trailing,
-    ),
+    )
   );
 }

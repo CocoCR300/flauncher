@@ -19,7 +19,7 @@
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/rename_category_dialog.dart';
-import 'package:flauncher/widgets/settings/categories_panel_page.dart';
+import 'package:flauncher/widgets/settings/launcher_sections_panel_page.dart';
 import 'package:flauncher/widgets/settings/category_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -113,7 +113,7 @@ Future<void> _pumpWidgetWithProviders(WidgetTester tester, AppsService appsServi
         routes: {
           CategoryPanelPage.routeName: (_) => Container(key: Key("CategoryPanelPage")),
         },
-        home: Scaffold(body: CategoriesPanelPage()),
+        home: Scaffold(body: LauncherSectionsPanelPage()),
       ),
     ),
   );

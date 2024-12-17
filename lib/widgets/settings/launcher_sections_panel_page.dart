@@ -17,25 +17,23 @@
  */
 
 import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/widgets/modify_launcher_section_dialog.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
-import 'package:flauncher/widgets/settings/category_panel_page.dart';
-import 'package:flauncher/widgets/settings/launcher_spacer_panel_page.dart';
+import 'package:flauncher/widgets/settings/launcher_section_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../models/category.dart';
 
-class CategoriesPanelPage extends StatelessWidget {
-  static const String routeName = "categories_panel";
+class LauncherSectionsPanelPage extends StatelessWidget {
+  static const String routeName = "launcher_sections_panel";
 
   @override
   Widget build(BuildContext context) {
     AppLocalizations localizations = AppLocalizations.of(context)!;
     return Column(
         children: [
-          Text(localizations.categories, style: Theme.of(context).textTheme.titleLarge),
+          Text(localizations.launcherSections, style: Theme.of(context).textTheme.titleLarge),
           Divider(),
           Selector<AppsService, List<LauncherSection>>(
             selector: (_, appsService) => appsService.launcherSections,
@@ -52,23 +50,12 @@ class CategoriesPanelPage extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(height: 4, width: 0),
           TextButton.icon(
             icon: Icon(Icons.add),
             label: Text("Add section"),
-            onPressed: () async {
-              final dialogResult = await showDialog<ModifyLauncherSectionDialogResult>(
-                  context: context,
-                  builder: (_) => ModifyLauncherSectionDialog()
-              );
-              if (dialogResult != null) {
-                AppsService service = context.read();
-                if (dialogResult.type == LauncherSectionType.Category) {
-                  await service.addCategory(dialogResult.value);
-                }
-                else {
-                  await service.addSpacer(int.parse(dialogResult.value));
-                }
-              }
+            onPressed: () {
+              Navigator.pushNamed(context, LauncherSectionPanelPage.routeName);
             },
           ),
         ],
@@ -117,19 +104,7 @@ class CategoriesPanelPage extends StatelessWidget {
                   splashRadius: 20,
                   icon: Icon(Icons.settings),
                   onPressed: () {
-                    final NavigatorState navigator = Navigator.of(context);
-                    if (section is Category) {
-                      navigator.pushNamed(
-                        CategoryPanelPage.routeName,
-                        arguments: section.id,
-                      );
-                    }
-                    else {
-                      navigator.pushNamed(
-                        LauncherSpacerPanelPage.routeName,
-                        arguments: section.id
-                      );
-                    }
+                    Navigator.pushNamed(context, LauncherSectionPanelPage.routeName, arguments: section.id);
                   },
                 ),
               ],

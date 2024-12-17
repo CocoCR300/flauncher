@@ -20,7 +20,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/ensure_visible.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
-import 'package:flauncher/widgets/settings/categories_panel_page.dart';
+import 'package:flauncher/widgets/settings/launcher_sections_panel_page.dart';
 import 'package:flauncher/widgets/settings/date_time_format_dialog.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/settings/status_bar_panel_page.dart';
@@ -68,10 +68,10 @@ class SettingsPanelPage extends StatelessWidget {
                       children: [
                         const Icon(Icons.category),
                         Container(width: 8),
-                        Text(localizations.categories, style: Theme.of(context).textTheme.bodyMedium),
+                        Text(localizations.launcherSections, style: Theme.of(context).textTheme.bodyMedium),
                       ],
                     ),
-                    onPressed: () => Navigator.of(context).pushNamed(CategoriesPanelPage.routeName),
+                    onPressed: () => Navigator.of(context).pushNamed(LauncherSectionsPanelPage.routeName),
                   ),
                   TextButton(
                     child: Row(

@@ -121,6 +121,6 @@ class CategoryRow extends StatelessWidget
 
   void _onMoveEnd(BuildContext context) {
     final appsService = context.read<AppsService>();
-    appsService.saveOrderInCategory(category);
+    appsService.saveApplicationOrderInCategory(category);
   }
 }

@@ -322,7 +322,13 @@ class AppsService extends ChangeNotifier {
     }
   }
 
-  Future<int> addCategory(String categoryName, {bool shouldNotifyListeners = true}) async {
+  Future<int> addCategory(String categoryName, {
+    CategorySort sort = Category.Sort,
+    CategoryType type = Category.Type,
+    int columnsCount = Category.ColumnsCount,
+    int rowHeight = Category.RowHeight,
+    bool shouldNotifyListeners = true
+  }) async {
     List<CategoriesCompanion> orderedCategories = [];
     int categoryOrder = 1, newCategoryId = -1;
     for (Category category in _categoriesById.values) {
@@ -338,7 +344,15 @@ class AppsService extends ChangeNotifier {
       });
 
       Map<int, Category> newCategories = Map();
-      Category newCategory = Category(id: newCategoryId, name: categoryName, order: 0);
+      Category newCategory = Category(
+          id: newCategoryId,
+          name: categoryName,
+          sort: sort,
+          type: type,
+          columnsCount: columnsCount,
+          rowHeight: rowHeight,
+          order: 0
+      );
       newCategories[newCategoryId] = newCategory;
 
       categoryOrder = 1;
@@ -358,6 +372,35 @@ class AppsService extends ChangeNotifier {
     catch (ex) { }
 
     return newCategoryId;
+  }
+
+  Future<void> updateCategory(
+    int categoryId,
+    CategorySort sort,
+    CategoryType type,
+    int columnsCount,
+    int rowHeight, {
+    bool shouldNotifyListeners = true
+    }) async
+  {
+    Category? category = _categoriesById[categoryId];
+    assert(category != null);
+
+    await _database.updateCategory(categoryId, CategoriesCompanion(
+      sort: Value(sort),
+      type: Value(type),
+      columnsCount: Value(columnsCount),
+      rowHeight: Value(rowHeight)
+    ));
+
+    category!.sort = sort;
+    category.type = type;
+    category.columnsCount = columnsCount;
+    category.rowHeight = rowHeight;
+
+    if (shouldNotifyListeners) {
+      notifyListeners();
+    }
   }
 
   Future<void> addSpacer(int height) async
