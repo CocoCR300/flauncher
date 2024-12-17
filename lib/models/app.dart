@@ -18,8 +18,6 @@
 
 class App
 {
-  final bool sideloaded;
-
   final String name;
 
   final String packageName;
@@ -28,12 +26,21 @@ class App
 
   bool hidden;
 
+  bool sideloaded;
+
   Map<int, int> categoryOrders;
 
   String? action;
 
-  App({required this.packageName, required this.name, required this.version, required this.hidden, required this.sideloaded, this.action = null}):
-    categoryOrders = Map();
+  App({
+    required this.packageName,
+    required this.name,
+    required this.version,
+    required this.hidden,
+    this.action = null
+  }):
+    categoryOrders = Map(),
+    sideloaded = false;
 
   App.fromSystem(Map<dynamic, dynamic> data):
     packageName = data['packageName'],

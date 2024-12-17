@@ -2,9 +2,9 @@ import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/settings_service.dart';
-import '../date_time_widget.dart';
-import '../network_widget.dart';
+import '../providers/settings_service.dart';
+import 'date_time_widget.dart';
+import 'network_widget.dart';
 
 class FocusAwareAppBar extends StatefulWidget implements PreferredSizeWidget
 {
