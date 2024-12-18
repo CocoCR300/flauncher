@@ -25,168 +25,192 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../models/category.dart';
 
-class LauncherSectionPanelPage extends StatefulWidget
+class _SettingsState extends ChangeNotifier
+{
+  void Function()? onSave;
+
+  late bool changed;
+  late bool creating;
+  late bool valid;
+  late LauncherSectionType sectionType;
+
+  _SettingsState(LauncherSection? launcherSection)
+  {
+    changed = false;
+    creating = false;
+    valid = false;
+    sectionType = LauncherSectionType.Category;
+
+    if (launcherSection == null) {
+      creating = true;
+    }
+    else if (launcherSection is LauncherSpacer) {
+      sectionType = LauncherSectionType.Spacer;
+    }
+
+    valid = false;
+    changed = creating;
+  }
+
+  void setFlags(bool valid, bool changed)
+  {
+    if (this.valid != valid || this.changed != changed) {
+      this.valid = valid;
+      this.changed = changed;
+
+      notifyListeners();
+    }
+  }
+
+  void setSectionType(LauncherSectionType sectionType)
+  {
+    if (this.sectionType != sectionType) {
+      this.sectionType = sectionType;
+
+      if (creating && sectionType == LauncherSectionType.Spacer) {
+        changed = true;
+        valid = true;
+      }
+
+      notifyListeners();
+    }
+  }
+}
+
+class LauncherSectionPanelPage extends StatelessWidget
 {
   static const String routeName = "section_panel";
 
   final int? sectionId;
-
-  LauncherSectionPanelPage({Key? key, this.sectionId}):
-        super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => _LauncherSectionPanelPageState();
-}
-
-class _LauncherSectionPanelPageState extends State<LauncherSectionPanelPage>
-{
   final StreamController _streamController;
 
-  LauncherSection? _launcherSection;
-
-  bool _changed;
-  bool _valid;
-  LauncherSectionType _sectionType;
-
-  _LauncherSectionPanelPageState():
+  LauncherSectionPanelPage({Key? key, this.sectionId}):
         _streamController = StreamController.broadcast(),
-        _sectionType = LauncherSectionType.Category,
-        _changed = false,
-        _valid = true;
+        super(key: key);
 
-  @override
-  void initState() {
-    super.initState();
-
-    _launcherSection = _launcherSectionSelector(context.read<AppsService>(), widget.sectionId);
-    if (_launcherSection is LauncherSpacer) {
-      _sectionType = LauncherSectionType.Spacer;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     AppLocalizations localizations = AppLocalizations.of(context)!;
 
-    Widget sectionSpecificSettings;
-    if (_sectionType == LauncherSectionType.Category) {
-      sectionSpecificSettings = _CategorySettings(
-          category: _launcherSection as Category?,
-          onChanged: (valid, dirty, name, sort, type, columns, rowHeight) {
-            setState(() {
-              _valid = valid;
-              _changed = dirty;
-            });
-          },
-          requestSave: _streamController.stream
-      );
-    }
-    else {
-      sectionSpecificSettings = _LauncherSpacerSettings(
-          spacer: _launcherSection as LauncherSpacer?,
-          onChanged: (valid, dirty, height) {
-            setState(() {
-              _valid = valid;
-              _changed = dirty;
-            });
-          },
-          requestSave: _streamController.stream
-      );
-    }
-
     return Selector<AppsService, LauncherSection?>(
-      selector: (_, appsService) => _launcherSectionSelector(appsService, widget.sectionId),
+      selector: (_, appsService) => _launcherSectionSelector(appsService, sectionId),
       builder: (_, launcherSection, __) {
-        bool creating = launcherSection == null;
-        void Function()? onSavePressed = null;
+        return ChangeNotifierProvider(
+          create: (_) => _SettingsState(launcherSection),
+          builder: (context, _) {
+            return Selector<_SettingsState, LauncherSectionType>(
+              selector: (context, state) => state.sectionType,
+              builder: (context, sectionType, _) {
+                _SettingsState state = context.read();
+                bool creating = state.creating;
+                Widget sectionSpecificSettings;
 
-        if (creating) {
-          if (_sectionType == LauncherSectionType.Category) {
-            _valid = false;
-          }
-          _changed = true;
-        }
+                if (sectionType == LauncherSectionType.Category) {
+                  sectionSpecificSettings = _CategorySettings(
+                      category: launcherSection as Category?,
+                      onChanged: (valid, dirty, name, sort, type, columns, rowHeight) {
+                        state.setFlags(valid, dirty);
+                      },
+                      requestSave: _streamController.stream
+                  );
+                }
+                else {
+                  sectionSpecificSettings = _LauncherSpacerSettings(
+                      spacer: launcherSection as LauncherSpacer?,
+                      onChanged: (valid, dirty, height) {
+                        state.setFlags(valid, dirty);
+                      },
+                      requestSave: _streamController.stream
+                  );
+                }
 
-        if (_valid && _changed) {
-          onSavePressed = () {
-            _streamController.sink.add(null);
-          };
-        }
+                String title = localizations.newSection;
+                if (!creating) {
+                  title = localizations.modifySection;
+                }
 
-        String title = "New section";
-        if (!creating) {
-          title = "Modify section";
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(title, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
-            Divider(),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (creating)
-                      _listTile(
-                          context,
-                          Text(localizations.type),
-                          Padding(
-                            padding: EdgeInsets.only(top: 4),
-                            child: DropdownButton<LauncherSectionType>(
-                                value: _sectionType,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _sectionType = value!;
-                                  });
-                                },
-                                isDense: true,
-                                isExpanded: true,
-                                items: [
-                                  DropdownMenuItem(
-                                      value: LauncherSectionType.Category,
-                                      child: Text(localizations.category, style: Theme.of(context).textTheme.bodySmall)
-                                  ),
-                                  DropdownMenuItem(
-                                      value: LauncherSectionType.Spacer,
-                                      child: Text(localizations.spacer, style: Theme.of(context).textTheme.bodySmall)
+                    Text(title, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
+                    Divider(),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            if (creating)
+                              _listTile(
+                                context,
+                                Text(localizations.type),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 4),
+                                  child: DropdownButton<LauncherSectionType>(
+                                    value: sectionType,
+                                    onChanged: (value) {
+                                      state.setSectionType(value!);
+                                    },
+                                    isDense: true,
+                                    isExpanded: true,
+                                    items: [
+                                      DropdownMenuItem(
+                                        value: LauncherSectionType.Category,
+                                        child: Text(localizations.category, style: Theme.of(context).textTheme.bodySmall)
+                                      ),
+                                      DropdownMenuItem(
+                                        value: LauncherSectionType.Spacer,
+                                        child: Text(localizations.spacer, style: Theme.of(context).textTheme.bodySmall)
+                                      )
+                                    ]
                                   )
-                                ]
-                            )
+                                )
+                              ),
+
+                            sectionSpecificSettings,
+                          ]
+                        )
+                      )
+                    ),
+                    Divider(),
+                    Selector<_SettingsState, bool>(
+                      selector: (context, state) => (state.valid && state.changed),
+                      builder: (context, canSave, _) {
+                        void Function()? onSavePressed = null;
+                        if (canSave) {
+                          onSavePressed = () {
+                            _streamController.sink.add(null);
+                          };
+                        }
+
+                        return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.green[400]),
+                            child: Text(localizations.save),
+                            onPressed: onSavePressed
                           )
-                      ),
+                        );
+                      }
+                    ),
 
-                    sectionSpecificSettings,
-                  ]
-                )
-              )
-            ),
-            Divider(),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.green[400]),
-                child: Text(localizations.save),
-                onPressed: onSavePressed
-              )
-            ),
-
-            if (!creating)
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red[400]),
-                  child: Text(localizations.delete),
-                  onPressed: () async {
-                    await context.read<AppsService>().deleteSection(launcherSection);
-                    Navigator.of(context).pop();
-                  }
-                )
-              )
-          ]
+                    if (!creating)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red[400]),
+                          child: Text(localizations.delete),
+                          onPressed: () async {
+                            await context.read<AppsService>().deleteSection(launcherSection!);
+                            Navigator.of(context).pop();
+                          }
+                        )
+                      )
+                    ]
+                );
+              }
+            );
+          }
         );
-      }
-    );
+          },
+        );
   }
 }
 
@@ -261,138 +285,138 @@ class _CategorySettingsState extends State<_CategorySettings>
     AppLocalizations localizations = AppLocalizations.of(context)!;
 
     return Column(
-        children: [
-          _listTile(
-            context,
-            Text(localizations.name),
-            TextFormField(
-              autovalidateMode: AutovalidateMode.always,
-              controller: _nameController,
-              textCapitalization: TextCapitalization.sentences,
+      children: [
+        _listTile(
+          context,
+          Text(localizations.name),
+          TextFormField(
+            autovalidateMode: AutovalidateMode.always,
+            controller: _nameController,
+            textCapitalization: TextCapitalization.sentences,
+            onChanged: (value) {
+              setState(() {
+                _name = value;
+              });
+              _notifyChange();
+            },
+            validator: (value) {
+              if (value!.isEmpty) {
+                return localizations.mustNotBeEmpty;
+              }
+
+              return null;
+            }
+          )
+        ),
+        _listTile(
+          context,
+          Text(localizations.sort),
+          Padding(
+            padding: EdgeInsets.only(top: 4),
+            child: DropdownButton<CategorySort>(
+              isDense: true,
+              isExpanded: true,
+              value: _categorySort,
               onChanged: (value) {
                 setState(() {
-                  _name = value;
+                  _categorySort = value!;
                 });
                 _notifyChange();
               },
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return localizations.mustNotBeEmpty;
+              items: [
+                DropdownMenuItem(
+                  value: CategorySort.alphabetical,
+                  child: Text(localizations.alphabetical, style: Theme.of(context).textTheme.bodySmall),
+                ),
+                DropdownMenuItem(
+                  value: CategorySort.manual,
+                  child: Text(localizations.manual, style: Theme.of(context).textTheme.bodySmall),
+                )
+              ]
+            )
+          )
+        ),
+        _listTile(
+          context,
+          Text(localizations.layout),
+          Padding(
+            padding: EdgeInsets.only(top: 4),
+            child: DropdownButton<CategoryType>(
+              value: _categoryType,
+              onChanged: (value) {
+                setState(() {
+                  _categoryType = value!;
+                });
+                _notifyChange();
+              },
+              isDense: true,
+              isExpanded: true,
+              items: [
+                DropdownMenuItem(
+                  value: CategoryType.row,
+                  child: Text(localizations.row, style: Theme.of(context).textTheme.bodySmall)
+                ),
+                DropdownMenuItem(
+                  value: CategoryType.grid,
+                  child: Text(localizations.grid, style: Theme.of(context).textTheme.bodySmall)
+                )
+              ]
+            )
+          )
+        ),
+        if (_categoryType == CategoryType.grid)
+          _listTile(
+            context,
+            Text(localizations.columnCount),
+            Padding(
+              padding: EdgeInsets.only(top: 4),
+              child: DropdownButton<int>(
+                value: _columnsCount,
+                isDense: true,
+                isExpanded: true,
+                items: [for (int i = 5; i <= 10; i++) i]
+                    .map(
+                      (value) => DropdownMenuItem(
+                    value: value,
+                    child: Text(value.toString(), style: Theme.of(context).textTheme.bodySmall),
+                  ),
+                ).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _columnsCount = value!;
+                  });
+                  _notifyChange();
                 }
-
-                return null;
-              }
+              )
             )
           ),
+        if (_categoryType == CategoryType.row)
           _listTile(
             context,
-            Text(localizations.sort),
+            Text(localizations.rowHeight),
             Padding(
               padding: EdgeInsets.only(top: 4),
-              child: DropdownButton<CategorySort>(
+              child: DropdownButton<int>(
+                value: _rowHeight,
                 isDense: true,
                 isExpanded: true,
-                value: _categorySort,
+                items: [for (int i = 80; i <= 150; i += 10) i]
+                    .map(
+                      (value) => DropdownMenuItem(
+                    value: value,
+                    child: Text(value.toString(), style: Theme.of(context).textTheme.bodySmall),
+                  ),
+                ).toList(),
                 onChanged: (value) {
                   setState(() {
-                    _categorySort = value!;
+                    _rowHeight = value!;
                   });
                   _notifyChange();
-                },
-                items: [
-                  DropdownMenuItem(
-                    value: CategorySort.alphabetical,
-                    child: Text(localizations.alphabetical, style: Theme.of(context).textTheme.bodySmall),
-                  ),
-                  DropdownMenuItem(
-                    value: CategorySort.manual,
-                    child: Text(localizations.manual, style: Theme.of(context).textTheme.bodySmall),
-                  )
-                ]
+                }
               )
             )
-          ),
-          _listTile(
-            context,
-            Text(localizations.layout),
-            Padding(
-              padding: EdgeInsets.only(top: 4),
-              child: DropdownButton<CategoryType>(
-                value: _categoryType,
-                onChanged: (value) {
-                  setState(() {
-                    _categoryType = value!;
-                  });
-                  _notifyChange();
-                },
-                isDense: true,
-                isExpanded: true,
-                items: [
-                  DropdownMenuItem(
-                    value: CategoryType.row,
-                    child: Text(localizations.row, style: Theme.of(context).textTheme.bodySmall)
-                  ),
-                  DropdownMenuItem(
-                    value: CategoryType.grid,
-                    child: Text(localizations.grid, style: Theme.of(context).textTheme.bodySmall)
-                  )
-                ]
-              )
-            )
-          ),
-          if (_categoryType == CategoryType.grid)
-            _listTile(
-              context,
-              Text(localizations.columnCount),
-              Padding(
-                padding: EdgeInsets.only(top: 4),
-                child: DropdownButton<int>(
-                  value: _columnsCount,
-                  isDense: true,
-                  isExpanded: true,
-                  items: [for (int i = 5; i <= 10; i++) i]
-                      .map(
-                        (value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value.toString(), style: Theme.of(context).textTheme.bodySmall),
-                    ),
-                  ).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _columnsCount = value!;
-                    });
-                    _notifyChange();
-                  }
-                )
-              )
-            ),
-          if (_categoryType == CategoryType.row)
-            _listTile(
-              context,
-              Text(localizations.rowHeight),
-              Padding(
-                padding: EdgeInsets.only(top: 4),
-                child: DropdownButton<int>(
-                  value: _rowHeight,
-                  isDense: true,
-                  isExpanded: true,
-                  items: [for (int i = 80; i <= 150; i += 10) i]
-                      .map(
-                        (value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value.toString(), style: Theme.of(context).textTheme.bodySmall),
-                    ),
-                  ).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _rowHeight = value!;
-                    });
-                    _notifyChange();
-                  }
-                )
-              )
-            )
-        ]
+          )
+      ]
     );
   }
 

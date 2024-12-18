@@ -36,25 +36,28 @@ class LauncherSectionsPanelPage extends StatelessWidget
         children: [
           Text(localizations.launcherSections, style: Theme.of(context).textTheme.titleLarge),
           Divider(),
-          Selector<AppsService, List<LauncherSection>>(
-            selector: (_, appsService) => appsService.launcherSections,
-            builder: (_, sections, __) => Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: sections.indexed.map((tuple) {
-                    int index = tuple.$1;
-                    bool last = index == sections.length - 1;
+          Consumer<AppsService>(
+            builder: (_, service, __) {
+              List<LauncherSection> sections = service.launcherSections;
 
-                    return _section(context, sections[index], index, last);
-                  }).toList(),
+              return Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: sections.indexed.map((tuple) {
+                      int index = tuple.$1;
+                      bool last = index == sections.length - 1;
+
+                      return _section(context, sections[index], index, last);
+                    }).toList(),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
           SizedBox(height: 4, width: 0),
           TextButton.icon(
             icon: Icon(Icons.add),
-            label: Text("Add section"),
+            label: Text(localizations.addSection),
             onPressed: () {
               Navigator.pushNamed(context, LauncherSectionPanelPage.routeName);
             },
