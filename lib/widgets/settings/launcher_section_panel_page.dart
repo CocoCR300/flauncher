@@ -82,135 +82,125 @@ class LauncherSectionPanelPage extends StatelessWidget
   static const String routeName = "section_panel";
 
   final int? sectionId;
-  final StreamController _streamController;
 
-  LauncherSectionPanelPage({Key? key, this.sectionId}):
-        _streamController = StreamController.broadcast(),
-        super(key: key);
+  LauncherSectionPanelPage({Key? key, this.sectionId}): super(key: key);
 
   Widget build(BuildContext context) {
     AppLocalizations localizations = AppLocalizations.of(context)!;
 
     return Selector<AppsService, LauncherSection?>(
       selector: (_, appsService) => _launcherSectionSelector(appsService, sectionId),
-      builder: (_, launcherSection, __) {
-        return ChangeNotifierProvider(
-          create: (_) => _SettingsState(launcherSection),
-          builder: (context, _) {
-            return Selector<_SettingsState, LauncherSectionType>(
-              selector: (context, state) => state.sectionType,
-              builder: (context, sectionType, _) {
-                _SettingsState state = context.read();
-                bool creating = state.creating;
-                Widget sectionSpecificSettings;
+      builder: (_, launcherSection, __) => ChangeNotifierProvider(
+        create: (_) => _SettingsState(launcherSection),
+        builder: (context, _) => Selector<_SettingsState, LauncherSectionType>(
+          selector: (context, state) => state.sectionType,
+          builder: (context, sectionType, _) {
+            _SettingsState state = context.read();
+            bool creating = state.creating;
+            Widget sectionSpecificSettings;
 
-                if (sectionType == LauncherSectionType.Category) {
-                  sectionSpecificSettings = _CategorySettings(
-                      category: launcherSection as Category?,
-                      onChanged: (valid, dirty, name, sort, type, columns, rowHeight) {
-                        state.setFlags(valid, dirty);
-                      },
-                      requestSave: _streamController.stream
-                  );
-                }
-                else {
-                  sectionSpecificSettings = _LauncherSpacerSettings(
-                      spacer: launcherSection as LauncherSpacer?,
-                      onChanged: (valid, dirty, height) {
-                        state.setFlags(valid, dirty);
-                      },
-                      requestSave: _streamController.stream
-                  );
-                }
+            if (sectionType == LauncherSectionType.Category) {
+              sectionSpecificSettings = _CategorySettings(
+                  category: launcherSection as Category?,
+                  onChanged: (valid, dirty, name, sort, type, columns, rowHeight) {
+                    state.setFlags(valid, dirty);
+                  }
+              );
+            }
+            else {
+              sectionSpecificSettings = _LauncherSpacerSettings(
+                  spacer: launcherSection as LauncherSpacer?
+              );
+            }
 
-                String title = localizations.newSection;
-                if (!creating) {
-                  title = localizations.modifySection;
-                }
+            String title = localizations.newSection;
+            if (!creating) {
+              title = localizations.modifySection;
+            }
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(title, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
-                    Divider(),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            if (creating)
-                              _listTile(
-                                context,
-                                Text(localizations.type),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 4),
-                                  child: DropdownButton<LauncherSectionType>(
-                                    value: sectionType,
-                                    onChanged: (value) {
-                                      state.setSectionType(value!);
-                                    },
-                                    isDense: true,
-                                    isExpanded: true,
-                                    items: [
-                                      DropdownMenuItem(
-                                        value: LauncherSectionType.Category,
-                                        child: Text(localizations.category, style: Theme.of(context).textTheme.bodySmall)
-                                      ),
-                                      DropdownMenuItem(
-                                        value: LauncherSectionType.Spacer,
-                                        child: Text(localizations.spacer, style: Theme.of(context).textTheme.bodySmall)
-                                      )
-                                    ]
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(title, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
+                Divider(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        if (creating)
+                          _listTile(
+                            context,
+                            Text(localizations.type),
+                            Padding(
+                              padding: EdgeInsets.only(top: 4),
+                              child: DropdownButton<LauncherSectionType>(
+                                value: sectionType,
+                                onChanged: (value) {
+                                  state.setSectionType(value!);
+                                },
+                                isDense: true,
+                                isExpanded: true,
+                                items: [
+                                  DropdownMenuItem(
+                                    value: LauncherSectionType.Category,
+                                    child: Text(localizations.category, style: Theme.of(context).textTheme.bodySmall)
+                                  ),
+                                  DropdownMenuItem(
+                                    value: LauncherSectionType.Spacer,
+                                    child: Text(localizations.spacer, style: Theme.of(context).textTheme.bodySmall)
                                   )
-                                )
-                              ),
+                                ]
+                              )
+                            )
+                          ),
 
-                            sectionSpecificSettings,
-                          ]
-                        )
-                      )
-                    ),
-                    Divider(),
-                    Selector<_SettingsState, bool>(
-                      selector: (context, state) => (state.valid && state.changed),
-                      builder: (context, canSave, _) {
-                        void Function()? onSavePressed = null;
-                        if (canSave) {
-                          onSavePressed = () {
-                            _streamController.sink.add(null);
-                          };
+                        sectionSpecificSettings,
+                      ]
+                    )
+                  )
+                ),
+                Divider(),
+                Selector<_SettingsState, bool>(
+                  selector: (context, state) => (state.valid && state.changed),
+                  builder: (context, canSave, _) {
+                    void Function()? onSavePressed = null;
+                    if (canSave) {
+                      onSavePressed = () {
+                        if (state.onSave != null) {
+                          state.onSave!();
                         }
+                      };
+                    }
 
-                        return Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.green[400]),
-                            child: Text(localizations.save),
-                            onPressed: onSavePressed
-                          )
-                        );
-                      }
-                    ),
-
-                    if (!creating)
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red[400]),
-                          child: Text(localizations.delete),
-                          onPressed: () async {
-                            await context.read<AppsService>().deleteSection(launcherSection!);
-                            Navigator.of(context).pop();
-                          }
-                        )
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.green[400]),
+                        child: Text(localizations.save),
+                        onPressed: onSavePressed
                       )
-                    ]
-                );
-              }
+                    );
+                  }
+                ),
+
+                if (!creating)
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red[400]),
+                      child: Text(localizations.delete),
+                      onPressed: () async {
+                        await context.read<AppsService>().deleteSection(launcherSection!);
+                        Navigator.of(context).pop();
+                      }
+                    )
+                  )
+                ]
             );
           }
-        );
-          },
-        );
+        )
+      )
+    );
   }
 }
 
@@ -218,12 +208,10 @@ class _CategorySettings extends StatefulWidget
 {
   final Category? category;
   final void Function(bool valid, bool dirty, String, CategorySort, CategoryType, int columnsCount, int rowHeight)? onChanged;
-  final Stream? requestSave;
 
   const _CategorySettings({
     this.category,
-    this.onChanged,
-    this.requestSave
+    this.onChanged
   });
 
   @override
@@ -239,8 +227,6 @@ class _CategorySettingsState extends State<_CategorySettings>
   String _name;
 
   late Category? _category;
-  late void Function(bool valid, bool dirty, String, CategorySort, CategoryType, int columnsCount, int rowHeight)? _onChanged;
-  late StreamSubscription? _requestSave;
 
   late bool _creating;
   late TextEditingController _nameController;
@@ -257,7 +243,6 @@ class _CategorySettingsState extends State<_CategorySettings>
     super.dispose();
 
     _nameController.dispose();
-    _requestSave?.cancel();
   }
 
   @override
@@ -266,8 +251,6 @@ class _CategorySettingsState extends State<_CategorySettings>
 
     _category = widget.category;
     _creating = _category == null;
-    _onChanged = widget.onChanged;
-    _requestSave = widget.requestSave?.listen((_) => _save());
 
     if (!_creating) {
       _name = _category!.name;
@@ -278,6 +261,9 @@ class _CategorySettingsState extends State<_CategorySettings>
     }
 
     _nameController = TextEditingController(text: _name);
+
+    _SettingsState state = context.read();
+    state.onSave = _save;
   }
 
   @override
@@ -422,6 +408,7 @@ class _CategorySettingsState extends State<_CategorySettings>
 
   void _notifyChange()
   {
+
     String initialName = "";
     CategorySort initialSort = Category.Sort;
     CategoryType initialType = Category.Type;
@@ -435,12 +422,12 @@ class _CategorySettingsState extends State<_CategorySettings>
       initialRowHeight = _category!.rowHeight;
     }
 
-    if (_onChanged != null) {
-      bool dirty = initialSort != _categorySort || initialType != _categoryType
-          || initialColumnsCount != _columnsCount
-          || initialRowHeight != _rowHeight || initialName != _name ;
-      _onChanged!(_name.isNotEmpty, dirty, _name, _categorySort, _categoryType, _columnsCount, _rowHeight);
-    }
+    bool dirty = initialSort != _categorySort || initialType != _categoryType
+        || initialColumnsCount != _columnsCount
+        || initialRowHeight != _rowHeight || initialName != _name ;
+
+    _SettingsState state = context.read();
+    state.setFlags(_name.isNotEmpty, dirty);
   }
 
   Future<void> _save() async
@@ -464,14 +451,8 @@ class _CategorySettingsState extends State<_CategorySettings>
 class _LauncherSpacerSettings extends StatefulWidget
 {
   final LauncherSpacer? spacer;
-  final void Function(bool valid, bool dirty, int? height)? onChanged;
-  final Stream? requestSave;
 
-  const _LauncherSpacerSettings({
-    this.spacer,
-    this.onChanged,
-    this.requestSave
-  });
+  const _LauncherSpacerSettings({this.spacer});
 
   @override
   State<StatefulWidget> createState() => _LauncherSpacerSettingsState();
@@ -483,8 +464,6 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
 
   int? _numberValue;
   LauncherSpacer? _spacer;
-  void Function(bool valid, bool dirty, int? height)? _onChanged;
-  StreamSubscription? _requestSave;
 
   late bool _creating;
   late TextEditingController _valueController;
@@ -497,8 +476,6 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
 
     _spacer = widget.spacer;
     _creating = _spacer == null;
-    _onChanged = widget.onChanged;
-    _requestSave = widget.requestSave?.listen((_) => _save());
 
     int height = 10;
     if (_spacer != null) {
@@ -506,6 +483,7 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
     }
 
     _valueController = TextEditingController(text: height.toString());
+    context.read<_SettingsState>().onSave = _save;
   }
 
   @override
@@ -513,7 +491,6 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
     super.dispose();
 
     _valueController.dispose();
-    _requestSave?.cancel();
   }
 
   @override
@@ -556,9 +533,7 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
 
   void _notifyChange()
   {
-    if (_onChanged != null) {
-      _onChanged!(_valid, _numberValue != _spacer?.height, _numberValue);
-    }
+    context.read<_SettingsState>().setFlags(_valid, _numberValue != _spacer?.height);
   }
 
   Future<void> _save() async
