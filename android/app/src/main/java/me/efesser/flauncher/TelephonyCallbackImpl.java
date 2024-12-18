@@ -1,11 +1,15 @@
 package me.efesser.flauncher;
 
+import android.os.Build;
 import android.telephony.TelephonyCallback;
+
+import androidx.annotation.RequiresApi;
 
 import java.util.Map;
 
 import io.flutter.plugin.common.EventChannel;
 
+@RequiresApi(api = Build.VERSION_CODES.S)
 public class TelephonyCallbackImpl extends TelephonyCallback
         implements TelephonyCallback.DataConnectionStateListener
 {

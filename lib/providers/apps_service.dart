@@ -29,7 +29,8 @@ import 'package:tuple/tuple.dart';
 import '../models/app.dart';
 import '../models/category.dart';
 
-class AppsService extends ChangeNotifier {
+class AppsService extends ChangeNotifier
+{
   final FLauncherChannel _fLauncherChannel;
   final FLauncherDatabase _database;
 
@@ -101,40 +102,46 @@ class AppsService extends ChangeNotifier {
     notifyListeners();
   }
 
-  AppsCompanion _buildAppCompanion(dynamic data) => AppsCompanion(
+  AppsCompanion _buildAppCompanion(dynamic data) {
+    String? version = data["version"];
+    if (version == null) {
+      version = "";
+    }
+
+    return AppsCompanion(
         packageName: Value(data["packageName"]),
         name: Value(data["name"]),
-        version: Value(data["version"] ?? "(unknown)"),
+        version: Value(version),
         hidden: const Value.absent()
       );
+  }
 
-  Future<void> _initDefaultCategories() => _database.transaction(() async {
+  Future<void> _initDefaultCategories() {
     final tvApplications = _applications.values.where((application) => application.sideloaded == false);
     final nonTvApplications = _applications.values.where((application) => application.sideloaded == true);
 
-    if (tvApplications.isNotEmpty) {
-      int categoryId = await addCategory("TV Applications", shouldNotifyListeners: false);
-      Category tvAppsCategory = _categoriesById[categoryId]!;
-      await setCategoryType(
-        tvAppsCategory,
-        CategoryType.grid,
-        shouldNotifyListeners: false,
-      );
-      for (final app in tvApplications) {
-        await addToCategory(app, tvAppsCategory, shouldNotifyListeners: false);
+    return _database.transaction(() async {
+      if (tvApplications.isNotEmpty) {
+        int categoryId = await addCategory("TV Applications",
+            type: CategoryType.grid, shouldNotifyListeners: false
+        );
+
+        Category tvAppsCategory = _categoriesById[categoryId]!;
+        for (final app in tvApplications) {
+          await addToCategory(app, tvAppsCategory, shouldNotifyListeners: false);
+        }
       }
-    }
-    if (nonTvApplications.isNotEmpty) {
-      int categoryId = await addCategory(
-        "Non-TV Applications",
-        shouldNotifyListeners: false,
-      );
-      Category nonTvAppsCategory = _categoriesById[categoryId]!;
-      for (final app in nonTvApplications) {
-        await addToCategory(app, nonTvAppsCategory, shouldNotifyListeners: false);
+      if (nonTvApplications.isNotEmpty) {
+        int categoryId = await addCategory("Non-TV Applications",
+          shouldNotifyListeners: false,
+        );
+        Category nonTvAppsCategory = _categoriesById[categoryId]!;
+        for (final app in nonTvApplications) {
+          await addToCategory(app, nonTvAppsCategory, shouldNotifyListeners: false);
+        }
       }
-    }
-  });
+    });
+  }
 
   Future<void> _refreshState({bool shouldNotifyListeners = true}) async {
     Future<List<App>> appsFromDatabaseFuture = _database.getApplications();
@@ -147,7 +154,7 @@ class AppsService extends ChangeNotifier {
     Map<String, Tuple2<Map, AppsCompanion>> appsFromSystemByPackageName = Map.fromEntries(appEntries);
 
     List<App> appsFromDatabase = await appsFromDatabaseFuture;
-    final appsRemovedFromSystem = appsFromDatabase
+    final Iterable<App> appsRemovedFromSystem = appsFromDatabase
         .where((app) => !appsFromSystemByPackageName.containsKey(app.packageName));
 
     final List<String> uninstalledApplications = [];
@@ -170,7 +177,7 @@ class AppsService extends ChangeNotifier {
 
     await Future.wait([appsFromDatabaseFuture, appsCategoriesFuture, categoriesFuture, spacersFuture]);
 
-    appsFromDatabase = await appsFromDatabase;
+    appsFromDatabase = await appsFromDatabaseFuture;
     List<AppCategory> appsCategories = await appsCategoriesFuture;
     List<Category> categories = await categoriesFuture;
     List<LauncherSpacer> spacers = await spacersFuture;
@@ -178,6 +185,7 @@ class AppsService extends ChangeNotifier {
     _categoriesById = Map.fromEntries(categories.map((category) => MapEntry(category.id, category)));
     _applications = Map.fromEntries(appsFromDatabase.map((application) => MapEntry(application.packageName, application)));
 
+    _launcherSections.clear();
     _launcherSections.addAll(categories);
     _launcherSections.addAll(spacers);
     _launcherSections.sort((ls0, ls1) => ls0.order.compareTo(ls1.order));
@@ -396,7 +404,7 @@ class AppsService extends ChangeNotifier {
     ));
 
     category!.name = name;
-    category!.sort = sort;
+    category.sort = sort;
     category.type = type;
     category.columnsCount = columnsCount;
     category.rowHeight = rowHeight;
