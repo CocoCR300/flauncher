@@ -20,6 +20,7 @@ import 'dart:async';
 
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -268,6 +269,11 @@ class _CategorySettings extends StatefulWidget
 
 class _CategorySettingsState extends State<_CategorySettings>
 {
+  final FocusNode _textFieldFocusNode;
+  
+  late final TextEditingController _nameController;
+  
+  bool _ignoreTextFieldKeyEvent;
   CategorySort _categorySort;
   CategoryType _categoryType;
   int _columnsCount;
@@ -277,20 +283,22 @@ class _CategorySettingsState extends State<_CategorySettings>
   late Category? _category;
 
   late bool _creating;
-  late TextEditingController _nameController;
 
   _CategorySettingsState():
+        _ignoreTextFieldKeyEvent = false,
         _categorySort = Category.Sort,
         _categoryType = Category.Type,
         _columnsCount = Category.ColumnsCount,
         _rowHeight = Category.RowHeight,
-        _name = "";
+        _name = "",
+        _textFieldFocusNode = FocusNode();
 
   @override
   void dispose() {
     super.dispose();
 
     _nameController.dispose();
+    _textFieldFocusNode.dispose();
   }
 
   @override
@@ -315,9 +323,35 @@ class _CategorySettingsState extends State<_CategorySettings>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final FocusScopeNode focusScopeNode = FocusScope.of(context);
+    focusScopeNode.onKeyEvent = (node, keyEvent) {
+      if (_textFieldFocusNode.hasFocus && (keyEvent.logicalKey == LogicalKeyboardKey.arrowUp || keyEvent.logicalKey == LogicalKeyboardKey.arrowDown)) {
+        if (!_ignoreTextFieldKeyEvent) {
+          if (keyEvent.logicalKey == LogicalKeyboardKey.arrowUp) {
+            _textFieldFocusNode.previousFocus();
+          }
+          if (keyEvent.logicalKey == LogicalKeyboardKey.arrowDown) {
+            _textFieldFocusNode.nextFocus();
+          }
+        }
+
+        _ignoreTextFieldKeyEvent = false;
+      }
+      else {
+        _ignoreTextFieldKeyEvent = true;
+      }
+
+      return KeyEventResult.ignored;
+    };
+  }
+
+  @override
   Widget build(BuildContext context) {
     AppLocalizations localizations = AppLocalizations.of(context)!;
-
+    
     return Column(
       children: [
         _listTile(
@@ -326,11 +360,10 @@ class _CategorySettingsState extends State<_CategorySettings>
           TextFormField(
             autovalidateMode: AutovalidateMode.always,
             controller: _nameController,
+            focusNode: _textFieldFocusNode,
             textCapitalization: TextCapitalization.sentences,
             onChanged: (value) {
-              setState(() {
-                _name = value;
-              });
+              _name = value;
               _notifyChange();
             },
             validator: (value) {
@@ -511,15 +544,22 @@ class _LauncherSpacerSettings extends StatefulWidget
 
 class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
 {
+  final FocusNode _textFieldFocusNode;
+
+  late final TextEditingController _valueController;
+
+  bool _ignoreTextFieldKeyEvent;
   bool _valid;
 
   int? _numberValue;
   LauncherSpacer? _spacer;
 
   late bool _creating;
-  late TextEditingController _valueController;
 
-  _LauncherSpacerSettingsState(): _valid = true;
+  _LauncherSpacerSettingsState():
+        _valid = true,
+        _ignoreTextFieldKeyEvent = false,
+        _textFieldFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -539,10 +579,37 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final scope = FocusScope.of(context);
+    scope.onKeyEvent = (node, keyEvent) {
+      if (_textFieldFocusNode.hasFocus && (keyEvent.logicalKey == LogicalKeyboardKey.arrowUp || keyEvent.logicalKey == LogicalKeyboardKey.arrowDown)) {
+        if (!_ignoreTextFieldKeyEvent) {
+          if (keyEvent.logicalKey == LogicalKeyboardKey.arrowUp) {
+            _textFieldFocusNode.previousFocus();
+          }
+          if (keyEvent.logicalKey == LogicalKeyboardKey.arrowDown) {
+            _textFieldFocusNode.nextFocus();
+          }
+        }
+
+        _ignoreTextFieldKeyEvent = false;
+      }
+      else {
+        _ignoreTextFieldKeyEvent = true;
+      }
+
+      return KeyEventResult.ignored;
+    };
+  }
+
+  @override
   void dispose() {
     super.dispose();
 
     _valueController.dispose();
+    _textFieldFocusNode.dispose();
   }
 
   @override
@@ -557,15 +624,14 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
         child: TextFormField(
           autovalidateMode: AutovalidateMode.always,
           controller: _valueController,
+          focusNode: _textFieldFocusNode,
           keyboardType: TextInputType.numberWithOptions(),
           textCapitalization: TextCapitalization.sentences,
           onChanged: (value) {
-            setState(() {
-              _numberValue = int.tryParse(value);
-              _valid = _numberValue != null && _numberValue! > 0 && _numberValue! < 500;
+            _numberValue = int.tryParse(value);
+            _valid = _numberValue != null && _numberValue! > 0 && _numberValue! < 500;
 
-              _notifyChange();
-            });
+            _notifyChange();
           },
           validator: (value) {
             if (value!.isEmpty) {
