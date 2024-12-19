@@ -416,9 +416,9 @@ class AppsService extends ChangeNotifier
 
   Future<void> addSpacer(int height) async
   {
-    int order = launcherSections.length - 1;
+    int order = launcherSections.length;
     int spacerId = await _database.insertSpacer(
-        LauncherSpacersCompanion.insert( height: height, order: order)
+        LauncherSpacersCompanion.insert(height: height, order: order)
     );
 
     _launcherSections.add(LauncherSpacer(
@@ -450,7 +450,11 @@ class AppsService extends ChangeNotifier
     }
   }
 
-  Future<void> deleteSection(LauncherSection section) async {
+  Future<void> deleteSection(int index) async
+  {
+    assert(index < _launcherSections.length);
+
+    LauncherSection section = _launcherSections[index];
     if (section is Category) {
       await _database.deleteCategory(section.id);
       _categoriesById.remove(section.id);
@@ -459,7 +463,8 @@ class AppsService extends ChangeNotifier
       await _database.deleteSpacer(section.id);
     }
     
-    _launcherSections.removeWhere((s) => s.id == section.id);
+    _launcherSections.removeAt(index);
+
     notifyListeners();
   }
 
@@ -470,7 +475,7 @@ class AppsService extends ChangeNotifier
 
     List<CategoriesCompanion> orderedCategories = [];
     List<LauncherSpacersCompanion> orderedSpacers = [];
-    for (int i = newIndex; i < newSectionsList.length; ++i) {
+    for (int i = 0; i < newSectionsList.length; ++i) {
       LauncherSection section = newSectionsList[i];
 
       if (section is Category) {

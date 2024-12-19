@@ -64,7 +64,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
                 return MaterialPageRoute(builder: (_) => LauncherSectionsPanelPage());
               case LauncherSectionPanelPage.routeName:
                 return MaterialPageRoute(
-                    builder: (_) => LauncherSectionPanelPage(sectionId: settings.arguments as int?));
+                    builder: (_) => LauncherSectionPanelPage(sectionIndex: settings.arguments as int?));
               default:
                 throw ArgumentError.value(settings.name, "settings.name", "Route not supported.");
             }

@@ -27,49 +27,89 @@ import '../../models/category.dart';
 
 class _SettingsState extends ChangeNotifier
 {
+  bool _changed;
+  bool _creating;
+  bool _deleted;
+  bool _valid;
+  LauncherSection? _section;
+  LauncherSectionType _sectionType;
+
   void Function()? onSave;
 
-  late bool changed;
-  late bool creating;
-  late bool valid;
-  late LauncherSectionType sectionType;
+  bool get changed => _changed;
+  bool get creating => _creating;
+  bool get deleted => _deleted;
+  bool get valid => _valid;
+  LauncherSection? get launcherSection => _section;
+  LauncherSectionType get sectionType => _sectionType;
 
-  _SettingsState(LauncherSection? launcherSection)
+  _SettingsState(AppsService appsService, int? sectionIndex):
+      _changed = false,
+      _creating = false,
+      _deleted = false,
+      _valid = false,
+      _sectionType = LauncherSectionType.Category
   {
-    changed = false;
-    creating = false;
-    valid = false;
-    sectionType = LauncherSectionType.Category;
-
-    if (launcherSection == null) {
-      creating = true;
-    }
-    else if (launcherSection is LauncherSpacer) {
-      sectionType = LauncherSectionType.Spacer;
+    LauncherSection? launcherSection;
+    List<LauncherSection> sections = appsService.launcherSections;
+    if (sectionIndex != null && sectionIndex < sections.length) {
+      launcherSection = sections[sectionIndex];
     }
 
-    valid = false;
-    changed = creating;
+    setLauncherSection(launcherSection, shouldNotifyListeners: false);
+  }
+
+  void setDeleted() {
+    _deleted = true;
   }
 
   void setFlags(bool valid, bool changed)
   {
-    if (this.valid != valid || this.changed != changed) {
-      this.valid = valid;
-      this.changed = changed;
+    if (_valid != valid || _changed != changed) {
+      _valid = valid;
+      _changed = changed;
 
+      notifyListeners();
+    }
+  }
+
+  void setLauncherSection(LauncherSection? section, {bool shouldNotifyListeners = true})
+  {
+    _section = section;
+
+    _changed = false;
+    _creating = false;
+    _valid = false;
+    _sectionType = LauncherSectionType.Category;
+
+    if (section == null) {
+      _creating = true;
+    }
+    else if (section is LauncherSpacer) {
+      _sectionType = LauncherSectionType.Spacer;
+    }
+
+    _valid = false;
+    _changed = creating;
+
+    if (shouldNotifyListeners) {
       notifyListeners();
     }
   }
 
   void setSectionType(LauncherSectionType sectionType)
   {
-    if (this.sectionType != sectionType) {
-      this.sectionType = sectionType;
+    assert(_creating);
 
-      if (creating && sectionType == LauncherSectionType.Spacer) {
-        changed = true;
-        valid = true;
+    _changed = false;
+    _valid = false;
+
+    if (_sectionType != sectionType) {
+      _sectionType = sectionType;
+
+      if (sectionType == LauncherSectionType.Spacer) {
+        _changed = true;
+        _valid = true;
       }
 
       notifyListeners();
@@ -81,54 +121,58 @@ class LauncherSectionPanelPage extends StatelessWidget
 {
   static const String routeName = "section_panel";
 
-  final int? sectionId;
+  final int? sectionIndex;
 
-  LauncherSectionPanelPage({Key? key, this.sectionId}): super(key: key);
+  LauncherSectionPanelPage({Key? key, this.sectionIndex}): super(key: key);
 
   Widget build(BuildContext context) {
     AppLocalizations localizations = AppLocalizations.of(context)!;
 
-    return Selector<AppsService, LauncherSection?>(
-      selector: (_, appsService) => _launcherSectionSelector(appsService, sectionId),
-      builder: (_, launcherSection, __) => ChangeNotifierProvider(
-        create: (_) => _SettingsState(launcherSection),
-        builder: (context, _) => Selector<_SettingsState, LauncherSectionType>(
-          selector: (context, state) => state.sectionType,
-          builder: (context, sectionType, _) {
-            _SettingsState state = context.read();
-            bool creating = state.creating;
-            Widget sectionSpecificSettings;
+    return ChangeNotifierProvider(
+      create: (_) {
+        AppsService service = context.read();
+        return _SettingsState(service, sectionIndex);
+      },
+      builder: (context, _) => Selector<_SettingsState, LauncherSectionType>(
+        selector: (_, state) => state.sectionType,
+        builder: (_, sectionType, __)  {
+          _SettingsState state = context.read();
+          LauncherSection? launcherSection = state.launcherSection;
 
-            if (sectionType == LauncherSectionType.Category) {
-              sectionSpecificSettings = _CategorySettings(
-                  category: launcherSection as Category?,
-                  onChanged: (valid, dirty, name, sort, type, columns, rowHeight) {
-                    state.setFlags(valid, dirty);
-                  }
-              );
-            }
-            else {
-              sectionSpecificSettings = _LauncherSpacerSettings(
-                  spacer: launcherSection as LauncherSpacer?
-              );
-            }
+          if (state.deleted) {
+            return Container();
+          }
 
-            String title = localizations.newSection;
-            if (!creating) {
-              title = localizations.modifySection;
-            }
+          bool creating = state.creating;
+          Widget sectionSpecificSettings;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(title, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
-                Divider(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        if (creating)
-                          _listTile(
+          if (sectionType == LauncherSectionType.Category) {
+            sectionSpecificSettings = _CategorySettings(
+              category: launcherSection as Category?,
+            );
+          }
+          else {
+            sectionSpecificSettings = _LauncherSpacerSettings(
+                spacer: launcherSection as LauncherSpacer?
+            );
+          }
+
+          String title = localizations.newSection;
+          if (!creating) {
+            title = localizations.modifySection;
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(title, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
+              Divider(),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      if (creating)
+                        _listTile(
                             context,
                             Text(localizations.type),
                             Padding(
@@ -152,53 +196,59 @@ class LauncherSectionPanelPage extends StatelessWidget
                                 ]
                               )
                             )
-                          ),
+                        ),
 
-                        sectionSpecificSettings,
-                      ]
-                    )
+                      sectionSpecificSettings,
+                    ]
                   )
-                ),
-                Divider(),
-                Selector<_SettingsState, bool>(
-                  selector: (context, state) => (state.valid && state.changed),
-                  builder: (context, canSave, _) {
-                    void Function()? onSavePressed = null;
-                    if (canSave) {
-                      onSavePressed = () {
-                        if (state.onSave != null) {
-                          state.onSave!();
-                        }
-                      };
-                    }
-
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.green[400]),
-                        child: Text(localizations.save),
-                        onPressed: onSavePressed
-                      )
-                    );
+                )
+              ),
+              Divider(),
+              Selector<_SettingsState, bool>(
+                selector: (context, state) => (state.valid && state.changed),
+                builder: (context, canSave, _) {
+                  void Function()? onSavePressed = null;
+                  if (canSave) {
+                    onSavePressed = () {
+                      if (state.onSave != null) {
+                        state.onSave!();
+                      }
+                    };
                   }
-                ),
 
-                if (!creating)
-                  Padding(
+                  return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red[400]),
-                      child: Text(localizations.delete),
-                      onPressed: () async {
-                        await context.read<AppsService>().deleteSection(launcherSection!);
-                        Navigator.of(context).pop();
-                      }
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.greenAccent[700],
+                        foregroundColor: Colors.white
+                      ),
+                      child: Text(localizations.save),
+                      onPressed: onSavePressed
                     )
+                  );
+                }
+              ),
+
+              if (!creating)
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red[400],
+                      foregroundColor: Colors.white
+                    ),
+                    child: Text(localizations.delete),
+                    onPressed: () async {
+                      state.setDeleted();
+                      await context.read<AppsService>().deleteSection(sectionIndex!);
+                      Navigator.of(context).pop();
+                    }
                   )
-                ]
-            );
-          }
-        )
+                )
+            ]
+          );
+        }
       )
     );
   }
@@ -207,11 +257,9 @@ class LauncherSectionPanelPage extends StatelessWidget
 class _CategorySettings extends StatefulWidget
 {
   final Category? category;
-  final void Function(bool valid, bool dirty, String, CategorySort, CategoryType, int columnsCount, int rowHeight)? onChanged;
 
   const _CategorySettings({
-    this.category,
-    this.onChanged
+    this.category
   });
 
   @override
@@ -437,14 +485,17 @@ class _CategorySettingsState extends State<_CategorySettings>
       await service.addCategory(_name, sort: _categorySort, type: _categoryType,
           columnsCount: _columnsCount, rowHeight: _rowHeight
       );
+
+      _SettingsState state = context.read();
+      state.setLauncherSection(service.launcherSections[0]);
     }
     else {
       await service.updateCategory(_category!.id, _name, _categorySort,
           _categoryType, _columnsCount, _rowHeight
       );
-    }
 
-    _notifyChange();
+      _notifyChange();
+    }
   }
 }
 
@@ -482,6 +533,7 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
       height = _spacer!.height;
     }
 
+    _numberValue = height;
     _valueController = TextEditingController(text: height.toString());
     context.read<_SettingsState>().onSave = _save;
   }
@@ -542,13 +594,17 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
     assert(_numberValue != null);
     if (_creating) {
       await service.addSpacer(_numberValue!);
+
+      _SettingsState state = context.read();
+      int index = service.launcherSections.length - 1;
+      state.setLauncherSection(service.launcherSections[index]);
     }
     else {
       assert(_spacer != null);
       await service.updateSpacerHeight(_spacer!, _numberValue!);
-    }
 
-    _notifyChange();
+      _notifyChange();
+    }
   }
 }
 
@@ -562,20 +618,3 @@ Widget _listTile(BuildContext context, Widget title, Widget subtitle, {Widget? t
       trailing: trailing,
     )
 );
-
-LauncherSection? _launcherSectionSelector(AppsService appsService, int? sectionId)
-{
-  if (sectionId == null) {
-    return null;
-  }
-
-  LauncherSection? spacer;
-  int index = appsService.launcherSections.indexWhere((s) => s.id == sectionId);
-
-  if (index != -1) {
-    spacer = appsService.launcherSections[index];
-  }
-
-  return spacer;
-}
-

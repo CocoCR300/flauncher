@@ -108,7 +108,7 @@ class LauncherSectionsPanelPage extends StatelessWidget
                   splashRadius: 20,
                   icon: Icon(Icons.settings),
                   onPressed: () {
-                    Navigator.pushNamed(context, LauncherSectionPanelPage.routeName, arguments: section.id);
+                    Navigator.pushNamed(context, LauncherSectionPanelPage.routeName, arguments: index);
                   },
                 ),
               ],
