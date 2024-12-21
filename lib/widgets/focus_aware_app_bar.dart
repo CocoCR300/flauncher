@@ -28,6 +28,7 @@ class _FocusAwareAppBarState extends State<FocusAwareAppBar>
       builder: (context, autoHide, widget) {
         if (autoHide) {
           return Focus(
+            canRequestFocus: false,
             child: AnimatedContainer(
               curve: Curves.decelerate,
               duration: Duration(milliseconds: 250),
