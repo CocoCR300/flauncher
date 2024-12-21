@@ -73,7 +73,7 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
                   }
                 },
                 tabs: const [
-                  Tab(icon: Icon(Icons.tv)),
+                  Focus(autofocus: true, child: Tab(icon: Icon(Icons.tv))),
                   Tab(icon: Icon(Icons.android)),
                   Tab(icon: Icon(Icons.visibility_off_outlined)),
                 ],

@@ -179,6 +179,7 @@ class LauncherSectionPanelPage extends StatelessWidget
                             Padding(
                               padding: EdgeInsets.only(top: 4),
                               child: DropdownButton<LauncherSectionType>(
+                                autofocus: true,
                                 value: sectionType,
                                 onChanged: (value) {
                                   state.setSectionType(value!);

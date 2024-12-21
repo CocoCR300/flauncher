@@ -36,6 +36,7 @@ class StatusBarPanelPage extends StatelessWidget {
           Text(localizations.statusBar, style: Theme.of(context).textTheme.titleLarge),
           Divider(),
           RoundedSwitchListTile(
+            autofocus: true,
             value: settingsService.autoHideAppBarEnabled,
             onChanged: (value) => settingsService.setAutoHideAppBarEnabled(value),
             title: Text(localizations.autoHideAppBar, style: Theme.of(context).textTheme.bodyMedium),

@@ -53,6 +53,7 @@ class SettingsPanelPage extends StatelessWidget {
                   EnsureVisible(
                     alignment: 0.5,
                     child: TextButton(
+                      autofocus: true,
                       child: Row(
                         children: [
                           const Icon(Icons.apps),

@@ -47,7 +47,7 @@ class LauncherSectionsPanelPage extends StatelessWidget
                       int index = tuple.$1;
                       bool last = index == sections.length - 1;
 
-                      return _section(context, sections[index], index, last);
+                      return _section(context, sections[index], index, last, index == 0);
                     }).toList(),
                   ),
                 ),
@@ -66,7 +66,7 @@ class LauncherSectionsPanelPage extends StatelessWidget
       );
   }
 
-  Widget _section(BuildContext context, LauncherSection section, int index, bool last) {
+  Widget _section(BuildContext context, LauncherSection section, int index, bool last, bool autofocus) {
     AppLocalizations localizations = AppLocalizations.of(context)!;
 
     String title = localizations.spacer;
@@ -104,6 +104,7 @@ class LauncherSectionsPanelPage extends StatelessWidget
                   onPressed: last ? null : () => _move(context, index, index + 1),
                 ),
                 IconButton(
+                  autofocus: autofocus,
                   constraints: BoxConstraints(),
                   splashRadius: 20,
                   icon: Icon(Icons.settings),
