@@ -55,6 +55,7 @@ class AppsGrid extends StatelessWidget
           childCount: applications.length,
           findChildIndexCallback: _findChildIndex,
           (context, index) => AppCard(
+              key: Key("${category.id}${applications[index].packageName}"),
               category: category,
               application: applications[index],
               autofocus: index == 0,
@@ -91,7 +92,7 @@ class AppsGrid extends StatelessWidget
   }
 
   int _findChildIndex(Key key) =>
-      applications.indexWhere((app) => "${category.id}-${app.packageName}" == (key as ValueKey<String>).value);
+      applications.indexWhere((app) => "${category.id}${app.packageName}" == (key as ValueKey<String>).value);
 
   void _onMove(BuildContext context, AxisDirection direction, int index) {
     final currentRow = (index / category.columnsCount).floor();
