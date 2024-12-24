@@ -404,11 +404,17 @@ class AppsService extends ChangeNotifier
       rowHeight: Value(rowHeight)
     ));
 
-    category!.name = name;
+    CategorySort oldSort = category!.sort;
+
+    category.name = name;
     category.sort = sort;
     category.type = type;
     category.columnsCount = columnsCount;
     category.rowHeight = rowHeight;
+
+    if (oldSort != sort) {
+      sortCategory(category);
+    }
 
     if (shouldNotifyListeners) {
       notifyListeners();
