@@ -53,7 +53,7 @@ class CategoryRow extends StatelessWidget
             childCount: applications.length,
             findChildIndexCallback: _findChildIndex,
             (context, index) => Padding(
-                key: Key("${category.id}${applications[index].packageName}"),
+                key: Key(applications[index].packageName),
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: AppCard(
                   category: category,
@@ -95,7 +95,7 @@ class CategoryRow extends StatelessWidget
   }
 
   int _findChildIndex(Key key) =>
-      applications.indexWhere((app) => "${category.id}${app.packageName}" == (key as ValueKey<String>).value);
+      applications.indexWhere((app) => app.packageName == (key as ValueKey<String>).value);
 
   void _onMove(BuildContext context, AxisDirection direction, int index) {
     int newIndex = 0;
