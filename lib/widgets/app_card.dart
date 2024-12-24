@@ -35,16 +35,16 @@ const _validationKeys = [LogicalKeyboardKey.select, LogicalKeyboardKey.enter, Lo
 
 class AppCard extends StatefulWidget
 {
-  final Category category;
   final App application;
+  final Category category;
   final bool autofocus;
   final void Function(AxisDirection) onMove;
   final VoidCallback onMoveEnd;
 
   const AppCard({
     super.key,
-    required this.category,
     required this.application,
+    required this.category,
     required this.autofocus,
     required this.onMove,
     required this.onMoveEnd,

@@ -76,10 +76,11 @@ class AppsGrid extends StatelessWidget
               return Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
                 child: Text(category.name,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(shadows: [const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(shadows: [const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])
+                ),
               );
             }
 

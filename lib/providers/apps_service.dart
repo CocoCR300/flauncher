@@ -320,14 +320,15 @@ class AppsService extends ChangeNotifier
   }
 
   void reorderApplication(Category category, int oldIndex, int newIndex) {
-    if (_categoriesById.containsKey(category.id)) {
-      Category categoryFound = _categoriesById[category.id]!;
-      List<App> applications = categoryFound.applications;
-      App application = applications.removeAt(oldIndex);
-      applications.insert(newIndex, application);
-
-      notifyListeners();
+    if (!_categoriesById.containsKey(category.id)) {
+      return;
     }
+    Category categoryFound = _categoriesById[category.id]!;
+    List<App> applications = categoryFound.applications;
+    App application = applications.removeAt(oldIndex);
+    applications.insert(newIndex, application);
+
+    notifyListeners();
   }
 
   Future<int> addCategory(String categoryName, {

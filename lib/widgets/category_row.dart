@@ -53,7 +53,7 @@ class CategoryRow extends StatelessWidget
             childCount: applications.length,
             findChildIndexCallback: _findChildIndex,
             (context, index) => Padding(
-                key: Key("${category.id}-${applications[index].packageName}"),
+                key: Key("${category.id}${applications[index].packageName}"),
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: AppCard(
                   category: category,
@@ -95,28 +95,21 @@ class CategoryRow extends StatelessWidget
   }
 
   int _findChildIndex(Key key) =>
-      applications.indexWhere((app) => "${category.id}-${app.packageName}" == (key as ValueKey<String>).value);
+      applications.indexWhere((app) => "${category.id}${app.packageName}" == (key as ValueKey<String>).value);
 
   void _onMove(BuildContext context, AxisDirection direction, int index) {
-    int? newIndex;
-    switch (direction) {
-      case AxisDirection.right:
-        if (index < applications.length - 1) {
-          newIndex = index + 1;
-        }
-        break;
-      case AxisDirection.left:
-        if (index > 0) {
-          newIndex = index - 1;
-        }
-        break;
-      default:
-        break;
+    int newIndex = 0;
+
+    if (direction == AxisDirection.right && index < applications.length - 1) {
+      newIndex = index + 1;
+    } else if (direction == AxisDirection.left && index > 0) {
+      newIndex = index - 1;
+    } else {
+      return;
     }
-    if (newIndex != null) {
-      final appsService = context.read<AppsService>();
-      appsService.reorderApplication(category, index, newIndex);
-    }
+
+    final appsService = context.read<AppsService>();
+    appsService.reorderApplication(category, index, newIndex);
   }
 
   void _onMoveEnd(BuildContext context) {
